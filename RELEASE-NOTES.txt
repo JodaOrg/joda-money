@@ -1,0 +1,16 @@
+
+Joda-Money
+================================================
+Joda-Money is a monetary library that fills the gap in the JDK
+by providing a Money class and associated formatting.
+
+This is release 0.1 of Joda-Money.
+
+The release depends on Java 5.
+
+
+Feedback
+--------
+All feedback is welcomed at joda-money-interest@lists.sourceforge.net.
+
+The Joda team
