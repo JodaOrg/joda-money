@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<document>
+
+ <properties>
+  <title>Home</title>
+  <author>Stephen Colebourne</author>
+ </properties>
+
+ <body>
+
+<section name="Joda Money">
+<p>
+Joda-Money provides a library of classes to store amounts of money.
+This library is intended to act as the base layer, providing classes that should be in the JDK.
+Classes to handle the intricacies of financial transactions are not included.
+</p>
+<p>
+Version 0.1 was released on 2008-08-19 -
+<a href="https://sourceforge.net/projects/joda-money/files/">Download now</a>
+</p>
+</section>
+
+
+<section name="Documentation">
+<p>
+Various documentation is available:
+<ul>
+<li>The javadoc for the <a href="apidocs/index.html">current release</a></li>
+<!--li>The <a href="userguide.html">user guide</a></li-->
+<!--li>A <a href="faq.html">FAQ</a> list</li-->
+<li>The <a href="http://joda-money.svn.sourceforge.net/viewvc/joda-money/JodaMoney/trunk/">Subversion repository</a></li>
+</ul>
+</p>
+</section>
+
+
+<section name="Releases">
+<p>
+<a href="https://sourceforge.net/projects/joda-money/files/">Release 0.1</a>
+is the current latest release.
+</p>
+<p>
+There are no dependencies beyond JDK 1.5.
+</p>
+</section>
+
+
+<section name="Support">
+<p>
+Support on bugs, library usage or enhancement requests is available on a best efforts basis via:
+</p>
+<ul>
+<li>the joda-money-interest <a href="mail-lists.html">mailing list</a>. Due to spam, you must be subscribed to post to the mailing list.</li>
+<li>the joda-money sourceforge <a href="https://sourceforge.net/forum/forum.php?forum_id=996056">forum</a>.</li>
+</ul>
+<p>
+<br />
+</p>
+<p>
+<br />
+</p>
+</section>
+
+</body>
+</document>
