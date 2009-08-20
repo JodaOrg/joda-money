@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<document>
+  <properties>
+    <title>Changes</title>
+    <author>Stephen Colebourne</author>
+  </properties>
+  <body>
+
+    <!-- types are add, fix, remove, update -->
+    <release version="0.1" date="2009-08-19" description="Initial version">
+      <action dev="scolebourne" type="add">
+        Initial version.
+      </action>              
+    </release>
+
+  </body>
+</document>
