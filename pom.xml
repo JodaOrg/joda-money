@@ -120,6 +120,7 @@
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>2.6</version>
         <configuration>
+          <encoding>utf-8</encoding>
           <linksource>true</linksource>
           <links>
             <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
@@ -136,6 +137,22 @@
             </reports>
           </reportSet>
         </reportSets>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jxr-plugin</artifactId>
+        <version>2.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-pmd-plugin</artifactId>
+        <version>2.4</version>
+        <configuration>
+          <linkXref>true</linkXref>
+          <sourceEncoding>utf-8</sourceEncoding>
+          <minimumTokens>100</minimumTokens>
+          <targetJdk>1.5</targetJdk>
+        </configuration>
       </plugin>
   	</plugins>
   </reporting>

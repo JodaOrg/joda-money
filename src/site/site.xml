@@ -8,7 +8,7 @@
   </bannerLeft>
   <bannerRight>
     <name>Joda Money</name>
-    <src>http://joda-money.sourceforge.net/images/jodamoney.png</src>
+    <!--src>http://joda-money.sourceforge.net/images/jodamoney.png</src-->
     <href>http://joda-money.sourceforge.net/</href>
   </bannerRight>
 
