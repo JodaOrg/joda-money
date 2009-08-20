@@ -20,10 +20,11 @@
       <name>Joda Interest list</name>
       <subscribe>http://sourceforge.net/mail/?group_id=274452</subscribe>
       <unsubscribe>http://sourceforge.net/mail/?group_id=274452</unsubscribe>
-      <archive>http://sourceforge.net/mailarchive/forum.php?forum_id=8530</archive>
-      <otherArchives>
+      <archive>https://sourceforge.net/mailarchive/forum.php?forum_name=joda-money-interest</archive>
+      <!--archive>http://sourceforge.net/mailarchive/forum.php?forum_id=8530</archive-->
+      <!--otherArchives>
         <otherArchive>http://n2.nabble.com/Joda-Interest-f219941.html</otherArchive>
-      </otherArchives>
+      </otherArchives-->
     </mailingList>
   </mailingLists>
   <developers>
@@ -40,7 +41,7 @@
   <licenses>
     <license>
       <name>Apache 2</name>
-      <url>http://www.apache.org/licenses/</url>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
     </license>
   </licenses>
   <scm>
@@ -52,8 +53,6 @@
     <url>http://www.joda.org</url>
   </organization>
   <build>
-    <sourceDirectory>src/java</sourceDirectory>
-    <testSourceDirectory>src/test</testSourceDirectory>
     <resources>
       <resource>
         <targetPath>META-INF</targetPath>
@@ -70,8 +69,10 @@
         <configuration>
           <verbose>true</verbose>
           <fork>true</fork>
-          <executable>C:\java\jdk1.4.2\bin\javac</executable>
-          <compilerVersion>1.4</compilerVersion>
+          <executable>C:\java\jdk1.5.0\bin\javac</executable>
+          <compilerVersion>1.5</compilerVersion>
+          <source>1.5</source>
+          <target>1.5</target>
         </configuration>
       </plugin>
       <plugin>
@@ -105,26 +106,36 @@
   </dependencies>
   <reporting>
   	<plugins>
-      <plugin>
+      <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.1</version>
+        <version>2.3</version>
         <configuration>
           <configLocation>${basedir}/checkstyle.xml</configLocation>
           <enableRulesSummary>false</enableRulesSummary>
         </configuration>
-      </plugin>
+      </plugin-->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.4</version>
+        <version>2.6</version>
         <configuration>
           <linksource>true</linksource>
           <links>
-            <link>http://java.sun.com/j2se/1.4.2/docs/api/</link>
-            <link>http://joda-time.sourceforge.net/api-release/</link>
+            <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
           </links>
         </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-changes-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>changes-report</report>
+            </reports>
+          </reportSet>
+        </reportSets>
       </plugin>
   	</plugins>
   </reporting>
