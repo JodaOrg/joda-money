@@ -22,7 +22,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Collections;
 import java.util.Currency;
+import java.util.List;
 
 import org.testng.annotations.Test;
 
@@ -35,11 +37,62 @@ public class TestCurrencyUnit {
     private static final Currency JDK_GBP = Currency.getInstance("GBP");
 
     //-----------------------------------------------------------------------
+    // registeredCurrencies()
+    //-----------------------------------------------------------------------
+    public void test_registeredCurrencies() {
+        List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
+        boolean found = false;
+        for (CurrencyUnit currencyUnit : curList) {
+            if (currencyUnit.getCode().equals("GBP")) {
+                found = true;
+                break;
+            }
+        }
+        assertEquals(found, true);
+    }
+
+    public void test_registeredCurrencies_sorted() {
+        List<CurrencyUnit> curList1 = CurrencyUnit.registeredCurrencies();
+        List<CurrencyUnit> curList2 = CurrencyUnit.registeredCurrencies();
+        Collections.sort(curList2);
+        assertEquals(curList1, curList2);
+    }
+
+//    public void test_registeredCurrencies_crossCheck() {
+//        List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
+//        for (CurrencyUnit currencyUnit : curList) {
+//            try {
+//                Currency curr = Currency.getInstance(currencyUnit.getCode());
+//                assertEquals(currencyUnit.getDefaultFractionDigits(), curr.getDefaultFractionDigits(), curr.getCurrencyCode());
+//            } catch (IllegalArgumentException ex) {
+//                System.out. println(currencyUnit);
+//            }
+//        }
+//    }
+
+//    {
+//        System.out. println(curList1);
+//        for (char a = 'A'; a <= 'Z'; a++) {
+//            for (char b = 'A'; b <= 'Z'; b++) {
+//                for (char c = 'A'; c <= 'Z'; c++) {
+//                    String code = "" + a + b + c;
+//                    try {
+//                        Currency curr = Currency.getInstance(code);
+//                        System.out. println(curr);
+//                    } catch (Exception ex) {
+//                        // continue
+//                    }
+//                }
+//            }
+//        }
+//    }
+
+    //-----------------------------------------------------------------------
     // of(Currency)
     //-----------------------------------------------------------------------
     public void test_factory_of_Currency() {
         CurrencyUnit test = CurrencyUnit.of(JDK_GBP);
-        assertEquals(test.getCurrencyCode(), "GBP");
+        assertEquals(test.getCode(), "GBP");
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -52,7 +105,7 @@ public class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     public void test_factory_of_String() {
         CurrencyUnit test = CurrencyUnit.of("GBP");
-        assertEquals(test.getCurrencyCode(), "GBP");
+        assertEquals(test.getCode(), "GBP");
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -80,11 +133,19 @@ public class TestCurrencyUnit {
     }
 
     //-----------------------------------------------------------------------
-    // getCurrencyCode()
+    // getCode()
     //-----------------------------------------------------------------------
-    public void test_getCurrencyCode_GBP() {
+    public void test_getCode_GBP() {
         CurrencyUnit test = CurrencyUnit.of("GBP");
-        assertEquals(test.getCurrencyCode(), "GBP");
+        assertEquals(test.getCode(), "GBP");
+    }
+
+    //-----------------------------------------------------------------------
+    // getNumericCode()
+    //-----------------------------------------------------------------------
+    public void test_getNumericCode_GBP() {
+        CurrencyUnit test = CurrencyUnit.of("GBP");
+        assertEquals(test.getNumericCode(), 826);
     }
 
     //-----------------------------------------------------------------------

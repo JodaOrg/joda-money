@@ -42,17 +42,22 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      */
     private static final ConcurrentMap<String, CurrencyUnit> cCurrencies = new ConcurrentHashMap<String, CurrencyUnit>();
     static {
-        registerCurrency("USD", 2);
-        registerCurrency("CAD", 2);
-        registerCurrency("GBP", 2);
-        registerCurrency("EUR", 2);
-        registerCurrency("JPY", 0);
-        registerCurrency("XXX", -1);
+        try {
+            new CurrencyUnitDataProvider.ResourceDataProvider().registerCurrencies();
+        } catch (RuntimeException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw new RuntimeException(ex.toString(), ex);
+        }
     }
     /**
      * The currency, not null.
      */
     private final String iCode;
+    /**
+     * The number of decimal places.
+     */
+    private final transient int iNumericCode;
     /**
      * The number of decimal places.
      */
@@ -67,16 +72,20 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * application startup.
      *
      * @param currencyCode  the currency code, not null
+     * @param numericCurrencyCode  the numeric currency code, -1 if none
      * @param decimalPlaces  the number of decimal places that the currency
      *  normally has, from 0 to 3, or -1 for a pseudo-currency
      * @return the new instance, never null
      */
-    public static CurrencyUnit registerCurrency(String currencyCode, int decimalPlaces) {
+    static CurrencyUnit registerCurrency(String currencyCode, int numericCurrencyCode, int decimalPlaces) {
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
+        if (numericCurrencyCode < -1 || numericCurrencyCode > 999) {
+            throw new IllegalArgumentException("Invalid numeric code");
+        }
         if (decimalPlaces < -1 || decimalPlaces > 3) {
             throw new IllegalArgumentException("Invalid number of decimal places");
         }
-        CurrencyUnit currency = new CurrencyUnit(currencyCode, decimalPlaces);
+        CurrencyUnit currency = new CurrencyUnit(currencyCode, numericCurrencyCode, decimalPlaces);
         cCurrencies.putIfAbsent(currencyCode, currency);
         return cCurrencies.get(currencyCode);
     }
@@ -133,10 +142,12 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * Constructor, creating a new monetary instance.
      * 
      * @param code  the currency code, not null
+     * @param numericCurrencyCode  the numeric currency code, -1 if none
      * @param decimalPlaces  the decimal places, not null
      */
-    private CurrencyUnit(String code, int decimalPlaces) {
+    private CurrencyUnit(String code, int numericCurrencyCode, int decimalPlaces) {
         iCode = code;
+        iNumericCode = numericCurrencyCode;
         iDecimalPlaces = decimalPlaces;
     }
 
@@ -151,12 +162,21 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the ISO-4217 currency code.
+     * Gets the three-letter ISO-4217 currency code.
      * 
      * @return the currency code, never null
      */
-    public String getCurrencyCode() {
+    public String getCode() {
         return iCode;
+    }
+
+    /**
+     * Gets the numeric ISO-4217 currency code.
+     * 
+     * @return the numeric currency code
+     */
+    public int getNumericCode() {
+        return iNumericCode;
     }
 
     /**
