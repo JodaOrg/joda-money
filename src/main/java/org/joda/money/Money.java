@@ -57,11 +57,12 @@ public final class Money implements Comparable<Money>, Serializable {
      * Gets an instance of Money in the specified currency.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
+     * No rounding is performed on the amount, so it must be valid.
      *
      * @param currency  the currency, not null
      * @param amount  the amount of money, not null
      * @return the new instance, never null
-     * @throws ArithmeticException if the amount is too large
+     * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
      */
     public static Money of(Currency currency, BigDecimal amount) {
         MoneyUtils.checkNotNull(currency, "Currency must not be null");
@@ -73,16 +74,56 @@ public final class Money implements Comparable<Money>, Serializable {
      * Gets an instance of Money in the specified currency.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
+     * No rounding is performed on the amount, so it must be valid.
      *
      * @param currency  the currency, not null
      * @param amount  the amount of money, not null
      * @return the new instance, never null
      * @throws IllegalArgumentException if the currency is unknown
-     * @throws ArithmeticException if the amount is too large
+     * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
      */
     public static Money of(String currencyCode, BigDecimal amount) {
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
         return of(Currency.getInstance(currencyCode), amount);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets an instance of Money in the specified currency, rounding as necessary.
+     * <p>
+     * This allows you to create an instance with a specific currency and amount.
+     * If the amount has excess fractional digits, they are rounded using the rounding mode.
+     *
+     * @param currency  the currency, not null
+     * @param amount  the amount of money, not null
+     * @param roundingMode  the rounding mode to use, not null
+     * @return the new instance, never null
+     * @throws ArithmeticException if the rounding fails
+     * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
+     */
+    public static Money of(Currency currency, BigDecimal amount, RoundingMode roundingMode) {
+        MoneyUtils.checkNotNull(currency, "Currency must not be null");
+        MoneyUtils.checkNotNull(amount, "Amount must not be null");
+        amount = amount.setScale(currency.getDefaultFractionDigits(), roundingMode);
+        return ofMinor(currency, decimalToMinor(currency, amount));
+    }
+
+    /**
+     * Gets an instance of Money in the specified currency, rounding as necessary.
+     * <p>
+     * This allows you to create an instance with a specific currency and amount.
+     * If the amount has excess fractional digits, they are rounded using the rounding mode.
+     *
+     * @param currency  the currency, not null
+     * @param amount  the amount of money, not null
+     * @param roundingMode  the rounding mode to use, not null
+     * @return the new instance, never null
+     * @throws ArithmeticException if the rounding fails
+     * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
+     */
+    public static Money of(String currencyCode, BigDecimal amount, RoundingMode roundingMode) {
+        MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
+        return of(Currency.getInstance(currencyCode), amount, roundingMode);
     }
 
     //-----------------------------------------------------------------------
@@ -175,8 +216,7 @@ public final class Money implements Comparable<Money>, Serializable {
      * @return the instance representing zero, never null
      */
     public static Money zero(Currency currency) {
-        MoneyUtils.checkNotNull(currency, "Currency must not be null");
-        return new Money(currency, 0);
+        return ofMinor(currency, 0);
     }
 
     /**
@@ -225,6 +265,7 @@ public final class Money implements Comparable<Money>, Serializable {
      * @param currency  the currency, validated not null
      * @param amount  the amount to convert, validated not null
      * @return the converted amount
+     * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
      */
     private static long decimalToMinor(Currency currency, BigDecimal amount) {
         return amount.movePointRight(currency.getDefaultFractionDigits()).longValueExact();
@@ -256,6 +297,20 @@ public final class Money implements Comparable<Money>, Serializable {
         return (dp == 3 ? 1000 : (dp == 2 ? 100 : (dp == 1 ? 10 : 1)));
     }
 
+    /**
+     * Safely converts a <code>long</code> to an <code>int</code>.
+     * 
+     * @param amount  the amount to convert
+     * @return the value as an <code>int</code>
+     * @throws ArithmeticException if the amount is too large
+     */
+    private static int safeToInt(long amount) {
+        if (amount > Integer.MAX_VALUE || amount < Integer.MIN_VALUE) {
+            throw new ArithmeticException("Amount is too large to represent in an int: " + amount);
+        }
+        return (int) amount;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Constructor, creating a new monetary instance.
@@ -279,7 +334,7 @@ public final class Money implements Comparable<Money>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the currency of this instance.
+     * Gets the currency.
      * 
      * @return the currency, never null
      */
@@ -288,16 +343,26 @@ public final class Money implements Comparable<Money>, Serializable {
     }
 
     /**
-     * Gets the amount of this instance.
+     * Gets the number of decimal places used by the currency and this monetary value.
+     * 
+     * @return the number of decimal places in use, typically 2 but could be 0, 1 and 3
+     */
+    public int getDecimalPlaces() {
+        return iCurrency.getDefaultFractionDigits();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the amount.
      * 
      * @return the amount, never null
      */
     public BigDecimal getAmount() {
-        return BigDecimal.valueOf(iAmount, getDecimalPlaces());
+        return BigDecimal.valueOf(iAmount, iCurrency.getDefaultFractionDigits());
     }
 
     /**
-     * Gets the amount of this instance in major units.
+     * Gets the amount in major units.
      * <p>
      * This extracts the whole number part of the monetary amount by dropping
      * any amount beyond the decimal place, effectively rounding down.
@@ -311,7 +376,21 @@ public final class Money implements Comparable<Money>, Serializable {
     }
 
     /**
-     * Gets the amount of this instance in minor units.
+     * Gets the amount in major units as an <code>int</code>.
+     * <p>
+     * This extracts the whole number part of the monetary amount by dropping
+     * any amount beyond the decimal place, effectively rounding down.
+     * For example, 'EUR 2.35' will return 2, and 'BHD -1.345' will return -1.
+     * 
+     * @return the whole number part of the amount
+     * @throws ArithmeticException if the amount is too large
+     */
+    public int getAmountMajorInt() {
+        return safeToInt(getAmountMajor());
+    }
+
+    /**
+     * Gets the amount in minor units.
      * <p>
      * This return the whole of the monetary amount as a long in terms of the minor units.
      * For example, 'EUR 2.35' will return 235, and 'BHD -1.345' will return -1345.
@@ -323,12 +402,29 @@ public final class Money implements Comparable<Money>, Serializable {
     }
 
     /**
-     * Gets the number of decimal places used by the currency and this monetary value.
+     * Gets the amount in minor units as an <code>int</code>.
+     * <p>
+     * This return the whole of the monetary amount as a long in terms of the minor units.
+     * For example, 'EUR 2.35' will return 235, and 'BHD -1.345' will return -1345.
      * 
-     * @return the number of decimal places in use, typically 2 but could be 0, 1 and 3
+     * @return the whole number part of the amount
+     * @throws ArithmeticException if the amount is too large
      */
-    public int getDecimalPlaces() {
-        return iCurrency.getDefaultFractionDigits();
+    public int getAmountMinorInt() {
+        return safeToInt(iAmount);
+    }
+
+    /**
+     * Gets the minor part of the amount.
+     * <p>
+     * This return the whole of the monetary amount as a long in terms of the minor units.
+     * For example, 'EUR 2.35' will return 35, and 'BHD -1.345' will return -345.
+     * 
+     * @return the minor part of the amount, negative if the amount is negative
+     */
+    public int getMinorPart() {
+        long mult = factor(getDecimalPlaces());
+        return (int) (iAmount % mult);
     }
 
     //-----------------------------------------------------------------------
@@ -391,6 +487,63 @@ public final class Money implements Comparable<Money>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a copy of this instance with the specified currency.
+     * <p>
+     * The returned instance will have the specified currency and the amount
+     * from this instance. The amount will be rounded down if necessary.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param currency  the currency to use, not null
+     * @return the new instance with the input currency set, never null
+     */
+    public Money withCurrency(Currency currency) {
+        return withCurrency(currency, RoundingMode.DOWN);
+    }
+
+    /**
+     * Returns a copy of this instance with the specified currency.
+     * <p>
+     * The returned instance will have the specified currency and the amount
+     * from this instance. The amount will be rounded down if necessary.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param currency  the currency to use, not null
+     * @param roundingMode  the rounding mode to use to bring the decimal places back in line, not null
+     * @return the new instance with the input currency set, never null
+     * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
+     */
+    public Money withCurrency(Currency currency, RoundingMode roundingMode) {
+        MoneyUtils.checkNotNull(currency, "Currency must not be null");
+        MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
+        if (iCurrency == currency) {
+            return this;
+        }
+        return Money.of(currency, getAmount(), roundingMode);
+    }
+
+    /**
+     * Returns a copy of this instance with the specified amount.
+     * <p>
+     * The returned instance will have this currency and the new amount.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param amount  the monetary value to use, never null
+     * @return the new instance with the input amount set, never null
+     * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
+     */
+    public Money withAmount(BigDecimal amount) {
+        MoneyUtils.checkNotNull(amount, "Amount must not be null");
+        if (amount.equals(getAmount())) {
+            return this;
+        }
+        return Money.of(iCurrency, amount);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a copy of this monetary value with the amount added.
      * <p>
      * This instance is immutable and unaffected by this method.
@@ -415,7 +568,7 @@ public final class Money implements Comparable<Money>, Serializable {
      * 
      * @param amountToAdd  the monetary value to add, not null
      * @return the new instance with the input amount added, never null
-     * @throws ArithmeticException if the amount is too large
+     * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
      */
     public Money plus(BigDecimal amountToAdd) {
         MoneyUtils.checkNotNull(amountToAdd, "Amount must not be null");
@@ -487,7 +640,7 @@ public final class Money implements Comparable<Money>, Serializable {
      * 
      * @param amountToSubtract  the monetary value to subtract, not null
      * @return the new instance with the input amount subtracted, never null
-     * @throws ArithmeticException if the amount is too large
+     * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
      */
     public Money minus(BigDecimal amountToSubtract) {
         MoneyUtils.checkNotNull(amountToSubtract, "Amount must not be null");
@@ -557,15 +710,14 @@ public final class Money implements Comparable<Money>, Serializable {
      * @param valueToMultiplyBy  the scalar value to multiply by, not null
      * @param roundingMode  the rounding mode to use to bring the decimal places back in line, not null
      * @return the new multiplied instance, never null
+     * @throws ArithmeticException if the rounding fails
      * @throws ArithmeticException if the amount is too large
      */
     public Money multipliedBy(BigDecimal valueToMultiplyBy, RoundingMode roundingMode) {
         MoneyUtils.checkNotNull(valueToMultiplyBy, "Multiplier must not be null");
         MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
-        BigDecimal amount = BigDecimal.valueOf(iAmount, getDecimalPlaces());
-        amount = amount.multiply(valueToMultiplyBy);
-        amount = amount.setScale(getDecimalPlaces(), roundingMode);
-        return Money.of(iCurrency, amount);
+        BigDecimal amount = getAmount().multiply(valueToMultiplyBy);
+        return Money.of(iCurrency, amount, roundingMode);
     }
 
     /**
@@ -618,8 +770,7 @@ public final class Money implements Comparable<Money>, Serializable {
     public Money dividedBy(BigDecimal valueToDivideBy, RoundingMode roundingMode) {
         MoneyUtils.checkNotNull(valueToDivideBy, "Divisor must not be null");
         MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
-        BigDecimal amount = BigDecimal.valueOf(iAmount, getDecimalPlaces());
-        amount = amount.divide(valueToDivideBy, roundingMode);
+        BigDecimal amount = getAmount().divide(valueToDivideBy, roundingMode);
         return Money.of(iCurrency, amount);
     }
 
@@ -671,7 +822,7 @@ public final class Money implements Comparable<Money>, Serializable {
      * <p>
      * Scale is described in {@link BigDecimal} and represents the point below which
      * the monetary value is zero.
-     * Negative rounding modes round increasingly large numbers.
+     * Negative scales round increasingly large numbers.
      * <ul>
      * <li>Rounding EUR 45.23 to a scale of 2 has no effect (it already has that scale).
      * <li>Rounding EUR 45.23 to a scale of 1 returns 45.20 or 45.30 depending on the rounding mode.
@@ -681,6 +832,9 @@ public final class Money implements Comparable<Money>, Serializable {
      * This instance is immutable and unaffected by this method.
      * 
      * @return the new instance with the amount converted to be positive, never null
+     * @throws MoneyException if the scale is invalid
+     * @throws ArithmeticException if the rounding fails
+     * @throws ArithmeticException if the amount is too large
      */
     public Money rounded(int scale, RoundingMode roundingMode) {
         MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
@@ -690,21 +844,23 @@ public final class Money implements Comparable<Money>, Serializable {
         if (scale > getDecimalPlaces()) {
             throw new MoneyException("Scale cannot be less than the number of allowed decimal places");
         }
-        BigDecimal amount = BigDecimal.valueOf(iAmount, getDecimalPlaces());
-        amount = amount.setScale(scale, roundingMode);
-        return Money.of(iCurrency, amount);
+        BigDecimal amount = getAmount().setScale(scale, roundingMode);
+        return Money.of(iCurrency, amount, roundingMode);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Returns a copy of this monetary value converted into another currency
-     * using the specified conversion rate.
+     * using the specified conversion rate, truncating the value if rounding is required.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
      * @param currency  the new currency, not null
      * @param conversionMultipler  the conversion factor between the currencies, not null
      * @return the new multiplied instance, never null
+     * @throws MoneyException if the currency is the same as this currency
+     * @throws MoneyException if the conversion multiplier is negative
+     * @throws ArithmeticException if the rounding fails
      * @throws ArithmeticException if the amount is too large
      */
     public Money convertedTo(Currency currency, BigDecimal conversionMultipler) {
@@ -722,6 +878,9 @@ public final class Money implements Comparable<Money>, Serializable {
      * @param conversionMultipler  the conversion factor between the currencies, not null
      * @param roundingMode  the rounding mode to use to bring the decimal places back in line, not null
      * @return the new multiplied instance, never null
+     * @throws MoneyException if the currency is the same as this currency
+     * @throws MoneyException if the conversion multiplier is negative
+     * @throws ArithmeticException if the rounding fails
      * @throws ArithmeticException if the amount is too large
      */
     public Money convertedTo(Currency currency, BigDecimal conversionMultipler, RoundingMode roundingMode) {
@@ -734,10 +893,8 @@ public final class Money implements Comparable<Money>, Serializable {
         if (conversionMultipler.compareTo(BigDecimal.ZERO) < 0) {
             throw new MoneyException("Cannot convert using a negative conversion multiplier");
         }
-        BigDecimal amount = BigDecimal.valueOf(iAmount, getDecimalPlaces());
-        amount = amount.multiply(conversionMultipler);
-        amount = amount.setScale(currency.getDefaultFractionDigits(), roundingMode);
-        return Money.of(currency, amount);
+        BigDecimal amount = getAmount().multiply(conversionMultipler);
+        return Money.of(currency, amount, roundingMode);
     }
 
     //-----------------------------------------------------------------------
