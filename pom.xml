@@ -158,9 +158,9 @@
   </reporting>
   <distributionManagement>
     <site>
-      <id>default</id>
-      <name>Default Site</name>
-      <url>scp://web.sourceforge.net//home/groups/j/jo/joda-money/htdocs</url>
+      <id>sf-web-joda-money</id>
+      <name>Sourceforge site</name>
+      <url>scp://shell.sourceforge.net/home/groups/j/jo/joda-money/htdocs</url>
     </site>
   </distributionManagement>
 </project>
