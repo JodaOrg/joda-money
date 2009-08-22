@@ -76,7 +76,7 @@ public final class Money implements Comparable<Money>, Serializable {
      * This allows you to create an instance with a specific currency and amount.
      * No rounding is performed on the amount, so it must be valid.
      *
-     * @param currency  the currency, not null
+     * @param currencyCode  the currency code, not null
      * @param amount  the amount of money, not null
      * @return the new instance, never null
      * @throws IllegalArgumentException if the currency is unknown
@@ -114,7 +114,7 @@ public final class Money implements Comparable<Money>, Serializable {
      * This allows you to create an instance with a specific currency and amount.
      * If the amount has excess fractional digits, they are rounded using the rounding mode.
      *
-     * @param currency  the currency, not null
+     * @param currencyCode  the currency code, not null
      * @param amount  the amount of money, not null
      * @param roundingMode  the rounding mode to use, not null
      * @return the new instance, never null
@@ -155,7 +155,7 @@ public final class Money implements Comparable<Money>, Serializable {
      * <p>
      * For example, <code>ofMajor("USD", 25)</code> creates the instance <code>USD 25.00</code>.
      *
-     * @param currency  the currency, not null
+     * @param currencyCode  the currency code, not null
      * @param amountMajor  the amount of money in the major division of the currency
      * @return the new instance, never null
      * @throws IllegalArgumentException if the currency is unknown
@@ -196,7 +196,7 @@ public final class Money implements Comparable<Money>, Serializable {
      * <p>
      * For example, <code>ofMajor("USD", 2595)</code> creates the instance <code>USD 25.95</code>.
      *
-     * @param currency  the currency, not null
+     * @param currencyCode  the currency code, not null
      * @param amountMinor  the amount of money in the minor division of the currency
      * @return the new instance, never null
      * @throws IllegalArgumentException if the currency is unknown

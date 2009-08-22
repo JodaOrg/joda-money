@@ -66,7 +66,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * To achieve this, all currencies have to be registered in advance, at
      * application startup.
      *
-     * @param currency  the currency, not null
+     * @param currencyCode  the currency code, not null
      * @param decimalPlaces  the number of decimal places that the currency
      *  normally has, from 0 to 3, or -1 for a pseudo-currency
      * @return the new instance, never null
@@ -103,7 +103,6 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * This allows you to create an instance with a specific currency and amount.
      *
      * @param currency  the currency, not null
-     * @param amount  the amount of money, not null
      * @return the singleton instance, never null
      */
     public static CurrencyUnit of(Currency currency) {
@@ -116,7 +115,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      *
-     * @param currency  the currency, not null
+     * @param currencyCode  the currency code, not null
      * @return the singleton instance, never null
      * @throws MoneyException if the currency is unknown
      */
@@ -154,7 +153,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     /**
      * Gets the ISO-4217 currency code.
      * 
-     * @return the currency, never null
+     * @return the currency code, never null
      */
     public String getCurrencyCode() {
         return iCode;
