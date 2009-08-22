@@ -43,7 +43,7 @@ public class TestCurrencyUnit {
         List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
         boolean found = false;
         for (CurrencyUnit currencyUnit : curList) {
-            if (currencyUnit.getCode().equals("GBP")) {
+            if (currencyUnit.getCurrencyCode().equals("GBP")) {
                 found = true;
                 break;
             }
@@ -92,7 +92,7 @@ public class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     public void test_factory_of_Currency() {
         CurrencyUnit test = CurrencyUnit.of(JDK_GBP);
-        assertEquals(test.getCode(), "GBP");
+        assertEquals(test.getCurrencyCode(), "GBP");
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -105,7 +105,7 @@ public class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     public void test_factory_of_String() {
         CurrencyUnit test = CurrencyUnit.of("GBP");
-        assertEquals(test.getCode(), "GBP");
+        assertEquals(test.getCurrencyCode(), "GBP");
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -116,6 +116,24 @@ public class TestCurrencyUnit {
     @Test(expectedExceptions = MoneyException.class)
     public void test_factory_of_String_unknownCurrency() {
         CurrencyUnit.of("ABC");
+    }
+
+    //-----------------------------------------------------------------------
+    // getInstance(String)
+    //-----------------------------------------------------------------------
+    public void test_factory_getInstance_String() {
+        CurrencyUnit test = CurrencyUnit.getInstance("GBP");
+        assertEquals(test.getCurrencyCode(), "GBP");
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_getInstance_String_nullString() {
+        CurrencyUnit.getInstance((String) null);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_getInstance_String_unknownCurrency() {
+        CurrencyUnit.getInstance("ABC");
     }
 
     //-----------------------------------------------------------------------
@@ -133,11 +151,11 @@ public class TestCurrencyUnit {
     }
 
     //-----------------------------------------------------------------------
-    // getCode()
+    // getCurrencyCode()
     //-----------------------------------------------------------------------
-    public void test_getCode_GBP() {
+    public void test_getCurrencyCode_GBP() {
         CurrencyUnit test = CurrencyUnit.of("GBP");
-        assertEquals(test.getCode(), "GBP");
+        assertEquals(test.getCurrencyCode(), "GBP");
     }
 
     //-----------------------------------------------------------------------

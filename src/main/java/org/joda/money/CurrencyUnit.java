@@ -137,6 +137,21 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         return currency;
     }
 
+    /**
+     * Gets an instance of Money in the specified currency.
+     * <p>
+     * This allows you to create an instance with a specific currency and amount.
+     * <p>
+     * This method exists to match the API of {@link Currency}.
+     *
+     * @param currencyCode  the currency code, not null
+     * @return the singleton instance, never null
+     * @throws MoneyException if the currency is unknown
+     */
+    public static CurrencyUnit getInstance(String currencyCode) {
+        return of(currencyCode);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Constructor, creating a new monetary instance.
@@ -163,10 +178,12 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     //-----------------------------------------------------------------------
     /**
      * Gets the three-letter ISO-4217 currency code.
+     * <p>
+     * This method matches the API of {@link Currency}.
      * 
      * @return the currency code, never null
      */
-    public String getCode() {
+    public String getCurrencyCode() {
         return iCode;
     }
 
@@ -204,6 +221,8 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * <p>
      * This method matches the return value of the similarly named JDK method
      * where pseudo-currencies return -1.
+     * <p>
+     * This method matches the API of {@link Currency}.
      * 
      * @return the fractional digits, from 0 to 3, or -1 for pseudo-currencies
      */

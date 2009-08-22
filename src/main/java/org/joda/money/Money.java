@@ -279,7 +279,7 @@ public final class Money implements Comparable<Money>, Serializable {
         long mult = factor(currency.getDefaultFractionDigits());
         long result = amountMajor * mult;
         if (result / mult != amountMajor) {
-            throw new ArithmeticException("Monetary value is too large: " + currency.getCode() + " " + amountMajor);
+            throw new ArithmeticException("Monetary value is too large: " + currency.getCurrencyCode() + " " + amountMajor);
         }
         return result;
     }
@@ -979,7 +979,7 @@ public final class Money implements Comparable<Money>, Serializable {
     public String toString() {
         StringBuilder buf = new StringBuilder();
         long factor = factor(getDecimalPlaces());
-        buf.append(iCurrency.getCode()).append(' ');
+        buf.append(iCurrency.getCurrencyCode()).append(' ');
         long amount = iAmount;
         long minor;
         if (amount < 0) {
