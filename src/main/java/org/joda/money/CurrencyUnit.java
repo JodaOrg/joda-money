@@ -216,6 +216,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * Gets the JDK currency instance equivalent to this currency.
      * 
      * @return the JDK currency instance, never null
+     * @throws IllegalArgumentException if no matching currency exists in the JDK
      */
     public Currency toCurrency() {
         return Currency.getInstance(iCode);
