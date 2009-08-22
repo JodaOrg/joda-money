@@ -101,7 +101,7 @@ public final class Money implements Comparable<Money>, Serializable {
     public static Money of(CurrencyUnit currency, BigDecimal amount, RoundingMode roundingMode) {
         MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
         MoneyUtils.checkNotNull(amount, "Amount must not be null");
-        amount = amount.setScale(currency.getDefaultFractionDigits(), roundingMode);
+        amount = amount.setScale(currency.getDecimalPlaces(), roundingMode);
         return ofMinor(currency, decimalToMinor(currency, amount));
     }
 
@@ -265,7 +265,7 @@ public final class Money implements Comparable<Money>, Serializable {
      * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
      */
     private static long decimalToMinor(CurrencyUnit currency, BigDecimal amount) {
-        return amount.movePointRight(currency.getDefaultFractionDigits()).longValueExact();
+        return amount.movePointRight(currency.getDecimalPlaces()).longValueExact();
     }
 
     /**
@@ -276,7 +276,7 @@ public final class Money implements Comparable<Money>, Serializable {
      * @return the converted amount
      */
     private static long majorToMinor(CurrencyUnit currency, long amountMajor) {
-        long mult = factor(currency.getDefaultFractionDigits());
+        long mult = factor(currency.getDecimalPlaces());
         long result = amountMajor * mult;
         if (result / mult != amountMajor) {
             throw new ArithmeticException("Monetary value is too large: " + currency.getCurrencyCode() + " " + amountMajor);
@@ -345,7 +345,7 @@ public final class Money implements Comparable<Money>, Serializable {
      * @return the number of decimal places in use, typically 2 but could be 0, 1 and 3
      */
     public int getDecimalPlaces() {
-        return iCurrency.getDefaultFractionDigits();
+        return iCurrency.getDecimalPlaces();
     }
 
     //-----------------------------------------------------------------------
@@ -355,7 +355,7 @@ public final class Money implements Comparable<Money>, Serializable {
      * @return the amount, never null
      */
     public BigDecimal getAmount() {
-        return BigDecimal.valueOf(iAmount, iCurrency.getDefaultFractionDigits());
+        return BigDecimal.valueOf(iAmount, iCurrency.getDecimalPlaces());
     }
 
     /**

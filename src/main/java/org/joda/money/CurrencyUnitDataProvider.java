@@ -19,6 +19,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,10 +48,11 @@ public abstract class CurrencyUnitDataProvider {
      * @param numericCurrencyCode  the numeric currency code, -1 if none
      * @param decimalPlaces  the number of decimal places that the currency
      *  normally has, from 0 to 3, or -1 for a pseudo-currency
+     * @param countryCodes  the country codes to register the currency under, not null
      * @return the new instance, never null
      */
-    protected final void registerCurrency(String currencyCode, int numericCurrencyCode, int decimalPlaces) {
-        CurrencyUnit.registerCurrency(currencyCode, numericCurrencyCode, decimalPlaces);
+    protected final void registerCurrency(String currencyCode, int numericCurrencyCode, int decimalPlaces, List<String> countryCodes) {
+        CurrencyUnit.registerCurrency(currencyCode, numericCurrencyCode, decimalPlaces, countryCodes);
     }
 
     //-----------------------------------------------------------------------
@@ -58,7 +61,7 @@ public abstract class CurrencyUnitDataProvider {
      * <p>
      * This reads the first resource named '/org/joda/money/MoneyData.csv' on the classpath.
      */
-    static class ResourceDataProvider extends CurrencyUnitDataProvider {
+    static class DefaultProvider extends CurrencyUnitDataProvider {
         /** Regex format for the csv line. */
         private static final Pattern REGEX_LINE = Pattern.compile("([A-Z]{3}),(-1|[0-9]{1,3}),(-1|0|1|2|3),([A-Z]*)#?.*");
 
@@ -79,7 +82,22 @@ public abstract class CurrencyUnitDataProvider {
             while ((line = reader.readLine()) != null) {
                 Matcher matcher = REGEX_LINE.matcher(line);
                 if (matcher.matches()) {
-                    registerCurrency(matcher.group(1), Integer.parseInt(matcher.group(2)), Integer.parseInt(matcher.group(3)));
+                    List<String> countryCodes = new ArrayList<String>();
+                    String codeStr = matcher.group(4);
+                    String currencyCode = matcher.group(1);
+                    if (codeStr.length() == 0) {
+                        countryCodes.add(currencyCode.substring(0, 2));
+                    } else if (codeStr.equals("XX") == false) {
+                        if (codeStr.length() % 2 == 1) {
+                            continue;  // invalid line
+                        }
+                        for (int i = 0; i < codeStr.length(); i += 2) {
+                            countryCodes.add(codeStr.substring(i, i + 2));
+                        }
+                    }
+                    int numericCode = Integer.parseInt(matcher.group(2));
+                    int digits = Integer.parseInt(matcher.group(3));
+                    registerCurrency(currencyCode, numericCode, digits, countryCodes);
                 }
             }
         }

@@ -25,6 +25,7 @@ import java.io.ObjectOutputStream;
 import java.util.Collections;
 import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 
 import org.testng.annotations.Test;
 
@@ -137,6 +138,42 @@ public class TestCurrencyUnit {
     }
 
     //-----------------------------------------------------------------------
+    // of(Locale)
+    //-----------------------------------------------------------------------
+    public void test_factory_of_Locale() {
+        CurrencyUnit test = CurrencyUnit.of(Locale.UK);
+        assertEquals(test.getCurrencyCode(), "GBP");
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_of_Locale_nullString() {
+        CurrencyUnit.of((Locale) null);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_of_Locale_unknownCurrency() {
+        CurrencyUnit.of(new Locale("en", "XY"));
+    }
+
+    //-----------------------------------------------------------------------
+    // getInstance(Locale)
+    //-----------------------------------------------------------------------
+    public void test_factory_getInstance_Locale() {
+        CurrencyUnit test = CurrencyUnit.getInstance(Locale.UK);
+        assertEquals(test.getCurrencyCode(), "GBP");
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_getInstance_Locale_nullString() {
+        CurrencyUnit.getInstance((Locale) null);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_getInstance_Locale_unknownCurrency() {
+        CurrencyUnit.getInstance(new Locale("en", "XY"));
+    }
+
+    //-----------------------------------------------------------------------
     // Serialisation
     //-----------------------------------------------------------------------
     public void test_serialization() throws Exception {
@@ -218,6 +255,133 @@ public class TestCurrencyUnit {
     public void test_getDefaultFractionDigits_XXX() {
         CurrencyUnit test = CurrencyUnit.of("XXX");
         assertEquals(test.getDefaultFractionDigits(), -1);
+    }
+
+    //-----------------------------------------------------------------------
+    // getSymbol()
+    //-----------------------------------------------------------------------
+    public void test_getSymbol_GBP() {
+        Locale loc = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.UK);
+            CurrencyUnit test = CurrencyUnit.of("GBP");
+            assertEquals(test.getSymbol(), "\u00A3");
+        } finally {
+            Locale.setDefault(loc);
+        }
+    }
+
+    public void test_getSymbol_JPY() {
+        Locale loc = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.UK);
+            CurrencyUnit test = CurrencyUnit.of("JPY");
+            assertEquals(test.getSymbol(), "JPY");
+        } finally {
+            Locale.setDefault(loc);
+        }
+    }
+
+    public void test_getSymbol_TMT() {
+        Locale loc = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.UK);
+            CurrencyUnit test = CurrencyUnit.of("TMT");
+            assertEquals(test.getSymbol(), "TMT");
+        } finally {
+            Locale.setDefault(loc);
+        }
+    }
+
+    public void test_getSymbol_XXX() {
+        Locale loc = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.UK);
+            CurrencyUnit test = CurrencyUnit.of("XXX");
+            assertEquals(test.getSymbol(), "XXX");
+        } finally {
+            Locale.setDefault(loc);
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    // getSymbol()
+    //-----------------------------------------------------------------------
+    public void test_getSymbol_Locale_GBP_UK() {
+        Locale loc = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.UK);
+            CurrencyUnit test = CurrencyUnit.of("GBP");
+            assertEquals(test.getSymbol(Locale.UK), "\u00A3");
+        } finally {
+            Locale.setDefault(loc);
+        }
+    }
+
+    public void test_getSymbol_Locale_GBP_France() {
+        Locale loc = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.UK);
+            CurrencyUnit test = CurrencyUnit.of("GBP");
+            assertEquals(test.getSymbol(Locale.FRANCE), "GBP");
+        } finally {
+            Locale.setDefault(loc);
+        }
+    }
+
+    public void test_getSymbol_Locale_USD_UK() {
+        Locale loc = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.UK);
+            CurrencyUnit test = CurrencyUnit.of("USD");
+            assertEquals(test.getSymbol(Locale.US), "$");
+        } finally {
+            Locale.setDefault(loc);
+        }
+    }
+
+    public void test_getSymbol_Locale_USD_France() {
+        Locale loc = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.UK);
+            CurrencyUnit test = CurrencyUnit.of("USD");
+            assertEquals(test.getSymbol(Locale.FRANCE), "USD");
+        } finally {
+            Locale.setDefault(loc);
+        }
+    }
+
+    public void test_getSymbol_Locale_JPY_Japan() {
+        Locale loc = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.UK);
+            CurrencyUnit test = CurrencyUnit.of("JPY");
+            assertEquals(test.getSymbol(Locale.JAPAN), "\uFFE5");
+        } finally {
+            Locale.setDefault(loc);
+        }
+    }
+
+    public void test_getSymbol_TMT_UK() {
+        Locale loc = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.UK);
+            CurrencyUnit test = CurrencyUnit.of("TMT");
+            assertEquals(test.getSymbol(Locale.UK), "TMT");
+        } finally {
+            Locale.setDefault(loc);
+        }
+    }
+
+    public void test_getSymbol_Locale_XXX() {
+        Locale loc = Locale.getDefault();
+        try {
+            Locale.setDefault(Locale.UK);
+            CurrencyUnit test = CurrencyUnit.of("XXX");
+            assertEquals(test.getSymbol(Locale.FRANCE), "XXX");
+        } finally {
+            Locale.setDefault(loc);
+        }
     }
 
     //-----------------------------------------------------------------------

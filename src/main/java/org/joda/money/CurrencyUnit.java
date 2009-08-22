@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Currency;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -38,12 +39,20 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      */
     private static final long serialVersionUID = 327835287287L;
     /**
-     * Map of registered currencies.
+     * Map of registered currencies by code.
      */
-    private static final ConcurrentMap<String, CurrencyUnit> cCurrencies = new ConcurrentHashMap<String, CurrencyUnit>();
+    private static final ConcurrentMap<String, CurrencyUnit> cCurrenciesByCode = new ConcurrentHashMap<String, CurrencyUnit>();
+    /**
+     * Map of registered currencies by country.
+     */
+    private static final ConcurrentMap<String, CurrencyUnit> cCurrenciesByCountry = new ConcurrentHashMap<String, CurrencyUnit>();
     static {
         try {
-            new CurrencyUnitDataProvider.ResourceDataProvider().registerCurrencies();
+            String clsName = System.getProperty(
+                    "org.joda.money.CurrencyUnitDataProvider", "org.joda.money.CurrencyUnitDataProvider$DefaultProvider");
+            Class<? extends CurrencyUnitDataProvider> cls =
+                    CurrencyUnit.class.getClassLoader().loadClass(clsName).asSubclass(CurrencyUnitDataProvider.class);
+            cls.newInstance().registerCurrencies();
         } catch (RuntimeException ex) {
             throw ex;
         } catch (Exception ex) {
@@ -75,9 +84,10 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @param numericCurrencyCode  the numeric currency code, -1 if none
      * @param decimalPlaces  the number of decimal places that the currency
      *  normally has, from 0 to 3, or -1 for a pseudo-currency
+     * @param countryCodes  the country codes to register the currency under, not null
      * @return the new instance, never null
      */
-    static CurrencyUnit registerCurrency(String currencyCode, int numericCurrencyCode, int decimalPlaces) {
+    static CurrencyUnit registerCurrency(String currencyCode, int numericCurrencyCode, int decimalPlaces, List<String> countryCodes) {
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
         if (numericCurrencyCode < -1 || numericCurrencyCode > 999) {
             throw new IllegalArgumentException("Invalid numeric code");
@@ -85,9 +95,18 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         if (decimalPlaces < -1 || decimalPlaces > 3) {
             throw new IllegalArgumentException("Invalid number of decimal places");
         }
+        MoneyUtils.checkNotNull(countryCodes, "Country codes must not be null");
+        
         CurrencyUnit currency = new CurrencyUnit(currencyCode, numericCurrencyCode, decimalPlaces);
-        cCurrencies.putIfAbsent(currencyCode, currency);
-        return cCurrencies.get(currencyCode);
+        if (cCurrenciesByCode.putIfAbsent(currencyCode, currency) != null) {
+            throw new IllegalArgumentException("Currency already registered: " + currencyCode);
+        }
+        for (String countryCode : countryCodes) {
+            if (cCurrenciesByCountry.putIfAbsent(countryCode, currency) != null) {
+                throw new IllegalArgumentException("Currency already registered for country: " + countryCode);
+            }
+        }
+        return cCurrenciesByCode.get(currencyCode);
     }
 
     /**
@@ -100,16 +119,14 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @return the sorted, independent, list of all registered currencies, never null
      */
     public static List<CurrencyUnit> registeredCurrencies() {
-        ArrayList<CurrencyUnit> list = new ArrayList<CurrencyUnit>(cCurrencies.values());
+        ArrayList<CurrencyUnit> list = new ArrayList<CurrencyUnit>(cCurrenciesByCode.values());
         Collections.sort(list);
         return list;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of Money in the specified currency.
-     * <p>
-     * This allows you to create an instance with a specific currency and amount.
+     * Gets the Currency instance matching the specified currency.
      *
      * @param currency  the currency, not null
      * @return the singleton instance, never null
@@ -120,9 +137,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Gets an instance of Money in the specified currency.
-     * <p>
-     * This allows you to create an instance with a specific currency and amount.
+     * Gets the Currency instance for the specified currency code.
      *
      * @param currencyCode  the currency code, not null
      * @return the singleton instance, never null
@@ -130,7 +145,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      */
     public static CurrencyUnit of(String currencyCode) {
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        CurrencyUnit currency = cCurrencies.get(currencyCode);
+        CurrencyUnit currency = cCurrenciesByCode.get(currencyCode);
         if (currency == null) {
             throw new MoneyException("Unknown currency: " + currencyCode);
         }
@@ -138,9 +153,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Gets an instance of Money in the specified currency.
-     * <p>
-     * This allows you to create an instance with a specific currency and amount.
+     * Gets the Currency instance for the specified currency code.
      * <p>
      * This method exists to match the API of {@link Currency}.
      *
@@ -150,6 +163,35 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      */
     public static CurrencyUnit getInstance(String currencyCode) {
         return of(currencyCode);
+    }
+
+    /**
+     * Gets the Currency instance for the specified currency code.
+     *
+     * @param currencyCode  the currency code, not null
+     * @return the singleton instance, never null
+     * @throws MoneyException if the currency is unknown
+     */
+    public static CurrencyUnit of(Locale locale) {
+        MoneyUtils.checkNotNull(locale, "Locale must not be null");
+        CurrencyUnit currency = cCurrenciesByCountry.get(locale.getCountry());
+        if (currency == null) {
+            throw new MoneyException("Unknown currency for locale: " + locale);
+        }
+        return currency;
+    }
+
+    /**
+     * Gets the Currency instance for the specified currency code.
+     * <p>
+     * This method exists to match the API of {@link Currency}.
+     *
+     * @param currencyCode  the currency code, not null
+     * @return the singleton instance, never null
+     * @throws MoneyException if the currency is unknown
+     */
+    public static CurrencyUnit getInstance(Locale locale) {
+        return of(locale);
     }
 
     //-----------------------------------------------------------------------
@@ -228,6 +270,42 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      */
     public int getDefaultFractionDigits() {
         return iDecimalPlaces;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the symbol for this locale from the JDK.
+     * <p>
+     * If this currency doesn't have a JDK equivalent, then the currency code
+     * is returned.
+     * 
+     * @return the JDK currency instance, never null
+     * @throws IllegalArgumentException if no matching currency exists in the JDK
+     */
+    public String getSymbol() {
+        try {
+            return Currency.getInstance(iCode).getSymbol();
+        } catch (IllegalArgumentException ex) {
+            return iCode;
+        }
+    }
+
+    /**
+     * Gets the symbol for this locale from the JDK.
+     * <p>
+     * If this currency doesn't have a JDK equivalent, then the currency code
+     * is returned.
+     * 
+     * @return the JDK currency instance, never null
+     * @throws IllegalArgumentException if no matching currency exists in the JDK
+     */
+    public String getSymbol(Locale locale) {
+        MoneyUtils.checkNotNull(locale, "Locale must not be null");
+        try {
+            return Currency.getInstance(iCode).getSymbol(locale);
+        } catch (IllegalArgumentException ex) {
+            return iCode;
+        }
     }
 
     //-----------------------------------------------------------------------
