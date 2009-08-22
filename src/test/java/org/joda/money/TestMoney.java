@@ -24,7 +24,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Currency;
 
 import org.testng.annotations.Test;
 
@@ -34,11 +33,10 @@ import org.testng.annotations.Test;
 @Test
 public class TestMoney {
 
-    private static final Currency GBP = Currency.getInstance("GBP");
-    private static final Currency EUR = Currency.getInstance("EUR");
-    private static final Currency USD = Currency.getInstance("USD");
-    private static final Currency JPY = Currency.getInstance("JPY");
-//    private static final Currency XXX = Currency.getInstance("XXX");
+    private static final CurrencyUnit GBP = CurrencyUnit.of("GBP");
+    private static final CurrencyUnit EUR = CurrencyUnit.of("EUR");
+    private static final CurrencyUnit USD = CurrencyUnit.of("USD");
+    private static final CurrencyUnit JPY = CurrencyUnit.of("JPY");
     private static final BigDecimal BIGDEC_2_34 = new BigDecimal("2.34");
     private static final BigDecimal BIGDEC_M5_78 = new BigDecimal("-5.78");
 
@@ -65,13 +63,13 @@ public class TestMoney {
     //-----------------------------------------------------------------------
     public void test_factory_of_Currency_BigDecimal() {
         Money test = Money.of(GBP, BIGDEC_2_34);
-        assertEquals(test.getCurrency(), GBP);
+        assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmountMinor(), 234);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_factory_of_Currency_BigDecimal_nullCurrency() {
-        Money.of((Currency) null, BIGDEC_2_34);
+        Money.of((CurrencyUnit) null, BIGDEC_2_34);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -84,7 +82,7 @@ public class TestMoney {
     //-----------------------------------------------------------------------
     public void test_factory_of_String_BigDecimal() {
         Money test = Money.of("GBP", BIGDEC_2_34);
-        assertEquals(test.getCurrency(), GBP);
+        assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmountMinor(), 234);
     }
 
@@ -108,13 +106,13 @@ public class TestMoney {
     //-----------------------------------------------------------------------
     public void test_factory_of_Currency_BigDecimal_RoundingMode_DOWN() {
         Money test = Money.of(JPY, BIGDEC_2_34, RoundingMode.DOWN);
-        assertEquals(test.getCurrency(), JPY);
+        assertEquals(test.getCurrencyUnit(), JPY);
         assertEquals(test.getAmountMinor(), 2);
     }
 
     public void test_factory_of_Currency_BigDecimal_RoundingMode_UP() {
         Money test = Money.of(JPY, BIGDEC_2_34, RoundingMode.UP);
-        assertEquals(test.getCurrency(), JPY);
+        assertEquals(test.getCurrencyUnit(), JPY);
         assertEquals(test.getAmountMinor(), 3);
     }
 
@@ -125,7 +123,7 @@ public class TestMoney {
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_factory_of_Currency_BigDecimal_RoundingMode_nullCurrency() {
-        Money.of((Currency) null, BIGDEC_2_34, RoundingMode.DOWN);
+        Money.of((CurrencyUnit) null, BIGDEC_2_34, RoundingMode.DOWN);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -143,13 +141,13 @@ public class TestMoney {
     //-----------------------------------------------------------------------
     public void test_factory_of_String_BigDecimal_RoundingMode_DOWN() {
         Money test = Money.of("JPY", BIGDEC_2_34, RoundingMode.DOWN);
-        assertEquals(test.getCurrency(), JPY);
+        assertEquals(test.getCurrencyUnit(), JPY);
         assertEquals(test.getAmountMinor(), 2);
     }
 
     public void test_factory_of_String_BigDecimal_RoundingMode_UP() {
         Money test = Money.of("JPY", BIGDEC_2_34, RoundingMode.UP);
-        assertEquals(test.getCurrency(), JPY);
+        assertEquals(test.getCurrencyUnit(), JPY);
         assertEquals(test.getAmountMinor(), 3);
     }
 
@@ -183,13 +181,13 @@ public class TestMoney {
     //-----------------------------------------------------------------------
     public void test_factory_ofMajor_Currency_long() {
         Money test = Money.ofMajor(GBP, 234);
-        assertEquals(test.getCurrency(), GBP);
+        assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmountMinor(), 23400);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_factory_ofMajor_Currency_long_nullCurrency() {
-        Money.ofMajor((Currency) null, 234);
+        Money.ofMajor((CurrencyUnit) null, 234);
     }
 
     //-----------------------------------------------------------------------
@@ -197,7 +195,7 @@ public class TestMoney {
     //-----------------------------------------------------------------------
     public void test_factory_ofMajor_String_long() {
         Money test = Money.ofMajor("GBP", 234);
-        assertEquals(test.getCurrency(), GBP);
+        assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmountMinor(), 23400);
     }
 
@@ -221,13 +219,13 @@ public class TestMoney {
     //-----------------------------------------------------------------------
     public void test_factory_zero_Currency() {
         Money test = Money.zero(GBP);
-        assertEquals(test.getCurrency(), GBP);
+        assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmountMinor(), 0);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_factory_zero_Currency_nullCurrency() {
-        Money.zero((Currency) null);
+        Money.zero((CurrencyUnit) null);
     }
 
     //-----------------------------------------------------------------------
@@ -235,7 +233,7 @@ public class TestMoney {
     //-----------------------------------------------------------------------
     public void test_factory_zero_String() {
         Money test = Money.zero("GBP");
-        assertEquals(test.getCurrency(), GBP);
+        assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmountMinor(), 0);
     }
 
@@ -254,13 +252,13 @@ public class TestMoney {
     //-----------------------------------------------------------------------
     public void test_factory_parse_String_positive() {
         Money test = Money.parse("GBP 2.43");
-        assertEquals(test.getCurrency(), GBP);
+        assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmountMinor(), 243);
     }
 
     public void test_factory_parse_String_negative() {
         Money test = Money.parse("GBP -5.87");
-        assertEquals(test.getCurrency(), GBP);
+        assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmountMinor(), -587);
     }
 
@@ -299,14 +297,14 @@ public class TestMoney {
     }
 
     //-----------------------------------------------------------------------
-    // getCurrency()
+    // getCurrencyUnit()
     //-----------------------------------------------------------------------
-    public void test_getAmount_GBP() {
-        assertEquals(GBP_2_34.getCurrency(), GBP);
+    public void test_getCurrencyUnit_GBP() {
+        assertEquals(GBP_2_34.getCurrencyUnit(), GBP);
     }
 
-    public void test_getAmount_EUR() {
-        assertEquals(Money.parse("EUR -5.78").getCurrency(), EUR);
+    public void test_getCurrencyUnit_EUR() {
+        assertEquals(Money.parse("EUR -5.78").getCurrencyUnit(), EUR);
     }
 
     //-----------------------------------------------------------------------
@@ -488,7 +486,7 @@ public class TestMoney {
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_withCurrency_Currency_nullCurrency() {
-        GBP_2_34.withCurrency((Currency) null);
+        GBP_2_34.withCurrency((CurrencyUnit) null);
     }
 
     //-----------------------------------------------------------------------
@@ -516,7 +514,7 @@ public class TestMoney {
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_withCurrency_CurrencyRoundingMode_nullCurrency() {
-        GBP_2_34.withCurrency((Currency) null);
+        GBP_2_34.withCurrency((CurrencyUnit) null);
     }
 
     //-----------------------------------------------------------------------
@@ -1028,7 +1026,7 @@ public class TestMoney {
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_convertedTo_BigDecimal_nullCurrency() {
-        GBP_5_78.convertedTo((Currency) null, new BigDecimal("2"));
+        GBP_5_78.convertedTo((CurrencyUnit) null, new BigDecimal("2"));
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -1071,7 +1069,7 @@ public class TestMoney {
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_convertedTo_BigDecimalRoundingMode_nullCurrency() {
-        GBP_5_78.convertedTo((Currency) null, new BigDecimal("2"), RoundingMode.DOWN);
+        GBP_5_78.convertedTo((CurrencyUnit) null, new BigDecimal("2"), RoundingMode.DOWN);
     }
 
     @Test(expectedExceptions = NullPointerException.class)

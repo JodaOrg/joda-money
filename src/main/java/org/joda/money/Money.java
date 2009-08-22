@@ -18,14 +18,11 @@ package org.joda.money;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Currency;
 
 /**
  * An amount of money in a specific currency.
  * <p>
  * An instance of money holds an amount in a currency.
- * This is a relatively simple API, designed to build upon the JDK
- * {@link Currency} class.
  * <p>
  * Every currency has a certain number of decimal places.
  * This is typically 2 (Euro, British Pound, US Dollar) but might be
@@ -46,7 +43,7 @@ public final class Money implements Comparable<Money>, Serializable {
     /**
      * The currency, not null.
      */
-    private final Currency iCurrency;
+    private final CurrencyUnit iCurrency;
     /**
      * The amount in minor units, not null.
      */
@@ -64,8 +61,8 @@ public final class Money implements Comparable<Money>, Serializable {
      * @return the new instance, never null
      * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
      */
-    public static Money of(Currency currency, BigDecimal amount) {
-        MoneyUtils.checkNotNull(currency, "Currency must not be null");
+    public static Money of(CurrencyUnit currency, BigDecimal amount) {
+        MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
         MoneyUtils.checkNotNull(amount, "Amount must not be null");
         return ofMinor(currency, decimalToMinor(currency, amount));
     }
@@ -84,7 +81,7 @@ public final class Money implements Comparable<Money>, Serializable {
      */
     public static Money of(String currencyCode, BigDecimal amount) {
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        return of(Currency.getInstance(currencyCode), amount);
+        return of(CurrencyUnit.of(currencyCode), amount);
     }
 
     //-----------------------------------------------------------------------
@@ -101,8 +98,8 @@ public final class Money implements Comparable<Money>, Serializable {
      * @throws ArithmeticException if the rounding fails
      * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
      */
-    public static Money of(Currency currency, BigDecimal amount, RoundingMode roundingMode) {
-        MoneyUtils.checkNotNull(currency, "Currency must not be null");
+    public static Money of(CurrencyUnit currency, BigDecimal amount, RoundingMode roundingMode) {
+        MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
         MoneyUtils.checkNotNull(amount, "Amount must not be null");
         amount = amount.setScale(currency.getDefaultFractionDigits(), roundingMode);
         return ofMinor(currency, decimalToMinor(currency, amount));
@@ -123,7 +120,7 @@ public final class Money implements Comparable<Money>, Serializable {
      */
     public static Money of(String currencyCode, BigDecimal amount, RoundingMode roundingMode) {
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        return of(Currency.getInstance(currencyCode), amount, roundingMode);
+        return of(CurrencyUnit.of(currencyCode), amount, roundingMode);
     }
 
     //-----------------------------------------------------------------------
@@ -141,8 +138,8 @@ public final class Money implements Comparable<Money>, Serializable {
      * @return the new instance, never null
      * @throws ArithmeticException if the amount is too large
      */
-    public static Money ofMajor(Currency currency, long amountMajor) {
-        MoneyUtils.checkNotNull(currency, "Currency must not be null");
+    public static Money ofMajor(CurrencyUnit currency, long amountMajor) {
+        MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
         return ofMinor(currency, majorToMinor(currency, amountMajor));
     }
 
@@ -163,7 +160,7 @@ public final class Money implements Comparable<Money>, Serializable {
      */
     public static Money ofMajor(String currencyCode, long amountMajor) {
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        return ofMajor(Currency.getInstance(currencyCode), amountMajor);
+        return ofMajor(CurrencyUnit.of(currencyCode), amountMajor);
     }
 
     //-----------------------------------------------------------------------
@@ -181,8 +178,8 @@ public final class Money implements Comparable<Money>, Serializable {
      * @param amountMinor  the amount of money in the minor division of the currency
      * @return the new instance, never null
      */
-    public static Money ofMinor(Currency currency, long amountMinor) {
-        MoneyUtils.checkNotNull(currency, "Currency must not be null");
+    public static Money ofMinor(CurrencyUnit currency, long amountMinor) {
+        MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
         return new Money(currency, amountMinor);
     }
 
@@ -203,7 +200,7 @@ public final class Money implements Comparable<Money>, Serializable {
      */
     public static Money ofMinor(String currencyCode, long amountMinor) {
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        return ofMinor(Currency.getInstance(currencyCode), amountMinor);
+        return ofMinor(CurrencyUnit.of(currencyCode), amountMinor);
     }
 
     //-----------------------------------------------------------------------
@@ -215,7 +212,7 @@ public final class Money implements Comparable<Money>, Serializable {
      * @param currency  the currency, not null
      * @return the instance representing zero, never null
      */
-    public static Money zero(Currency currency) {
+    public static Money zero(CurrencyUnit currency) {
         return ofMinor(currency, 0);
     }
 
@@ -230,7 +227,7 @@ public final class Money implements Comparable<Money>, Serializable {
      */
     public static Money zero(String currencyCode) {
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        return zero(Currency.getInstance(currencyCode));
+        return zero(CurrencyUnit.of(currencyCode));
     }
 
     //-----------------------------------------------------------------------
@@ -256,7 +253,7 @@ public final class Money implements Comparable<Money>, Serializable {
         }
         String currStr = moneyStr.substring(0, 3);
         String amountStr = moneyStr.substring(4);
-        return of(Currency.getInstance(currStr), new BigDecimal(amountStr));
+        return of(CurrencyUnit.of(currStr), new BigDecimal(amountStr));
     }
 
     /**
@@ -267,7 +264,7 @@ public final class Money implements Comparable<Money>, Serializable {
      * @return the converted amount
      * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
      */
-    private static long decimalToMinor(Currency currency, BigDecimal amount) {
+    private static long decimalToMinor(CurrencyUnit currency, BigDecimal amount) {
         return amount.movePointRight(currency.getDefaultFractionDigits()).longValueExact();
     }
 
@@ -278,11 +275,11 @@ public final class Money implements Comparable<Money>, Serializable {
      * @param amountMajor  the amount to convert
      * @return the converted amount
      */
-    private static long majorToMinor(Currency currency, long amountMajor) {
+    private static long majorToMinor(CurrencyUnit currency, long amountMajor) {
         long mult = factor(currency.getDefaultFractionDigits());
         long result = amountMajor * mult;
         if (result / mult != amountMajor) {
-            throw new ArithmeticException("Monetary value is too large: " + currency.getCurrencyCode() + " " + amountMajor);
+            throw new ArithmeticException("Monetary value is too large: " + currency.getCode() + " " + amountMajor);
         }
         return result;
     }
@@ -318,7 +315,7 @@ public final class Money implements Comparable<Money>, Serializable {
      * @param currency  the currency to use, not null
      * @param amount  the amount of money, not null
      */
-    private Money(Currency currency, long amount) {
+    private Money(CurrencyUnit currency, long amount) {
         iCurrency = currency;
         iAmount = amount;
     }
@@ -338,7 +335,7 @@ public final class Money implements Comparable<Money>, Serializable {
      * 
      * @return the currency, never null
      */
-    public Currency getCurrency() {
+    public CurrencyUnit getCurrencyUnit() {
         return iCurrency;
     }
 
@@ -482,7 +479,7 @@ public final class Money implements Comparable<Money>, Serializable {
      */
     public boolean isSameCurrency(Money money) {
         MoneyUtils.checkNotNull(money, "Money must not be null");
-        return (iCurrency.equals(money.getCurrency()));
+        return (iCurrency.equals(money.getCurrencyUnit()));
     }
 
     //-----------------------------------------------------------------------
@@ -497,7 +494,7 @@ public final class Money implements Comparable<Money>, Serializable {
      * @param currency  the currency to use, not null
      * @return the new instance with the input currency set, never null
      */
-    public Money withCurrency(Currency currency) {
+    public Money withCurrency(CurrencyUnit currency) {
         return withCurrency(currency, RoundingMode.DOWN);
     }
 
@@ -514,8 +511,8 @@ public final class Money implements Comparable<Money>, Serializable {
      * @return the new instance with the input currency set, never null
      * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
      */
-    public Money withCurrency(Currency currency, RoundingMode roundingMode) {
-        MoneyUtils.checkNotNull(currency, "Currency must not be null");
+    public Money withCurrency(CurrencyUnit currency, RoundingMode roundingMode) {
+        MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
         MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
         if (iCurrency == currency) {
             return this;
@@ -863,7 +860,7 @@ public final class Money implements Comparable<Money>, Serializable {
      * @throws ArithmeticException if the rounding fails
      * @throws ArithmeticException if the amount is too large
      */
-    public Money convertedTo(Currency currency, BigDecimal conversionMultipler) {
+    public Money convertedTo(CurrencyUnit currency, BigDecimal conversionMultipler) {
         return convertedTo(currency, conversionMultipler, RoundingMode.DOWN);
     }
 
@@ -883,8 +880,8 @@ public final class Money implements Comparable<Money>, Serializable {
      * @throws ArithmeticException if the rounding fails
      * @throws ArithmeticException if the amount is too large
      */
-    public Money convertedTo(Currency currency, BigDecimal conversionMultipler, RoundingMode roundingMode) {
-        MoneyUtils.checkNotNull(currency, "Currency must not be null");
+    public Money convertedTo(CurrencyUnit currency, BigDecimal conversionMultipler, RoundingMode roundingMode) {
+        MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
         MoneyUtils.checkNotNull(conversionMultipler, "Multiplier must not be null");
         MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
         if (currency == iCurrency) {
@@ -956,7 +953,7 @@ public final class Money implements Comparable<Money>, Serializable {
         }
         if (other instanceof Money) {
             Money otherMoney = (Money) other;
-            return iCurrency.equals(otherMoney.getCurrency()) &&
+            return iCurrency.equals(otherMoney.getCurrencyUnit()) &&
                     iAmount == otherMoney.getAmountMinor();
         }
         return false;
@@ -982,7 +979,7 @@ public final class Money implements Comparable<Money>, Serializable {
     public String toString() {
         StringBuilder buf = new StringBuilder();
         long factor = factor(getDecimalPlaces());
-        buf.append(iCurrency.getCurrencyCode()).append(' ');
+        buf.append(iCurrency.getCode()).append(' ');
         long amount = iAmount;
         long minor;
         if (amount < 0) {
