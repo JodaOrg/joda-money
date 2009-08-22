@@ -16,6 +16,9 @@ This library is intended to act as the base layer, providing classes that should
 Classes to handle the intricacies of financial transactions are not included.
 </p>
 <p>
+Joda Money is licensed under the business-friendly <a href="license.html">Apache 2.0 licence</a>.
+</p>
+<p>
 Version 0.1 was released on 2008-08-19 -
 <a href="https://sourceforge.net/projects/joda-money/files/">Download now</a>
 </p>
