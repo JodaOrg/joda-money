@@ -18,10 +18,10 @@ Classes to handle the intricacies of financial transactions are not included.
 <p>
 Joda Money is licensed under the business-friendly <a href="license.html">Apache 2.0 licence</a>.
 </p>
-<p>
+<!--p>
 Version 0.1 was released on 2008-08-22 -
 <a href="https://sourceforge.net/projects/joda-money/files/">Download now</a>
-</p>
+</p-->
 </section>
 
 
@@ -40,8 +40,9 @@ Various documentation is available:
 
 <section name="Releases">
 <p>
-<a href="https://sourceforge.net/projects/joda-money/files/">Release 0.1</a>
-is the current latest release.
+There are no releases yet!
+<!--a href="https://sourceforge.net/projects/joda-money/files/">Release 0.1</a>
+is the current latest release.-->
 </p>
 <p>
 There are no dependencies beyond JDK 1.5.
