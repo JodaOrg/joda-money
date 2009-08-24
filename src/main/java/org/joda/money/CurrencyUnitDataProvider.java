@@ -85,15 +85,11 @@ public abstract class CurrencyUnitDataProvider {
                     List<String> countryCodes = new ArrayList<String>();
                     String codeStr = matcher.group(4);
                     String currencyCode = matcher.group(1);
-                    if (codeStr.length() == 0) {
-                        countryCodes.add(currencyCode.substring(0, 2));
-                    } else if (codeStr.equals("XX") == false) {
-                        if (codeStr.length() % 2 == 1) {
-                            continue;  // invalid line
-                        }
-                        for (int i = 0; i < codeStr.length(); i += 2) {
-                            countryCodes.add(codeStr.substring(i, i + 2));
-                        }
+                    if (codeStr.length() % 2 == 1) {
+                        continue;  // invalid line
+                    }
+                    for (int i = 0; i < codeStr.length(); i += 2) {
+                        countryCodes.add(codeStr.substring(i, i + 2));
                     }
                     int numericCode = Integer.parseInt(matcher.group(2));
                     int digits = Integer.parseInt(matcher.group(3));
