@@ -60,11 +60,11 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         }
     }
     /**
-     * The currency, not null.
+     * The currency code, not null.
      */
     private final String iCode;
     /**
-     * The number of decimal places.
+     * The numeric code.
      */
     private final transient int iNumericCode;
     /**
