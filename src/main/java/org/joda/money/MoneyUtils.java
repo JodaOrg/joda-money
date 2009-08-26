@@ -23,12 +23,9 @@ package org.joda.money;
 public final class MoneyUtils {
 
     /**
-     * Gets an instance of the Money from a string.
-     * <p>
-     * The string format is 
+     * Validates that the object specified is not null
      *
-     * @param moneyStr  the money string to parse, not null
-     * @return the parsed instance, never null
+     * @param object  the object to check, not null
      * @throws NullPointerException if the input value is null
      */
     static void checkNotNull(Object object, String message) {
