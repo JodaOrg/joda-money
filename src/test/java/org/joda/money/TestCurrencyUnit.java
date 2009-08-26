@@ -196,6 +196,29 @@ public class TestCurrencyUnit {
     }
 
     //-----------------------------------------------------------------------
+    // getNumeric3Code()
+    //-----------------------------------------------------------------------
+    public void test_getNumeric3Code_GBP() {
+        CurrencyUnit test = CurrencyUnit.of("GBP");
+        assertEquals(test.getNumeric3Code(), "826");
+    }
+
+    public void test_getNumeric3Code_ALL() {
+        CurrencyUnit test = CurrencyUnit.of("ALL");
+        assertEquals(test.getNumeric3Code(), "008");
+    }
+
+    public void test_getNumeric3Code_AMD() {
+        CurrencyUnit test = CurrencyUnit.of("AMD");
+        assertEquals(test.getNumeric3Code(), "051");
+    }
+
+    public void test_getNumeric3Code_XFU() {
+        CurrencyUnit test = CurrencyUnit.of("XFU");
+        assertEquals(test.getNumeric3Code(), "");
+    }
+
+    //-----------------------------------------------------------------------
     // getNumericCode()
     //-----------------------------------------------------------------------
     public void test_getNumericCode_GBP() {

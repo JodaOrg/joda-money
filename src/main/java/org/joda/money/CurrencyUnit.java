@@ -230,6 +230,27 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
+     * Gets the numeric ISO-4217 currency code as a three digit string.
+     * <p>
+     * If there is no valid code, then an empty string is returned.
+     * 
+     * @return the three digit numeric currency code, empty is no code, never null
+     */
+    public String getNumeric3Code() {
+        if (iNumericCode < 0) {
+            return "";
+        }
+        String str = Integer.toString(iNumericCode);
+        if (str.length() == 1) {
+            return "00" + str;
+        }
+        if (str.length() == 2) {
+            return "0" + str;
+        }
+        return str;
+    }
+
+    /**
      * Gets the numeric ISO-4217 currency code.
      * 
      * @return the numeric currency code
