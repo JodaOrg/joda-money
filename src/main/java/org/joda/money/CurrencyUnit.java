@@ -15,6 +15,8 @@
  */
 package org.joda.money;
 
+import java.io.InvalidObjectException;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,11 +68,11 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     /**
      * The numeric code.
      */
-    private final transient int iNumericCode;
+    private final short iNumericCode;
     /**
      * The number of decimal places.
      */
-    private final transient int iDecimalPlaces;
+    private final short iDecimalPlaces;
 
     //-----------------------------------------------------------------------
     /**
@@ -97,7 +99,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         }
         MoneyUtils.checkNotNull(countryCodes, "Country codes must not be null");
         
-        CurrencyUnit currency = new CurrencyUnit(currencyCode, numericCurrencyCode, decimalPlaces);
+        CurrencyUnit currency = new CurrencyUnit(currencyCode, (short) numericCurrencyCode, (short) decimalPlaces);
         if (cCurrenciesByCode.putIfAbsent(currencyCode, currency) != null) {
             throw new IllegalArgumentException("Currency already registered: " + currencyCode);
         }
@@ -202,19 +204,27 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @param numericCurrencyCode  the numeric currency code, -1 if none
      * @param decimalPlaces  the decimal places, not null
      */
-    private CurrencyUnit(String code, int numericCurrencyCode, int decimalPlaces) {
+    private CurrencyUnit(String code, short numericCurrencyCode, short decimalPlaces) {
         iCode = code;
         iNumericCode = numericCurrencyCode;
         iDecimalPlaces = decimalPlaces;
     }
 
     /**
-     * Resolves singletons.
+     * Resolves singletons, validating that the incoming currency has the same definition
+     * as the local currency.
      * 
-     * @return the singleton instance
+     * @return the singleton instance, never null
      */
-    private Object readResolve() {
-        return CurrencyUnit.of(iCode);
+    private Object readResolve() throws ObjectStreamException {
+        CurrencyUnit singletonCurrency = CurrencyUnit.of(iCode);
+        if (iNumericCode != singletonCurrency.iNumericCode) {
+            throw new InvalidObjectException("Deserialization found a mismatch in the numeric code for currency " + iCode);
+        }
+        if (iDecimalPlaces != singletonCurrency.iDecimalPlaces) {
+            throw new InvalidObjectException("Deserialization found a mismatch in the decimal places for currency " + iCode);
+        }
+        return singletonCurrency;
     }
 
     //-----------------------------------------------------------------------
