@@ -30,30 +30,12 @@ import org.testng.annotations.Test;
 @Test
 public class TestMoneyFormatterBuilder {
 
-//    private static final CurrencyUnit GBP = CurrencyUnit.of("GBP");
-//    private static final CurrencyUnit EUR = CurrencyUnit.of("EUR");
-//    private static final CurrencyUnit USD = CurrencyUnit.of("USD");
-//    private static final CurrencyUnit JPY = CurrencyUnit.of("JPY");
-//    private static final BigDecimal BIGDEC_2_34 = new BigDecimal("2.34");
-//    private static final BigDecimal BIGDEC_M5_78 = new BigDecimal("-5.78");
-//
-//    private static final Money GBP_0_00 = Money.parse("GBP 0.00");
-//    private static final Money GBP_1_23 = Money.parse("GBP 1.23");
-//    private static final Money GBP_2_33 = Money.parse("GBP 2.33");
     private static final Money GBP_2_34 = Money.parse("GBP 2.34");
-//    private static final Money GBP_2_35 = Money.parse("GBP 2.35");
-//    private static final Money GBP_2_36 = Money.parse("GBP 2.36");
-//    private static final Money GBP_5_78 = Money.parse("GBP 5.78");
-//    private static final Money GBP_M1_23 = Money.parse("GBP -1.23");
-//    private static final Money GBP_M5_78 = Money.parse("GBP -5.78");
-//    private static final Money GBP_INT_MAX_PLUS1 = Money.ofMinor("GBP", ((long) Integer.MAX_VALUE) + 1);
-//    private static final Money GBP_INT_MIN_MINUS1 = Money.ofMinor("GBP", ((long) Integer.MIN_VALUE) - 1);
-//    private static final Money GBP_INT_MAX_MAJOR_PLUS1 = Money.ofMinor("GBP", (((long) Integer.MAX_VALUE) + 1) * 100);
-//    private static final Money GBP_INT_MIN_MAJOR_MINUS1 = Money.ofMinor("GBP", (((long) Integer.MIN_VALUE) - 1) * 100);
-//    private static final Money JPY_423 = Money.parse("JPY 423");
-//    private static final Money USD_1_23 = Money.parse("USD 1.23");
-//    private static final Money USD_2_34 = Money.parse("USD 2.34");
-//    private static final Money USD_2_35 = Money.parse("USD 2.35");
+    private static final Money GBP_23_45 = Money.parse("GBP 23.45");
+    private static final Money GBP_234_56 = Money.parse("GBP 234.56");
+    private static final Money GBP_2345_67 = Money.parse("GBP 2345.67");
+    private static final Money GBP_1234567_89 = Money.parse("GBP 1234567.89");
+    private static final Money JPY_2345 = Money.parse("JPY 2345");
 
     private static final Locale cCachedLocale = Locale.getDefault();
     private static final Locale TEST_GB_LOCALE = new Locale("en", "GB", "TEST");
@@ -77,13 +59,6 @@ public class TestMoneyFormatterBuilder {
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals(test.print(GBP_2_34), "");
         assertEquals(test.toString(), "");
-    }
-
-    public void test_appendAmount() {
-        iBuilder.appendAmount();
-        MoneyFormatter test = iBuilder.toFormatter();
-        assertEquals(test.print(GBP_2_34), "2.34");
-        assertEquals(test.toString(), "${amount}");
     }
 
     public void test_appendCurrencyCode() {
@@ -133,6 +108,111 @@ public class TestMoneyFormatterBuilder {
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals(test.print(GBP_2_34), "");
         assertEquals(test.toString(), "");
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_appendAmount_GBP_2_34() {
+        iBuilder.appendAmount();
+        MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.print(GBP_2_34), "2.34");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    public void test_appendAmount_GBP_23_45() {
+        iBuilder.appendAmount();
+        MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.print(GBP_23_45), "23.45");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    public void test_appendAmount_GBP_234_56() {
+        iBuilder.appendAmount();
+        MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.print(GBP_234_56), "234.56");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    public void test_appendAmount_GBP_2345_67() {
+        iBuilder.appendAmount();
+        MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.print(GBP_2345_67), "2,345.67");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    public void test_appendAmount_GBP_1234567_89() {
+        iBuilder.appendAmount();
+        MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.print(GBP_1234567_89), "1,234,567.89");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    public void test_appendAmount_JPY_2345() {
+        iBuilder.appendAmount();
+        MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.print(JPY_2345), "2,345");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_appendAmount_MoneyAmountStyle_null() {
+        iBuilder.appendAmount((MoneyAmountStyle) null);
+    }
+
+    public void test_appendAmount_MoneyAmountStyle_noGrouping_GBP_2_34() {
+        iBuilder.appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_NO_GROUPING);
+        MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.print(GBP_2_34), "2.34");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    public void test_appendAmount_MoneyAmountStyle_noGrouping_GBP_23_45() {
+        iBuilder.appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_NO_GROUPING);
+        MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.print(GBP_23_45), "23.45");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    public void test_appendAmount_MoneyAmountStyle_noGrouping_GBP_234_56() {
+        iBuilder.appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_NO_GROUPING);
+        MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.print(GBP_234_56), "234.56");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    public void test_appendAmount_MoneyAmountStyle_noGrouping_GBP_2345_67() {
+        iBuilder.appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_NO_GROUPING);
+        MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.print(GBP_2345_67), "2345.67");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    public void test_appendAmount_MoneyAmountStyle_noGrouping_GBP_1234567_89() {
+        iBuilder.appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_NO_GROUPING);
+        MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.print(GBP_1234567_89), "1234567.89");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    public void test_appendAmount_MoneyAmountStyle_noGrouping_JPY_2345() {
+        iBuilder.appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_NO_GROUPING);
+        MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.print(JPY_2345), "2345");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    public void test_appendAmount_MoneyAmountStyle_groupingForceDecimal_JPY_2345() {
+        iBuilder.appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withForcedDecimalPoint(true));
+        MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.print(JPY_2345), "2,345.");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    public void test_appendAmount_MoneyAmountStyle_noGroupingForceDecimal_JPY_2345() {
+        iBuilder.appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_NO_GROUPING.withForcedDecimalPoint(true));
+        MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.print(JPY_2345), "2345.");
+        assertEquals(test.toString(), "${amount}");
     }
 
     //-----------------------------------------------------------------------

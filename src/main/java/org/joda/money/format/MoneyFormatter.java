@@ -118,7 +118,6 @@ public final class MoneyFormatter {
      * @throws MoneyFormatException if there is a problem while printing
      */
     public void print(Appendable appendable, Money money) {
-        checkNotNull(money, "Money must not be null");
         try {
             printIO(appendable, money);
         } catch (IOException ex) {

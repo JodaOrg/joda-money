@@ -68,14 +68,30 @@ public final class MoneyFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
-     * Appends the amount to the builder.
+     * Appends the amount to the builder using a localized format.
      * <p>
      * The amount is the value itself, such as '12.34'.
      * 
      * @return this, for chaining, never null
      */
     public MoneyFormatterBuilder appendAmount() {
-        return appendInternal(Amount.INSTANCE);
+        return appendInternal(new Amount(MoneyAmountStyle.LOCALIZED_GROUPING));
+    }
+
+    /**
+     * Appends the amount to the builder using the specified amount style.
+     * <p>
+     * The amount is the value itself, such as '12.34'.
+     * <p>
+     * The amount style allows the formatting of the number to be controlled in detail.
+     * See {@link MoneyAmountStyle} for more details.
+     * 
+     * @param style  the style to use, not null
+     * @return this, for chaining, never null
+     */
+    public MoneyFormatterBuilder appendAmount(MoneyAmountStyle style) {
+        MoneyFormatter.checkNotNull(style, "MoneyAmountStyle must not be null");
+        return appendInternal(new Amount(style));
     }
 
     //-----------------------------------------------------------------------
@@ -467,10 +483,55 @@ public final class MoneyFormatterBuilder {
      * Handles the amount.
      */
     private static class Amount implements MoneyPrinter {
-        static final MoneyPrinter INSTANCE = new Amount();
+        /** The style to use. */
+        private volatile MoneyAmountStyle iStyle;
+        /**
+         * Constructor.
+         * @param style  the style, not null
+         */
+        Amount(MoneyAmountStyle style) {
+            iStyle = style;
+        }
         /** {@inheritDoc} */
         public void print(MoneyPrintContext context, Appendable appendable, Money money) throws IOException {
-            appendable.append(money.getAmount().toPlainString());
+            iStyle = iStyle.localize(context.getLocale());
+            String str = money.getAmount().toPlainString();
+            int decPoint = str.indexOf('.');
+            if (iStyle.isGrouping()) {
+                int groupingSize = iStyle.getGroupingSize();
+                char groupingChar = iStyle.getGroupingCharacter();
+                int pre = (decPoint < 0 ? str.length() : decPoint);
+//                int post = (decPoint < 0 ? 0 : str.length() - decPoint - 1);
+                for (int i = 0; pre > 0; i++, pre--) {
+                    appendable.append(str.charAt(i));
+                    if (pre > 3 && pre % groupingSize == 1) {
+                        appendable.append(groupingChar);
+                    }
+                }
+                if (decPoint >= 0) {
+                    appendable.append(iStyle.getDecimalPointCharacter()).append(str.substring(decPoint + 1));
+                } else if (iStyle.isForcedDecimalPoint()) {
+                    appendable.append(iStyle.getDecimalPointCharacter());
+                }
+//                decPoint++;
+//                for (int i = 0; i < post; i++) {
+//                    appendable.append(str.charAt(i + decPoint));
+//                    if (i % groupingSize == 2) {
+//                        appendable.append(groupingChar);
+//                    }
+//                }
+            } else {
+                if (decPoint < 0) {
+                    if (iStyle.isForcedDecimalPoint()) {
+                        appendable.append(str).append(iStyle.getDecimalPointCharacter());
+                    } else {
+                        appendable.append(str);
+                    }
+                } else {
+                    appendable.append(str.subSequence(0, decPoint))
+                        .append(iStyle.getDecimalPointCharacter()).append(str.substring(decPoint + 1));
+                }
+            }
         }
         /** {@inheritDoc} */
         @Override
