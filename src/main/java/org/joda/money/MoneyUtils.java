@@ -55,7 +55,8 @@ public final class MoneyUtils {
     /**
      * Finds the maximum monetary value, handing null.
      * <p>
-     * This returns the greater of money1 or money2 treating null as infinitely small.
+     * This returns the greater of money1 or money2.
+     * If one value is null, the other is returned.
      * At least one of the two parameters must be non-null.
      * 
      * @param money1  the first money instance, null ignored
@@ -74,7 +75,8 @@ public final class MoneyUtils {
     /**
      * Finds the minimum monetary value, handing null.
      * <p>
-     * This returns the greater of money1 or money2 treating null as infinitely small.
+     * This returns the greater of money1 or money2.
+     * If one value is null, the other is returned.
      * At least one of the two parameters must be non-null.
      * 
      * @param money1  the first money instance, null ignored
