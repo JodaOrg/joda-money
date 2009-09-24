@@ -45,7 +45,7 @@ public final class Money implements Comparable<Money>, Serializable {
      */
     private final CurrencyUnit iCurrency;
     /**
-     * The amount in minor units, not null.
+     * The amount in minor units.
      */
     private final long iAmount;
 
@@ -257,7 +257,7 @@ public final class Money implements Comparable<Money>, Serializable {
     }
 
     /**
-     * Converts and amount in decimal to an amount in minor units safely.
+     * Converts an amount in decimal to an amount in minor units safely.
      * 
      * @param currency  the currency, validated not null
      * @param amount  the amount to convert, validated not null
@@ -269,7 +269,7 @@ public final class Money implements Comparable<Money>, Serializable {
     }
 
     /**
-     * Converts and amount in major units to an amount in minor units safely.
+     * Converts an amount in major units to an amount in minor units safely.
      * 
      * @param currency  the currency, validated not null
      * @param amountMajor  the amount to convert
@@ -313,7 +313,7 @@ public final class Money implements Comparable<Money>, Serializable {
      * Constructor, creating a new monetary instance.
      * 
      * @param currency  the currency to use, not null
-     * @param amount  the amount of money, not null
+     * @param amount  the amount of money
      */
     private Money(CurrencyUnit currency, long amount) {
         iCurrency = currency;
@@ -942,7 +942,8 @@ public final class Money implements Comparable<Money>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the monetary value as a string.
+     * Checks if this monetary value equals another.
+     * The compared values must be in the same currency.
      * 
      * @return true if this instance equals the other instance
      */
@@ -972,6 +973,9 @@ public final class Money implements Comparable<Money>, Serializable {
     //-----------------------------------------------------------------------
     /**
      * Gets the monetary value as a string.
+     * <p>
+     * The format is the 3 letter ISO currency code, followed by a space,
+     * followed by the amount with decimal places as per the currency.
      * 
      * @return the monetary value, never null
      */
