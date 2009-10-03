@@ -64,8 +64,6 @@ public final class BigMoney implements Comparable<BigMoney>, Serializable {
      * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
      */
     public static BigMoney of(CurrencyUnit currency, BigDecimal amount) {
-        MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
-        MoneyUtils.checkNotNull(amount, "Amount must not be null");
         return BigMoney.of(currency, amount, RoundingMode.UNNECESSARY);
     }
 
@@ -145,12 +143,6 @@ public final class BigMoney implements Comparable<BigMoney>, Serializable {
     public static BigMoney of(CurrencyUnit currency, BigDecimal amount, int scale) {
         MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
         MoneyUtils.checkNotNull(amount, "Amount must not be null");
-        if (scale < -1000 || scale > 1000) {
-            throw new IllegalArgumentException("Decimal places must be from -1000 to 1000, was " + scale);
-        }
-        if (amount.getClass() != BigDecimal.class) {
-            amount = new BigDecimal(amount.unscaledValue(), amount.scale());
-        }
         return new BigMoney(currency, amount);
     }
 
@@ -162,23 +154,20 @@ public final class BigMoney implements Comparable<BigMoney>, Serializable {
      *
      * @param currencyCode  the currency code, not null
      * @param amount  the amount of money, not null
-     * @param decimalPlaces  the number of decimal places to use, 0 to 1000
+     * @param scale  the scale to use, -1000 to 1000
      * @return the new instance, never null
      * @throws IllegalArgumentException if the currency is unknown
      * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
      */
-    public static BigMoney of(String currencyCode, BigDecimal amount, int decimalPlaces) {
+    public static BigMoney of(String currencyCode, BigDecimal amount, int scale) {
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
         MoneyUtils.checkNotNull(amount, "Amount must not be null");
-        if (decimalPlaces < 0) {
-            throw new IllegalArgumentException("Decimal places must be from 0 to 1000, was " + decimalPlaces);
-        }
-        return BigMoney.of(CurrencyUnit.of(currencyCode), amount, decimalPlaces);
+        return BigMoney.of(CurrencyUnit.of(currencyCode), amount, scale);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of Money in the specified currency.
+     * Gets an instance of Money specifying the amount in major units.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      * The amount is a whole number only. Thus you can initialise the value
@@ -197,7 +186,7 @@ public final class BigMoney implements Comparable<BigMoney>, Serializable {
     }
 
     /**
-     * Gets an instance of Money in the specified currency.
+     * Gets an instance of Money specifying the amount in major units.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      * The amount is a whole number only. Thus you can initialise the value
@@ -218,7 +207,7 @@ public final class BigMoney implements Comparable<BigMoney>, Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of Money in the specified currency.
+     * Gets an instance of Money in the specifying the amount in minor units.
      * <p>
      * This allows you to create an instance with a specific currency and amount
      * expressed in terms of the minor unit.
@@ -237,7 +226,7 @@ public final class BigMoney implements Comparable<BigMoney>, Serializable {
     }
 
     /**
-     * Gets an instance of Money in the specified currency.
+     * Gets an instance of Money in the specifying the amount in minor units.
      * <p>
      * This allows you to create an instance with a specific currency and amount
      * expressed in terms of the minor unit.
@@ -369,6 +358,13 @@ public final class BigMoney implements Comparable<BigMoney>, Serializable {
      * @param amount  the amount of money, not null
      */
     private BigMoney(CurrencyUnit currency, BigDecimal amount) {
+        int scale = amount.scale();
+        if (scale < -1000 || scale > 1000) {
+            throw new IllegalArgumentException("Decimal places must be from -1000 to 1000, was " + scale);
+        }
+        if (amount.getClass() != BigDecimal.class) {
+            amount = new BigDecimal(amount.unscaledValue(), scale);
+        }
         iCurrency = currency;
         iAmount = amount;
     }
@@ -587,7 +583,7 @@ public final class BigMoney implements Comparable<BigMoney>, Serializable {
         if (iCurrency == currency) {
             return this;
         }
-        // TO DO: Should we retain the scale?
+        // TODO: Should we retain the scale?
         return BigMoney.of(currency, getAmount(), roundingMode);
     }
 
