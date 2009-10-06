@@ -53,6 +53,12 @@ public class TestMoney {
     private static final Money GBP_INT_MIN_MINUS1 = Money.ofMinor("GBP", ((long) Integer.MIN_VALUE) - 1);
     private static final Money GBP_INT_MAX_MAJOR_PLUS1 = Money.ofMinor("GBP", (((long) Integer.MAX_VALUE) + 1) * 100);
     private static final Money GBP_INT_MIN_MAJOR_MINUS1 = Money.ofMinor("GBP", (((long) Integer.MIN_VALUE) - 1) * 100);
+    private static final Money GBP_LONG_MAX_PLUS1 = Money.of("GBP", BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.ONE));
+    private static final Money GBP_LONG_MIN_MINUS1 = Money.of("GBP", BigDecimal.valueOf(Long.MIN_VALUE).subtract(BigDecimal.ONE));
+    private static final Money GBP_LONG_MAX_MAJOR_PLUS1 = Money.of("GBP",
+            BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.ONE).multiply(BigDecimal.valueOf(100)));
+    private static final Money GBP_LONG_MIN_MAJOR_MINUS1 = Money.of("GBP",
+            BigDecimal.valueOf(Long.MIN_VALUE).subtract(BigDecimal.ONE).multiply(BigDecimal.valueOf(100)));
     private static final Money JPY_423 = Money.parse("JPY 423");
     private static final Money USD_1_23 = Money.parse("USD 1.23");
     private static final Money USD_2_34 = Money.parse("USD 2.34");
@@ -64,7 +70,7 @@ public class TestMoney {
     public void test_factory_of_Currency_BigDecimal() {
         Money test = Money.of(GBP, BIGDEC_2_34);
         assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmountMinor(), 234);
+        assertEquals(test.getAmountMinorInt(), 234);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -83,7 +89,7 @@ public class TestMoney {
     public void test_factory_of_String_BigDecimal() {
         Money test = Money.of("GBP", BIGDEC_2_34);
         assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmountMinor(), 234);
+        assertEquals(test.getAmountMinorInt(), 234);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -107,13 +113,13 @@ public class TestMoney {
     public void test_factory_of_Currency_BigDecimal_RoundingMode_DOWN() {
         Money test = Money.of(JPY, BIGDEC_2_34, RoundingMode.DOWN);
         assertEquals(test.getCurrencyUnit(), JPY);
-        assertEquals(test.getAmountMinor(), 2);
+        assertEquals(test.getAmountMinorInt(), 2);
     }
 
     public void test_factory_of_Currency_BigDecimal_RoundingMode_UP() {
         Money test = Money.of(JPY, BIGDEC_2_34, RoundingMode.UP);
         assertEquals(test.getCurrencyUnit(), JPY);
-        assertEquals(test.getAmountMinor(), 3);
+        assertEquals(test.getAmountMinorInt(), 3);
     }
 
     @Test(expectedExceptions = ArithmeticException.class)
@@ -142,13 +148,13 @@ public class TestMoney {
     public void test_factory_of_String_BigDecimal_RoundingMode_DOWN() {
         Money test = Money.of("JPY", BIGDEC_2_34, RoundingMode.DOWN);
         assertEquals(test.getCurrencyUnit(), JPY);
-        assertEquals(test.getAmountMinor(), 2);
+        assertEquals(test.getAmountMinorInt(), 2);
     }
 
     public void test_factory_of_String_BigDecimal_RoundingMode_UP() {
         Money test = Money.of("JPY", BIGDEC_2_34, RoundingMode.UP);
         assertEquals(test.getCurrencyUnit(), JPY);
-        assertEquals(test.getAmountMinor(), 3);
+        assertEquals(test.getAmountMinorInt(), 3);
     }
 
     @Test(expectedExceptions = ArithmeticException.class)
@@ -182,7 +188,7 @@ public class TestMoney {
     public void test_factory_ofMajor_Currency_long() {
         Money test = Money.ofMajor(GBP, 234);
         assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmountMinor(), 23400);
+        assertEquals(test.getAmountMinorInt(), 23400);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -196,7 +202,7 @@ public class TestMoney {
     public void test_factory_ofMajor_String_long() {
         Money test = Money.ofMajor("GBP", 234);
         assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmountMinor(), 23400);
+        assertEquals(test.getAmountMinorInt(), 23400);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -209,9 +215,37 @@ public class TestMoney {
         Money.ofMajor((String) null, 234);
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_factory_ofMajor_String_long_tooBig() {
-        Money.ofMajor("GBP", Long.MAX_VALUE);
+    //-----------------------------------------------------------------------
+    // ofMinor(Currency,long)
+    //-----------------------------------------------------------------------
+    public void test_factory_ofMinor_Currency_long() {
+        Money test = Money.ofMinor(GBP, 234);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmountMinorInt(), 234);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_ofMinor_Currency_long_nullCurrency() {
+        Money.ofMinor((CurrencyUnit) null, 234);
+    }
+
+    //-----------------------------------------------------------------------
+    // ofMinor(String,long)
+    //-----------------------------------------------------------------------
+    public void test_factory_ofMinor_String_long() {
+        Money test = Money.ofMinor("GBP", 234);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmountMinorInt(), 234);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_factory_ofMinor_String_long_badCurrency() {
+        Money.ofMinor("GBX", 234);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_ofMinor_String_long_nullCurrency() {
+        Money.ofMinor((String) null, 234);
     }
 
     //-----------------------------------------------------------------------
@@ -220,7 +254,7 @@ public class TestMoney {
     public void test_factory_zero_Currency() {
         Money test = Money.zero(GBP);
         assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmountMinor(), 0);
+        assertEquals(test.getAmountMinorInt(), 0);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -234,7 +268,7 @@ public class TestMoney {
     public void test_factory_zero_String() {
         Money test = Money.zero("GBP");
         assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmountMinor(), 0);
+        assertEquals(test.getAmountMinorInt(), 0);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -253,13 +287,13 @@ public class TestMoney {
     public void test_factory_parse_String_positive() {
         Money test = Money.parse("GBP 2.43");
         assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmountMinor(), 243);
+        assertEquals(test.getAmountMinorInt(), 243);
     }
 
     public void test_factory_parse_String_negative() {
         Money test = Money.parse("GBP -5.87");
         assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmountMinor(), -587);
+        assertEquals(test.getAmountMinorInt(), -587);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
@@ -308,14 +342,65 @@ public class TestMoney {
     }
 
     //-----------------------------------------------------------------------
-    // getDecimalPlaces()
+    // withCurrencyUnit(Currency)
     //-----------------------------------------------------------------------
-    public void test_getDecimalPlaces_GBP() {
-        assertEquals(GBP_2_34.getDecimalPlaces(), 2);
+    public void test_withCurrencyUnit_Currency() {
+        Money test = GBP_2_34.withCurrencyUnit(USD);
+        assertEquals(test.toString(), "USD 2.34");
     }
 
-    public void test_getDecimalPlaces_JPY() {
-        assertEquals(JPY_423.getDecimalPlaces(), 0);
+    public void test_withCurrencyUnit_Currency_same() {
+        Money test = GBP_2_34.withCurrencyUnit(GBP);
+        assertSame(test, GBP_2_34);
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_withCurrencyUnit_Currency_scaleProblem() {
+        GBP_2_34.withCurrencyUnit(JPY);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_withCurrencyUnit_Currency_nullCurrency() {
+        GBP_2_34.withCurrencyUnit((CurrencyUnit) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // withCurrencyUnit(Currency,RoundingMode)
+    //-----------------------------------------------------------------------
+    public void test_withCurrencyUnit_CurrencyRoundingMode_DOWN() {
+        Money test = GBP_2_34.withCurrencyUnit(JPY, RoundingMode.DOWN);
+        assertEquals(test.toString(), "JPY 2");
+    }
+
+    public void test_withCurrencyUnit_CurrencyRoundingMode_UP() {
+        Money test = GBP_2_34.withCurrencyUnit(JPY, RoundingMode.UP);
+        assertEquals(test.toString(), "JPY 3");
+    }
+
+    public void test_withCurrencyUnit_CurrencyRoundingMode_same() {
+        Money test = GBP_2_34.withCurrencyUnit(GBP, RoundingMode.DOWN);
+        assertSame(test, GBP_2_34);
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_withCurrencyUnit_CurrencyRoundingMode_UNECESSARY() {
+        GBP_2_34.withCurrencyUnit(JPY, RoundingMode.UNNECESSARY);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_withCurrencyUnit_CurrencyRoundingMode_nullCurrency() {
+        GBP_2_34.withCurrencyUnit((CurrencyUnit) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // getScale()
+    //-----------------------------------------------------------------------
+    public void test_getScale_GBP() {
+        assertEquals(GBP_2_34.getScale(), 2);
+    }
+
+    public void test_getScale_JPY() {
+        assertEquals(JPY_423.getScale(), 0);
     }
 
     //-----------------------------------------------------------------------
@@ -333,17 +418,32 @@ public class TestMoney {
     // getAmountMajor()
     //-----------------------------------------------------------------------
     public void test_getAmountMajor_positive() {
-        assertEquals(GBP_2_34.getAmountMajor(), 2);
+        assertEquals(GBP_2_34.getAmountMajor(), BigDecimal.valueOf(2));
     }
 
     public void test_getAmountMajor_negative() {
-        assertEquals(GBP_M5_78.getAmountMajor(), -5);
+        assertEquals(GBP_M5_78.getAmountMajor(), BigDecimal.valueOf(-5));
+    }
+
+    //-----------------------------------------------------------------------
+    // getAmountMajorLong()
+    //-----------------------------------------------------------------------
+    public void test_getAmountMajorLong_positive() {
+        assertEquals(GBP_2_34.getAmountMajorLong(), 2L);
+    }
+
+    public void test_getAmountMajorLong_negative() {
+        assertEquals(GBP_M5_78.getAmountMajorLong(), -5L);
     }
 
     @Test(expectedExceptions = ArithmeticException.class)
-    public void test_getAmountMajor_tooBig() {
-        Money test = Money.parse("GBP 12345678912345678912");
-        test.getAmountMajor();
+    public void test_getAmountMajorLong_tooBigPositive() {
+        GBP_LONG_MAX_MAJOR_PLUS1.getAmountMajorLong();
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_getAmountMajorLong_tooBigNegative() {
+        GBP_LONG_MIN_MAJOR_MINUS1.getAmountMajorLong();
     }
 
     //-----------------------------------------------------------------------
@@ -371,11 +471,32 @@ public class TestMoney {
     // getAmountMinor()
     //-----------------------------------------------------------------------
     public void test_getAmountMinor_positive() {
-        assertEquals(GBP_2_34.getAmountMinor(), 234);
+        assertEquals(GBP_2_34.getAmountMinor(), BigDecimal.valueOf(234));
     }
 
     public void test_getAmountMinor_negative() {
-        assertEquals(GBP_M5_78.getAmountMinor(), -578);
+        assertEquals(GBP_M5_78.getAmountMinor(), BigDecimal.valueOf(-578));
+    }
+
+    //-----------------------------------------------------------------------
+    // getAmountMinorLong()
+    //-----------------------------------------------------------------------
+    public void test_getAmountMinorLong_positive() {
+        assertEquals(GBP_2_34.getAmountMinorLong(), 234L);
+    }
+
+    public void test_getAmountMinorLong_negative() {
+        assertEquals(GBP_M5_78.getAmountMinorLong(), -578L);
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_getAmountMinorLong_tooBigPositive() {
+        GBP_LONG_MAX_PLUS1.getAmountMinorLong();
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_getAmountMinorLong_tooBigNegative() {
+        GBP_LONG_MIN_MINUS1.getAmountMinorLong();
     }
 
     //-----------------------------------------------------------------------
@@ -390,12 +511,12 @@ public class TestMoney {
     }
 
     @Test(expectedExceptions = ArithmeticException.class)
-    public void test_getAmountMinor_tooBigPositive() {
+    public void test_getAmountMinorInt_tooBigPositive() {
         GBP_INT_MAX_PLUS1.getAmountMinorInt();
     }
 
     @Test(expectedExceptions = ArithmeticException.class)
-    public void test_getAmountMinor_tooBigNegative() {
+    public void test_getAmountMinorInt_tooBigNegative() {
         GBP_INT_MIN_MINUS1.getAmountMinorInt();
     }
 
@@ -456,68 +577,6 @@ public class TestMoney {
     }
 
     //-----------------------------------------------------------------------
-    // isSameCurrency(Money)
-    //-----------------------------------------------------------------------
-    public void test_isSameCurrency_Money_same() {
-        assertEquals(GBP_2_34.isSameCurrency(GBP_2_35), true);
-    }
-
-    public void test_isSameCurrency_Money_different() {
-        assertEquals(GBP_2_34.isSameCurrency(USD_2_34), false);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_isSameCurrency_Money_nullMoney() {
-        GBP_2_34.isSameCurrency((Money) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // withCurrency(Currency)
-    //-----------------------------------------------------------------------
-    public void test_withCurrency_Currency() {
-        Money test = GBP_2_34.withCurrency(USD);
-        assertEquals(test.toString(), "USD 2.34");
-    }
-
-    public void test_withCurrency_Currency_same() {
-        Money test = GBP_2_34.withCurrency(GBP);
-        assertSame(test, GBP_2_34);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_withCurrency_Currency_nullCurrency() {
-        GBP_2_34.withCurrency((CurrencyUnit) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // withCurrency(Currency,RoundingMode)
-    //-----------------------------------------------------------------------
-    public void test_withCurrency_CurrencyRoundingMode_DOWN() {
-        Money test = GBP_2_34.withCurrency(JPY, RoundingMode.DOWN);
-        assertEquals(test.toString(), "JPY 2");
-    }
-
-    public void test_withCurrency_CurrencyRoundingMode_UP() {
-        Money test = GBP_2_34.withCurrency(JPY, RoundingMode.UP);
-        assertEquals(test.toString(), "JPY 3");
-    }
-
-    public void test_withCurrency_CurrencyRoundingMode_same() {
-        Money test = GBP_2_34.withCurrency(GBP, RoundingMode.DOWN);
-        assertSame(test, GBP_2_34);
-    }
-
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_withCurrency_CurrencyRoundingMode_UNECESSARY() {
-        GBP_2_34.withCurrency(JPY, RoundingMode.UNNECESSARY);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_withCurrency_CurrencyRoundingMode_nullCurrency() {
-        GBP_2_34.withCurrency((CurrencyUnit) null);
-    }
-
-    //-----------------------------------------------------------------------
     // withAmount(BigDecimal)
     //-----------------------------------------------------------------------
     public void test_withAmount_BigDecimal() {
@@ -530,9 +589,47 @@ public class TestMoney {
         assertSame(test, GBP_2_34);
     }
 
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_withAmount_BigDecimal_invalidScale() {
+        GBP_2_34.withAmount(new BigDecimal("2.345"));
+    }
+
     @Test(expectedExceptions = NullPointerException.class)
     public void test_withAmount_BigDecimal_nullBigDecimal() {
         GBP_2_34.withAmount((BigDecimal) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // withAmount(BigDecimal,RoundingMode)
+    //-----------------------------------------------------------------------
+    public void test_withAmount_BigDecimalRoundingMode() {
+        Money test = GBP_2_34.withAmount(BIGDEC_M5_78, RoundingMode.UNNECESSARY);
+        assertEquals(test.toString(), "GBP -5.78");
+    }
+
+    public void test_withAmount_BigDecimalRoundingMode_same() {
+        Money test = GBP_2_34.withAmount(BIGDEC_2_34, RoundingMode.UNNECESSARY);
+        assertSame(test, GBP_2_34);
+    }
+
+    public void test_withAmount_BigDecimalRoundingMode_roundDown() {
+        Money test = GBP_2_34.withAmount(new BigDecimal("2.355"), RoundingMode.DOWN);
+        assertEquals(test, GBP_2_35);
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_withAmount_BigDecimalRoundingMode_roundUnecessary() {
+        GBP_2_34.withAmount(new BigDecimal("2.345"), RoundingMode.UNNECESSARY);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_withAmount_BigDecimalRoundingMode_nullBigDecimal() {
+        GBP_2_34.withAmount((BigDecimal) null, RoundingMode.UNNECESSARY);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_withAmount_BigDecimalRoundingMode_nullRoundingMode() {
+        GBP_2_34.withAmount(BIGDEC_2_34, (RoundingMode) null);
     }
 
     //-----------------------------------------------------------------------
@@ -576,9 +673,57 @@ public class TestMoney {
         assertEquals(test.toString(), "GBP 1.11");
     }
 
+    public void test_plus_BigDecimal_zero() {
+        Money test = GBP_2_34.plus(BigDecimal.ZERO);
+        assertSame(test, GBP_2_34);
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_plus_BigDecimal_invalidScale() {
+        GBP_2_34.plus(new BigDecimal("1.235"));
+    }
+
     @Test(expectedExceptions = NullPointerException.class)
     public void test_plus_BigDecimal_nullBigDecimal() {
         GBP_M5_78.plus((BigDecimal) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // plus(BigDecimal,RoundingMode)
+    //-----------------------------------------------------------------------
+    public void test_plus_BigDecimalRoundingMode_positive() {
+        Money test = GBP_2_34.plus(new BigDecimal("1.23"), RoundingMode.UNNECESSARY);
+        assertEquals(test.toString(), "GBP 3.57");
+    }
+
+    public void test_plus_BigDecimalRoundingMode_negative() {
+        Money test = GBP_2_34.plus(new BigDecimal("-1.23"), RoundingMode.UNNECESSARY);
+        assertEquals(test.toString(), "GBP 1.11");
+    }
+
+    public void test_plus_BigDecimalRoundingMode_zero() {
+        Money test = GBP_2_34.plus(BigDecimal.ZERO, RoundingMode.UNNECESSARY);
+        assertSame(test, GBP_2_34);
+    }
+
+    public void test_plus_BigDecimalRoundingMode_roundDown() {
+        Money test = GBP_2_34.plus(new BigDecimal("1.235"), RoundingMode.DOWN);
+        assertEquals(test.toString(), "GBP 3.57");
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_plus_BigDecimalRoundingMode_roundUnecessary() {
+        GBP_2_34.plus(new BigDecimal("1.235"), RoundingMode.UNNECESSARY);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_plus_BigDecimalRoundingMode_nullBigDecimal() {
+        GBP_M5_78.plus((BigDecimal) null, RoundingMode.UNNECESSARY);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_plus_BigDecimalRoundingMode_nullRoundingMode() {
+        GBP_M5_78.plus(BIGDEC_2_34, (RoundingMode) null);
     }
 
     //-----------------------------------------------------------------------
@@ -599,16 +744,6 @@ public class TestMoney {
         assertSame(test, GBP_2_34);
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_plusMajor_overflowBig() {
-        Money.ofMinor("GBP", Long.MAX_VALUE).plusMajor(1);
-    }
-
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_plusMajor_overflowSmall() {
-        Money.ofMinor("GBP", Long.MIN_VALUE).plusMajor(-1);
-    }
-
     //-----------------------------------------------------------------------
     // plusMinor(long)
     //-----------------------------------------------------------------------
@@ -625,16 +760,6 @@ public class TestMoney {
     public void test_plusMinor_zero() {
         Money test = GBP_2_34.plusMinor(0);
         assertSame(test, GBP_2_34);
-    }
-
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_plusMinor_overflowBig() {
-        Money.ofMinor("GBP", Long.MAX_VALUE).plusMinor(1);
-    }
-
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_plusMinor_overflowSmall() {
-        Money.ofMinor("GBP", Long.MIN_VALUE).plusMinor(-1);
     }
 
     //-----------------------------------------------------------------------
@@ -678,9 +803,57 @@ public class TestMoney {
         assertEquals(test.toString(), "GBP 3.57");
     }
 
+    public void test_minus_BigDecimal_zero() {
+        Money test = GBP_2_34.minus(BigDecimal.ZERO);
+        assertSame(test, GBP_2_34);
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_minus_BigDecimal_invalidScale() {
+        GBP_2_34.minus(new BigDecimal("1.235"));
+    }
+
     @Test(expectedExceptions = NullPointerException.class)
     public void test_minus_BigDecimal_nullBigDecimal() {
         GBP_M5_78.minus((BigDecimal) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // minus(BigDecimal,RoundingMode)
+    //-----------------------------------------------------------------------
+    public void test_minus_BigDecimalRoundingMode_positive() {
+        Money test = GBP_2_34.minus(new BigDecimal("1.23"), RoundingMode.UNNECESSARY);
+        assertEquals(test.toString(), "GBP 1.11");
+    }
+
+    public void test_minus_BigDecimalRoundingMode_negative() {
+        Money test = GBP_2_34.minus(new BigDecimal("-1.23"), RoundingMode.UNNECESSARY);
+        assertEquals(test.toString(), "GBP 3.57");
+    }
+
+    public void test_minus_BigDecimalRoundingMode_zero() {
+        Money test = GBP_2_34.minus(BigDecimal.ZERO, RoundingMode.UNNECESSARY);
+        assertSame(test, GBP_2_34);
+    }
+
+    public void test_minus_BigDecimalRoundingMode_roundDown() {
+        Money test = GBP_2_34.minus(new BigDecimal("1.235"), RoundingMode.DOWN);
+        assertEquals(test.toString(), "GBP 1.10");
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_minus_BigDecimalRoundingMode_roundUnecessary() {
+        GBP_2_34.minus(new BigDecimal("1.235"), RoundingMode.UNNECESSARY);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_minus_BigDecimalRoundingMode_nullBigDecimal() {
+        GBP_M5_78.minus((BigDecimal) null, RoundingMode.UNNECESSARY);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_minus_BigDecimalRoundingMode_nullRoundingMode() {
+        GBP_M5_78.minus(BIGDEC_2_34, (RoundingMode) null);
     }
 
     //-----------------------------------------------------------------------
@@ -701,16 +874,6 @@ public class TestMoney {
         assertSame(test, GBP_2_34);
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_minusMajor_overflowBig() {
-        Money.ofMinor("GBP", Long.MAX_VALUE).minusMajor(-1);
-    }
-
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_minusMajor_overflowSmall() {
-        Money.ofMinor("GBP", Long.MIN_VALUE).minusMajor(1);
-    }
-
     //-----------------------------------------------------------------------
     // minusMinor(long)
     //-----------------------------------------------------------------------
@@ -729,47 +892,14 @@ public class TestMoney {
         assertSame(test, GBP_2_34);
     }
 
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_minusMinor_overflowBig() {
-        Money.ofMinor("GBP", Long.MAX_VALUE).minusMinor(-1);
-    }
-
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_minusMinor_overflowSmall() {
-        Money.ofMinor("GBP", Long.MIN_VALUE).minusMinor(1);
-    }
-
-    //-----------------------------------------------------------------------
-    // multipliedBy(BigDecimal)
-    //-----------------------------------------------------------------------
-    public void test_multipliedBy_BigDecimal_positive() {
-        Money test = GBP_2_33.multipliedBy(new BigDecimal("2.5"));
-        assertEquals(test.toString(), "GBP 5.82");
-    }
-
-    public void test_multipliedBy_BigDecimal_negative() {
-        Money test = GBP_2_33.multipliedBy(new BigDecimal("-2.5"));
-        assertEquals(test.toString(), "GBP -5.82");
-    }
-
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_multipliedBy_BigDecimal_overflowBig() {
-        Money.ofMinor("GBP", Long.MAX_VALUE / 2 + 1).multipliedBy(new BigDecimal("2"));
-    }
-
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_multipliedBy_BigDecimal_overflowSmall() {
-        Money.ofMinor("GBP", Long.MIN_VALUE / 2 - 1).multipliedBy(new BigDecimal("2"));
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_multipliedBy_BigDecimal_nullBigDecimal() {
-        GBP_5_78.multipliedBy((BigDecimal) null);
-    }
-
     //-----------------------------------------------------------------------
     // multipliedBy(BigDecimal,RoundingMode)
     //-----------------------------------------------------------------------
+    public void test_multipliedBy_BigDecimalRoundingMode_one() {
+        Money test = GBP_2_34.multipliedBy(BigDecimal.ONE, RoundingMode.DOWN);
+        assertSame(test, GBP_2_34);
+    }
+
     public void test_multipliedBy_BigDecimalRoundingMode_positive() {
         Money test = GBP_2_33.multipliedBy(new BigDecimal("2.5"), RoundingMode.DOWN);
         assertEquals(test.toString(), "GBP 5.82");
@@ -783,16 +913,6 @@ public class TestMoney {
     public void test_multipliedBy_BigDecimalRoundingMode_negative() {
         Money test = GBP_2_33.multipliedBy(new BigDecimal("-2.5"), RoundingMode.FLOOR);
         assertEquals(test.toString(), "GBP -5.83");
-    }
-
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_multipliedBy_BigDecimalRoundingMode_overflowBig() {
-        Money.ofMinor("GBP", Long.MAX_VALUE / 2 + 1).multipliedBy(new BigDecimal("2"), RoundingMode.DOWN);
-    }
-
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_multipliedBy_BigDecimalRoundingMode_overflowSmall() {
-        Money.ofMinor("GBP", Long.MIN_VALUE / 2 - 1).multipliedBy(new BigDecimal("2"), RoundingMode.DOWN);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -810,7 +930,7 @@ public class TestMoney {
     //-----------------------------------------------------------------------
     public void test_multipliedBy_long_one() {
         Money test = GBP_2_34.multipliedBy(1);
-        assertEquals(test.toString(), "GBP 2.34");
+        assertSame(test, GBP_2_34);
     }
 
     public void test_multipliedBy_long_positive() {
@@ -821,34 +941,6 @@ public class TestMoney {
     public void test_multipliedBy_long_negative() {
         Money test = GBP_2_34.multipliedBy(-3);
         assertEquals(test.toString(), "GBP -7.02");
-    }
-
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_multipliedBy_long_overflowBig() {
-        Money.ofMinor("GBP", Long.MAX_VALUE / 2 + 1).multipliedBy(2);
-    }
-
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_multipliedBy_long_overflowSmall() {
-        Money.ofMinor("GBP", Long.MIN_VALUE / 2 - 1).multipliedBy(2);
-    }
-
-    //-----------------------------------------------------------------------
-    // dividedBy(BigDecimal)
-    //-----------------------------------------------------------------------
-    public void test_dividedBy_BigDecimal_positive() {
-        Money test = GBP_2_34.dividedBy(new BigDecimal("2.5"));
-        assertEquals(test.toString(), "GBP 0.93");
-    }
-
-    public void test_dividedBy_BigDecimal_negative() {
-        Money test = GBP_2_34.dividedBy(new BigDecimal("-2.5"));
-        assertEquals(test.toString(), "GBP -0.93");
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_dividedBy_BigDecimal_nullBigDecimal() {
-        GBP_5_78.dividedBy((BigDecimal) null);
     }
 
     //-----------------------------------------------------------------------
@@ -880,25 +972,30 @@ public class TestMoney {
     }
 
     //-----------------------------------------------------------------------
-    // dividedBy(long)
+    // dividedBy(long,RoundingMode)
     //-----------------------------------------------------------------------
     public void test_dividedBy_long_one() {
-        Money test = GBP_2_34.dividedBy(1);
-        assertEquals(test.toString(), "GBP 2.34");
+        Money test = GBP_2_34.dividedBy(1, RoundingMode.DOWN);
+        assertSame(test, GBP_2_34);
     }
 
     public void test_dividedBy_long_positive() {
-        Money test = GBP_2_34.dividedBy(3);
+        Money test = GBP_2_34.dividedBy(3, RoundingMode.DOWN);
         assertEquals(test.toString(), "GBP 0.78");
     }
 
     public void test_dividedBy_long_positive_roundDown() {
-        Money test = GBP_2_35.dividedBy(3);
+        Money test = GBP_2_35.dividedBy(3, RoundingMode.DOWN);
         assertEquals(test.toString(), "GBP 0.78");
     }
 
+    public void test_dividedBy_long_positive_roundUp() {
+        Money test = GBP_2_35.dividedBy(3, RoundingMode.UP);
+        assertEquals(test.toString(), "GBP 0.79");
+    }
+
     public void test_dividedBy_long_negative() {
-        Money test = GBP_2_34.dividedBy(-3);
+        Money test = GBP_2_34.dividedBy(-3, RoundingMode.DOWN);
         assertEquals(test.toString(), "GBP -0.78");
     }
 
@@ -915,22 +1012,12 @@ public class TestMoney {
         assertEquals(test.toString(), "GBP 2.34");
     }
 
-    public void test_negated_big() {
-        Money test = Money.ofMinor("GBP", Long.MAX_VALUE).negated();
-        assertEquals(test.getAmountMinor(), -Long.MAX_VALUE);
-    }
-
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_negated_overflow() {
-        Money.ofMinor("GBP", Long.MIN_VALUE).negated();
-    }
-
     //-----------------------------------------------------------------------
     // abs()
     //-----------------------------------------------------------------------
     public void test_abs_positive() {
         Money test = GBP_2_34.abs();
-        assertEquals(test.toString(), "GBP 2.34");
+        assertSame(test, GBP_2_34);
     }
 
     public void test_abs_negative() {
@@ -938,27 +1025,17 @@ public class TestMoney {
         assertEquals(test.toString(), "GBP 2.34");
     }
 
-    public void test_abs_big() {
-        Money test = Money.ofMinor("GBP", Long.MAX_VALUE).abs();
-        assertEquals(test.getAmountMinor(), Long.MAX_VALUE);
-    }
-
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_abs_overflow() {
-        Money.ofMinor("GBP", Long.MIN_VALUE).abs();
-    }
-
     //-----------------------------------------------------------------------
     // rounded()
     //-----------------------------------------------------------------------
     public void test_round_2down() {
         Money test = GBP_2_34.rounded(2, RoundingMode.DOWN);
-        assertEquals(test.toString(), "GBP 2.34");
+        assertSame(test, GBP_2_34);
     }
 
     public void test_round_2up() {
         Money test = GBP_2_34.rounded(2, RoundingMode.DOWN);
-        assertEquals(test.toString(), "GBP 2.34");
+        assertSame(test, GBP_2_34);
     }
 
     public void test_round_1down() {
@@ -991,47 +1068,9 @@ public class TestMoney {
         assertEquals(test.toString(), "GBP 440.00");
     }
 
-    @Test(expectedExceptions = MoneyException.class)
     public void test_round_3() {
-        GBP_2_34.rounded(3, RoundingMode.DOWN);  // 3 exceeds scale of 2
-    }
-
-    //-----------------------------------------------------------------------
-    // convertedTo(BigDecimal)
-    //-----------------------------------------------------------------------
-    public void test_convertedTo_BigDecimal_positive() {
-        Money test = GBP_2_33.convertedTo(EUR, new BigDecimal("2.5"));
-        assertEquals(test.toString(), "EUR 5.82");
-    }
-
-    @Test(expectedExceptions = MoneyException.class)
-    public void test_convertedTo_BigDecimal_negative() {
-        GBP_2_33.convertedTo(EUR, new BigDecimal("-2.5"));
-    }
-
-    @Test(expectedExceptions = MoneyException.class)
-    public void test_convertedTo_BigDecimal_sameCurrency() {
-        GBP_2_33.convertedTo(GBP, new BigDecimal("2.5"));
-    }
-
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_convertedTo_BigDecimal_overflowBig() {
-        Money.ofMinor("GBP", Long.MAX_VALUE / 2 + 1).convertedTo(EUR, new BigDecimal("2"));
-    }
-
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_convertedTo_BigDecimal_overflowSmall() {
-        Money.ofMinor("GBP", Long.MIN_VALUE / 2 - 1).convertedTo(EUR, new BigDecimal("2"));
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_convertedTo_BigDecimal_nullCurrency() {
-        GBP_5_78.convertedTo((CurrencyUnit) null, new BigDecimal("2"));
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_convertedTo_BigDecimal_nullBigDecimal() {
-        GBP_5_78.convertedTo(EUR, (BigDecimal) null);
+        Money test = GBP_2_34.rounded(3, RoundingMode.DOWN);
+        assertSame(test, GBP_2_34);
     }
 
     //-----------------------------------------------------------------------
@@ -1054,17 +1093,7 @@ public class TestMoney {
 
     @Test(expectedExceptions = MoneyException.class)
     public void test_convertedTo_BigDecimalRoundingMode_sameCurrency() {
-        GBP_2_33.convertedTo(GBP, new BigDecimal("2.5"));
-    }
-
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_convertedTo_BigDecimalRoundingMode_overflowBig() {
-        Money.ofMinor("GBP", Long.MAX_VALUE / 2 + 1).convertedTo(EUR, new BigDecimal("2"), RoundingMode.DOWN);
-    }
-
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_convertedTo_BigDecimalRoundingMode_overflowSmall() {
-        Money.ofMinor("GBP", Long.MIN_VALUE / 2 - 1).convertedTo(EUR, new BigDecimal("2"), RoundingMode.DOWN);
+        GBP_2_33.convertedTo(GBP, new BigDecimal("2.5"), RoundingMode.DOWN);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -1083,9 +1112,40 @@ public class TestMoney {
     }
 
     //-----------------------------------------------------------------------
+    // toBigMoney()
+    //-----------------------------------------------------------------------
+    public void test_toBigMoney() {
+        assertEquals(GBP_2_34.toBigMoney(), BigMoney.ofMinor(GBP, 234));
+    }
+
+    //-----------------------------------------------------------------------
+    // isSameCurrency(Money)
+    //-----------------------------------------------------------------------
+    public void test_isSameCurrency_Money_same() {
+        assertEquals(GBP_2_34.isSameCurrency(GBP_2_35), true);
+    }
+
+    public void test_isSameCurrency_Money_different() {
+        assertEquals(GBP_2_34.isSameCurrency(USD_2_34), false);
+    }
+
+    public void test_isSameCurrency_BigMoney_same() {
+        assertEquals(GBP_2_34.isSameCurrency(BigMoney.parse("GBP 2")), true);
+    }
+
+    public void test_isSameCurrency_BigMoney_different() {
+        assertEquals(GBP_2_34.isSameCurrency(BigMoney.parse("USD 2")), false);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_isSameCurrency_Money_nullMoney() {
+        GBP_2_34.isSameCurrency((Money) null);
+    }
+
+    //-----------------------------------------------------------------------
     // compareTo()
     //-----------------------------------------------------------------------
-    public void test_compareTo() {
+    public void test_compareTo_Money() {
         Money a = GBP_2_34;
         Money b = GBP_2_35;
         Money c = GBP_2_36;
@@ -1103,11 +1163,55 @@ public class TestMoney {
         assertEquals(c.compareTo(b), 1);
     }
 
+    public void test_compareTo_BigMoney() {
+        Money t = GBP_2_35;
+        BigMoney a = BigMoney.ofMinor(GBP, 234);
+        BigMoney b = BigMoney.ofMinor(GBP, 235);
+        BigMoney c = BigMoney.ofMinor(GBP, 236);
+        assertEquals(t.compareTo(a), 1);
+        assertEquals(t.compareTo(b), 0);
+        assertEquals(t.compareTo(c), -1);
+    }
+
     @Test(expectedExceptions = MoneyException.class)
     public void test_compareTo_currenciesDiffer() {
         Money a = GBP_2_34;
         Money b = USD_2_35;
         a.compareTo(b);
+    }
+
+    //-----------------------------------------------------------------------
+    // isEqual()
+    //-----------------------------------------------------------------------
+    public void test_isEqual() {
+        Money a = GBP_2_34;
+        Money b = GBP_2_35;
+        Money c = GBP_2_36;
+        assertEquals(a.isEqual(a), true);
+        assertEquals(b.isEqual(b), true);
+        assertEquals(c.isEqual(c), true);
+        
+        assertEquals(a.isEqual(b), false);
+        assertEquals(b.isEqual(a), false);
+        
+        assertEquals(a.isEqual(c), false);
+        assertEquals(c.isEqual(a), false);
+        
+        assertEquals(b.isEqual(c), false);
+        assertEquals(c.isEqual(b), false);
+    }
+
+    public void test_isEqual_BigMoney() {
+        Money a = GBP_2_34;
+        BigMoney b = BigMoney.ofMinor(GBP, 234);
+        assertEquals(a.isEqual(b), true);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_isEqual_currenciesDiffer() {
+        Money a = GBP_2_34;
+        Money b = USD_2_35;
+        a.isEqual(b);
     }
 
     //-----------------------------------------------------------------------
