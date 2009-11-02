@@ -95,10 +95,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the rounding fails
      */
     public static Money of(CurrencyUnit currency, BigDecimal amount, RoundingMode roundingMode) {
-        MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
-        MoneyUtils.checkNotNull(amount, "Amount must not be null");
-        amount = amount.setScale(currency.getDecimalPlaces(), roundingMode);
-        return new Money(BigMoney.of(currency, amount));
+        return new Money(BigMoney.ofCurrencyScale(currency, amount, roundingMode));
     }
 
     /**
@@ -645,6 +642,51 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     }
 
     /**
+     * Returns a copy of this monetary value with the amount added.
+     * <p>
+     * The result is the addition of the two values.
+     * No rounding is performed on the amount to be added, so it must have a
+     * scale compatible with the currency.
+     * <p>
+     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
+     * the most expected answer for most programming scenarios.
+     * Any <code>double</code> literal in code will be converted to
+     * exactly the same BigDecimal with the same scale.
+     * For example, the literal '1.45d' will be converted to '1.45'.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param amountToAdd  the monetary value to add, not null
+     * @return the new instance with the input amount added, never null
+     * @throws ArithmeticException if the scale of the amount is too large
+     */
+    public Money plus(double amountToAdd) {
+        return plus(amountToAdd, RoundingMode.UNNECESSARY);
+    }
+
+    /**
+     * Returns a copy of this monetary value with the amount added.
+     * <p>
+     * The result is the addition of the two values.
+     * If the amount to add exceeds the scale of the currency, then the
+     * rounding mode will be used to adjust the result.
+     * <p>
+     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
+     * the most expected answer for most programming scenarios.
+     * Any <code>double</code> literal in code will be converted to
+     * exactly the same BigDecimal with the same scale.
+     * For example, the literal '1.45d' will be converted to '1.45'.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param amountToAdd  the monetary value to add, not null
+     * @return the new instance with the input amount added, never null
+     */
+    public Money plus(double amountToAdd, RoundingMode roundingMode) {
+        return with(iMoney.plus(amountToAdd).withCurrencyScale(roundingMode));
+    }
+
+    /**
      * Returns a copy of this monetary value with the amount in major units added.
      * <p>
      * This adds an amount in major units, leaving the minor units untouched.
@@ -725,6 +767,51 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     }
 
     /**
+     * Returns a copy of this monetary value with the amount subtracted.
+     * <p>
+     * The result is the subtraction of the two values.
+     * No rounding is performed on the amount to be subtracted, so it must have a
+     * scale compatible with the currency.
+     * <p>
+     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
+     * the most expected answer for most programming scenarios.
+     * Any <code>double</code> literal in code will be converted to
+     * exactly the same BigDecimal with the same scale.
+     * For example, the literal '1.45d' will be converted to '1.45'.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param amountToSubtract  the monetary value to subtract, not null
+     * @return the new instance with the input amount subtracted, never null
+     * @throws ArithmeticException if the scale of the amount is too large
+     */
+    public Money minus(double amountToSubtract) {
+        return minus(amountToSubtract, RoundingMode.UNNECESSARY);
+    }
+
+    /**
+     * Returns a copy of this monetary value with the amount subtracted.
+     * <p>
+     * The result is the subtraction of the two values.
+     * If the amount to subtract exceeds the scale of the currency, then the
+     * rounding mode will be used to adjust the result.
+     * <p>
+     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
+     * the most expected answer for most programming scenarios.
+     * Any <code>double</code> literal in code will be converted to
+     * exactly the same BigDecimal with the same scale.
+     * For example, the literal '1.45d' will be converted to '1.45'.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param amountToSubtract  the monetary value to subtract, not null
+     * @return the new instance with the input amount subtracted, never null
+     */
+    public Money minus(double amountToSubtract, RoundingMode roundingMode) {
+        return with(iMoney.minus(amountToSubtract).withCurrencyScale(roundingMode));
+    }
+
+    /**
      * Returns a copy of this monetary value with the amount in major units subtracted.
      * <p>
      * This subtracts an amount in major units, leaving the minor units untouched.
@@ -778,6 +865,12 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * This takes this amount and multiplies it by the specified value, rounding
      * the result is rounded as specified.
      * <p>
+     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
+     * the most expected answer for most programming scenarios.
+     * Any <code>double</code> literal in code will be converted to
+     * exactly the same BigDecimal with the same scale.
+     * For example, the literal '1.45d' will be converted to '1.45'.
+     * <p>
      * This instance is immutable and unaffected by this method.
      * 
      * @param valueToMultiplyBy  the scalar value to multiply by, not null
@@ -786,7 +879,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the rounding fails
      */
     public Money multipliedBy(double valueToMultiplyBy, RoundingMode roundingMode) {
-        return multipliedBy(BigDecimal.valueOf(valueToMultiplyBy), roundingMode);
+        return with(iMoney.multiplyRetainScale(valueToMultiplyBy, roundingMode));
     }
 
     /**
@@ -828,6 +921,12 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * This takes this amount and divides it by the specified value, rounding
      * the result is rounded as specified.
      * <p>
+     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
+     * the most expected answer for most programming scenarios.
+     * Any <code>double</code> literal in code will be converted to
+     * exactly the same BigDecimal with the same scale.
+     * For example, the literal '1.45d' will be converted to '1.45'.
+     * <p>
      * This instance is immutable and unaffected by this method.
      * 
      * @param valueToDivideBy  the scalar value to divide by, not null
@@ -837,7 +936,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the rounding fails
      */
     public Money dividedBy(double valueToDivideBy, RoundingMode roundingMode) {
-        return dividedBy(BigDecimal.valueOf(valueToDivideBy), roundingMode);
+        return with(iMoney.dividedBy(valueToDivideBy, roundingMode));
     }
 
     /**

@@ -17,6 +17,7 @@ package org.joda.money;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 
 /**
@@ -65,7 +66,14 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         MoneyUtils.checkNotNull(currency, "Currency must not be null");
         MoneyUtils.checkNotNull(amount, "Amount must not be null");
         if (amount.getClass() != BigDecimal.class) {
-            amount = new BigDecimal(amount.unscaledValue(), amount.scale());
+            BigInteger value = amount.unscaledValue();
+            if (value == null ) {
+                throw new IllegalArgumentException("Illegal BigDecimal subclass");
+            }
+            if (value.getClass() != BigInteger.class) {
+                value = new BigInteger(value.toString());
+            }
+            amount = new BigDecimal(value, amount.scale());
         }
         return new BigMoney(currency, amount);
     }
@@ -312,58 +320,6 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         String amountStr = moneyStr.substring(4);
         return BigMoney.of(CurrencyUnit.of(currStr), new BigDecimal(amountStr));
     }
-
-//    /**
-//     * Converts an amount in decimal to an amount in minor units safely.
-//     * 
-//     * @param currency  the currency, validated not null
-//     * @param amount  the amount to convert, validated not null
-//     * @return the converted amount, never null
-//     * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
-//     */
-//    private static BigDecimal decimalToMinor(CurrencyUnit currency, BigDecimal amount) {
-//        return amount.movePointRight(currency.getDecimalPlaces());
-//    }
-//
-//    /**
-//     * Converts an amount in major units to an amount in minor units safely.
-//     * 
-//     * @param currency  the currency, validated not null
-//     * @param amountMajor  the amount to convert
-//     * @return the converted amount
-//     */
-//    private static long majorToMinor(CurrencyUnit currency, long amountMajor) {
-//        long mult = factor(currency.getDecimalPlaces());
-//        long result = amountMajor * mult;
-//        if (result / mult != amountMajor) {
-//            throw new ArithmeticException("Monetary value is too large: " + currency.getCurrencyCode() + " " + amountMajor);
-//        }
-//        return result;
-//    }
-//
-//    /**
-//     * Gets the factors to divide or multiply by between major and minor units.
-//     * 
-//     * @param dp  the decimal places
-//     * @return the factor
-//     */
-//    private static int factor(int dp) {
-//        return (dp == 3 ? 1000 : (dp == 2 ? 100 : (dp == 1 ? 10 : 1)));
-//    }
-//
-//    /**
-//     * Safely converts a <code>long</code> to an <code>int</code>.
-//     * 
-//     * @param amount  the amount to convert
-//     * @return the value as an <code>int</code>
-//     * @throws ArithmeticException if the amount is too large
-//     */
-//    private static int safeToInt(long amount) {
-//        if (amount > Integer.MAX_VALUE || amount < Integer.MIN_VALUE) {
-//            throw new ArithmeticException("Amount is too large to represent in an int: " + amount);
-//        }
-//        return (int) amount;
-//    }
 
     //-----------------------------------------------------------------------
     /**
@@ -787,6 +743,32 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     }
 
     /**
+     * Returns a copy of this monetary value with the amount added.
+     * <p>
+     * No precision is lost in the result.
+     * The scale of the result will be the maximum of the two scales.
+     * For example,'USD 25.95' plus 'USD 3.021' will 'USD 28.971.
+     * <p>
+     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
+     * the most expected answer for most programming scenarios.
+     * Any <code>double</code> literal in code will be converted to
+     * exactly the same BigDecimal with the same scale.
+     * For example, the literal '1.45d' will be converted to '1.45'.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param amountToAdd  the monetary value to add, not null
+     * @return the new instance with the input amount added, never null
+     */
+    public BigMoney plus(double amountToAdd) {
+        if (amountToAdd == 0) {
+            return this;
+        }
+        BigDecimal amount = iAmount.add(BigDecimal.valueOf(amountToAdd));
+        return BigMoney.of(iCurrency, amount);
+    }
+
+    /**
      * Returns a copy of this monetary value with the amount in major units added.
      * <p>
      * This adds an amount in major units, leaving the minor units untouched.
@@ -869,6 +851,32 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     }
 
     /**
+     * Returns a copy of this monetary value with the amount subtracted.
+     * <p>
+     * No precision is lost in the result.
+     * The scale of the result will be the maximum of the two scales.
+     * For example,'USD 25.95' minus 'USD 3.021' will 'USD 22.929.
+     * <p>
+     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
+     * the most expected answer for most programming scenarios.
+     * Any <code>double</code> literal in code will be converted to
+     * exactly the same BigDecimal with the same scale.
+     * For example, the literal '1.45d' will be converted to '1.45'.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param amountToSubtract  the monetary value to subtract, not null
+     * @return the new instance with the input amount subtracted, never null
+     */
+    public BigMoney minus(double amountToSubtract) {
+        if (amountToSubtract == 0) {
+            return this;
+        }
+        BigDecimal amount = iAmount.subtract(BigDecimal.valueOf(amountToSubtract));
+        return BigMoney.of(iCurrency, amount);
+    }
+
+    /**
      * Returns a copy of this monetary value with the amount in major units subtracted.
      * <p>
      * No precision is lost in the result.
@@ -936,6 +944,32 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * Returns a copy of this monetary value multiplied by the specified value.
      * <p>
      * No precision is lost in the result.
+     * The result has a scale equal to the sum of the two scales.
+     * For example, 'USD 1.13' multiplied by 2.5 yields 'USD 2.825'.
+     * <p>
+     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
+     * the most expected answer for most programming scenarios.
+     * Any <code>double</code> literal in code will be converted to
+     * exactly the same BigDecimal with the same scale.
+     * For example, the literal '1.45d' will be converted to '1.45'.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param valueToMultiplyBy  the scalar value to multiply by, not null
+     * @return the new multiplied instance, never null
+     */
+    public BigMoney multipliedBy(double valueToMultiplyBy) {
+        if (valueToMultiplyBy == 1) {
+            return this;
+        }
+        BigDecimal amount = iAmount.multiply(BigDecimal.valueOf(valueToMultiplyBy));
+        return BigMoney.of(iCurrency, amount);
+    }
+
+    /**
+     * Returns a copy of this monetary value multiplied by the specified value.
+     * <p>
+     * No precision is lost in the result.
      * The result has a scale equal to the scale of this money.
      * For example, 'USD 1.13' multiplied by 2 yields 'USD 2.26'.
      * <p>
@@ -978,24 +1012,49 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         return BigMoney.of(iCurrency, amount);
     }
 
-    //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this monetary value divided by the specified value,
-     * rounding down the result to have the same scale as this money.
+     * Returns a copy of this monetary value multiplied by the specified value
+     * using the specified rounding mode to adjust the scale of the result.
      * <p>
-     * The result has the same scale as this instance.
-     * For example, 'USD 1.13' divided by 2.5 yields 'USD 0.45'
-     * (amount rounded down from 0.452).
+     * This multiplies this money by the specified value, retaining the scale of this money.
+     * This will frequently lose precision, hence the need for a rounding mode.
+     * For example, 'USD 1.13' multiplied by 2.5 and rounding down yields 'USD 2.82'.
+     * <p>
+     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
+     * the most expected answer for most programming scenarios.
+     * Any <code>double</code> literal in code will be converted to
+     * exactly the same BigDecimal with the same scale.
+     * For example, the literal '1.45d' will be converted to '1.45'.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
-     * @param valueToDivideBy  the scalar value to multiply by, not null
-     * @return the new divided instance, never null
-     * @throws ArithmeticException if dividing by zero
+     * @param valueToMultiplyBy  the scalar value to multiply by, not null
+     * @param roundingMode  the rounding mode to use to bring the decimal places back in line, not null
+     * @return the new multiplied instance, never null
+     * @throws ArithmeticException if the rounding fails
      */
-    public BigMoney dividedBy(BigDecimal valueToDivideBy) {
-        return dividedBy(valueToDivideBy, RoundingMode.DOWN);
+    public BigMoney multiplyRetainScale(double valueToMultiplyBy, RoundingMode roundingMode) {
+        return multiplyRetainScale(BigDecimal.valueOf(valueToMultiplyBy), roundingMode);
     }
+
+    //-----------------------------------------------------------------------
+//    /**
+//     * Returns a copy of this monetary value divided by the specified value,
+//     * rounding down the result to have the same scale as this money.
+//     * <p>
+//     * The result has the same scale as this instance.
+//     * For example, 'USD 1.13' divided by 2.5 yields 'USD 0.45'
+//     * (amount rounded down from 0.452).
+//     * <p>
+//     * This instance is immutable and unaffected by this method.
+//     * 
+//     * @param valueToDivideBy  the scalar value to multiply by, not null
+//     * @return the new divided instance, never null
+//     * @throws ArithmeticException if dividing by zero
+//     */
+//    public BigMoney dividedBy(BigDecimal valueToDivideBy) {
+//        return dividedBy(valueToDivideBy, RoundingMode.DOWN);
+//    }
 
     /**
      * Returns a copy of this monetary value divided by the specified value
@@ -1023,23 +1082,80 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         return BigMoney.of(iCurrency, amount);
     }
 
+//    /**
+//     * Returns a copy of this monetary value divided by the specified value,
+//     * rounding down the result to have the same scale as this money.
+//     * <p>
+//     * The result has the same scale as this instance.
+//     * For example, 'USD 1.13' divided by 2.5 yields 'USD 0.45'
+//     * (amount rounded down from 0.452).
+//     * <p>
+//     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
+//     * the most expected answer for most programming scenarios.
+//     * Any <code>double</code> literal in code will be converted to
+//     * exactly the same BigDecimal with the same scale.
+//     * For example, the literal '1.45d' will be converted to '1.45'.
+//     * <p>
+//     * This instance is immutable and unaffected by this method.
+//     * 
+//     * @param valueToDivideBy  the scalar value to divide by, not null
+//     * @param roundingMode  the rounding mode to use, not null
+//     * @return the new divided instance, never null
+//     * @throws ArithmeticException if dividing by zero
+//     * @throws ArithmeticException if the rounding fails
+//     */
+//    public BigMoney dividedBy(double valueToDivideBy) {
+//        return dividedBy(valueToDivideBy, RoundingMode.DOWN);
+//    }
+
     /**
      * Returns a copy of this monetary value divided by the specified value
-     * rounding down if necessary.
+     * using the specified rounding mode to adjust the scale.
      * <p>
      * The result has the same scale as this instance.
-     * For example, 'USD 1.13' divided by 2 yields 'USD 0.56'
-     * (amount rounded down from 0.565).
+     * For example, 'USD 1.13' divided by 2.5 and rounding down yields 'USD 0.45'
+     * (amount rounded down from 0.452).
+     * <p>
+     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
+     * the most expected answer for most programming scenarios.
+     * Any <code>double</code> literal in code will be converted to
+     * exactly the same BigDecimal with the same scale.
+     * For example, the literal '1.45d' will be converted to '1.45'.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
      * @param valueToDivideBy  the scalar value to divide by, not null
+     * @param roundingMode  the rounding mode to use, not null
      * @return the new divided instance, never null
      * @throws ArithmeticException if dividing by zero
+     * @throws ArithmeticException if the rounding fails
      */
-    public BigMoney dividedBy(long valueToDivideBy) {
-        return dividedBy(valueToDivideBy, RoundingMode.DOWN);
+    public BigMoney dividedBy(double valueToDivideBy, RoundingMode roundingMode) {
+        MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
+        if (valueToDivideBy == 1) {
+            return this;
+        }
+        BigDecimal amount = iAmount.divide(BigDecimal.valueOf(valueToDivideBy), roundingMode);
+        return BigMoney.of(iCurrency, amount);
     }
+
+//    /**
+//     * Returns a copy of this monetary value divided by the specified value
+//     * rounding down if necessary.
+//     * <p>
+//     * The result has the same scale as this instance.
+//     * For example, 'USD 1.13' divided by 2 yields 'USD 0.56'
+//     * (amount rounded down from 0.565).
+//     * <p>
+//     * This instance is immutable and unaffected by this method.
+//     * 
+//     * @param valueToDivideBy  the scalar value to divide by, not null
+//     * @return the new divided instance, never null
+//     * @throws ArithmeticException if dividing by zero
+//     */
+//    public BigMoney dividedBy(long valueToDivideBy) {
+//        return dividedBy(valueToDivideBy, RoundingMode.DOWN);
+//    }
 
     /**
      * Returns a copy of this monetary value divided by the specified value
@@ -1099,10 +1215,11 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * the monetary value is zero. Negative scales round increasingly large numbers.
      * Unlike {@link #withScale(int)}, this scale of the result is unchanged.
      * <ul>
-     * <li>Rounding 'EUR 45.23' to a scale of 2 has no effect (it already has that scale).
-     * <li>Rounding 'EUR 45.23' to a scale of 1 returns 45.20 or 45.30 depending on the rounding mode.
-     * <li>Rounding 'EUR 45.23' to a scale of 0 returns 45.00 or 46.00 depending on the rounding mode.
      * <li>Rounding 'EUR 45.23' to a scale of -1 returns 40.00 or 50.00 depending on the rounding mode.
+     * <li>Rounding 'EUR 45.23' to a scale of 0 returns 45.00 or 46.00 depending on the rounding mode.
+     * <li>Rounding 'EUR 45.23' to a scale of 1 returns 45.20 or 45.30 depending on the rounding mode.
+     * <li>Rounding 'EUR 45.23' to a scale of 2 has no effect (it already has that scale).
+     * <li>Rounding 'EUR 45.23' to a scale of 3 has no effect (the scale is not increased).
      * </ul>
      * This instance is immutable and unaffected by this method.
      * 
