@@ -123,6 +123,42 @@ public class TestCurrencyUnit {
     }
 
     //-----------------------------------------------------------------------
+    // of(Locale)
+    //-----------------------------------------------------------------------
+    public void test_factory_of_Locale() {
+        CurrencyUnit test = CurrencyUnit.of(Locale.UK);
+        assertEquals(test.getCurrencyCode(), "GBP");
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_of_Locale_nullLocale() {
+        CurrencyUnit.of((Locale) null);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_of_Locale_unknownCurrency() {
+        CurrencyUnit.of(new Locale("en", "XY"));
+    }
+
+    //-----------------------------------------------------------------------
+    // ofCountry(String)
+    //-----------------------------------------------------------------------
+    public void test_factory_ofCountry_String() {
+        CurrencyUnit test = CurrencyUnit.ofCountry("GB");
+        assertEquals(test.getCurrencyCode(), "GBP");
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_ofCountry_String_nullString() {
+        CurrencyUnit.ofCountry((String) null);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_ofCountry_String_unknownCurrency() {
+        CurrencyUnit.ofCountry("gb");
+    }
+
+    //-----------------------------------------------------------------------
     // getInstance(String)
     //-----------------------------------------------------------------------
     public void test_factory_getInstance_String() {
@@ -138,24 +174,6 @@ public class TestCurrencyUnit {
     @Test(expectedExceptions = MoneyException.class)
     public void test_factory_getInstance_String_unknownCurrency() {
         CurrencyUnit.getInstance("ABC");
-    }
-
-    //-----------------------------------------------------------------------
-    // of(Locale)
-    //-----------------------------------------------------------------------
-    public void test_factory_of_Locale() {
-        CurrencyUnit test = CurrencyUnit.of(Locale.UK);
-        assertEquals(test.getCurrencyCode(), "GBP");
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_factory_of_Locale_nullString() {
-        CurrencyUnit.of((Locale) null);
-    }
-
-    @Test(expectedExceptions = MoneyException.class)
-    public void test_factory_of_Locale_unknownCurrency() {
-        CurrencyUnit.of(new Locale("en", "XY"));
     }
 
     //-----------------------------------------------------------------------

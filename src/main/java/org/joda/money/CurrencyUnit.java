@@ -112,11 +112,11 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Registers a currency allowing it to be used.
+     * Gets the list of all registered currencies.
      * <p>
-     * This class only permits known currencies to be returned.
-     * To achieve this, all currencies have to be registered in advance, at
-     * application startup.
+     * This class only permits known currencies to be returned, thus this list is
+     * the complete list of valid singleton currencies. The list may change after
+     * application startup, however this isn't recommended.
      *
      * @return the sorted, independent, list of all registered currencies, never null
      */
@@ -128,7 +128,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the Currency instance matching the specified currency.
+     * Gets the <code>CurrencyUnit</code> instance matching the specified currency.
      *
      * @param currency  the currency, not null
      * @return the singleton instance, never null
@@ -139,7 +139,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Gets the Currency instance for the specified currency code.
+     * Gets the <code>CurrencyUnit</code> instance for the specified currency code.
      *
      * @param currencyCode  the currency code, not null
      * @return the singleton instance, never null
@@ -155,22 +155,11 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Gets the Currency instance for the specified currency code.
+     * Gets the <code>CurrencyUnit</code> instance for the specified locale.
      * <p>
-     * This method exists to match the API of {@link Currency}.
+     * Only the country is used from the locale.
      *
-     * @param currencyCode  the currency code, not null
-     * @return the singleton instance, never null
-     * @throws MoneyException if the currency is unknown
-     */
-    public static CurrencyUnit getInstance(String currencyCode) {
-        return of(currencyCode);
-    }
-
-    /**
-     * Gets the Currency instance for the specified currency code.
-     *
-     * @param currencyCode  the currency code, not null
+     * @param locale  the locale, not null
      * @return the singleton instance, never null
      * @throws MoneyException if the currency is unknown
      */
@@ -184,7 +173,27 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Gets the Currency instance for the specified currency code.
+     * Gets the <code>CurrencyUnit</code> instance for the specified country code.
+     * <p>
+     * Country codes should generally be in upper case.
+     * This method is case sensitive.
+     *
+     * @param countryCode  the country code, not null
+     * @return the singleton instance, never null
+     * @throws MoneyException if the currency is unknown
+     */
+    public static CurrencyUnit ofCountry(String countryCode) {
+        MoneyUtils.checkNotNull(countryCode, "Country code must not be null");
+        CurrencyUnit currency = cCurrenciesByCountry.get(countryCode);
+        if (currency == null) {
+            throw new MoneyException("Unknown currency for country code: " + countryCode);
+        }
+        return currency;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the <code>CurrencyUnit</code> instance for the specified currency code.
      * <p>
      * This method exists to match the API of {@link Currency}.
      *
@@ -192,8 +201,21 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @return the singleton instance, never null
      * @throws MoneyException if the currency is unknown
      */
+    public static CurrencyUnit getInstance(String currencyCode) {
+        return CurrencyUnit.of(currencyCode);
+    }
+
+    /**
+     * Gets the <code>CurrencyUnit</code> instance for the specified locale.
+     * <p>
+     * This method exists to match the API of {@link Currency}.
+     *
+     * @param locale  the locale, not null
+     * @return the singleton instance, never null
+     * @throws MoneyException if the currency is unknown
+     */
     public static CurrencyUnit getInstance(Locale locale) {
-        return of(locale);
+        return CurrencyUnit.of(locale);
     }
 
     //-----------------------------------------------------------------------
