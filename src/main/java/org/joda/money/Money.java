@@ -59,7 +59,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the scale of the amount is too large
      */
     public static Money of(CurrencyUnit currency, BigDecimal amount) {
-        return of(currency, amount, RoundingMode.UNNECESSARY);
+        return Money.of(currency, amount, RoundingMode.UNNECESSARY);
     }
 
     /**
@@ -77,7 +77,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      */
     public static Money of(String currencyCode, BigDecimal amount) {
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        return of(CurrencyUnit.of(currencyCode), amount);
+        return Money.of(CurrencyUnit.of(currencyCode), amount);
     }
 
     //-----------------------------------------------------------------------
@@ -113,7 +113,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      */
     public static Money of(String currencyCode, BigDecimal amount, RoundingMode roundingMode) {
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        return of(CurrencyUnit.of(currencyCode), amount, roundingMode);
+        return Money.of(CurrencyUnit.of(currencyCode), amount, roundingMode);
     }
 
     //-----------------------------------------------------------------------
@@ -132,7 +132,9 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the amount is too large
      */
     public static Money ofMajor(CurrencyUnit currency, long amountMajor) {
-        return new Money(BigMoney.ofMajor(currency, amountMajor));
+        MoneyUtils.checkNotNull(currency, "Currency must not be null");
+        BigDecimal bd = BigDecimal.valueOf(amountMajor).setScale(currency.getDecimalPlaces());
+        return new Money(BigMoney.of(currency, bd));
     }
 
     /**
@@ -151,7 +153,8 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the amount is too large
      */
     public static Money ofMajor(String currencyCode, long amountMajor) {
-        return new Money(BigMoney.ofMajor(currencyCode, amountMajor));
+        MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
+        return Money.ofMajor(CurrencyUnit.of(currencyCode), amountMajor);
     }
 
     //-----------------------------------------------------------------------
@@ -202,7 +205,9 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the instance representing zero, never null
      */
     public static Money zero(CurrencyUnit currency) {
-        return new Money(BigMoney.zero(currency));
+        MoneyUtils.checkNotNull(currency, "Currency must not be null");
+        BigDecimal bd = BigDecimal.valueOf(0, currency.getDecimalPlaces());
+        return new Money(BigMoney.of(currency, bd));
     }
 
     /**
@@ -215,7 +220,43 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws IllegalArgumentException if the currency is unknown
      */
     public static Money zero(String currencyCode) {
-        return new Money(BigMoney.zero(currencyCode));
+        MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
+        return Money.zero(CurrencyUnit.of(currencyCode));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets an instance of <code>Money</code> from the provider, rounding as necessary.
+     * <p>
+     * This allows you to create an instance from any class that implements the
+     * provider, such as <code>BigMoney</code>.
+     * No rounding is performed on the amount, so it must have a scale compatible
+     * with the currency.
+     *
+     * @param moneyProvider  the money to convert, not null
+     * @return the new instance, never null
+     * @throws ArithmeticException if the rounding fails
+     */
+    public static Money from(BigMoneyProvider moneyProvider) {
+        return Money.from(moneyProvider, RoundingMode.UNNECESSARY);
+    }
+
+    /**
+     * Gets an instance of <code>Money</code> from the provider, rounding as necessary.
+     * <p>
+     * This allows you to create an instance from any class that implements the
+     * provider, such as <code>BigMoney</code>.
+     * The rounding mode is used to adjust the scale to the scale of the currency.
+     *
+     * @param moneyProvider  the money to convert, not null
+     * @param roundingMode  the rounding mode to use, not null
+     * @return the new instance, never null
+     * @throws ArithmeticException if the rounding fails
+     */
+    public static Money from(BigMoneyProvider moneyProvider, RoundingMode roundingMode) {
+        MoneyUtils.checkNotNull(moneyProvider, "BigMoneyProvider must not be null");
+        MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
+        return new Money(BigMoney.from(moneyProvider).withCurrencyScale(roundingMode));
     }
 
     //-----------------------------------------------------------------------
@@ -241,7 +282,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
         }
         String currStr = moneyStr.substring(0, 3);
         String amountStr = moneyStr.substring(4);
-        return of(CurrencyUnit.of(currStr), new BigDecimal(amountStr));
+        return Money.of(CurrencyUnit.of(currStr), new BigDecimal(amountStr));
     }
 
     //-----------------------------------------------------------------------
@@ -301,7 +342,8 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * 
      * @param currency  the currency to use, not null
      * @return the new instance with the input currency set, never null
-     * @throws ArithmeticException if the scale of the amount is too large for the new currency
+     * @throws ArithmeticException if the scale of the new currency is less than
+     *  the scale of this currency
      */
     public Money withCurrencyUnit(CurrencyUnit currency) {
         return withCurrencyUnit(currency, RoundingMode.UNNECESSARY);
@@ -981,21 +1023,23 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this monetary value rounded to the specified scale.
+     * Returns a copy of this monetary value rounded to the specified scale without
+     * changing the current scale.
      * <p>
      * Scale is described in {@link BigDecimal} and represents the point below which
-     * the monetary value is zero.
-     * Negative scales round increasingly large numbers.
+     * the monetary value is zero. Negative scales round increasingly large numbers.
      * <ul>
-     * <li>Rounding 'EUR 45.23' to a scale of 2 has no effect (it already has that scale).
-     * <li>Rounding 'EUR 45.23' to a scale of 1 returns 45.20 or 45.30 depending on the rounding mode.
-     * <li>Rounding 'EUR 45.23' to a scale of 0 returns 45.00 or 46.00 depending on the rounding mode.
      * <li>Rounding 'EUR 45.23' to a scale of -1 returns 40.00 or 50.00 depending on the rounding mode.
+     * <li>Rounding 'EUR 45.23' to a scale of 0 returns 45.00 or 46.00 depending on the rounding mode.
+     * <li>Rounding 'EUR 45.23' to a scale of 1 returns 45.20 or 45.30 depending on the rounding mode.
+     * <li>Rounding 'EUR 45.23' to a scale of 2 has no effect (it already has that scale).
+     * <li>Rounding 'EUR 45.23' to a scale of 3 has no effect (the scale is not increased).
      * </ul>
      * This instance is immutable and unaffected by this method.
      * 
+     * @param scale  the new scale
+     * @param roundingMode  the rounding mode to use, not null
      * @return the new instance with the amount converted to be positive, never null
-     * @throws MoneyException if the scale is invalid
      * @throws ArithmeticException if the rounding fails
      */
     public Money rounded(int scale, RoundingMode roundingMode) {
@@ -1125,7 +1169,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      */
     @Override
     public int hashCode() {
-        return iMoney.hashCode();
+        return iMoney.hashCode() + 3;
     }
 
     //-----------------------------------------------------------------------
@@ -1133,7 +1177,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * Gets the monetary value as a string.
      * <p>
      * The format is the 3 letter ISO currency code, followed by a space,
-     * followed by the amount with decimal places as per the currency.
+     * followed by the amount as per {@link BigDecimal#toPlainString()}.
      * 
      * @return the monetary value, never null
      */

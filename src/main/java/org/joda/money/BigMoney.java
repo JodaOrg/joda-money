@@ -297,6 +297,24 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
 
     //-----------------------------------------------------------------------
     /**
+     * Gets an instance of <code>BigMoney</code> from the provider, checking for nulls.
+     * <p>
+     * This allows you to create an instance from any class that implements the
+     * provider, such as <code>Money</code>. The only value that this method provides
+     * over and above {@link BigMoneyProvider#toBigMoney()} is to check for nulls.
+     *
+     * @param moneyProvider  the money to convert, not null
+     * @return the new instance, never null
+     */
+    public static BigMoney from(BigMoneyProvider moneyProvider) {
+        MoneyUtils.checkNotNull(moneyProvider, "BigMoneyProvider must not be null");
+        BigMoney money = moneyProvider.toBigMoney();
+        MoneyUtils.checkNotNull(money, "BigMoneyProvider must not return null");
+        return money;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Parses an instance of <code>BigMoney</code> from a string.
      * <p>
      * The string format is '<currencyCode> <amount>'.
@@ -414,7 +432,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * 
      * @param amount  the monetary value to use, never null
      * @return the new instance with the input amount set, never null
-     * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
+     * @throws ArithmeticException if the rounding fails
      */
     public BigMoney withScale(int scale) {
         return withScale(scale, RoundingMode.DOWN);
@@ -432,7 +450,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * 
      * @param amount  the monetary value to use, never null
      * @return the new instance with the input amount set, never null
-     * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
+     * @throws ArithmeticException if the rounding fails
      */
     public BigMoney withScale(int scale, RoundingMode roundingMode) {
         MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
@@ -453,7 +471,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * 
      * @param amount  the monetary value to use, never null
      * @return the new instance with the input amount set, never null
-     * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
+     * @throws ArithmeticException if the rounding fails
      */
     public BigMoney withCurrencyScale() {
         return withScale(iCurrency.getDecimalPlaces(), RoundingMode.DOWN);
@@ -468,9 +486,10 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
-     * @param amount  the monetary value to use, never null
+     * @param amount  the monetary value to use, not null
+     * @param roundingMode  the rounding mode, not null
      * @return the new instance with the input amount set, never null
-     * @throws ArithmeticException if the amount is too large or exceeds the fractional capacity
+     * @throws ArithmeticException if the rounding fails
      */
     public BigMoney withCurrencyScale(RoundingMode roundingMode) {
         return withScale(iCurrency.getDecimalPlaces(), roundingMode);
@@ -695,16 +714,16 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @throws MoneyException if the currencies differ
      */
     private BigMoney checkCurrencyEqual(BigMoneyProvider money) {
-        BigMoney m = money.toBigMoney();
+        BigMoney m = from(money);
         if (isSameCurrency(m) == false) {
-            throw new MoneyException("Currencies differ: " + this + " : " + money);
+            throw new MoneyException("Currencies differ: " + this + " : " + m);
         }
         return m;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this monetary value with the amount added.
+     * Returns a copy of this monetary value with the amount in the same currency added.
      * <p>
      * No precision is lost in the result.
      * The scale of the result will be the maximum of the two scales.
@@ -810,9 +829,78 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         return BigMoney.of(iCurrency, amount);
     }
 
+    /**
+     * Returns a copy of this monetary value with the amount in the same currency added
+     * retaining the scale by rounding the result.
+     * <p>
+     * The scale of the result will be the same as the scale of this instance.
+     * For example,'USD 25.95' plus 'USD 3.021' will 'USD 28.97 with most rounding modes.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param moneyToAdd  the monetary value to add, not null
+     * @param roundingMode  the rounding mode to use to adjust the scale, not null
+     * @return the new instance with the input amount added, never null
+     */
+    public BigMoney plusRetainScale(BigMoneyProvider moneyToAdd, RoundingMode roundingMode) {
+        BigMoney toAdd = checkCurrencyEqual(moneyToAdd);
+        return plusRetainScale(toAdd.getAmount(), roundingMode);
+    }
+
+    /**
+     * Returns a copy of this monetary value with the amount added retaining
+     * the scale by rounding the result.
+     * <p>
+     * The scale of the result will be the same as the scale of this instance.
+     * For example,'USD 25.95' plus 'USD 3.021' will 'USD 28.97 with most rounding modes.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param amountToAdd  the monetary value to add, not null
+     * @param roundingMode  the rounding mode to use to adjust the scale, not null
+     * @return the new instance with the input amount added, never null
+     */
+    public BigMoney plusRetainScale(BigDecimal amountToAdd, RoundingMode roundingMode) {
+        MoneyUtils.checkNotNull(amountToAdd, "Amount must not be null");
+        if (amountToAdd.compareTo(BigDecimal.ZERO) == 0) {
+            return this;
+        }
+        BigDecimal amount = iAmount.add(amountToAdd);
+        amount = amount.setScale(getScale(), roundingMode);
+        return BigMoney.of(iCurrency, amount);
+    }
+
+    /**
+     * Returns a copy of this monetary value with the amount added retaining
+     * the scale by rounding the result.
+     * <p>
+     * The scale of the result will be the same as the scale of this instance.
+     * For example,'USD 25.95' plus 'USD 3.021' will 'USD 28.97 with most rounding modes.
+     * <p>
+     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
+     * the most expected answer for most programming scenarios.
+     * Any <code>double</code> literal in code will be converted to
+     * exactly the same BigDecimal with the same scale.
+     * For example, the literal '1.45d' will be converted to '1.45'.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param amountToAdd  the monetary value to add, not null
+     * @param roundingMode  the rounding mode to use to adjust the scale, not null
+     * @return the new instance with the input amount added, never null
+     */
+    public BigMoney plusRetainScale(double amountToAdd, RoundingMode roundingMode) {
+        if (amountToAdd == 0) {
+            return this;
+        }
+        BigDecimal amount = iAmount.add(BigDecimal.valueOf(amountToAdd));
+        amount = amount.setScale(getScale(), roundingMode);
+        return BigMoney.of(iCurrency, amount);
+    }
+
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this monetary value with the amount subtracted.
+     * Returns a copy of this monetary value with the amount in the same currency subtracted.
      * <p>
      * No precision is lost in the result.
      * The scale of the result will be the maximum of the two scales.
@@ -915,6 +1003,75 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
             return this;
         }
         BigDecimal amount = iAmount.subtract(BigDecimal.valueOf(amountToSubtract, iCurrency.getDecimalPlaces()));
+        return BigMoney.of(iCurrency, amount);
+    }
+
+    /**
+     * Returns a copy of this monetary value with the amount in the same currency subtracted
+     * retaining the scale by rounding the result.
+     * <p>
+     * The scale of the result will be the same as the scale of this instance.
+     * For example,'USD 25.95' minus 'USD 3.029' will 'USD 22.92 with most rounding modes.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param moneyToSubtract  the monetary value to add, not null
+     * @param roundingMode  the rounding mode to use to adjust the scale, not null
+     * @return the new instance with the input amount subtracted, never null
+     */
+    public BigMoney minusRetainScale(BigMoneyProvider moneyToSubtract, RoundingMode roundingMode) {
+        BigMoney toSubtract = checkCurrencyEqual(moneyToSubtract);
+        return minusRetainScale(toSubtract.getAmount(), roundingMode);
+    }
+
+    /**
+     * Returns a copy of this monetary value with the amount subtracted retaining
+     * the scale by rounding the result.
+     * <p>
+     * The scale of the result will be the same as the scale of this instance.
+     * For example,'USD 25.95' minus 'USD 3.029' will 'USD 22.92 with most rounding modes.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param amountToSubtract  the monetary value to add, not null
+     * @param roundingMode  the rounding mode to use to adjust the scale, not null
+     * @return the new instance with the input amount subtracted, never null
+     */
+    public BigMoney minusRetainScale(BigDecimal amountToSubtract, RoundingMode roundingMode) {
+        MoneyUtils.checkNotNull(amountToSubtract, "Amount must not be null");
+        if (amountToSubtract.compareTo(BigDecimal.ZERO) == 0) {
+            return this;
+        }
+        BigDecimal amount = iAmount.subtract(amountToSubtract);
+        amount = amount.setScale(getScale(), roundingMode);
+        return BigMoney.of(iCurrency, amount);
+    }
+
+    /**
+     * Returns a copy of this monetary value with the amount subtracted retaining
+     * the scale by rounding the result.
+     * <p>
+     * The scale of the result will be the same as the scale of this instance.
+     * For example,'USD 25.95' minus 'USD 3.029' will 'USD 22.92 with most rounding modes.
+     * <p>
+     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
+     * the most expected answer for most programming scenarios.
+     * Any <code>double</code> literal in code will be converted to
+     * exactly the same BigDecimal with the same scale.
+     * For example, the literal '1.45d' will be converted to '1.45'.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param amountToSubtract  the monetary value to add, not null
+     * @param roundingMode  the rounding mode to use to adjust the scale, not null
+     * @return the new instance with the input amount subtracted, never null
+     */
+    public BigMoney minusRetainScale(double amountToSubtract, RoundingMode roundingMode) {
+        if (amountToSubtract == 0) {
+            return this;
+        }
+        BigDecimal amount = iAmount.subtract(BigDecimal.valueOf(amountToSubtract));
+        amount = amount.setScale(getScale(), roundingMode);
         return BigMoney.of(iCurrency, amount);
     }
 
@@ -1223,6 +1380,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * </ul>
      * This instance is immutable and unaffected by this method.
      * 
+     * @param scale  the new scale
+     * @param roundingMode  the rounding mode to use, not null
      * @return the new instance with the amount converted to be positive, never null
      * @throws ArithmeticException if the rounding fails
      */
@@ -1241,7 +1400,9 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * Returns a copy of this monetary value converted into another currency
      * using the specified conversion rate.
      * <p>
-     * The scale of the result will be the sum of the scale of this money and the multiplier.
+     * The scale of the result will be the sum of the scale of this money and
+     * the scale of the multiplier. If desired, the scale of the result can be
+     * adjusted to the scale of the new currency using {@link #withCurrencyScale()}.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
@@ -1264,35 +1425,27 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         return BigMoney.of(currency, amount);
     }
 
-//    /**
-//     * Returns a copy of this monetary value converted into another currency
-//     * using the specified conversion rate, with a rounding mode used to adjust
-//     * the decimal places in the result.
-//     * <p>
-//     * This instance is immutable and unaffected by this method.
-//     * 
-//     * @param currency  the new currency, not null
-//     * @param conversionMultipler  the conversion factor between the currencies, not null
-//     * @param roundingMode  the rounding mode to use to bring the decimal places back in line, not null
-//     * @return the new multiplied instance, never null
-//     * @throws MoneyException if the currency is the same as this currency
-//     * @throws MoneyException if the conversion multiplier is negative
-//     * @throws ArithmeticException if the rounding fails
-//     * @throws ArithmeticException if the amount is too large
-//     */
-//    public BigMoney convertedTo(CurrencyUnit currency, BigDecimal conversionMultipler, RoundingMode roundingMode) {
-//        MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
-//        MoneyUtils.checkNotNull(conversionMultipler, "Multiplier must not be null");
-//        MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
-//        if (currency == iCurrency) {
-//            throw new MoneyException("Cannot convert to the same currency");
-//        }
-//        if (conversionMultipler.compareTo(BigDecimal.ZERO) < 0) {
-//            throw new MoneyException("Cannot convert using a negative conversion multiplier");
-//        }
-//        BigDecimal amount = getAmount().multiply(conversionMultipler);
-//        return BigMoney.of(currency, amount, roundingMode);
-//    }
+    /**
+     * Returns a copy of this monetary value converted into another currency
+     * using the specified conversion rate, with a rounding mode used to adjust
+     * the decimal places in the result.
+     * <p>
+     * The result will have the same scale as this instance even though it will
+     * be in a different currency.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param currency  the new currency, not null
+     * @param conversionMultipler  the conversion factor between the currencies, not null
+     * @param roundingMode  the rounding mode to use to bring the decimal places back in line, not null
+     * @return the new multiplied instance, never null
+     * @throws MoneyException if the currency is the same as this currency
+     * @throws MoneyException if the conversion multiplier is negative
+     * @throws ArithmeticException if the rounding fails
+     */
+    public BigMoney convertRetainScale(CurrencyUnit currency, BigDecimal conversionMultipler, RoundingMode roundingMode) {
+        return convertedTo(currency, conversionMultipler).withScale(getScale(), roundingMode);
+    }
 
     //-----------------------------------------------------------------------
     /**
@@ -1306,6 +1459,30 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         return this;
     }
 
+    /**
+     * Converts this money to an instance of <code>Money</code> without rounding.
+     * If the scale of this money exceeds the currency scale an exception will be thrown.
+     * 
+     * @return the money instance, never null
+     * @throws MoneyException if conversion is not possible
+     * @throws ArithmeticException if the rounding fails
+     */
+    public Money toMoney() {
+        return Money.from(this);
+    }
+
+    /**
+     * Converts this money to an instance of <code>Money</code>.
+     * 
+     * @param roundingMode  the rounding mode to use, not null
+     * @return the money instance, never null
+     * @throws MoneyException if conversion is not possible
+     * @throws ArithmeticException if the rounding fails
+     */
+    public Money toMoney(RoundingMode roundingMode) {
+        return Money.from(this, roundingMode);
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Checks if this instance and the specified instance have the same currency.
@@ -1314,8 +1491,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @return true if they have the same currency
      */
     public boolean isSameCurrency(BigMoneyProvider money) {
-        MoneyUtils.checkNotNull(money, "Money must not be null");
-        return (iCurrency.equals(money.toBigMoney().getCurrencyUnit()));
+        return (iCurrency.equals(from(money).getCurrencyUnit()));
     }
 
     //-----------------------------------------------------------------------
@@ -1328,10 +1504,11 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @throws MoneyException if the currencies differ
      */
     public int compareTo(BigMoneyProvider other) {
-        if (isSameCurrency(other) == false) {
-            throw new MoneyException("Cannot compare " + other + " to " + this + " as the currencies differ");
+        BigMoney otherMoney = from(other);
+        if (iCurrency.equals(otherMoney.iCurrency) == false) {
+            throw new MoneyException("Cannot compare " + this + " to " + otherMoney + " as the currencies differ");
         }
-        return iAmount.compareTo(other.toBigMoney().iAmount);
+        return iAmount.compareTo(otherMoney.iAmount);
     }
 
     /**
