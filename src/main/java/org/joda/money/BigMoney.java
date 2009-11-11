@@ -347,6 +347,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @param amount  the amount of money, not null
      */
     private BigMoney(CurrencyUnit currency, BigDecimal amount) {
+        assert currency != null : "Joda-Money bug: Currency must not be null";
+        assert amount != null : "Joda-Money bug: Amount must not be null";
         iCurrency = currency;
         iAmount = amount;
     }

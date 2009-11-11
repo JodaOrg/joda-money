@@ -132,9 +132,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the amount is too large
      */
     public static Money ofMajor(CurrencyUnit currency, long amountMajor) {
-        MoneyUtils.checkNotNull(currency, "Currency must not be null");
-        BigDecimal bd = BigDecimal.valueOf(amountMajor).setScale(currency.getDecimalPlaces());
-        return new Money(BigMoney.of(currency, bd));
+        return Money.of(currency, BigDecimal.valueOf(amountMajor), RoundingMode.UNNECESSARY);
     }
 
     /**
@@ -292,17 +290,10 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @param money  the underlying money, not null
      */
     private Money(BigMoney money) {
+        assert money != null : "Joda-Money bug: BigMoney must not be null";
+        assert money.isCurrencyScale() : "Joda-Money bug: Only currency scale is valid for Money";
         iMoney = money;
     }
-
-//    /**
-//     * Resolves singletons.
-//     * 
-//     * @return the singleton instance
-//     */
-//    private Object readResolve() {
-//        return Money.ofMinor(iCurrency, iAmount);
-//    }
 
     //-----------------------------------------------------------------------
     /**

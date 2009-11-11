@@ -205,6 +205,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @param decimalPlaces  the decimal places, not null
      */
     private CurrencyUnit(String code, short numericCurrencyCode, short decimalPlaces) {
+        assert code != null : "Joda-Money bug: Currency code must not be null";
         iCode = code;
         iNumericCode = numericCurrencyCode;
         iDecimalPlaces = decimalPlaces;
