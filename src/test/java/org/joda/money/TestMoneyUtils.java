@@ -21,15 +21,20 @@ import static org.testng.Assert.assertSame;
 import org.testng.annotations.Test;
 
 /**
- * Test Money.
+ * Test MoneyUtils.
  */
 @Test
 public class TestMoneyUtils {
 
-//    private static final Currency GBP = Currency.getInstance("GBP");
-//    private static final Currency EUR = Currency.getInstance("EUR");
-//    private static final BigDecimal BIGDEC_2_34 = new BigDecimal("2.34");
-//    private static final BigDecimal BIGDEC_M5_78 = new BigDecimal("-5.78");
+    private static final CurrencyUnit GBP = CurrencyUnit.of("GBP");
+    private static final Money GBP_0 = Money.parse("GBP 0");
+    private static final Money GBP_20 = Money.parse("GBP 20");
+    private static final Money GBP_30 = Money.parse("GBP 30");
+    private static final Money GBP_50 = Money.parse("GBP 50");
+    private static final Money GBP_M10 = Money.parse("GBP -10");
+    private static final Money GBP_M30 = Money.parse("GBP -30");
+    private static final Money EUR_0 = Money.parse("EUR 0");
+    private static final Money EUR_30 = Money.parse("EUR 30");
 
     //-----------------------------------------------------------------------
     // checkNotNull(Object,String)
@@ -52,18 +57,15 @@ public class TestMoneyUtils {
     // isZero(Money)
     //-----------------------------------------------------------------------
     public void test_isZero_trueGBP() {
-        Money test = Money.parse("GBP 0");
-        assertSame(MoneyUtils.isZero(test), true);
+        assertSame(MoneyUtils.isZero(GBP_0), true);
     }
 
     public void test_isZero_trueEUR() {
-        Money test = Money.parse("EUR 0");
-        assertSame(MoneyUtils.isZero(test), true);
+        assertSame(MoneyUtils.isZero(EUR_0), true);
     }
 
     public void test_isZero_false() {
-        Money test = Money.parse("GBP 20");
-        assertSame(MoneyUtils.isZero(test), false);
+        assertSame(MoneyUtils.isZero(GBP_20), false);
     }
 
     public void test_isZero_null() {
@@ -71,146 +73,123 @@ public class TestMoneyUtils {
     }
 
     //-----------------------------------------------------------------------
+    // defaultToZero(Money,CurrencyUnit)
+    //-----------------------------------------------------------------------
+    public void test_defaultToZero_nonNull() {
+        assertSame(MoneyUtils.defaultToZero(GBP_20, GBP), GBP_20);
+    }
+
+    public void test_defaultToZero_null() {
+        assertEquals(MoneyUtils.defaultToZero(null, GBP), GBP_0);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_defaultToZero_nullCurrency() {
+        MoneyUtils.defaultToZero(GBP_20, (CurrencyUnit) null);
+    }
+
+    //-----------------------------------------------------------------------
     // max(Money,Money)
     //-----------------------------------------------------------------------
     public void test_max1() {
-        Money test1 = Money.parse("GBP 20");
-        Money test2 = Money.parse("GBP 30");
-        assertSame(MoneyUtils.max(test1, test2), test2);
+        assertSame(MoneyUtils.max(GBP_20, GBP_30), GBP_30);
     }
 
     public void test_max2() {
-        Money test1 = Money.parse("GBP 40");
-        Money test2 = Money.parse("GBP 30");
-        assertSame(MoneyUtils.max(test1, test2), test1);
+        assertSame(MoneyUtils.max(GBP_30, GBP_20), GBP_30);
     }
 
     @Test(expectedExceptions = MoneyException.class)
     public void test_max_differentCurrencies() {
-        Money test1 = Money.parse("GBP 20");
-        Money test2 = Money.parse("EUR 30");
-        MoneyUtils.max(test1, test2);
+        MoneyUtils.max(GBP_20, EUR_30);
     }
 
     public void test_max_null1() {
-        Money test1 = null;
-        Money test2 = Money.parse("GBP 30");
-        assertSame(MoneyUtils.max(test1, test2), test2);
+        assertSame(MoneyUtils.max(null, GBP_30), GBP_30);
     }
 
     public void test_max_null2() {
-        Money test1 = Money.parse("GBP 20");
-        Money test2 = null;
-        assertSame(MoneyUtils.max(test1, test2), test1);
+        assertSame(MoneyUtils.max(GBP_20, null), GBP_20);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
     public void test_max_nullBoth() {
-        MoneyUtils.max(null, null);
+        assertEquals(MoneyUtils.max(null, null), null);
     }
 
     //-----------------------------------------------------------------------
     // min(Money,Money)
     //-----------------------------------------------------------------------
     public void test_min1() {
-        Money test1 = Money.parse("GBP 20");
-        Money test2 = Money.parse("GBP 30");
-        assertSame(MoneyUtils.min(test1, test2), test1);
+        assertSame(MoneyUtils.min(GBP_20, GBP_30), GBP_20);
     }
 
     public void test_min2() {
-        Money test1 = Money.parse("GBP 40");
-        Money test2 = Money.parse("GBP 30");
-        assertSame(MoneyUtils.min(test1, test2), test2);
+        assertSame(MoneyUtils.min(GBP_30, GBP_20), GBP_20);
     }
 
     @Test(expectedExceptions = MoneyException.class)
     public void test_min_differentCurrencies() {
-        Money test1 = Money.parse("GBP 20");
-        Money test2 = Money.parse("EUR 30");
-        MoneyUtils.min(test1, test2);
+        MoneyUtils.min(GBP_20, EUR_30);
     }
 
     public void test_min_null1() {
-        Money test1 = null;
-        Money test2 = Money.parse("GBP 30");
-        assertSame(MoneyUtils.min(test1, test2), test2);
+        assertSame(MoneyUtils.min(null, GBP_30), GBP_30);
     }
 
     public void test_min_null2() {
-        Money test1 = Money.parse("GBP 20");
-        Money test2 = null;
-        assertSame(MoneyUtils.min(test1, test2), test1);
+        assertSame(MoneyUtils.min(GBP_20, null), GBP_20);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
     public void test_min_nullBoth() {
-        MoneyUtils.min(null, null);
+        assertEquals(MoneyUtils.min(null, null), null);
     }
 
     //-----------------------------------------------------------------------
     // add(Money,Money)
     //-----------------------------------------------------------------------
     public void test_add() {
-        Money test1 = Money.parse("GBP 20");
-        Money test2 = Money.parse("GBP 30");
-        assertEquals(MoneyUtils.add(test1, test2), Money.parse("GBP 50"));
+        assertEquals(MoneyUtils.add(GBP_20, GBP_30), GBP_50);
     }
 
     @Test(expectedExceptions = MoneyException.class)
     public void test_add_differentCurrencies() {
-        Money test1 = Money.parse("GBP 20");
-        Money test2 = Money.parse("EUR 30");
-        MoneyUtils.add(test1, test2);
+        MoneyUtils.add(GBP_20, EUR_30);
     }
 
     public void test_add_null1() {
-        Money test1 = null;
-        Money test2 = Money.parse("GBP 30");
-        assertSame(MoneyUtils.add(test1, test2), test2);
+        assertSame(MoneyUtils.add(null, GBP_30), GBP_30);
     }
 
     public void test_add_null2() {
-        Money test1 = Money.parse("GBP 20");
-        Money test2 = null;
-        assertSame(MoneyUtils.add(test1, test2), test1);
+        assertSame(MoneyUtils.add(GBP_20, null), GBP_20);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
     public void test_add_nullBoth() {
-        MoneyUtils.add(null, null);
+        assertEquals(MoneyUtils.add(null, null), null);
     }
 
     //-----------------------------------------------------------------------
     // subtract(Money,Money)
     //-----------------------------------------------------------------------
     public void test_subtract() {
-        Money test1 = Money.parse("GBP 20");
-        Money test2 = Money.parse("GBP 30");
-        assertEquals(MoneyUtils.subtract(test1, test2), Money.parse("GBP -10"));
+        assertEquals(MoneyUtils.subtract(GBP_20, GBP_30), GBP_M10);
     }
 
     @Test(expectedExceptions = MoneyException.class)
     public void test_subtract_differentCurrencies() {
-        Money test1 = Money.parse("GBP 20");
-        Money test2 = Money.parse("EUR 30");
-        MoneyUtils.subtract(test1, test2);
+        MoneyUtils.subtract(GBP_20, EUR_30);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
     public void test_subtract_null1() {
-        MoneyUtils.subtract(null, Money.parse("GBP 30"));
+        assertEquals(MoneyUtils.subtract(null, GBP_30), GBP_M30);
     }
 
     public void test_subtract_null2() {
-        Money test1 = Money.parse("GBP 20");
-        Money test2 = null;
-        assertSame(MoneyUtils.subtract(test1, test2), test1);
+        assertSame(MoneyUtils.subtract(GBP_20, null), GBP_20);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
     public void test_subtract_nullBoth() {
-        MoneyUtils.subtract(null, null);
+        assertEquals(MoneyUtils.subtract(null, null), null);
     }
 
 }
