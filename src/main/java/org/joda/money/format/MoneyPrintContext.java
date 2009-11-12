@@ -18,11 +18,9 @@ package org.joda.money.format;
 import java.util.Locale;
 
 /**
- * Prints instances of <code>Money</code>.
- * <p>
- * MoneyPrinter is an interface which must be implemented in a thread-safe manner.
+ * Context used when printing money.
  */
-public class MoneyPrintContext {
+public final class MoneyPrintContext {
 
     /**
      * The locale to print using.
