@@ -24,7 +24,7 @@ import org.testng.annotations.Test;
  * Test MoneyUtils.
  */
 @Test
-public class TestMoneyUtils {
+public class TestMoneyUtils_Money {
 
     private static final CurrencyUnit GBP = CurrencyUnit.of("GBP");
     private static final Money GBP_0 = Money.parse("GBP 0");
