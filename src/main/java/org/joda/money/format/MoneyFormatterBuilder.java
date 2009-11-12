@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.joda.money.Money;
+import org.joda.money.BigMoney;
 
 /**
  * Provides the ability to build a formatter for <code>Money</code> instances.
@@ -294,7 +294,7 @@ public final class MoneyFormatterBuilder {
             iStyle = style;
         }
         /** {@inheritDoc} */
-        public void print(MoneyPrintContext context, Appendable appendable, Money money) throws IOException {
+        public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
             iStyle = iStyle.localize(context.getLocale());
             String str = money.getAmount().toPlainString();
             int decPoint = str.indexOf('.');
@@ -304,7 +304,7 @@ public final class MoneyFormatterBuilder {
                 int pre = (decPoint < 0 ? str.length() : decPoint);
 //                int post = (decPoint < 0 ? 0 : str.length() - decPoint - 1);
                 for (int i = 0; pre > 0; i++, pre--) {
-                    appendable.append(str.charAt(i));
+                    appendable.append(str.charAt(i));  // TODO zero character
                     if (pre > 3 && pre % groupingSize == 1) {
                         appendable.append(groupingChar);
                     }
@@ -348,7 +348,7 @@ public final class MoneyFormatterBuilder {
     private static class Code implements MoneyPrinter {
         static final MoneyPrinter INSTANCE = new Code();
         /** {@inheritDoc} */
-        public void print(MoneyPrintContext context, Appendable appendable, Money money) throws IOException {
+        public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
             appendable.append(money.getCurrencyUnit().getCurrencyCode());
         }
         /** {@inheritDoc} */
@@ -365,7 +365,7 @@ public final class MoneyFormatterBuilder {
     private static class Numeric3Code implements MoneyPrinter {
         static final MoneyPrinter INSTANCE = new Numeric3Code();
         /** {@inheritDoc} */
-        public void print(MoneyPrintContext context, Appendable appendable, Money money) throws IOException {
+        public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
             appendable.append(money.getCurrencyUnit().getNumeric3Code());
         }
         /** {@inheritDoc} */
@@ -382,7 +382,7 @@ public final class MoneyFormatterBuilder {
     private static class NumericCode implements MoneyPrinter {
         static final MoneyPrinter INSTANCE = new NumericCode();
         /** {@inheritDoc} */
-        public void print(MoneyPrintContext context, Appendable appendable, Money money) throws IOException {
+        public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
             appendable.append(Integer.toString(money.getCurrencyUnit().getNumericCode()));
         }
         /** {@inheritDoc} */
@@ -399,7 +399,7 @@ public final class MoneyFormatterBuilder {
     private static class LocalizedSymbol implements MoneyPrinter {
         static final MoneyPrinter INSTANCE = new LocalizedSymbol();
         /** {@inheritDoc} */
-        public void print(MoneyPrintContext context, Appendable appendable, Money money) throws IOException {
+        public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
             appendable.append(money.getCurrencyUnit().getSymbol(context.getLocale()));
         }
         /** {@inheritDoc} */
@@ -423,7 +423,7 @@ public final class MoneyFormatterBuilder {
             iLiteral = literal;
         }
         /** {@inheritDoc} */
-        public void print(MoneyPrintContext context, Appendable appendable, Money money) throws IOException {
+        public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
             appendable.append(iLiteral);
         }
         /** {@inheritDoc} */

@@ -17,20 +17,20 @@ package org.joda.money.format;
 
 import java.io.IOException;
 
-import org.joda.money.Money;
+import org.joda.money.BigMoney;
 
 /**
- * Prints instances of <code>Money</code>.
+ * Prints instances of <code>BigMoney</code>.
  * <p>
  * MoneyPrinter is an interface which must be implemented in a thread-safe manner.
  */
 public interface MoneyPrinter {
 
     /**
-     * Prints an instance of <code>Money</code> to the <code>Appendable</code>.
+     * Prints an instance of <code>BigMoney</code> to the <code>Appendable</code>.
      * <p>
      * The implementation determines what to append, which may be some or all
-     * of the data held in the <code>Money</code>.
+     * of the data held in the <code>BigMoney</code>.
      * 
      * @param context  the context being used, not null
      * @param money  the money to print, not null
@@ -38,6 +38,6 @@ public interface MoneyPrinter {
      * @throws MoneyFormatException if there is a problem while printing
      * @throws IOException if an IO exception occurs
      */
-    void print(MoneyPrintContext context, Appendable appendable, Money money) throws IOException;
+    void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException;
 
 }

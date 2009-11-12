@@ -18,10 +18,11 @@ package org.joda.money.format;
 import java.io.IOException;
 import java.util.Locale;
 
-import org.joda.money.Money;
+import org.joda.money.BigMoney;
+import org.joda.money.BigMoneyProvider;
 
 /**
- * Formats instances of Money to and from a String.
+ * Formats instances of money to and from a String.
  * <p>
  * Instances of <code>MoneyFormatter</code> can be created by
  * <code>MoneyFormatterBuilder</code>.
@@ -54,7 +55,7 @@ public final class MoneyFormatter {
 
     //-----------------------------------------------------------------------
     /**
-     * Constructor, creating a new monetary instance.
+     * Constructor, creating a new formatter.
      * 
      * @param locale  the locale to use, not null
      * @param printers  the printers, not null
@@ -94,13 +95,13 @@ public final class MoneyFormatter {
     /**
      * Prints a <code>Money</code> instance to a <code>String</code>.
      * 
-     * @param money  the money to print, not null
+     * @param moneyProvider  the money to print, not null
      * @return the string printed using the settings of this formatter
      * @throws MoneyFormatException if there is a problem while printing
      */
-    public String print(Money money) {
+    public String print(BigMoneyProvider moneyProvider) {
         StringBuilder buf = new StringBuilder();
-        print(buf, money);
+        print(buf, moneyProvider);
         return buf.toString();
     }
 
@@ -113,13 +114,13 @@ public final class MoneyFormatter {
      * and <code>StringBuffer</code> never throw an <code>IOException</code>.
      * 
      * @param appendable  the appendable to add to, not null
-     * @param money  the money to print, not null
+     * @param moneyProvider  the money to print, not null
      * @return the string printed using the settings of this formatter
      * @throws MoneyFormatException if there is a problem while printing
      */
-    public void print(Appendable appendable, Money money) {
+    public void print(Appendable appendable, BigMoneyProvider moneyProvider) {
         try {
-            printIO(appendable, money);
+            printIO(appendable, moneyProvider);
         } catch (IOException ex) {
             throw new MoneyFormatException(ex.getMessage(), ex);
         }
@@ -134,13 +135,14 @@ public final class MoneyFormatter {
      * and <code>StringBuffer</code> never throw an <code>IOException</code>.
      * 
      * @param appendable  the appendable to add to, not null
-     * @param money  the money to print, not null
+     * @param moneyProvider  the money to print, not null
      * @return the string printed using the settings of this formatter
      * @throws MoneyFormatException if there is a problem while printing
      * @throws IOException if an IO error occurs
      */
-    public void printIO(Appendable appendable, Money money) throws IOException {
-        checkNotNull(money, "Money must not be null");
+    public void printIO(Appendable appendable, BigMoneyProvider moneyProvider) throws IOException {
+        checkNotNull(moneyProvider, "BigMoneyProvider must not be null");
+        BigMoney money = BigMoney.from(moneyProvider);
         MoneyPrintContext context = new MoneyPrintContext(iLocale);
         for (MoneyPrinter printer : iPrinters) {
             printer.print(context, appendable, money);
