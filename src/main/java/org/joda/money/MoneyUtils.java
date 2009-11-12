@@ -155,4 +155,118 @@ public final class MoneyUtils {
         return money1.minus(money2);
     }
 
+    //-----------------------------------------------------------------------
+    /**
+     * Checks if the <code>Money</code> is zero, treating null as zero
+     * 
+     * @return true if the money is null or zero
+     */
+    public static boolean isZero(BigMoney money) {
+        return (money == null || money.isZero());
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Checks a <code>BigMoney</code> returning a non-null value.
+     * <p>
+     * This returns <code>money</code> if it is non-null.
+     * Otherwise it returns a zero value based on the currency.
+     * 
+     * @param money  the money to check, null returns zero
+     * @param currency  the currency of the monetary values, used to return zero
+     * @return the defaulted money, never null
+     * @throws NullPointerException if the currency is null
+     */
+    public static BigMoney defaultToZero(BigMoney money, CurrencyUnit currency) {
+        MoneyUtils.checkNotNull(currency, "Currency must not be null");
+        return (money != null ? money : BigMoney.zero(currency));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Finds the maximum <code>BigMoney</code> value, handing null.
+     * <p>
+     * This returns the greater of money1 or money2 where null is ignored.
+     * If both input values are null, then null is returned.
+     * 
+     * @param money1  the first money instance, null returns money2
+     * @param money2  the first money instance, null returns money1
+     * @return the maximum value, null if both inputs are null
+     * @throws MoneyException if the currencies differ
+     */
+    public static BigMoney max(BigMoney money1, BigMoney money2) {
+        if (money1 == null) {
+            return money2;
+        }
+        if (money2 == null) {
+            return money1;
+        }
+        return money1.compareTo(money2) > 0 ? money1 : money2;
+    }
+
+    /**
+     * Finds the minimum <code>BigMoney</code> value, handing null.
+     * <p>
+     * This returns the greater of money1 or money2 where null is ignored.
+     * If both input values are null, then null is returned.
+     * 
+     * @param money1  the first money instance, null returns money2
+     * @param money2  the first money instance, null returns money1
+     * @return the minimum value, null if both inputs are null
+     * @throws MoneyException if the currencies differ
+     */
+    public static BigMoney min(BigMoney money1, BigMoney money2) {
+        if (money1 == null) {
+            return money2;
+        }
+        if (money2 == null) {
+            return money1;
+        }
+        return money1.compareTo(money2) < 0 ? money1 : money2;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Adds two <code>BigMoney</code> objects, handling null.
+     * <p>
+     * This returns <code>money1 + money2</code> where null is ignored.
+     * If both input values are null, then null is returned.
+     * 
+     * @param money1  the first money instance, null returns money2
+     * @param money2  the first money instance, null returns money1
+     * @return the total, where null is ignored, null if both inputs are null
+     * @throws MoneyException if the currencies differ
+     */
+    public static BigMoney add(BigMoney money1, BigMoney money2) {
+        if (money1 == null) {
+            return money2;
+        }
+        if (money2 == null) {
+            return money1;
+        }
+        return money1.plus(money2);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Subtracts the second <code>BigMoney</code> from the first, handling null.
+     * <p>
+     * This returns <code>money1 - money2</code> where null is ignored.
+     * If both input values are null, then null is returned.
+     * 
+     * @param money1  the first money instance, null treated as zero
+     * @param money2  the first money instance, null returns money1
+     * @return the total, where null is ignored, null if both inputs are null
+     * @throws MoneyException if the currencies differ
+     */
+    public static BigMoney subtract(BigMoney money1, BigMoney money2) {
+        if (money2 == null) {
+            return money1;
+        }
+        if (money1 == null) {
+            return money2.negated();
+        }
+        return money1.minus(money2);
+    }
+
 }
