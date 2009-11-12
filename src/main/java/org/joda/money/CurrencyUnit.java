@@ -66,7 +66,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      */
     private final String iCode;
     /**
-     * The numeric code.
+     * The numeric currency code.
      */
     private final short iNumericCode;
     /**
@@ -220,7 +220,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
 
     //-----------------------------------------------------------------------
     /**
-     * Constructor, creating a new monetary instance.
+     * Constructor, creating a new currency instance.
      * 
      * @param code  the currency code, not null
      * @param numericCurrencyCode  the numeric currency code, -1 if none
