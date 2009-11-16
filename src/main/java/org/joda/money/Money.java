@@ -59,6 +59,10 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the scale of the amount is too large
      */
     public static Money of(CurrencyUnit currency, BigDecimal amount) {
+        MoneyUtils.checkNotNull(currency, "Currency must not be null");
+        if (amount.scale() > currency.getDecimalPlaces()) {
+            throw new ArithmeticException("Scale of amount " + amount + " is greater than the scale of the currency " + currency);
+        }
         return Money.of(currency, amount, RoundingMode.UNNECESSARY);
     }
 
