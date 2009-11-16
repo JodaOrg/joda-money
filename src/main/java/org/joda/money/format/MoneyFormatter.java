@@ -16,6 +16,7 @@
 package org.joda.money.format;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Locale;
 
 import org.joda.money.BigMoney;
@@ -29,7 +30,12 @@ import org.joda.money.BigMoneyProvider;
  * <p>
  * MoneyFormatter is immutable and thread-safe.
  */
-public final class MoneyFormatter {
+public final class MoneyFormatter implements Serializable {
+
+    /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = 2385346258L;
 
     /**
      * The locale to use.

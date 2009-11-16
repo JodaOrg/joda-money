@@ -17,8 +17,10 @@ package org.joda.money.format;
 
 import static org.testng.Assert.assertEquals;
 
+import java.io.IOException;
 import java.util.Locale;
 
+import org.joda.money.BigMoney;
 import org.joda.money.Money;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -213,6 +215,24 @@ public class TestMoneyFormatterBuilder {
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals(test.print(JPY_2345), "2345.");
         assertEquals(test.toString(), "${amount}");
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_append_MoneyPrinter() {
+        MoneyPrinter printer = new MoneyPrinter() {
+            public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
+                appendable.append("HELLO");
+            }
+        };
+        iBuilder.append(printer);
+        MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.print(JPY_2345), "HELLO");
+        assertEquals(test.toString().startsWith("org.joda.money.format.TestMoneyFormatterBuilder$"), true);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_append_MoneyPrinter_nullMoneyPrinter() {
+        iBuilder.append((MoneyPrinter) null);
     }
 
     //-----------------------------------------------------------------------

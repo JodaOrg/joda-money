@@ -16,6 +16,7 @@
 package org.joda.money.format;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -79,7 +80,7 @@ public final class MoneyFormatterBuilder {
      * @return this, for chaining, never null
      */
     public MoneyFormatterBuilder appendCurrencyCode() {
-        return appendInternal(Code.INSTANCE);
+        return appendInternal(Singletons.CODE);
     }
 
     /**
@@ -91,7 +92,7 @@ public final class MoneyFormatterBuilder {
      * @return this, for chaining, never null
      */
     public MoneyFormatterBuilder appendCurrencyNumeric3Code() {
-        return appendInternal(Numeric3Code.INSTANCE);
+        return appendInternal(Singletons.NUMERIC3CODE);
     }
 
     /**
@@ -102,7 +103,7 @@ public final class MoneyFormatterBuilder {
      * @return this, for chaining, never null
      */
     public MoneyFormatterBuilder appendCurrencyNumericCode() {
-        return appendInternal(NumericCode.INSTANCE);
+        return appendInternal(Singletons.NUMERICCODE);
     }
 
     /**
@@ -114,7 +115,7 @@ public final class MoneyFormatterBuilder {
      * @return this, for chaining, never null
      */
     public MoneyFormatterBuilder appendCurrencySymbolLocalized() {
-        return appendInternal(LocalizedSymbol.INSTANCE);
+        return appendInternal(Singletons.LOCALIZED_SYMBOL);
     }
 
     /**
@@ -283,7 +284,9 @@ public final class MoneyFormatterBuilder {
     /**
      * Handles the amount.
      */
-    private static class Amount implements MoneyPrinter {
+    private static class Amount implements MoneyPrinter, Serializable {
+        /** Serialization version. */
+        private static final long serialVersionUID = 1L;
         /** The style to use. */
         private volatile MoneyAmountStyle iStyle;
         /**
@@ -343,77 +346,12 @@ public final class MoneyFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
-     * Handles the textual currency code.
-     */
-    private static class Code implements MoneyPrinter {
-        static final MoneyPrinter INSTANCE = new Code();
-        /** {@inheritDoc} */
-        public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
-            appendable.append(money.getCurrencyUnit().getCurrencyCode());
-        }
-        /** {@inheritDoc} */
-        @Override
-        public String toString() {
-            return "${code}";
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Handles the numeric currency code as three digits.
-     */
-    private static class Numeric3Code implements MoneyPrinter {
-        static final MoneyPrinter INSTANCE = new Numeric3Code();
-        /** {@inheritDoc} */
-        public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
-            appendable.append(money.getCurrencyUnit().getNumeric3Code());
-        }
-        /** {@inheritDoc} */
-        @Override
-        public String toString() {
-            return "${numeric3Code}";
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Handles the numeric currency code.
-     */
-    private static class NumericCode implements MoneyPrinter {
-        static final MoneyPrinter INSTANCE = new NumericCode();
-        /** {@inheritDoc} */
-        public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
-            appendable.append(Integer.toString(money.getCurrencyUnit().getNumericCode()));
-        }
-        /** {@inheritDoc} */
-        @Override
-        public String toString() {
-            return "${numericCode}";
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Handles the localized symbol.
-     */
-    private static class LocalizedSymbol implements MoneyPrinter {
-        static final MoneyPrinter INSTANCE = new LocalizedSymbol();
-        /** {@inheritDoc} */
-        public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
-            appendable.append(money.getCurrencyUnit().getSymbol(context.getLocale()));
-        }
-        /** {@inheritDoc} */
-        @Override
-        public String toString() {
-            return "${symbolLocalized}";
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Handles a literal.
      */
-    private static class Literal implements MoneyPrinter {
+    private static class Literal implements MoneyPrinter, Serializable {
+        /** Serialization version. */
+        private static final long serialVersionUID = 1L;
+        /** Literal. */
         private final String iLiteral;
         /**
          * Constructor.
@@ -430,6 +368,47 @@ public final class MoneyFormatterBuilder {
         @Override
         public String toString() {
             return "'" + iLiteral + "'";
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Handles the singleton outputs.
+     */
+    private static enum Singletons implements MoneyPrinter {
+        CODE("${code}") {
+            /** {@inheritDoc} */
+            public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
+                appendable.append(money.getCurrencyUnit().getCurrencyCode());
+            }
+        },
+        NUMERIC3CODE("${numeric3Code}") {
+            /** {@inheritDoc} */
+            public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
+                appendable.append(money.getCurrencyUnit().getNumeric3Code());
+            }
+        },
+        NUMERICCODE("${numericCode}") {
+            /** {@inheritDoc} */
+            public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
+                appendable.append(Integer.toString(money.getCurrencyUnit().getNumericCode()));
+            }
+        },
+        LOCALIZED_SYMBOL("${symbolLocalized}") {
+            /** {@inheritDoc} */
+            public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
+                appendable.append(money.getCurrencyUnit().getSymbol(context.getLocale()));
+            }
+        };
+        private final String iToString;
+        /** {@inheritDoc} */
+        private Singletons(String toString) {
+            iToString = toString;
+        }
+        /** {@inheritDoc} */
+        @Override
+        public String toString() {
+            return iToString;
         }
     }
 

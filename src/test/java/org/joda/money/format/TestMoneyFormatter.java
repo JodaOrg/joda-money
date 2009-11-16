@@ -17,8 +17,13 @@ package org.joda.money.format;
 
 import static org.testng.Assert.assertEquals;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Locale;
 
+import org.joda.money.Money;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -47,6 +52,21 @@ public class TestMoneyFormatter {
     public void afterMethod() {
         Locale.setDefault(cCachedLocale);
         iTest = null;
+    }
+
+    //-----------------------------------------------------------------------
+    // serialization
+    //-----------------------------------------------------------------------
+    public void test_serialization() throws Exception {
+        MoneyFormatter a = iTest;
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(a);
+        oos.close();
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+        MoneyFormatter input = (MoneyFormatter) ois.readObject();
+        Money value = Money.parse("GBP 12.34");
+        assertEquals(input.print(value), a.print(value));
     }
 
     //-----------------------------------------------------------------------
