@@ -44,7 +44,8 @@ public final class MoneyFormatter {
     /**
      * Validates that the object specified is not null
      *
-     * @param object  the object to check, not null
+     * @param object  the object to check, null throws exception
+     * @param message  the message to use in the exception, not null
      * @throws NullPointerException if the input value is null
      */
     static void checkNotNull(Object object, String message) {
@@ -115,7 +116,6 @@ public final class MoneyFormatter {
      * 
      * @param appendable  the appendable to add to, not null
      * @param moneyProvider  the money to print, not null
-     * @return the string printed using the settings of this formatter
      * @throws MoneyFormatException if there is a problem while printing
      */
     public void print(Appendable appendable, BigMoneyProvider moneyProvider) {
@@ -136,7 +136,6 @@ public final class MoneyFormatter {
      * 
      * @param appendable  the appendable to add to, not null
      * @param moneyProvider  the money to print, not null
-     * @return the string printed using the settings of this formatter
      * @throws MoneyFormatException if there is a problem while printing
      * @throws IOException if an IO error occurs
      */

@@ -33,8 +33,8 @@ public interface MoneyPrinter {
      * of the data held in the <code>BigMoney</code>.
      * 
      * @param context  the context being used, not null
+     * @param appendable  the appendable to add to, not null
      * @param money  the money to print, not null
-     * @return the string printed using the settings of this formatter
      * @throws MoneyFormatException if there is a problem while printing
      * @throws IOException if an IO exception occurs
      */

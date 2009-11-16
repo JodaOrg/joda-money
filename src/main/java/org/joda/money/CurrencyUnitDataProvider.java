@@ -49,7 +49,6 @@ public abstract class CurrencyUnitDataProvider {
      * @param decimalPlaces  the number of decimal places that the currency
      *  normally has, from 0 to 3, or -1 for a pseudo-currency
      * @param countryCodes  the country codes to register the currency under, not null
-     * @return the new instance, never null
      */
     protected final void registerCurrency(String currencyCode, int numericCurrencyCode, int decimalPlaces, List<String> countryCodes) {
         CurrencyUnit.registerCurrency(currencyCode, numericCurrencyCode, decimalPlaces, countryCodes);

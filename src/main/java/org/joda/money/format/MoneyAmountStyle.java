@@ -172,7 +172,7 @@ public final class MoneyAmountStyle {
      * {@link DecimalFormat}.
      * 
      * @param locale  the locale to use, not null
-     * @return a new style instance adjusted to be configured appropriately for a locale, never null
+     * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle localize(Locale locale) {
         MoneyFormatter.checkNotNull(locale, "Locale must not be null");
@@ -206,7 +206,7 @@ public final class MoneyAmountStyle {
      * Each script has the characters in order from zero to nine.
      * This method returns the zero character, which therefore also defines one to nine.
      * 
-     * @return the grouping character, null if to be determined by locale
+     * @return the zero character, null if to be determined by locale
      */
     public Character getZeroCharacter() {
         return iZeroCharacter;
@@ -222,8 +222,8 @@ public final class MoneyAmountStyle {
      * For English, this is a '0'. Some other scripts use different characters
      * for the numbers zero to nine.
      * 
-     * @param groupingCharacter  the grouping character, null if to be determined by locale
-     * @return the new instance, never null
+     * @param zeroCharacter  the zero character, null if to be determined by locale
+     * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle withZeroCharacter(Character zeroCharacter) {
         if (zeroCharacter == iZeroCharacter ||
@@ -239,7 +239,7 @@ public final class MoneyAmountStyle {
     /**
      * Gets the character used for the decimal point.
      * 
-     * @return the grouping character, null if to be determined by locale
+     * @return the decimal point character, null if to be determined by locale
      */
     public Character getDecimalPointCharacter() {
         return iDecimalPointCharacter;
@@ -251,7 +251,7 @@ public final class MoneyAmountStyle {
      * For English, this is a dot.
      * 
      * @param decimalPointCharacter  the decimal point character, null if to be determined by locale
-     * @return the new instance, never null
+     * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle withDecimalPointCharacter(Character decimalPointCharacter) {
         if (decimalPointCharacter == iDecimalPointCharacter ||
@@ -279,7 +279,7 @@ public final class MoneyAmountStyle {
      * For English, this is a comma.
      * 
      * @param groupingCharacter  the grouping character, null if to be determined by locale
-     * @return the new instance, never null
+     * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle withGroupingCharacter(Character groupingCharacter) {
         if (groupingCharacter == iGroupingCharacter ||
@@ -305,7 +305,7 @@ public final class MoneyAmountStyle {
      * Returns a copy of this instance with the specified grouping setting.
      * 
      * @param grouping  true to use the grouping separator, false to not use it
-     * @return the new instance, never null
+     * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle withGrouping(boolean grouping) {
         if (grouping == iGrouping) {
@@ -330,7 +330,7 @@ public final class MoneyAmountStyle {
      * Returns a copy of this instance with the specified grouping size.
      * 
      * @param groupingSize  the size of each group, such as 3 for thousands, null if to be determined by locale
-     * @return the new instance, never null
+     * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle withGroupingSize(Integer groupingSize) {
         if (groupingSize == iGroupingSize || (groupingSize != null && groupingSize.equals(iGroupingSize))) {
@@ -345,7 +345,7 @@ public final class MoneyAmountStyle {
     /**
      * Gets whether to always use the decimal point, even if there is no fraction.
      * 
-     * @return whether to use the grouping separator
+     * @return whether to force the decimal point on output
      */
     public boolean isForcedDecimalPoint() {
         return iForceDecimalPoint;
@@ -355,7 +355,7 @@ public final class MoneyAmountStyle {
      * Returns a copy of this instance with the specified decimal point setting.
      * 
      * @param forceDecimalPoint  true to force the use of the decimal point, false to use it if required
-     * @return the new instance, never null
+     * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle withForcedDecimalPoint(boolean forceDecimalPoint) {
         if (forceDecimalPoint == iForceDecimalPoint) {
@@ -366,10 +366,11 @@ public final class MoneyAmountStyle {
                 iGrouping, iGroupingSize, forceDecimalPoint);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Compares this style with another.
      * 
-     * @param other  the other style 
+     * @param other  the other style, null returns false
      * @return true if equal
      */
     @Override

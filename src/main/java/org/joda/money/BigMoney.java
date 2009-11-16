@@ -432,7 +432,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
-     * @param amount  the monetary value to use, never null
+     * @param scale  the scale to use
      * @return the new instance with the input amount set, never null
      * @throws ArithmeticException if the rounding fails
      */
@@ -450,7 +450,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
-     * @param amount  the monetary value to use, never null
+     * @param scale  the scale to use
+     * @param roundingMode  the rounding mode to use, not null
      * @return the new instance with the input amount set, never null
      * @throws ArithmeticException if the rounding fails
      */
@@ -471,7 +472,6 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
-     * @param amount  the monetary value to use, never null
      * @return the new instance with the input amount set, never null
      * @throws ArithmeticException if the rounding fails
      */
@@ -488,8 +488,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
-     * @param amount  the monetary value to use, not null
-     * @param roundingMode  the rounding mode, not null
+     * @param roundingMode  the rounding mode to use, not null
      * @return the new instance with the input amount set, never null
      * @throws ArithmeticException if the rounding fails
      */
@@ -1563,8 +1562,9 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * <p>
      * The compared values must be in the same currency.
      * 
+     * @param other  the other object, null returns false
      * @return true if this instance equals the other instance
-     * @see #isEqual(BigMoney)
+     * @see #isEqual
      */
     @Override
     public boolean equals(Object other) {
