@@ -14,30 +14,30 @@
 
   <body>
     <menu name="Joda Primitives">
-      <item name="Overview" href="/index.html"/>
-      <!--item name="Users guide" href="/userguide.html"/-->
-      <!--item name="FAQ" href="/faq.html"/-->
-      <!--item name="Javadoc (Release)" href="/api-0.1/index.html"/-->
-      <item name="License" href="/license.html"/>
+      <item name="Overview" href="index.html"/>
+      <!--item name="Users guide" href="userguide.html"/-->
+      <!--item name="FAQ" href="faq.html"/-->
+      <item name="Javadoc (Release)" href="apidocs/index.html"/>
+      <item name="License" href="licensecover.html"/>
       <item name="Release notes" href="changes-report.html"/>
-      <item name="Download" href="https://sourceforge.net/projects/joda-money/files/"/>
+      <item name="Download" href="http://sourceforge.net/projects/joda-money/files/joda-money/"/>
     </menu>
 
     <menu name="Development">
       <item name="Sourceforge" href="http://sourceforge.net/projects/joda-money/"/>
-      <!--item name="Test results" href="/junit-report.html"/-->
+      <item name="Test results" href="surefire-report.html"/>
       <!--item name="Test coverage" href="/cobertura/index.html"/-->
-      <item name="Mailing lists" href="/mail-lists.html"/>
-      <item name="Tasks" href="/tasks.html"/>
+      <item name="Mailing lists" href="mail-lists.html"/>
+      <item name="Tasks" href="tasks.html"/>
       <item name="Subversion" href="http://joda-money.svn.sourceforge.net/viewvc/joda-money/JodaMoney/trunk/"/>
-      <item name="Javadoc (Latest)" href="/apidocs/index.html"/>
+      <item name="Javadoc (Latest)" href="apidocs/index.html"/>
     </menu>
 
     <menu name="Joda">
       <item name="Joda home" href="http://joda.sourceforge.net"/>
       <item name="Time" href="http://joda-time.sourceforge.net/index.html"/>
-      <item name="Beans" href="http://joda.sourceforge.net/beans.html"/>
       <item name="Primitives" href="http://joda-primitives.sourceforge.net/index.html"/>
+      <item name="Beans" href="http://joda-beans.sourceforge.net/index.html"/>
     </menu>
 
     <menu ref="reports"/>

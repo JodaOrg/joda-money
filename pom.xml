@@ -6,9 +6,10 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.joda</groupId>
   <artifactId>joda-money</artifactId>
+  <packaging>jar</packaging>
   <name>Joda money</name>
-  <version>0.1</version>
-  <description>Money class and formatting</description>
+  <version>0.5-SNAPSHOT</version>
+  <description>Money repesentation and formatting</description>
   <url>http://joda-money.sourceforge.net</url>
   <issueManagement>
   	<system>Sourceforge</system>
@@ -17,11 +18,10 @@
   <inceptionYear>2009</inceptionYear>
   <mailingLists>
     <mailingList>
-      <name>Joda Interest list</name>
-      <subscribe>http://sourceforge.net/mail/?group_id=274452</subscribe>
-      <unsubscribe>http://sourceforge.net/mail/?group_id=274452</unsubscribe>
-      <archive>https://sourceforge.net/mailarchive/forum.php?forum_name=joda-money-interest</archive>
-      <!--archive>http://sourceforge.net/mailarchive/forum.php?forum_id=8530</archive-->
+      <name>Joda Money Interest list</name>
+      <subscribe>http://lists.sourceforge.net/lists/listinfo/joda-money-interest</subscribe>
+      <unsubscribe>http://lists.sourceforge.net/lists/listinfo/joda-money-interest</unsubscribe>
+      <archive>http://sourceforge.net/mailarchive/forum.php?forum_name=joda-money-interest</archive>
       <!--otherArchives>
         <otherArchive>http://n2.nabble.com/Joda-Interest-f219941.html</otherArchive>
       </otherArchives-->
@@ -42,11 +42,13 @@
     <license>
       <name>Apache 2</name>
       <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
     </license>
   </licenses>
   <scm>
-    <connection>scm:svn:https://joda-money.svn.sourceforge.net/svnroot/joda-money/JodaMoney/trunk/</connection>
-    <url>http://joda-money.svn.sourceforge.net/viewvc/joda-money/JodaMoney/trunk</url>
+    <connection>scm:svn:http://joda-money.svn.sourceforge.net/svnroot/joda-money/JodaMoney/trunk/</connection>
+    <developerConnection>scm:svn:https://joda-money.svn.sourceforge.net/svnroot/joda-money/JodaMoney/trunk/</developerConnection>
+    <url>http://joda-money.svn.sourceforge.net/viewvc/joda-money/JodaMoney/trunk/</url>
   </scm>
   <organization>
     <name>Joda.org</name>
@@ -58,7 +60,15 @@
         <targetPath>META-INF</targetPath>
         <directory>.</directory>
         <includes>
+          <include>LICENSE.txt</include>
           <include>NOTICE.txt</include>
+        </includes>
+      </resource>
+      <resource>
+        <targetPath>.</targetPath>
+        <directory>src/main/java</directory>
+        <includes>
+          <include>**/MoneyData.csv</include>
         </includes>
       </resource>
     </resources>
@@ -76,22 +86,88 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.4.2</version>
         <configuration>
           <includes>
-            <include>org/joda/time/contrib/hibernate/**/Test*.java</include>
+            <include>**/Test*.java</include>
           </includes>
         </configuration>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <version>2.6.1</version>
+        <configuration>
+          <linksource>true</linksource>
+          <links>
+            <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
+          </links>
+          <encoding>UTF-8</encoding>
+        </configuration>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>2.1.1</version>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar-no-fork</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <version>1.0-alpha-4</version>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-repository-plugin</artifactId>
+        <version>2.3</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <configuration>
           <descriptors>
-            <descriptor>src/main/assembly/bin.xml</descriptor>
             <descriptor>src/main/assembly/src.xml</descriptor>
+            <descriptor>src/main/assembly/bin.xml</descriptor>
           </descriptors>
           <tarLongFileMode>gnu</tarLongFileMode>
         </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>deploy</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
@@ -102,10 +178,28 @@
       <version>5.8</version>
       <classifier>jdk15</classifier>
       <scope>test</scope>
-  	</dependency>
+    </dependency>
   </dependencies>
   <reporting>
   	<plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-project-info-reports-plugin</artifactId>
+        <reportSets>
+          <reportSet>
+            <reports>
+              <report>index</report>
+              <report>dependencies</report>
+              <report>project-team</report>
+              <report>mailing-list</report>
+              <report>issue-tracking</report>
+              <report>license</report>
+              <report>scm</report>
+              <report>summary</report>
+            </reports>
+          </reportSet>
+        </reportSets>
+      </plugin>
       <!--plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -118,13 +212,21 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.6</version>
+        <version>2.6.1</version>
         <configuration>
-          <encoding>utf-8</encoding>
           <linksource>true</linksource>
           <links>
             <link>http://java.sun.com/j2se/1.5.0/docs/api/</link>
           </links>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-report-plugin</artifactId>
+        <version>2.4.2</version>
+        <configuration>
+           <showSuccess>true</showSuccess>
         </configuration>
       </plugin>
       <plugin>
@@ -157,10 +259,24 @@
   	</plugins>
   </reporting>
   <distributionManagement>
+    <repository>
+      <id>sonatype-joda-staging</id>
+      <name>Sonatype OSS staging repository</name>
+      <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+      <layout>default</layout>
+    </repository>
+    <snapshotRepository>
+      <uniqueVersion>false</uniqueVersion>
+      <id>sonatype-joda-snapshot</id>
+      <name>Sonatype OSS snapshot repository</name>
+      <url>http://oss.sonatype.org/content/repositories/joda-snapshots</url>
+      <layout>default</layout>
+    </snapshotRepository>
     <site>
       <id>sf-web-joda-money</id>
-      <name>Sourceforge site</name>
+      <name>Sourceforge Site</name>
       <url>scp://shell.sourceforge.net/home/groups/j/jo/joda-money/htdocs</url>
     </site>
+    <downloadUrl>http://oss.sonatype.org/content/repositories/joda-releases</downloadUrl>
   </distributionManagement>
 </project>
