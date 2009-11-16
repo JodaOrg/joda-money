@@ -300,6 +300,20 @@ public final class MoneyFormatterBuilder {
         public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
             iStyle = iStyle.localize(context.getLocale());
             String str = money.getAmount().toPlainString();
+            char zeroChar = iStyle.getZeroCharacter();
+            if (zeroChar != '0') {
+                int diff = zeroChar - '0';
+                StringBuilder zeroConvert = new StringBuilder(str.length());
+                for (int i = 0; i < str.length(); i++) {
+                    char ch = str.charAt(i);
+                    if (ch >= '0' && ch <= '9') {
+                        zeroConvert.append((char) (ch + diff));
+                    } else {
+                        zeroConvert.append(ch);
+                    }
+                }
+                str = zeroConvert.toString();
+            }
             int decPoint = str.indexOf('.');
             if (iStyle.isGrouping()) {
                 int groupingSize = iStyle.getGroupingSize();
@@ -307,7 +321,7 @@ public final class MoneyFormatterBuilder {
                 int pre = (decPoint < 0 ? str.length() : decPoint);
 //                int post = (decPoint < 0 ? 0 : str.length() - decPoint - 1);
                 for (int i = 0; pre > 0; i++, pre--) {
-                    appendable.append(str.charAt(i));  // TODO zero character
+                    appendable.append(str.charAt(i));
                     if (pre > 3 && pre % groupingSize == 1) {
                         appendable.append(groupingChar);
                     }

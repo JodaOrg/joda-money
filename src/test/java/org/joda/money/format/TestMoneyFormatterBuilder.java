@@ -217,6 +217,13 @@ public class TestMoneyFormatterBuilder {
         assertEquals(test.toString(), "${amount}");
     }
 
+    public void test_appendAmount_MoneyAmountStyle_noGroupingZeroCharacter_GBP_2345_67() {
+        iBuilder.appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_NO_GROUPING.withZeroCharacter('A'));
+        MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.print(GBP_2345_67), "CDEF.GH");
+        assertEquals(test.toString(), "${amount}");
+    }
+
     //-----------------------------------------------------------------------
     public void test_append_MoneyPrinter() {
         MoneyPrinter printer = new MoneyPrinter() {
