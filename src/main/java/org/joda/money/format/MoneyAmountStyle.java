@@ -15,10 +15,13 @@
  */
 package org.joda.money.format;
 
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * Defines the style that the amount of a <code>Money</code> will be formatted with.
@@ -93,6 +96,10 @@ public final class MoneyAmountStyle {
      */
     public static final MoneyAmountStyle LOCALIZED_NO_GROUPING =
         new MoneyAmountStyle(null, null, null, false, null, false);
+    /**
+     * Cache of symbols.
+     */
+    private static final ConcurrentMap<Locale, MoneyAmountStyle> SYMBOLS_CACHE = new ConcurrentHashMap<Locale, MoneyAmountStyle>();
 
     /**
      * The character defining zero, and thus the numbers zero to nine.
@@ -177,25 +184,58 @@ public final class MoneyAmountStyle {
     public MoneyAmountStyle localize(Locale locale) {
         MoneyFormatter.checkNotNull(locale, "Locale must not be null");
         MoneyAmountStyle result = this;
-        DecimalFormatSymbols symbols = null;
+        MoneyAmountStyle protoStyle = null;
         if (iZeroCharacter == null) {
-            symbols = new DecimalFormatSymbols(locale);
-            result = result.withZeroCharacter(symbols.getZeroDigit());
+            protoStyle = getProtoStyle(locale);
+            result = result.withZeroCharacter(protoStyle.getZeroCharacter());
         }
         if (iDecimalPointCharacter == null) {
-            symbols = (symbols == null ? new DecimalFormatSymbols(locale) : symbols);
-            result = result.withDecimalPointCharacter(symbols.getMonetaryDecimalSeparator());
+            protoStyle = (protoStyle == null ? getProtoStyle(locale) : protoStyle);
+            result = result.withDecimalPointCharacter(protoStyle.getDecimalPointCharacter());
         }
         if (iGroupingCharacter == null) {
-            symbols = (symbols == null ? new DecimalFormatSymbols(locale) : symbols);
-            result = result.withGroupingCharacter(symbols.getGroupingSeparator());
+            protoStyle = (protoStyle == null ? getProtoStyle(locale) : protoStyle);
+            result = result.withGroupingCharacter(protoStyle.getGroupingCharacter());
         }
         if (iGroupingSize == null) {
-            NumberFormat format = NumberFormat.getCurrencyInstance(locale);
-            int size = (format instanceof DecimalFormat ? ((DecimalFormat) format).getGroupingSize() : 3);
-            result = result.withGroupingSize(size);
+            protoStyle = (protoStyle == null ? getProtoStyle(locale) : protoStyle);
+            result = result.withGroupingSize(protoStyle.getGroupingSize());
         }
         return result;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the prototype localized style for the given locale.
+     * <p>
+     * This uses {@link DecimalFormatSymbols} and {@link NumberFormat}.
+     * <p>
+     * If JDK 6 or newer is being used, <code>DecimalFormatSymbols.getInstance(locale)</code>
+     * will be used in order to allow the use of locales defined as extensions.
+     * Otherwise, <code>new DecimalFormatSymbols(locale)</code> will be used.
+     * 
+     * @param locale  the {@link Locale} used to get the correct {@link DecimalFormatSymbols}
+     * @return the symbols, never null
+     */
+    private static MoneyAmountStyle getProtoStyle(Locale locale) {
+        MoneyAmountStyle protoStyle = SYMBOLS_CACHE.get(locale);
+        if (protoStyle != null) {
+            return protoStyle;
+        }
+        DecimalFormatSymbols symbols;
+        try {           
+            Method method = DecimalFormatSymbols.class.getMethod("getInstance", new Class[] {Locale.class});
+            symbols = (DecimalFormatSymbols) method.invoke(null, new Object[] {locale});
+        } catch (Exception ex) {
+            symbols = new DecimalFormatSymbols(locale);
+        }
+        NumberFormat format = NumberFormat.getCurrencyInstance(locale);
+        int size = (format instanceof DecimalFormat ? ((DecimalFormat) format).getGroupingSize() : 3);
+        protoStyle = new MoneyAmountStyle(
+                symbols.getZeroDigit(), symbols.getMonetaryDecimalSeparator(),
+                symbols.getGroupingSeparator(), false, size, false);
+        SYMBOLS_CACHE.putIfAbsent(locale, protoStyle);
+        return protoStyle;
     }
 
     //-----------------------------------------------------------------------
