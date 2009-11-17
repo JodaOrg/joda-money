@@ -37,6 +37,7 @@ public class TestMoneyFormatterBuilder {
     private static final Money GBP_234_56 = Money.parse("GBP 234.56");
     private static final Money GBP_2345_67 = Money.parse("GBP 2345.67");
     private static final Money GBP_1234567_89 = Money.parse("GBP 1234567.89");
+    private static final BigMoney GBP_1234_56789 = BigMoney.parse("GBP 1234.56789");
     private static final Money JPY_2345 = Money.parse("JPY 2345");
 
     private static final Locale cCachedLocale = Locale.getDefault();
@@ -145,6 +146,13 @@ public class TestMoneyFormatterBuilder {
         iBuilder.appendAmount();
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals(test.print(GBP_1234567_89), "1,234,567.89");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    public void test_appendAmount_GBP_1234_56789() {
+        iBuilder.appendAmount();
+        MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.print(GBP_1234_56789), "1,234.567,89");
         assertEquals(test.toString(), "${amount}");
     }
 

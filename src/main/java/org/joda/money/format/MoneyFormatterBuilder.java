@@ -319,31 +319,28 @@ public final class MoneyFormatterBuilder {
                 int groupingSize = iStyle.getGroupingSize();
                 char groupingChar = iStyle.getGroupingCharacter();
                 int pre = (decPoint < 0 ? str.length() : decPoint);
-//                int post = (decPoint < 0 ? 0 : str.length() - decPoint - 1);
+                int post = (decPoint < 0 ? 0 : str.length() - decPoint - 1);
                 for (int i = 0; pre > 0; i++, pre--) {
                     appendable.append(str.charAt(i));
                     if (pre > 3 && pre % groupingSize == 1) {
                         appendable.append(groupingChar);
                     }
                 }
-                if (decPoint >= 0) {
-                    appendable.append(iStyle.getDecimalPointCharacter()).append(str.substring(decPoint + 1));
-                } else if (iStyle.isForcedDecimalPoint()) {
+                if (decPoint >= 0 || iStyle.isForcedDecimalPoint()) {
                     appendable.append(iStyle.getDecimalPointCharacter());
                 }
-//                decPoint++;
-//                for (int i = 0; i < post; i++) {
-//                    appendable.append(str.charAt(i + decPoint));
-//                    if (i % groupingSize == 2) {
-//                        appendable.append(groupingChar);
-//                    }
-//                }
+                decPoint++;
+                for (int i = 0; i < post; i++) {
+                    appendable.append(str.charAt(i + decPoint));
+                    if (i % groupingSize == 2) {
+                        appendable.append(groupingChar);
+                    }
+                }
             } else {
                 if (decPoint < 0) {
+                    appendable.append(str);
                     if (iStyle.isForcedDecimalPoint()) {
-                        appendable.append(str).append(iStyle.getDecimalPointCharacter());
-                    } else {
-                        appendable.append(str);
+                        appendable.append(iStyle.getDecimalPointCharacter());
                     }
                 } else {
                     appendable.append(str.subSequence(0, decPoint))
