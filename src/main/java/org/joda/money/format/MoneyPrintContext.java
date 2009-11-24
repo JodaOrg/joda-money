@@ -19,6 +19,9 @@ import java.util.Locale;
 
 /**
  * Context used when printing money.
+ * <p>
+ * MoneyPrintContext is immutable and thread-safe however future versions might not be.
+ * A new instance is created for each parse.
  */
 public final class MoneyPrintContext {
 

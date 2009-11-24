@@ -20,14 +20,21 @@ import java.io.IOException;
 import org.joda.money.BigMoney;
 
 /**
- * Prints instances of <code>BigMoney</code>.
+ * Prints part of a monetary value to the output appendable.
  * <p>
- * MoneyPrinter is an interface which must be implemented in a thread-safe manner.
+ * The printer may print any part, or the whole, of the input {@link BigMoney}.
+ * Typically, a complete print is constructed from a number of smaller printers
+ * that have been combined using {@link MoneyFormatterBuilder}.
+ * <p>
+ * MoneyPrinter is an interface and must be implemented with care to ensure
+ * other classes operate correctly.
+ * All instantiable implementations must be thread-safe, and should generally
+ * be final and immutable.
  */
 public interface MoneyPrinter {
 
     /**
-     * Prints an instance of <code>BigMoney</code> to the <code>Appendable</code>.
+     * Prints part of a monetary value to the output appendable.
      * <p>
      * The implementation determines what to append, which may be some or all
      * of the data held in the <code>BigMoney</code>.
