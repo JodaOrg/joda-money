@@ -22,6 +22,8 @@ import java.util.List;
 import java.util.Locale;
 
 import org.joda.money.BigMoney;
+import org.joda.money.CurrencyUnit;
+import org.joda.money.MoneyException;
 
 /**
  * Provides the ability to build a formatter for <code>Money</code> instances.
@@ -35,6 +37,10 @@ public final class MoneyFormatterBuilder {
      * The printers.
      */
     private final List<MoneyPrinter> iPrinters = new ArrayList<MoneyPrinter>();
+    /**
+     * The parsers.
+     */
+    private final List<MoneyParser> iParsers = new ArrayList<MoneyParser>();
 
     //-----------------------------------------------------------------------
     /**
@@ -52,7 +58,8 @@ public final class MoneyFormatterBuilder {
      * @return this, for chaining, never null
      */
     public MoneyFormatterBuilder appendAmount() {
-        return appendInternal(new Amount(MoneyAmountStyle.LOCALIZED_GROUPING));
+        Amount pp = new Amount(MoneyAmountStyle.LOCALIZED_GROUPING);
+        return appendInternal(pp, pp);
     }
 
     /**
@@ -68,7 +75,8 @@ public final class MoneyFormatterBuilder {
      */
     public MoneyFormatterBuilder appendAmount(MoneyAmountStyle style) {
         MoneyFormatter.checkNotNull(style, "MoneyAmountStyle must not be null");
-        return appendInternal(new Amount(style));
+        Amount pp = new Amount(style);
+        return appendInternal(pp, pp);
     }
 
     //-----------------------------------------------------------------------
@@ -80,7 +88,7 @@ public final class MoneyFormatterBuilder {
      * @return this, for chaining, never null
      */
     public MoneyFormatterBuilder appendCurrencyCode() {
-        return appendInternal(Singletons.CODE);
+        return appendInternal(Singletons.CODE, Singletons.CODE);
     }
 
     /**
@@ -92,7 +100,7 @@ public final class MoneyFormatterBuilder {
      * @return this, for chaining, never null
      */
     public MoneyFormatterBuilder appendCurrencyNumeric3Code() {
-        return appendInternal(Singletons.NUMERIC3CODE);
+        return appendInternal(Singletons.NUMERIC_3_CODE, Singletons.NUMERIC_3_CODE);
     }
 
     /**
@@ -103,7 +111,7 @@ public final class MoneyFormatterBuilder {
      * @return this, for chaining, never null
      */
     public MoneyFormatterBuilder appendCurrencyNumericCode() {
-        return appendInternal(Singletons.NUMERICCODE);
+        return appendInternal(Singletons.NUMERIC_CODE, Singletons.NUMERIC_CODE);
     }
 
     /**
@@ -115,7 +123,7 @@ public final class MoneyFormatterBuilder {
      * @return this, for chaining, never null
      */
     public MoneyFormatterBuilder appendCurrencySymbolLocalized() {
-        return appendInternal(Singletons.LOCALIZED_SYMBOL);
+        return appendInternal(Singletons.LOCALIZED_SYMBOL, Singletons.LOCALIZED_SYMBOL);
     }
 
     /**
@@ -131,32 +139,53 @@ public final class MoneyFormatterBuilder {
         if (literal == null || literal.length() == 0) {
             return this;
         }
-        return appendInternal(new Literal(literal.toString()));
+        Literal pp = new Literal(literal.toString());
+        return appendInternal(pp, pp);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Appends the specified printer to this builder.
+     * Appends the printers and parsers from the specified formatter to this builder.
+     * <p>
+     * If the specified formatter cannot print, then the the output of this
+     * builder will be unable to print. If the specified formatter cannot parse,
+     * then the output of this builder will be unable to parse.
      * 
-     * @param printer  the printer to append, not null
+     * @param formatter  the formatter to append, not null
      * @return this for chaining, never null
      */
-    public MoneyFormatterBuilder append(MoneyPrinter printer) {
-        MoneyFormatter.checkNotNull(printer, "MoneyPrinter must not be null");
-        return appendInternal(printer);
+    public MoneyFormatterBuilder append(MoneyFormatter formatter) {
+        MoneyFormatter.checkNotNull(formatter, "MoneyFormatter must not be null");
+        formatter.appendTo(this);
+        return this;
+    }
+
+    /**
+     * Appends the specified printer and parser to this builder.
+     * <p>
+     * If null is specified then the formatter will be unable to print/parse.
+     * 
+     * @param printer  the printer to append, null makes the formatter unable to print
+     * @param parser  the parser to append, null makes the formatter unable to parse
+     * @return this for chaining, never null
+     */
+    public MoneyFormatterBuilder append(MoneyPrinter printer, MoneyParser parser) {
+        return appendInternal(printer, parser);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Appends the specified printer to this builder.
+     * Appends the specified printer and parser to this builder.
+     * <p>
+     * Either the printer or parser must be non-null.
      * 
-     * @param printer  the printer to append, null ignored
+     * @param printer  the printer to append, null makes the formatter unable to print
+     * @param parser  the parser to append, null makes the formatter unable to parse
      * @return this for chaining, never null
      */
-    private MoneyFormatterBuilder appendInternal(MoneyPrinter printer) {
-        if (printer != null) {
-            iPrinters.add(printer);
-        }
+    private MoneyFormatterBuilder appendInternal(MoneyPrinter printer, MoneyParser parser) {
+        iPrinters.add(printer);
+        iParsers.add(parser);
         return this;
     }
 
@@ -193,7 +222,8 @@ public final class MoneyFormatterBuilder {
     public MoneyFormatter toFormatter(Locale locale) {
         MoneyFormatter.checkNotNull(locale, "Locale must not be null");
         MoneyPrinter[] printers = (MoneyPrinter[]) iPrinters.toArray(new MoneyPrinter[iPrinters.size()]);
-        return new MoneyFormatter(locale, printers);
+        MoneyParser[] parsers = (MoneyParser[]) iParsers.toArray(new MoneyParser[iParsers.size()]);
+        return new MoneyFormatter(locale, printers, parsers);
     }
 
 //    /**
@@ -284,7 +314,7 @@ public final class MoneyFormatterBuilder {
     /**
      * Handles the amount.
      */
-    private static class Amount implements MoneyPrinter, Serializable {
+    private static class Amount implements MoneyPrinter, MoneyParser, Serializable {
         /** Serialization version. */
         private static final long serialVersionUID = 1L;
         /** The style to use. */
@@ -349,6 +379,10 @@ public final class MoneyFormatterBuilder {
             }
         }
         /** {@inheritDoc} */
+        public void parse(MoneyParseContext context) {
+            throw new UnsupportedOperationException("Unable to parse amount");
+        }
+        /** {@inheritDoc} */
         @Override
         public String toString() {
             return "${amount}";
@@ -359,7 +393,7 @@ public final class MoneyFormatterBuilder {
     /**
      * Handles a literal.
      */
-    private static class Literal implements MoneyPrinter, Serializable {
+    private static class Literal implements MoneyPrinter, MoneyParser, Serializable {
         /** Serialization version. */
         private static final long serialVersionUID = 1L;
         /** Literal. */
@@ -376,6 +410,16 @@ public final class MoneyFormatterBuilder {
             appendable.append(iLiteral);
         }
         /** {@inheritDoc} */
+        public void parse(MoneyParseContext context) {
+            int endPos = context.getIndex() + iLiteral.length();
+            if (endPos <= context.getTextLength() &&
+                    context.getTextSubstring(context.getIndex(), endPos).equals(iLiteral)) {
+                context.setIndex(endPos);
+            } else {
+                context.setError();
+            }
+        }
+        /** {@inheritDoc} */
         @Override
         public String toString() {
             return "'" + iLiteral + "'";
@@ -386,29 +430,79 @@ public final class MoneyFormatterBuilder {
     /**
      * Handles the singleton outputs.
      */
-    private static enum Singletons implements MoneyPrinter {
+    private static enum Singletons implements MoneyPrinter, MoneyParser {
         CODE("${code}") {
             /** {@inheritDoc} */
             public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
                 appendable.append(money.getCurrencyUnit().getCurrencyCode());
             }
+            /** {@inheritDoc} */
+            public void parse(MoneyParseContext context) {
+                int endPos = context.getIndex() + 3;
+                if (endPos > context.getTextLength()) {
+                    context.setError();
+                } else {
+                    String code = context.getTextSubstring(context.getIndex(), endPos);
+                    try {
+                        context.setCurrency(CurrencyUnit.of(code));
+                        context.setIndex(endPos);
+                    } catch (MoneyException ex) {
+                        context.setError();
+                    }
+                }
+            }
         },
-        NUMERIC3CODE("${numeric3Code}") {
+        NUMERIC_3_CODE("${numeric3Code}") {
             /** {@inheritDoc} */
             public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
                 appendable.append(money.getCurrencyUnit().getNumeric3Code());
             }
+            public void parse(MoneyParseContext context) {
+                int endPos = context.getIndex() + 3;
+                if (endPos > context.getTextLength()) {
+                    context.setError();
+                }
+                String code = context.getTextSubstring(context.getIndex(), endPos);
+                try {
+                    context.setCurrency(CurrencyUnit.ofNumericCode(code));
+                    context.setIndex(endPos);
+                } catch (MoneyException ex) {
+                    context.setError();
+                }
+            }
         },
-        NUMERICCODE("${numericCode}") {
+        NUMERIC_CODE("${numericCode}") {
             /** {@inheritDoc} */
             public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
                 appendable.append(Integer.toString(money.getCurrencyUnit().getNumericCode()));
+            }
+            /** {@inheritDoc} */
+            public void parse(MoneyParseContext context) {
+                int count = 0;
+                for (; count < 3 && context.getIndex() + count < context.getTextLength(); count++) {
+                    char ch = context.getText().charAt(context.getIndex() + count);
+                    if (ch < '0' || ch > '9') {
+                        break;
+                    }
+                }
+                int endPos = context.getIndex() + count;
+                String code = context.getTextSubstring(context.getIndex(), endPos);
+                try {
+                    context.setCurrency(CurrencyUnit.ofNumericCode(code));
+                    context.setIndex(endPos);
+                } catch (MoneyException ex) {
+                    context.setError();
+                }
             }
         },
         LOCALIZED_SYMBOL("${symbolLocalized}") {
             /** {@inheritDoc} */
             public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
                 appendable.append(money.getCurrencyUnit().getSymbol(context.getLocale()));
+            }
+            /** {@inheritDoc} */
+            public void parse(MoneyParseContext context) {
+                throw new UnsupportedOperationException("Unable to parse symbol");
             }
         };
         private final String iToString;

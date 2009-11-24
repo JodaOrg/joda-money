@@ -233,21 +233,41 @@ public class TestMoneyFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
-    public void test_append_MoneyPrinter() {
+    public void test_append_MoneyPrinterMoneyParser_printer() {
         MoneyPrinter printer = new MoneyPrinter() {
             public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
                 appendable.append("HELLO");
             }
         };
-        iBuilder.append(printer);
+        iBuilder.append(printer, null);
         MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.isPrinter(), true);
+        assertEquals(test.isParser(), false);
         assertEquals(test.print(JPY_2345), "HELLO");
         assertEquals(test.toString().startsWith("org.joda.money.format.TestMoneyFormatterBuilder$"), true);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_append_MoneyPrinter_nullMoneyPrinter() {
-        iBuilder.append((MoneyPrinter) null);
+    public void test_append_MoneyPrinterMoneyParser_parser() {
+        MoneyParser parser = new MoneyParser() {
+            public void parse(MoneyParseContext context) {
+                context.setAmount(JPY_2345.getAmount());
+                context.setCurrency(JPY_2345.getCurrencyUnit());
+            }
+        };
+        iBuilder.append(null, parser);
+        MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.isPrinter(), false);
+        assertEquals(test.isParser(), true);
+        assertEquals(test.parseMoney(""), JPY_2345);
+        assertEquals(test.toString().startsWith("org.joda.money.format.TestMoneyFormatterBuilder$"), true);
+    }
+
+    public void test_append_MoneyPrinter_nullMoneyPrinter_nullMoneyParser() {
+        iBuilder.append((MoneyPrinter) null, (MoneyParser) null);
+        MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.isPrinter(), false);
+        assertEquals(test.isParser(), false);
+        assertEquals(test.toString(), "");
     }
 
     //-----------------------------------------------------------------------
