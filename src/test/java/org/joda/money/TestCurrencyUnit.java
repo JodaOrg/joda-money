@@ -122,6 +122,102 @@ public class TestCurrencyUnit {
         CurrencyUnit.of("ABC");
     }
 
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_of_String_empty() {
+        CurrencyUnit.of("");
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_of_String_tooLong() {
+        CurrencyUnit.of("ABCD");
+    }
+
+    //-----------------------------------------------------------------------
+    // ofNumericCode(String)
+    //-----------------------------------------------------------------------
+    public void test_factory_ofNumericCode_String() {
+        CurrencyUnit test = CurrencyUnit.ofNumericCode("826");
+        assertEquals(test.getCurrencyCode(), "GBP");
+    }
+
+    public void test_factory_ofNumericCode_String_2char() {
+        CurrencyUnit test = CurrencyUnit.ofNumericCode("051");
+        assertEquals(test.getCurrencyCode(), "AMD");
+    }
+
+    public void test_factory_ofNumericCode_String_2charNoPad() {
+        CurrencyUnit test = CurrencyUnit.ofNumericCode("51");
+        assertEquals(test.getCurrencyCode(), "AMD");
+    }
+
+    public void test_factory_ofNumericCode_String_1char() {
+        CurrencyUnit test = CurrencyUnit.ofNumericCode("008");
+        assertEquals(test.getCurrencyCode(), "ALL");
+    }
+
+    public void test_factory_ofNumericCode_String_1charNoPad() {
+        CurrencyUnit test = CurrencyUnit.ofNumericCode("8");
+        assertEquals(test.getCurrencyCode(), "ALL");
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_ofNumericCode_String_nullString() {
+        CurrencyUnit.ofNumericCode((String) null);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_ofNumericCode_String_unknownCurrency() {
+        CurrencyUnit.ofNumericCode("111");
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_ofNumericCode_String_negative() {
+        CurrencyUnit.ofNumericCode("-1");
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_ofNumericCode_String_empty() {
+        CurrencyUnit.ofNumericCode("");
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_ofNumericCode_String_tooLong() {
+        CurrencyUnit.ofNumericCode("1234");
+    }
+
+    //-----------------------------------------------------------------------
+    // ofNumericCode(int)
+    //-----------------------------------------------------------------------
+    public void test_factory_ofNumericCode_int() {
+        CurrencyUnit test = CurrencyUnit.ofNumericCode(826);
+        assertEquals(test.getCurrencyCode(), "GBP");
+    }
+
+    public void test_factory_ofNumericCode_int_2char() {
+        CurrencyUnit test = CurrencyUnit.ofNumericCode(51);
+        assertEquals(test.getCurrencyCode(), "AMD");
+    }
+
+    public void test_factory_ofNumericCode_int_1char() {
+        CurrencyUnit test = CurrencyUnit.ofNumericCode(8);
+        assertEquals(test.getCurrencyCode(), "ALL");
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_ofNumericCode_int_unknownCurrency() {
+        CurrencyUnit.ofNumericCode(111);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_ofNumericCode_int_negative() {
+        CurrencyUnit.ofNumericCode(-1);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_ofNumericCode_int_tooLong() {
+        CurrencyUnit.ofNumericCode(1234);
+    }
+
     //-----------------------------------------------------------------------
     // of(Locale)
     //-----------------------------------------------------------------------

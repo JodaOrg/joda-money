@@ -41,9 +41,13 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      */
     private static final long serialVersionUID = 327835287287L;
     /**
-     * Map of registered currencies by code.
+     * Map of registered currencies by text code.
      */
     private static final ConcurrentMap<String, CurrencyUnit> cCurrenciesByCode = new ConcurrentHashMap<String, CurrencyUnit>();
+    /**
+     * Map of registered currencies by numeric code.
+     */
+    private static final ConcurrentMap<Integer, CurrencyUnit> cCurrenciesByNumericCode = new ConcurrentHashMap<Integer, CurrencyUnit>();
     /**
      * Map of registered currencies by country.
      */
@@ -89,7 +93,8 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @param countryCodes  the country codes to register the currency under, not null
      * @return the new instance, never null
      */
-    static CurrencyUnit registerCurrency(String currencyCode, int numericCurrencyCode, int decimalPlaces, List<String> countryCodes) {
+    static synchronized CurrencyUnit registerCurrency(
+            String currencyCode, int numericCurrencyCode, int decimalPlaces, List<String> countryCodes) {
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
         if (numericCurrencyCode < -1 || numericCurrencyCode > 999) {
             throw new IllegalArgumentException("Invalid numeric code");
@@ -100,13 +105,20 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         MoneyUtils.checkNotNull(countryCodes, "Country codes must not be null");
         
         CurrencyUnit currency = new CurrencyUnit(currencyCode, (short) numericCurrencyCode, (short) decimalPlaces);
-        if (cCurrenciesByCode.putIfAbsent(currencyCode, currency) != null) {
+        if (cCurrenciesByCode.containsKey(currencyCode) || cCurrenciesByNumericCode.containsKey(numericCurrencyCode)) {
             throw new IllegalArgumentException("Currency already registered: " + currencyCode);
         }
         for (String countryCode : countryCodes) {
-            if (cCurrenciesByCountry.putIfAbsent(countryCode, currency) != null) {
+            if (cCurrenciesByCountry.containsKey(countryCode)) {
                 throw new IllegalArgumentException("Currency already registered for country: " + countryCode);
             }
+        }
+        cCurrenciesByCode.putIfAbsent(currencyCode, currency);
+        if (numericCurrencyCode >= 0) {
+            cCurrenciesByNumericCode.putIfAbsent(numericCurrencyCode, currency);
+        }
+        for (String countryCode : countryCodes) {
+            cCurrenciesByCountry.put(countryCode, currency);
         }
         return cCurrenciesByCode.get(currencyCode);
     }
@@ -150,6 +162,49 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         CurrencyUnit currency = cCurrenciesByCode.get(currencyCode);
         if (currency == null) {
             throw new MoneyException("Unknown currency: " + currencyCode);
+        }
+        return currency;
+    }
+
+    /**
+     * Gets the <code>CurrencyUnit</code> instance for the specified ISO-4217
+     * numeric currency code formatted as a string.
+     * <p>
+     * This method is lenient and does not require the string to be left padded with zeroes.
+     *
+     * @param currencyCode  the currency code, not null
+     * @return the singleton instance, never null
+     * @throws MoneyException if the currency is unknown
+     */
+    public static CurrencyUnit ofNumericCode(String numericCurrencyCode) {
+        MoneyUtils.checkNotNull(numericCurrencyCode, "Currency code must not be null");
+        switch (numericCurrencyCode.length()) {
+            case 1:
+                return ofNumericCode(numericCurrencyCode.charAt(0) - '0');
+            case 2:
+                return ofNumericCode((numericCurrencyCode.charAt(0) - '0') * 10 +
+                                      numericCurrencyCode.charAt(1) - '0');
+            case 3:
+                return ofNumericCode((numericCurrencyCode.charAt(0) - '0') * 100 +
+                                     (numericCurrencyCode.charAt(1) - '0') * 10 +
+                                      numericCurrencyCode.charAt(2) - '0');
+            default:
+                throw new MoneyException("Unknown currency: " + numericCurrencyCode);
+        }
+    }
+
+    /**
+     * Gets the <code>CurrencyUnit</code> instance for the specified ISO-4217
+     * numeric currency code.
+     *
+     * @param numericCurrencyCode  the numeric currency code, not null
+     * @return the singleton instance, never null
+     * @throws MoneyException if the currency is unknown
+     */
+    public static CurrencyUnit ofNumericCode(int numericCurrencyCode) {
+        CurrencyUnit currency = cCurrenciesByNumericCode.get(numericCurrencyCode);
+        if (currency == null) {
+            throw new MoneyException("Unknown currency: " + numericCurrencyCode);
         }
         return currency;
     }
