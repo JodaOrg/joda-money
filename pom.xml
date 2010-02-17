@@ -79,7 +79,7 @@
         <configuration>
           <verbose>true</verbose>
           <fork>true</fork>
-          <executable>C:\java\jdk1.5.0\bin\javac</executable>
+          <executable>${JAVA_1_5_HOME}/bin/javac</executable>
           <compilerVersion>1.5</compilerVersion>
           <source>1.5</source>
           <target>1.5</target>
