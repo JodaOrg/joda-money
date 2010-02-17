@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009 Stephen Colebourne
+ *  Copyright 2009-2010 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -297,11 +297,11 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>BigMoney</code> from the provider, checking for nulls.
+     * Gets an instance of <code>BigMoney</code> from the specified provider.
      * <p>
      * This allows you to create an instance from any class that implements the
-     * provider, such as <code>Money</code>. The only value that this method provides
-     * over and above {@link BigMoneyProvider#toBigMoney()} is to check for nulls.
+     * provider, such as <code>Money</code>.
+     * This method simply calls {@link BigMoneyProvider#toBigMoney()} checking for nulls.
      *
      * @param moneyProvider  the money to convert, not null
      * @return the new instance, never null
@@ -321,8 +321,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * The currency code must be three letters, and the amount must be a number.
      * This matches the output from {@link #toString()}.
      * <p>
-     * For example, <code>of("USD 25")</code> creates the instance <code>USD 25</code>
-     * while <code>of("USD 25.95")</code> creates the instance <code>USD 25.95</code>.
+     * For example, <code>parse("USD 25")</code> creates the instance <code>USD 25</code>
+     * while <code>parse("USD 25.95")</code> creates the instance <code>USD 25.95</code>.
      *
      * @param moneyStr  the money string to parse, not null
      * @return the parsed instance, never null
@@ -374,7 +374,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this instance with the specified currency.
+     * Returns a copy of this monetary value with the specified currency.
      * <p>
      * The returned instance will have the specified currency and the amount
      * from this instance. No currency conversion or alteration to the scale occurs.
@@ -424,7 +424,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this instance with the specified scale,
+     * Returns a copy of this monetary value with the specified scale,
      * truncating the amount if necessary.
      * <p>
      * The returned instance will have this currency and the new scaled amount.
@@ -441,7 +441,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     }
 
     /**
-     * Returns a copy of this instance with the specified scale,
+     * Returns a copy of this monetary value with the specified scale,
      * using the specified rounding mode if necessary.
      * <p>
      * The returned instance will have this currency and the new scaled amount.
@@ -464,7 +464,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     }
 
     /**
-     * Returns a copy of this instance with the scale of the currency,
+     * Returns a copy of this monetary value with the scale of the currency,
      * truncating the amount if necessary.
      * <p>
      * The returned instance will have this currency and the new scaled amount.
@@ -480,7 +480,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     }
 
     /**
-     * Returns a copy of this instance with the scale of the currency,
+     * Returns a copy of this monetary value with the scale of the currency,
      * using the specified rounding mode if necessary.
      * <p>
      * The returned instance will have this currency and the new scaled amount.
@@ -667,7 +667,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this instance with the specified amount.
+     * Returns a copy of this monetary value with the specified amount.
      * <p>
      * The returned instance will have this currency and the new amount.
      * The scale of the returned instance will be that of the specified BigDecimal.
@@ -686,7 +686,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     }
 
     /**
-     * Returns a copy of this instance with the specified amount using a well-defined
+     * Returns a copy of this monetary value with the specified amount using a well-defined
      * conversion from a <code>double</code>.
      * <p>
      * The returned instance will have this currency and the new amount.
@@ -724,11 +724,14 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this monetary value with the amount in the same currency added.
+     * Returns a copy of this monetary value with the amount added.
+     * <p>
+     * This adds the specified amount to this monetary amount, returning a new object.
+     * The amount added must be in the same currency.
      * <p>
      * No precision is lost in the result.
      * The scale of the result will be the maximum of the two scales.
-     * For example,'USD 25.95' plus 'USD 3.021' will 'USD 28.971.
+     * For example, 'USD 25.95' plus 'USD 3.021' gives 'USD 28.971'.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
@@ -742,11 +745,13 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     }
 
     /**
-     * Returns a copy of this monetary value with the amount added.
+     * Returns a copy of this monetary value with the {@code BigDecimal} amount added.
+     * <p>
+     * This adds the specified amount to this monetary amount, returning a new object.
      * <p>
      * No precision is lost in the result.
      * The scale of the result will be the maximum of the two scales.
-     * For example,'USD 25.95' plus 'USD 3.021' will 'USD 28.971.
+     * For example, 'USD 25.95' plus '3.021' gives 'USD 28.971'.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
@@ -763,11 +768,13 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     }
 
     /**
-     * Returns a copy of this monetary value with the amount added.
+     * Returns a copy of this monetary value with the {@code double} amount added.
+     * <p>
+     * This adds the specified amount to this monetary amount, returning a new object.
      * <p>
      * No precision is lost in the result.
      * The scale of the result will be the maximum of the two scales.
-     * For example,'USD 25.95' plus 'USD 3.021' will 'USD 28.971.
+     * For example, 'USD 25.95' plus '3.021d' gives 'USD 28.971'.
      * <p>
      * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
      * the most expected answer for most programming scenarios.
@@ -791,10 +798,12 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     /**
      * Returns a copy of this monetary value with the amount in major units added.
      * <p>
-     * This adds an amount in major units, leaving the minor units untouched.
+     * This adds the specified amount in major units to this monetary amount,
+     * returning a new object. The minor units will be untouched in the result.
+     * <p>
      * No precision is lost in the result.
      * The scale of the result will be the maximum of the current scale and 0.
-     * For example, 'USD 23.45' plus 138 gives 'USD 161.45'.
+     * For example, 'USD 23.45' plus '138' gives 'USD 161.45'.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
@@ -812,10 +821,12 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     /**
      * Returns a copy of this monetary value with the amount in minor units added.
      * <p>
-     * This adds an amount in minor units.
+     * This adds the specified amount in minor units to this monetary amount,
+     * returning a new object.
+     * <p>
      * No precision is lost in the result.
      * The scale of the result will be the maximum of the current scale and the default currency scale.
-     * For example, 'USD 23.45' plus 138 gives 'USD 24.83'.
+     * For example, 'USD 23.45' plus '138' gives 'USD 24.83'.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
@@ -830,12 +841,13 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         return BigMoney.of(iCurrency, amount);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this monetary value with the amount in the same currency added
      * retaining the scale by rounding the result.
      * <p>
      * The scale of the result will be the same as the scale of this instance.
-     * For example,'USD 25.95' plus 'USD 3.021' will 'USD 28.97 with most rounding modes.
+     * For example,'USD 25.95' plus 'USD 3.021' gives 'USD 28.97' with most rounding modes.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
@@ -853,7 +865,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * the scale by rounding the result.
      * <p>
      * The scale of the result will be the same as the scale of this instance.
-     * For example,'USD 25.95' plus 'USD 3.021' will 'USD 28.97 with most rounding modes.
+     * For example,'USD 25.95' plus '3.021' gives 'USD 28.97' with most rounding modes.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
@@ -876,7 +888,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * the scale by rounding the result.
      * <p>
      * The scale of the result will be the same as the scale of this instance.
-     * For example,'USD 25.95' plus 'USD 3.021' will 'USD 28.97 with most rounding modes.
+     * For example,'USD 25.95' plus '3.021d' gives 'USD 28.97' with most rounding modes.
      * <p>
      * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
      * the most expected answer for most programming scenarios.
@@ -901,11 +913,14 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this monetary value with the amount in the same currency subtracted.
+     * Returns a copy of this monetary value with the amount subtracted.
+     * <p>
+     * This subtracts the specified amount from this monetary amount, returning a new object.
+     * The amount subtracted must be in the same currency.
      * <p>
      * No precision is lost in the result.
      * The scale of the result will be the maximum of the two scales.
-     * For example,'USD 25.95' minus 'USD 3.021' will 'USD 22.929.
+     * For example,'USD 25.95' minus 'USD 3.021' gives 'USD 22.929'.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
@@ -919,11 +934,13 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     }
 
     /**
-     * Returns a copy of this monetary value with the amount subtracted.
+     * Returns a copy of this monetary value with the {@code BigDecimal} amount subtracted.
+     * <p>
+     * This subtracts the specified amount from this monetary amount, returning a new object.
      * <p>
      * No precision is lost in the result.
      * The scale of the result will be the maximum of the two scales.
-     * For example,'USD 25.95' minus 'USD 3.021' will 'USD 22.929.
+     * For example,'USD 25.95' minus '3.021' gives 'USD 22.929'.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
@@ -940,11 +957,13 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     }
 
     /**
-     * Returns a copy of this monetary value with the amount subtracted.
+     * Returns a copy of this monetary value with the {@code double} amount subtracted.
+     * <p>
+     * This subtracts the specified amount from this monetary amount, returning a new object.
      * <p>
      * No precision is lost in the result.
      * The scale of the result will be the maximum of the two scales.
-     * For example,'USD 25.95' minus 'USD 3.021' will 'USD 22.929.
+     * For example,'USD 25.95' minus '3.021d' gives 'USD 22.929'.
      * <p>
      * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
      * the most expected answer for most programming scenarios.
@@ -968,10 +987,12 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     /**
      * Returns a copy of this monetary value with the amount in major units subtracted.
      * <p>
+     * This subtracts the specified amount in major units from this monetary amount,
+     * returning a new object. The minor units will be untouched in the result.
+     * <p>
      * No precision is lost in the result.
-     * This subtracts an amount in major units, leaving the minor units untouched.
      * The scale of the result will be the maximum of the current scale and 0.
-     * For example, 'USD 23.45' minus 138 gives 'USD -114.55'.
+     * For example, 'USD 23.45' minus '138' gives 'USD -114.55'.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
@@ -989,10 +1010,12 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     /**
      * Returns a copy of this monetary value with the amount in minor units subtracted.
      * <p>
+     * This subtracts the specified amount in minor units from this monetary amount,
+     * returning a new object.
+     * <p>
      * No precision is lost in the result.
-     * This subtracts an amount in minor units.
      * The scale of the result will be the maximum of the current scale and the default currency scale.
-     * For example, USD 23.45 minus 138 gives USD 22.07.
+     * For example, USD 23.45 minus '138' gives 'USD 22.07'.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
@@ -1007,12 +1030,13 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         return BigMoney.of(iCurrency, amount);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this monetary value with the amount in the same currency subtracted
      * retaining the scale by rounding the result.
      * <p>
      * The scale of the result will be the same as the scale of this instance.
-     * For example,'USD 25.95' minus 'USD 3.029' will 'USD 22.92 with most rounding modes.
+     * For example,'USD 25.95' minus 'USD 3.029' gives 'USD 22.92 with most rounding modes.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
@@ -1030,7 +1054,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * the scale by rounding the result.
      * <p>
      * The scale of the result will be the same as the scale of this instance.
-     * For example,'USD 25.95' minus 'USD 3.029' will 'USD 22.92 with most rounding modes.
+     * For example,'USD 25.95' minus '3.029' gives 'USD 22.92' with most rounding modes.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
@@ -1053,7 +1077,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * the scale by rounding the result.
      * <p>
      * The scale of the result will be the same as the scale of this instance.
-     * For example,'USD 25.95' minus 'USD 3.029' will 'USD 22.92 with most rounding modes.
+     * For example,'USD 25.95' minus '3.029d' gives 'USD 22.92' with most rounding modes.
      * <p>
      * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
      * the most expected answer for most programming scenarios.
@@ -1082,7 +1106,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * <p>
      * No precision is lost in the result.
      * The result has a scale equal to the sum of the two scales.
-     * For example, 'USD 1.13' multiplied by 2.5 yields 'USD 2.825'.
+     * For example, 'USD 1.13' multiplied by '2.5' gives 'USD 2.825'.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
@@ -1103,7 +1127,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * <p>
      * No precision is lost in the result.
      * The result has a scale equal to the sum of the two scales.
-     * For example, 'USD 1.13' multiplied by 2.5 yields 'USD 2.825'.
+     * For example, 'USD 1.13' multiplied by '2.5' gives 'USD 2.825'.
      * <p>
      * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
      * the most expected answer for most programming scenarios.
@@ -1129,7 +1153,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * <p>
      * No precision is lost in the result.
      * The result has a scale equal to the scale of this money.
-     * For example, 'USD 1.13' multiplied by 2 yields 'USD 2.26'.
+     * For example, 'USD 1.13' multiplied by '2' gives 'USD 2.26'.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
@@ -1144,13 +1168,14 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         return BigMoney.of(iCurrency, amount);
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this monetary value multiplied by the specified value
      * using the specified rounding mode to adjust the scale of the result.
      * <p>
      * This multiplies this money by the specified value, retaining the scale of this money.
      * This will frequently lose precision, hence the need for a rounding mode.
-     * For example, 'USD 1.13' multiplied by 2.5 and rounding down yields 'USD 2.82'.
+     * For example, 'USD 1.13' multiplied by '2.5' and rounding down gives 'USD 2.82'.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
@@ -1176,7 +1201,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * <p>
      * This multiplies this money by the specified value, retaining the scale of this money.
      * This will frequently lose precision, hence the need for a rounding mode.
-     * For example, 'USD 1.13' multiplied by 2.5 and rounding down yields 'USD 2.82'.
+     * For example, 'USD 1.13' multiplied by '2.5' and rounding down gives 'USD 2.82'.
      * <p>
      * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
      * the most expected answer for most programming scenarios.
@@ -1219,7 +1244,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * using the specified rounding mode to adjust the scale.
      * <p>
      * The result has the same scale as this instance.
-     * For example, 'USD 1.13' divided by 2.5 and rounding down yields 'USD 0.45'
+     * For example, 'USD 1.13' divided by '2.5' and rounding down gives 'USD 0.45'
      * (amount rounded down from 0.452).
      * <p>
      * This instance is immutable and unaffected by this method.
@@ -1271,7 +1296,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * using the specified rounding mode to adjust the scale.
      * <p>
      * The result has the same scale as this instance.
-     * For example, 'USD 1.13' divided by 2.5 and rounding down yields 'USD 0.45'
+     * For example, 'USD 1.13' divided by '2.5' and rounding down gives 'USD 0.45'
      * (amount rounded down from 0.452).
      * <p>
      * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
@@ -1320,7 +1345,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * using the specified rounding mode to adjust the decimal places in the result.
      * <p>
      * The result has the same scale as this instance.
-     * For example, 'USD 1.13' divided by 2 and rounding down yields 'USD 0.56'
+     * For example, 'USD 1.13' divided by '2' and rounding down gives 'USD 0.56'
      * (amount rounded down from 0.565).
      * <p>
      * This instance is immutable and unaffected by this method.
