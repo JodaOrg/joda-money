@@ -19,8 +19,8 @@ import java.math.BigDecimal;
 import java.text.ParsePosition;
 import java.util.Locale;
 
-import org.joda.money.BigMoney;
 import org.joda.money.CurrencyUnit;
+import org.joda.money.Money;
 
 /**
  * Context used when parsing money.
@@ -232,19 +232,19 @@ public final class MoneyParseContext {
     }
 
     /**
-     * Converts the context to a BigMoney.
+     * Converts the context to a {@code Money}.
      * 
      * @return the monetary value, never null
      * @throws MoneyFormatException if either the currency or amount is missing
      */
-    public BigMoney toBigMoney() {
+    public Money toMoney() {
         if (iCurrency == null) {
-            throw new MoneyFormatException("Cannot convert to BigMoney as no currency found");
+            throw new MoneyFormatException("Cannot convert to Money as no currency found");
         }
         if (iAmount == null) {
-            throw new MoneyFormatException("Cannot convert to BigMoney as no amount found");
+            throw new MoneyFormatException("Cannot convert to Money as no amount found");
         }
-        return BigMoney.of(iCurrency, iAmount);
+        return Money.of(iCurrency, iAmount);
     }
 
 }

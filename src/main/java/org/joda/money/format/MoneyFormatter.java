@@ -20,9 +20,9 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Locale;
 
-import org.joda.money.BigMoney;
-import org.joda.money.BigMoneyProvider;
 import org.joda.money.Money;
+import org.joda.money.MoneyProvider;
+import org.joda.money.StandardMoney;
 
 /**
  * Formats instances of money to and from a String.
@@ -157,7 +157,7 @@ public final class MoneyFormatter implements Serializable {
      * @throws UnsupportedOperationException if the formatter is unable to print
      * @throws MoneyFormatException if there is a problem while printing
      */
-    public String print(BigMoneyProvider moneyProvider) {
+    public String print(MoneyProvider moneyProvider) {
         StringBuilder buf = new StringBuilder();
         print(buf, moneyProvider);
         return buf.toString();
@@ -176,7 +176,7 @@ public final class MoneyFormatter implements Serializable {
      * @throws UnsupportedOperationException if the formatter is unable to print
      * @throws MoneyFormatException if there is a problem while printing
      */
-    public void print(Appendable appendable, BigMoneyProvider moneyProvider) {
+    public void print(Appendable appendable, MoneyProvider moneyProvider) {
         try {
             printIO(appendable, moneyProvider);
         } catch (IOException ex) {
@@ -198,13 +198,13 @@ public final class MoneyFormatter implements Serializable {
      * @throws MoneyFormatException if there is a problem while printing
      * @throws IOException if an IO error occurs
      */
-    public void printIO(Appendable appendable, BigMoneyProvider moneyProvider) throws IOException {
-        checkNotNull(moneyProvider, "BigMoneyProvider must not be null");
+    public void printIO(Appendable appendable, MoneyProvider moneyProvider) throws IOException {
+        checkNotNull(moneyProvider, "MoneyProvider must not be null");
         if (isPrinter() == false) {
             throw new UnsupportedOperationException("MoneyFomatter has not been configured to be able to print");
         }
         
-        BigMoney money = BigMoney.from(moneyProvider);
+        Money money = Money.from(moneyProvider);
         MoneyPrintContext context = new MoneyPrintContext(iLocale);
         for (MoneyPrinter printer : iPrinters) {
             printer.print(context, appendable, money);
@@ -213,7 +213,7 @@ public final class MoneyFormatter implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Fully parses the text into a {@code BigMoney}.
+     * Fully parses the text into a {@code Money}.
      * <p>
      * The parse must complete normally and parse the entire text (currency and amount).
      * If the parse completes without reading the entire length of the text, an exception is thrown.
@@ -224,7 +224,7 @@ public final class MoneyFormatter implements Serializable {
      * @throws UnsupportedOperationException if the formatter is unable to parse
      * @throws MoneyFormatException if there is a problem while parsing
      */
-    public BigMoney parseBigMoney(CharSequence text) {
+    public Money parseMoney(CharSequence text) {
         checkNotNull(text, "Text must not be null");
         MoneyParseContext result = parse(text, 0);
         if (result.isError() || result.isFullyParsed() == false || result.isComplete() == false) {
@@ -237,11 +237,11 @@ public final class MoneyFormatter implements Serializable {
                 throw new MoneyFormatException("Parsing did not find both currency and amount: " + str);
             }
         }
-        return result.toBigMoney();
+        return result.toMoney();
     }
 
     /**
-     * Fully parses the text into a {@code Money} requiring that the parsed
+     * Fully parses the text into a {@code StandardMoney} requiring that the parsed
      * amount has the correct number of decimal places.
      * <p>
      * The parse must complete normally and parse the entire text (currency and amount).
@@ -254,8 +254,8 @@ public final class MoneyFormatter implements Serializable {
      * @throws MoneyFormatException if there is a problem while parsing
      * @throws ArithmeticException if the scale of the parsed money exceeds the scale of the currency
      */
-    public Money parseMoney(CharSequence text) {
-        return parseBigMoney(text).toMoney();
+    public StandardMoney parseStandardMoney(CharSequence text) {
+        return parseMoney(text).toStandardMoney();
     }
 
     /**

@@ -20,8 +20,8 @@ import static org.testng.Assert.assertEquals;
 import java.io.IOException;
 import java.util.Locale;
 
-import org.joda.money.BigMoney;
 import org.joda.money.Money;
+import org.joda.money.StandardMoney;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -32,13 +32,13 @@ import org.testng.annotations.Test;
 @Test
 public class TestMoneyFormatterBuilder {
 
-    private static final Money GBP_2_34 = Money.parse("GBP 2.34");
-    private static final Money GBP_23_45 = Money.parse("GBP 23.45");
-    private static final Money GBP_234_56 = Money.parse("GBP 234.56");
-    private static final Money GBP_2345_67 = Money.parse("GBP 2345.67");
-    private static final Money GBP_1234567_89 = Money.parse("GBP 1234567.89");
-    private static final BigMoney GBP_1234_56789 = BigMoney.parse("GBP 1234.56789");
-    private static final Money JPY_2345 = Money.parse("JPY 2345");
+    private static final StandardMoney GBP_2_34 = StandardMoney.parse("GBP 2.34");
+    private static final StandardMoney GBP_23_45 = StandardMoney.parse("GBP 23.45");
+    private static final StandardMoney GBP_234_56 = StandardMoney.parse("GBP 234.56");
+    private static final StandardMoney GBP_2345_67 = StandardMoney.parse("GBP 2345.67");
+    private static final StandardMoney GBP_1234567_89 = StandardMoney.parse("GBP 1234567.89");
+    private static final Money GBP_1234_56789 = Money.parse("GBP 1234.56789");
+    private static final StandardMoney JPY_2345 = StandardMoney.parse("JPY 2345");
 
     private static final Locale cCachedLocale = Locale.getDefault();
     private static final Locale TEST_GB_LOCALE = new Locale("en", "GB", "TEST");
@@ -235,7 +235,7 @@ public class TestMoneyFormatterBuilder {
     //-----------------------------------------------------------------------
     public void test_append_MoneyPrinterMoneyParser_printer() {
         MoneyPrinter printer = new MoneyPrinter() {
-            public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
+            public void print(MoneyPrintContext context, Appendable appendable, Money money) throws IOException {
                 appendable.append("HELLO");
             }
         };
@@ -258,7 +258,7 @@ public class TestMoneyFormatterBuilder {
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals(test.isPrinter(), false);
         assertEquals(test.isParser(), true);
-        assertEquals(test.parseMoney(""), JPY_2345);
+        assertEquals(test.parseStandardMoney(""), JPY_2345);
         assertEquals(test.toString().startsWith("org.joda.money.format.TestMoneyFormatterBuilder$"), true);
     }
 

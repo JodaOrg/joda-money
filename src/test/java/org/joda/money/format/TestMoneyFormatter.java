@@ -24,8 +24,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Locale;
 
-import org.joda.money.BigMoneyProvider;
-import org.joda.money.Money;
+import org.joda.money.MoneyProvider;
+import org.joda.money.StandardMoney;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -39,7 +39,7 @@ public class TestMoneyFormatter {
     private static final Locale cCachedLocale = Locale.getDefault();
     private static final Locale TEST_GB_LOCALE = new Locale("en", "GB", "TEST");
     private static final Locale TEST_FR_LOCALE = new Locale("fr", "FR", "TEST");
-    private static final Money MONEY_GBP_12_34 = Money.parse("GBP 12.34");
+    private static final StandardMoney MONEY_GBP_12_34 = StandardMoney.parse("GBP 12.34");
     private MoneyFormatter iTest;
 
     @BeforeMethod
@@ -68,7 +68,7 @@ public class TestMoneyFormatter {
         oos.close();
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         MoneyFormatter input = (MoneyFormatter) ois.readObject();
-        Money value = MONEY_GBP_12_34;
+        StandardMoney value = MONEY_GBP_12_34;
         assertEquals(input.print(value), a.print(value));
     }
 
@@ -91,28 +91,28 @@ public class TestMoneyFormatter {
     }
 
     //-----------------------------------------------------------------------
-    // print(BigMoneyProvider)
+    // print(MoneyProvider)
     //-----------------------------------------------------------------------
-    public void test_print_BigMoneyProvider() {
+    public void test_print_MoneyProvider() {
         assertEquals(iTest.print(MONEY_GBP_12_34), "GBP hello");
     }
 
     @Test(expectedExceptions = NullPointerException.class)
-    public void test_print_BigMoneyProvider_nullBigMoneyProvider() {
-        iTest.print((BigMoneyProvider) null);
+    public void test_print_MoneyProvider_nullMoneyProvider() {
+        iTest.print((MoneyProvider) null);
     }
 
     //-----------------------------------------------------------------------
-    // print(Appendable,BigMoneyProvider)
+    // print(Appendable,MoneyProvider)
     //-----------------------------------------------------------------------
-    public void test_print_AppendableBigMoneyProvider() {
+    public void test_print_AppendableMoneyProvider() {
         StringBuilder buf = new StringBuilder();
         iTest.print(buf, MONEY_GBP_12_34);
         assertEquals(buf.toString(), "GBP hello");
     }
 
     @Test(expectedExceptions = MoneyFormatException.class)
-    public void test_print_AppendableBigMoneyProvider_IOException() {
+    public void test_print_AppendableMoneyProvider_IOException() {
         Appendable appendable = new Appendable() {
             public Appendable append(CharSequence csq, int start, int end) throws IOException {
                 throw new IOException();
@@ -128,13 +128,13 @@ public class TestMoneyFormatter {
     }
 
     @Test(expectedExceptions = NullPointerException.class)
-    public void test_print_AppendableBigMoneyProvider_nullAppendable() {
+    public void test_print_AppendableMoneyProvider_nullAppendable() {
         iTest.print((Appendable) null, MONEY_GBP_12_34);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
-    public void test_print_AppendableBigMoneyProvider_nullBigMoneyProvider() {
-        iTest.print(new StringBuilder(), (BigMoneyProvider) null);
+    public void test_print_AppendableMoneyProvider_nullMoneyProvider() {
+        iTest.print(new StringBuilder(), (MoneyProvider) null);
     }
 
     //-----------------------------------------------------------------------

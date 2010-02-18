@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Defines the style that the amount of a {@code Money} will be formatted with.
+ * Defines the style that the amount of a monetary value will be formatted with.
  * <p>
  * The style contains four fields that may be configured based on the locale:
  * <ul>

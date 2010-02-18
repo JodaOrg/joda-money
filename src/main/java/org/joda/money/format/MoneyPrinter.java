@@ -17,12 +17,12 @@ package org.joda.money.format;
 
 import java.io.IOException;
 
-import org.joda.money.BigMoney;
+import org.joda.money.Money;
 
 /**
  * Prints part of a monetary value to the output appendable.
  * <p>
- * The printer may print any part, or the whole, of the input {@link BigMoney}.
+ * The printer may print any part, or the whole, of the input {@link Money}.
  * Typically, a complete print is constructed from a number of smaller printers
  * that have been combined using {@link MoneyFormatterBuilder}.
  * <p>
@@ -37,7 +37,7 @@ public interface MoneyPrinter {
      * Prints part of a monetary value to the output appendable.
      * <p>
      * The implementation determines what to append, which may be some or all
-     * of the data held in the {@code BigMoney}.
+     * of the data held in the {@code Money}.
      * 
      * @param context  the context being used, not null
      * @param appendable  the appendable to add to, not null
@@ -45,6 +45,6 @@ public interface MoneyPrinter {
      * @throws MoneyFormatException if there is a problem while printing
      * @throws IOException if an IO exception occurs
      */
-    void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException;
+    void print(MoneyPrintContext context, Appendable appendable, Money money) throws IOException;
 
 }
