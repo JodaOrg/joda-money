@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009 Stephen Colebourne
+ *  Copyright 2009-2010 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Defines the style that the amount of a <code>Money</code> will be formatted with.
+ * Defines the style that the amount of a {@code Money} will be formatted with.
  * <p>
  * The style contains four fields that may be configured based on the locale:
  * <ul>
@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentMap;
  * <ul>
  * <li>set all the fields manually, resulting in the same amount style for all locales
  * <li>call {@link #localize} manually and optionally adjust to set as required
- * <li>leave the four localized fields as <code>null</code> and let the locale in the
+ * <li>leave the four localized fields as {@code null} and let the locale in the
  *  formatter to determine the style
  * </ul>
  * <p>
@@ -168,10 +168,10 @@ public final class MoneyAmountStyle {
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a <code>MoneyAmountStyle</code> instance configured for the specified locale.
+     * Returns a {@code MoneyAmountStyle} instance configured for the specified locale.
      * <p>
      * This method will return a new instance where each field that was defined
-     * to be localized (by being set to <code>null</code>) is filled in.
+     * to be localized (by being set to {@code null}) is filled in.
      * If this instance is fully defined (with all fields non-null), then this
      * method has no effect. Once this method is called, no method will return null.
      * <p>
@@ -210,9 +210,9 @@ public final class MoneyAmountStyle {
      * <p>
      * This uses {@link DecimalFormatSymbols} and {@link NumberFormat}.
      * <p>
-     * If JDK 6 or newer is being used, <code>DecimalFormatSymbols.getInstance(locale)</code>
+     * If JDK 6 or newer is being used, {@code DecimalFormatSymbols.getInstance(locale)}
      * will be used in order to allow the use of locales defined as extensions.
-     * Otherwise, <code>new DecimalFormatSymbols(locale)</code> will be used.
+     * Otherwise, {@code new DecimalFormatSymbols(locale)} will be used.
      * 
      * @param locale  the {@link Locale} used to get the correct {@link DecimalFormatSymbols}
      * @return the symbols, never null

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009 Stephen Colebourne
+ *  Copyright 2009-2010 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public interface MoneyPrinter {
      * Prints part of a monetary value to the output appendable.
      * <p>
      * The implementation determines what to append, which may be some or all
-     * of the data held in the <code>BigMoney</code>.
+     * of the data held in the {@code BigMoney}.
      * 
      * @param context  the context being used, not null
      * @param appendable  the appendable to add to, not null

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009 Stephen Colebourne
+ *  Copyright 2009-2010 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,17 +16,17 @@
 package org.joda.money;
 
 /**
- * Provides a uniform interface to obtain a <code>BigMoney</code>.
+ * Provides a uniform interface to obtain a {@code BigMoney}.
  * <p>
- * When designing APIs, it is recommended to use <code>BigMoneyProvider</code>
+ * When designing APIs, it is recommended to use {@code BigMoneyProvider}
  * in method signatures where possible to allow the widest possible use of the method.
- * Within Joda-Money, both <code>BigMoney</code> and <code>Money</code> implement
+ * Within Joda-Money, both {@code BigMoney} and {@code Money} implement
  * the provider interface.
  * <p>
- * Implementations of <code>BigMoneyProvider</code> may be mutable.
+ * Implementations of {@code BigMoneyProvider} may be mutable.
  * To minimise the risk of the value of the provider changing while processing,
- * any method that takes a <code>BigMoneyProvider</code> as a parameter should convert
- * it to a <code>BigMoney</code> immediately and use that directly from then on.
+ * any method that takes a {@code BigMoneyProvider} as a parameter should convert
+ * it to a {@code BigMoney} immediately and use that directly from then on.
  * The method {@link BigMoney#from(BigMoneyProvider)} performs the conversion
  * safely with null checks and is recommended for this purpose.
  * <p>
@@ -36,11 +36,11 @@ package org.joda.money;
 public interface BigMoneyProvider {
 
     /**
-     * Returns a <code>BigMoney</code> instance equivalent to the value of this object.
+     * Returns a {@code BigMoney} instance equivalent to the value of this object.
      * <p>
      * It is recommended that {@link BigMoney#from(BigMoneyProvider)} is used in
      * preference to calling this method directly. It is also recommended that the
-     * converted <code>BigMoney</code> is cached in a local variable instead of
+     * converted {@code BigMoney} is cached in a local variable instead of
      * performing the conversion multiple times.
      * 
      * @return the converted money instance, never null

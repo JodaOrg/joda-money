@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009 Stephen Colebourne
+ *  Copyright 2009-2010 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ import org.joda.money.Money;
 /**
  * Formats instances of money to and from a String.
  * <p>
- * Instances of <code>MoneyFormatter</code> can be created by
- * <code>MoneyFormatterBuilder</code>.
+ * Instances of {@code MoneyFormatter} can be created by
+ * {@code MoneyFormatterBuilder}.
  * <p>
  * MoneyFormatter is immutable and thread-safe.
  */
@@ -150,7 +150,7 @@ public final class MoneyFormatter implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Prints a monetary value to a <code>String</code>.
+     * Prints a monetary value to a {@code String}.
      * 
      * @param moneyProvider  the money to print, not null
      * @return the string printed using the settings of this formatter
@@ -164,12 +164,12 @@ public final class MoneyFormatter implements Serializable {
     }
 
     /**
-     * Prints a monetary value to an <code>Appendable</code> converting
-     * any <code>IOException</code> to a <code>MoneyFormatException</code>.
+     * Prints a monetary value to an {@code Appendable} converting
+     * any {@code IOException} to a {@code MoneyFormatException}.
      * <p>
-     * Example implementations of <code>Appendable</code> are <code>StringBuilder</code>,
-     * <code>StringBuffer</code> or <code>Writer</code>. Note that <code>StringBuilder</code>
-     * and <code>StringBuffer</code> never throw an <code>IOException</code>.
+     * Example implementations of {@code Appendable} are {@code StringBuilder},
+     * {@code StringBuffer} or {@code Writer}. Note that {@code StringBuilder}
+     * and {@code StringBuffer} never throw an {@code IOException}.
      * 
      * @param appendable  the appendable to add to, not null
      * @param moneyProvider  the money to print, not null
@@ -185,12 +185,12 @@ public final class MoneyFormatter implements Serializable {
     }
 
     /**
-     * Prints a monetary value to an <code>Appendable</code> potentially
-     * throwing an <code>IOException</code>.
+     * Prints a monetary value to an {@code Appendable} potentially
+     * throwing an {@code IOException}.
      * <p>
-     * Example implementations of <code>Appendable</code> are <code>StringBuilder</code>,
-     * <code>StringBuffer</code> or <code>Writer</code>. Note that <code>StringBuilder</code>
-     * and <code>StringBuffer</code> never throw an <code>IOException</code>.
+     * Example implementations of {@code Appendable} are {@code StringBuilder},
+     * {@code StringBuffer} or {@code Writer}. Note that {@code StringBuilder}
+     * and {@code StringBuffer} never throw an {@code IOException}.
      * 
      * @param appendable  the appendable to add to, not null
      * @param moneyProvider  the money to print, not null
@@ -213,7 +213,7 @@ public final class MoneyFormatter implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Fully parses the text into a <code>BigMoney</code>.
+     * Fully parses the text into a {@code BigMoney}.
      * <p>
      * The parse must complete normally and parse the entire text (currency and amount).
      * If the parse completes without reading the entire length of the text, an exception is thrown.
@@ -241,7 +241,7 @@ public final class MoneyFormatter implements Serializable {
     }
 
     /**
-     * Fully parses the text into a <code>Money</code> requiring that the parsed
+     * Fully parses the text into a {@code Money} requiring that the parsed
      * amount has the correct number of decimal places.
      * <p>
      * The parse must complete normally and parse the entire text (currency and amount).

@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009 Stephen Colebourne
+ *  Copyright 2009-2010 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -26,7 +26,7 @@ import org.joda.money.CurrencyUnit;
 import org.joda.money.MoneyException;
 
 /**
- * Provides the ability to build a formatter for <code>Money</code> instances.
+ * Provides the ability to build a formatter for {@code Money} instances.
  * <p>
  * MoneyFormatter is a mutable builder - a new instance should be created for each use.
  * The formatters produced by the builder are immutable and thread-safe.
@@ -194,7 +194,7 @@ public final class MoneyFormatterBuilder {
      * Builds the formatter from the builder using the default locale.
      * <p>
      * Once the builder is in the correct state it must be converted to a
-     * <code>MoneyFormatter</code> to be used. Calling this method does not
+     * {@code MoneyFormatter} to be used. Calling this method does not
      * change the state of this instance, so it can still be used.
      * <p>
      * The locale is simply the initial locale used.
@@ -210,7 +210,7 @@ public final class MoneyFormatterBuilder {
      * Builds the formatter from the builder setting the locale.
      * <p>
      * Once the builder is in the correct state it must be converted to a
-     * <code>MoneyFormatter</code> to be used. Calling this method does not
+     * {@code MoneyFormatter} to be used. Calling this method does not
      * change the state of this instance, so it can still be used.
      * <p>
      * The locale is simply the initial locale used.
@@ -233,16 +233,16 @@ public final class MoneyFormatterBuilder {
 //     * negative amounts it is prefixed by the negative sign.
 //     * <p>
 //     * A pattern is a simple way to define the characters which surround the numeric value.
-//     * For example, <code>${amount} ${code}</code> will print the ISO code after the value,
-//     * producing an output like <code>12.34 GBP</code>.
-//     * Similarly, <code>-${symbol}${amount}</code> will produce the output <code>-£12.34</code>.
+//     * For example, {@code ${amount} ${code}} will print the ISO code after the value,
+//     * producing an output like {@code 12.34 GBP}.
+//     * Similarly, {@code -${symbol}${amount}} will produce the output {@code -£12.34}.
 //     * <p>
 //     * The pattern contains the following elements:<br />
 //     * <ul>
-//     * <li><code>${amount}</code> : the monetary amount itself
-//     * <li><code>${code}</code> : the letter-based currency code, such as 'USD'
-//     * <li><code>${numericCode}</code> : the numeric currency code, such as '840'
-//     * <li><code>${symbol}</code> : the currency symbol, such as '$'
+//     * <li>{@code ${amount}} : the monetary amount itself
+//     * <li>{@code ${code}} : the letter-based currency code, such as 'USD'
+//     * <li>{@code ${numericCode}} : the numeric currency code, such as '840'
+//     * <li>{@code ${symbol}} : the currency symbol, such as '$'
 //     * </ul>
 //     * 
 //     * @param pattern  the pattern
@@ -258,16 +258,16 @@ public final class MoneyFormatterBuilder {
 //     * The specified positive pattern is also used for zero amounts.
 //     * <p>
 //     * A pattern is a simple way to define the characters which surround the numeric value.
-//     * For example, <code>${amount} ${code}</code> will print the ISO code after the value,
-//     * producing an output like <code>12.34 GBP</code>.
-//     * Similarly, <code>-${symbol}${amount}</code> will produce the output <code>-£12.34</code>.
+//     * For example, {@code ${amount} ${code}} will print the ISO code after the value,
+//     * producing an output like {@code 12.34 GBP}.
+//     * Similarly, {@code -${symbol}${amount}} will produce the output {@code -£12.34}.
 //     * <p>
 //     * The pattern contains the following elements:<br />
 //     * <ul>
-//     * <li><code>${amount}</code> : the monetary amount itself
-//     * <li><code>${code}</code> : the letter-based currency code, such as 'USD'
-//     * <li><code>${numericCode}</code> : the numeric currency code, such as '840'
-//     * <li><code>${symbol}</code> : the currency symbol, such as '$'
+//     * <li>{@code ${amount}} : the monetary amount itself
+//     * <li>{@code ${code}} : the letter-based currency code, such as 'USD'
+//     * <li>{@code ${numericCode}} : the numeric currency code, such as '840'
+//     * <li>{@code ${symbol}} : the currency symbol, such as '$'
 //     * </ul>
 //     * 
 //     * @param positivePattern  the positive pattern
@@ -285,16 +285,16 @@ public final class MoneyFormatterBuilder {
 //     * and the zero pattern for zero amounts.
 //     * <p>
 //     * A pattern is a simple way to define the characters which surround the numeric value.
-//     * For example, <code>${amount} ${code}</code> will print the ISO code after the value,
-//     * producing an output like <code>12.34 GBP</code>.
-//     * Similarly, <code>-${symbol}${amount}</code> will produce the output <code>-£12.34</code>.
+//     * For example, {@code ${amount} ${code}} will print the ISO code after the value,
+//     * producing an output like {@code 12.34 GBP}.
+//     * Similarly, {@code -${symbol}${amount}} will produce the output {@code -£12.34}.
 //     * <p>
 //     * The pattern contains the following elements:<br />
 //     * <ul>
-//     * <li><code>${amount}</code> : the monetary amount itself
-//     * <li><code>${code}</code> : the letter-based currency code, such as 'USD'
-//     * <li><code>${numericCode}</code> : the numeric currency code, such as '840'
-//     * <li><code>${symbol}</code> : the currency symbol, such as '$'
+//     * <li>{@code ${amount}} : the monetary amount itself
+//     * <li>{@code ${code}} : the letter-based currency code, such as 'USD'
+//     * <li>{@code ${numericCode}} : the numeric currency code, such as '840'
+//     * <li>{@code ${symbol}} : the currency symbol, such as '$'
 //     * </ul>
 //     * 
 //     * @param positivePattern  the positive pattern

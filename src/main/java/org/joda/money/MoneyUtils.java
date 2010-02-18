@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009 Stephen Colebourne
+ *  Copyright 2009-2010 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ public final class MoneyUtils {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the <code>Money</code> is zero, treating null as zero
+     * Checks if the {@code Money} is zero, treating null as zero
      * 
      * @return true if the money is null or zero
      */
@@ -53,9 +53,9 @@ public final class MoneyUtils {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks a <code>Money</code> returning a non-null value.
+     * Checks a {@code Money} returning a non-null value.
      * <p>
-     * This returns <code>money</code> if it is non-null.
+     * This returns {@code money} if it is non-null.
      * Otherwise it returns a zero value based on the currency.
      * 
      * @param money  the money to check, null returns zero
@@ -70,7 +70,7 @@ public final class MoneyUtils {
 
     //-----------------------------------------------------------------------
     /**
-     * Finds the maximum <code>Money</code> value, handing null.
+     * Finds the maximum {@code Money} value, handing null.
      * <p>
      * This returns the greater of money1 or money2 where null is ignored.
      * If both input values are null, then null is returned.
@@ -91,7 +91,7 @@ public final class MoneyUtils {
     }
 
     /**
-     * Finds the minimum <code>Money</code> value, handing null.
+     * Finds the minimum {@code Money} value, handing null.
      * <p>
      * This returns the greater of money1 or money2 where null is ignored.
      * If both input values are null, then null is returned.
@@ -113,9 +113,9 @@ public final class MoneyUtils {
 
     //-----------------------------------------------------------------------
     /**
-     * Adds two <code>Money</code> objects, handling null.
+     * Adds two {@code Money} objects, handling null.
      * <p>
-     * This returns <code>money1 + money2</code> where null is ignored.
+     * This returns {@code money1 + money2} where null is ignored.
      * If both input values are null, then null is returned.
      * 
      * @param money1  the first money instance, null returns money2
@@ -135,9 +135,9 @@ public final class MoneyUtils {
 
     //-----------------------------------------------------------------------
     /**
-     * Subtracts the second <code>Money</code> from the first, handling null.
+     * Subtracts the second {@code Money} from the first, handling null.
      * <p>
-     * This returns <code>money1 - money2</code> where null is ignored.
+     * This returns {@code money1 - money2} where null is ignored.
      * If both input values are null, then null is returned.
      * 
      * @param money1  the first money instance, null treated as zero
@@ -157,7 +157,7 @@ public final class MoneyUtils {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the <code>Money</code> is zero, treating null as zero
+     * Checks if the {@code Money} is zero, treating null as zero
      * 
      * @return true if the money is null or zero
      */
@@ -167,9 +167,9 @@ public final class MoneyUtils {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks a <code>BigMoney</code> returning a non-null value.
+     * Checks a {@code BigMoney} returning a non-null value.
      * <p>
-     * This returns <code>money</code> if it is non-null.
+     * This returns {@code money} if it is non-null.
      * Otherwise it returns a zero value based on the currency.
      * 
      * @param money  the money to check, null returns zero
@@ -184,7 +184,7 @@ public final class MoneyUtils {
 
     //-----------------------------------------------------------------------
     /**
-     * Finds the maximum <code>BigMoney</code> value, handing null.
+     * Finds the maximum {@code BigMoney} value, handing null.
      * <p>
      * This returns the greater of money1 or money2 where null is ignored.
      * If both input values are null, then null is returned.
@@ -205,7 +205,7 @@ public final class MoneyUtils {
     }
 
     /**
-     * Finds the minimum <code>BigMoney</code> value, handing null.
+     * Finds the minimum {@code BigMoney} value, handing null.
      * <p>
      * This returns the greater of money1 or money2 where null is ignored.
      * If both input values are null, then null is returned.
@@ -227,9 +227,9 @@ public final class MoneyUtils {
 
     //-----------------------------------------------------------------------
     /**
-     * Adds two <code>BigMoney</code> objects, handling null.
+     * Adds two {@code BigMoney} objects, handling null.
      * <p>
-     * This returns <code>money1 + money2</code> where null is ignored.
+     * This returns {@code money1 + money2} where null is ignored.
      * If both input values are null, then null is returned.
      * 
      * @param money1  the first money instance, null returns money2
@@ -249,9 +249,9 @@ public final class MoneyUtils {
 
     //-----------------------------------------------------------------------
     /**
-     * Subtracts the second <code>BigMoney</code> from the first, handling null.
+     * Subtracts the second {@code BigMoney} from the first, handling null.
      * <p>
-     * This returns <code>money1 - money2</code> where null is ignored.
+     * This returns {@code money1 - money2} where null is ignored.
      * If both input values are null, then null is returned.
      * 
      * @param money1  the first money instance, null treated as zero

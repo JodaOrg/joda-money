@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009 Stephen Colebourne
+ *  Copyright 2009-2010 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -140,7 +140,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the <code>CurrencyUnit</code> instance matching the specified currency.
+     * Gets the {@code CurrencyUnit} instance matching the specified currency.
      *
      * @param currency  the currency, not null
      * @return the singleton instance, never null
@@ -151,7 +151,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Gets the <code>CurrencyUnit</code> instance for the specified currency code.
+     * Gets the {@code CurrencyUnit} instance for the specified currency code.
      *
      * @param currencyCode  the currency code, not null
      * @return the singleton instance, never null
@@ -167,7 +167,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Gets the <code>CurrencyUnit</code> instance for the specified ISO-4217
+     * Gets the {@code CurrencyUnit} instance for the specified ISO-4217
      * numeric currency code formatted as a string.
      * <p>
      * This method is lenient and does not require the string to be left padded with zeroes.
@@ -194,7 +194,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Gets the <code>CurrencyUnit</code> instance for the specified ISO-4217
+     * Gets the {@code CurrencyUnit} instance for the specified ISO-4217
      * numeric currency code.
      *
      * @param numericCurrencyCode  the numeric currency code, not null
@@ -210,7 +210,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Gets the <code>CurrencyUnit</code> instance for the specified locale.
+     * Gets the {@code CurrencyUnit} instance for the specified locale.
      * <p>
      * Only the country is used from the locale.
      *
@@ -228,7 +228,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Gets the <code>CurrencyUnit</code> instance for the specified country code.
+     * Gets the {@code CurrencyUnit} instance for the specified country code.
      * <p>
      * Country codes should generally be in upper case.
      * This method is case sensitive.
@@ -248,7 +248,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the <code>CurrencyUnit</code> instance for the specified currency code.
+     * Gets the {@code CurrencyUnit} instance for the specified currency code.
      * <p>
      * This method exists to match the API of {@link Currency}.
      *
@@ -261,7 +261,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Gets the <code>CurrencyUnit</code> instance for the specified locale.
+     * Gets the {@code CurrencyUnit} instance for the specified locale.
      * <p>
      * This method exists to match the API of {@link Currency}.
      *

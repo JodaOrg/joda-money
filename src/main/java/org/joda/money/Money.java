@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009 Stephen Colebourne
+ *  Copyright 2009-2010 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -47,7 +47,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>Money</code> in the specified currency.
+     * Gets an instance of {@code Money} in the specified currency.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      * No rounding is performed on the amount, so it must have a scale compatible
@@ -67,7 +67,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     }
 
     /**
-     * Gets an instance of <code>Money</code> in the specified currency.
+     * Gets an instance of {@code Money} in the specified currency.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      * No rounding is performed on the amount, so it must have a scale compatible
@@ -86,7 +86,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>Money</code> in the specified currency, rounding as necessary.
+     * Gets an instance of {@code Money} in the specified currency, rounding as necessary.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      * If the amount has a scale in excess of the scale of the currency then the excess
@@ -103,7 +103,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     }
 
     /**
-     * Gets an instance of <code>Money</code> in the specified currency, rounding as necessary.
+     * Gets an instance of {@code Money} in the specified currency, rounding as necessary.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      * If the amount has a scale in excess of the scale of the currency then the excess
@@ -122,13 +122,13 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>Money</code> in the specified currency.
+     * Gets an instance of {@code Money} in the specified currency.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      * The amount is a whole number only. Thus you can initialise the value
      * 'USD 20', but not the value 'USD 20.32'.
      * <p>
-     * For example, <code>ofMajor(USD, 25)</code> creates the instance <code>USD 25.00</code>.
+     * For example, {@code ofMajor(USD, 25)} creates the instance {@code USD 25.00}.
      *
      * @param currency  the currency, not null
      * @param amountMajor  the amount of money in the major division of the currency
@@ -140,13 +140,13 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     }
 
     /**
-     * Gets an instance of <code>Money</code> in the specified currency.
+     * Gets an instance of {@code Money} in the specified currency.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      * The amount is a whole number only. Thus you can initialise the value
      * 'USD 20', but not the value 'USD 20.32'.
      * <p>
-     * For example, <code>ofMajor("USD", 25)</code> creates the instance <code>USD 25.00</code>.
+     * For example, {@code ofMajor("USD", 25)} creates the instance {@code USD 25.00}.
      *
      * @param currencyCode  the currency code, not null
      * @param amountMajor  the amount of money in the major division of the currency
@@ -161,14 +161,14 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>Money</code> in the specified currency.
+     * Gets an instance of {@code Money} in the specified currency.
      * <p>
      * This allows you to create an instance with a specific currency and amount
      * expressed in terms of the minor unit.
      * For example, if constructing US Dollars, the input to this method represents cents.
      * Note that when a currency has zero decimal places, the major and minor units are the same.
      * <p>
-     * For example, <code>ofMajor(USD, 2595)</code> creates the instance <code>USD 25.95</code>.
+     * For example, {@code ofMajor(USD, 2595)} creates the instance {@code USD 25.95}.
      *
      * @param currency  the currency, not null
      * @param amountMinor  the amount of money in the minor division of the currency
@@ -179,14 +179,14 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     }
 
     /**
-     * Gets an instance of <code>Money</code> in the specified currency.
+     * Gets an instance of {@code Money} in the specified currency.
      * <p>
      * This allows you to create an instance with a specific currency and amount
      * expressed in terms of the minor unit.
      * For example, if constructing US Dollars, the input to this method represents cents.
      * Note that when a currency has zero decimal places, the major and minor units are the same.
      * <p>
-     * For example, <code>ofMajor("USD", 2595)</code> creates the instance <code>USD 25.95</code>.
+     * For example, {@code ofMajor("USD", 2595)} creates the instance {@code USD 25.95}.
      *
      * @param currencyCode  the currency code, not null
      * @param amountMinor  the amount of money in the minor division of the currency
@@ -199,9 +199,9 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>Money</code> representing zero in the specified currency.
+     * Gets an instance of {@code Money} representing zero in the specified currency.
      * <p>
-     * For example, <code>zero(USD)</code> creates the instance <code>USD 0.00</code>.
+     * For example, {@code zero(USD)} creates the instance {@code USD 0.00}.
      *
      * @param currency  the currency, not null
      * @return the instance representing zero, never null
@@ -213,9 +213,9 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     }
 
     /**
-     * Gets an instance of <code>Money</code> representing zero in the specified currency.
+     * Gets an instance of {@code Money} representing zero in the specified currency.
      * <p>
-     * For example, <code>zero("USD")</code> creates the instance <code>USD 0.00</code>.
+     * For example, {@code zero("USD")} creates the instance {@code USD 0.00}.
      *
      * @param currencyCode  the currency code, not null
      * @return the instance representing zero, never null
@@ -228,10 +228,10 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of <code>Money</code> from the provider, rounding as necessary.
+     * Gets an instance of {@code Money} from the provider, rounding as necessary.
      * <p>
      * This allows you to create an instance from any class that implements the
-     * provider, such as <code>BigMoney</code>.
+     * provider, such as {@code BigMoney}.
      * No rounding is performed on the amount, so it must have a scale compatible
      * with the currency.
      *
@@ -244,10 +244,10 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     }
 
     /**
-     * Gets an instance of <code>Money</code> from the provider, rounding as necessary.
+     * Gets an instance of {@code Money} from the provider, rounding as necessary.
      * <p>
      * This allows you to create an instance from any class that implements the
-     * provider, such as <code>BigMoney</code>.
+     * provider, such as {@code BigMoney}.
      * The rounding mode is used to adjust the scale to the scale of the currency.
      *
      * @param moneyProvider  the money to convert, not null
@@ -263,14 +263,14 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
 
     //-----------------------------------------------------------------------
     /**
-     * Parses an instance of <code>Money</code> from a string.
+     * Parses an instance of {@code Money} from a string.
      * <p>
      * The string format is '<currencyCode> <amount>'.
      * The currency code must be three letters, and the amount must be a number.
      * This matches the output from {@link #toString()}.
      * <p>
-     * For example, <code>of("USD 25")</code> creates the instance <code>USD 25.00</code>
-     * while <code>of("USD 25.95")</code> creates the instance <code>USD 25.95</code>.
+     * For example, {@code of("USD 25")} creates the instance {@code USD 25.00}
+     * while {@code of("USD 25.95")} creates the instance {@code USD 25.95}.
      *
      * @param moneyStr  the money string to parse, not null
      * @return the parsed instance, never null
@@ -301,7 +301,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new <code>Money</code>, returning <code>this</code> if possible.
+     * Returns a new {@code Money}, returning {@code this} if possible.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
@@ -327,7 +327,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this instance with the specified currency.
+     * Returns a copy of this monetary value with the specified currency.
      * <p>
      * The returned instance will have the specified currency and the amount
      * from this instance. If the scale differs between the currencies such
@@ -345,7 +345,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     }
 
     /**
-     * Returns a copy of this instance with the specified currency.
+     * Returns a copy of this monetary value with the specified currency.
      * <p>
      * The returned instance will have the specified currency and the amount
      * from this instance. If the number of decimal places differs between the
@@ -364,7 +364,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the scale of the <code>BigDecimal</code> amount.
+     * Gets the scale of the {@code BigDecimal} amount.
      * <p>
      * The scale has the same meaning as in {@link BigDecimal}.
      * Positive values represent the number of decimal places in use.
@@ -372,7 +372,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * For example, a scale of 2 means that the money will have two decimal places
      * such as 'USD 43.25'.
      * <p>
-     * For <code>Money</code>, the scale is fixed and always matches that of the currency.
+     * For {@code Money}, the scale is fixed and always matches that of the currency.
      * 
      * @return the scale in use, typically 2 but could be 0, 1 and 3
      */
@@ -384,7 +384,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     /**
      * Gets the amount.
      * <p>
-     * This returns the value of the money as a <code>BigDecimal</code>.
+     * This returns the value of the money as a {@code BigDecimal}.
      * The scale will be the scale of this money.
      * 
      * @return the amount, never null
@@ -394,15 +394,15 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     }
 
     /**
-     * Gets the amount in major units as a <code>BigDecimal</code> with scale 0.
+     * Gets the amount in major units as a {@code BigDecimal} with scale 0.
      * <p>
      * This returns the monetary amount in terms of the major units of the currency,
      * truncating the amount if necessary.
      * For example, 'EUR 2.35' will return 2, and 'BHD -1.345' will return -1.
      * <p>
-     * This is returned as a <code>BigDecimal</code> rather than a <code>BigInteger</code>.
+     * This is returned as a {@code BigDecimal} rather than a {@code BigInteger}.
      * This is to allow further calculations to be performed on the result.
-     * Should you need a <code>BigInteger</code>, simply call {@link BigDecimal#toBigInteger()}.
+     * Should you need a {@code BigInteger}, simply call {@link BigDecimal#toBigInteger()}.
      * 
      * @return the major units part of the amount, never null
      */
@@ -411,43 +411,43 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     }
 
     /**
-     * Gets the amount in major units as a <code>long</code>.
+     * Gets the amount in major units as a {@code long}.
      * <p>
      * This returns the monetary amount in terms of the major units of the currency,
      * truncating the amount if necessary.
      * For example, 'EUR 2.35' will return 2, and 'BHD -1.345' will return -1.
      * 
      * @return the major units part of the amount
-     * @throws ArithmeticException if the amount is too large for a <code>long</code>
+     * @throws ArithmeticException if the amount is too large for a {@code long}
      */
     public long getAmountMajorLong() {
         return iMoney.getAmountMajorLong();
     }
 
     /**
-     * Gets the amount in major units as an <code>int</code>.
+     * Gets the amount in major units as an {@code int}.
      * <p>
      * This returns the monetary amount in terms of the major units of the currency,
      * truncating the amount if necessary.
      * For example, 'EUR 2.35' will return 2, and 'BHD -1.345' will return -1.
      * 
      * @return the major units part of the amount
-     * @throws ArithmeticException if the amount is too large for an <code>int</code>
+     * @throws ArithmeticException if the amount is too large for an {@code int}
      */
     public int getAmountMajorInt() {
         return iMoney.getAmountMajorInt();
     }
 
     /**
-     * Gets the amount in minor units as a <code>BigDecimal</code> with scale 0.
+     * Gets the amount in minor units as a {@code BigDecimal} with scale 0.
      * <p>
      * This returns the monetary amount in terms of the minor units of the currency,
      * truncating the amount if necessary.
      * For example, 'EUR 2.35' will return 235, and 'BHD -1.345' will return -1345.
      * <p>
-     * This is returned as a <code>BigDecimal</code> rather than a <code>BigInteger</code>.
+     * This is returned as a {@code BigDecimal} rather than a {@code BigInteger}.
      * This is to allow further calculations to be performed on the result.
-     * Should you need a <code>BigInteger</code>, simply call {@link BigDecimal#toBigInteger()}.
+     * Should you need a {@code BigInteger}, simply call {@link BigDecimal#toBigInteger()}.
      * 
      * @return the minor units part of the amount, never null
      */
@@ -456,28 +456,28 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     }
 
     /**
-     * Gets the amount in minor units as a <code>long</code>.
+     * Gets the amount in minor units as a {@code long}.
      * <p>
      * This returns the monetary amount in terms of the minor units of the currency,
      * truncating the amount if necessary.
      * For example, 'EUR 2.35' will return 235, and 'BHD -1.345' will return -1345.
      * 
      * @return the minor units part of the amount
-     * @throws ArithmeticException if the amount is too large for a <code>long</code>
+     * @throws ArithmeticException if the amount is too large for a {@code long}
      */
     public long getAmountMinorLong() {
         return iMoney.getAmountMinorLong();
     }
 
     /**
-     * Gets the amount in minor units as an <code>int</code>.
+     * Gets the amount in minor units as an {@code int}.
      * <p>
      * This returns the monetary amount in terms of the minor units of the currency,
      * truncating the amount if necessary.
      * For example, 'EUR 2.35' will return 235, and 'BHD -1.345' will return -1345.
      * 
      * @return the minor units part of the amount
-     * @throws ArithmeticException if the amount is too large for an <code>int</code>
+     * @throws ArithmeticException if the amount is too large for an {@code int}
      */
     public int getAmountMinorInt() {
         return iMoney.getAmountMinorInt();
@@ -547,7 +547,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this instance with the specified amount.
+     * Returns a copy of this monetary value with the specified amount.
      * <p>
      * The returned instance will have this currency and the new amount.
      * No rounding is performed on the amount to be added, so it must have a
@@ -564,10 +564,10 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     }
 
     /**
-     * Returns a copy of this instance with the specified amount.
+     * Returns a copy of this monetary value with the specified amount.
      * <p>
      * The returned instance will have this currency and the new amount.
-     * If the scale of the <code>BigDecimal</code> needs to be adjusted, then
+     * If the scale of the {@code BigDecimal} needs to be adjusted, then
      * it will be rounded using the specified mode.
      * <p>
      * This instance is immutable and unaffected by this method.
@@ -581,8 +581,8 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     }
 
     /**
-     * Returns a copy of this instance with the specified amount using a well-defined
-     * conversion from a <code>double</code>.
+     * Returns a copy of this monetary value with the specified amount using a well-defined
+     * conversion from a {@code double}.
      * <p>
      * The returned instance will have this currency and the new amount.
      * No rounding is performed on the amount to be added, so it must have a
@@ -590,7 +590,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * <p>
      * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
      * the most expected answer for most programming scenarios.
-     * Any <code>double</code> literal in code will be converted to
+     * Any {@code double} literal in code will be converted to
      * exactly the same BigDecimal with the same scale.
      * For example, the literal '1.45d' will be converted to '1.45'.
      * <p>
@@ -605,16 +605,16 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     }
 
     /**
-     * Returns a copy of this instance with the specified amount using a well-defined
-     * conversion from a <code>double</code>.
+     * Returns a copy of this monetary value with the specified amount using a well-defined
+     * conversion from a {@code double}.
      * <p>
      * The returned instance will have this currency and the new amount.
-     * If the scale of the <code>BigDecimal</code> needs to be adjusted, then
+     * If the scale of the {@code BigDecimal} needs to be adjusted, then
      * it will be rounded using the specified mode.
      * <p>
      * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
      * the most expected answer for most programming scenarios.
-     * Any <code>double</code> literal in code will be converted to
+     * Any {@code double} literal in code will be converted to
      * exactly the same BigDecimal with the same scale.
      * For example, the literal '1.45d' will be converted to '1.45'.
      * <p>
@@ -687,7 +687,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * <p>
      * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
      * the most expected answer for most programming scenarios.
-     * Any <code>double</code> literal in code will be converted to
+     * Any {@code double} literal in code will be converted to
      * exactly the same BigDecimal with the same scale.
      * For example, the literal '1.45d' will be converted to '1.45'.
      * <p>
@@ -710,7 +710,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * <p>
      * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
      * the most expected answer for most programming scenarios.
-     * Any <code>double</code> literal in code will be converted to
+     * Any {@code double} literal in code will be converted to
      * exactly the same BigDecimal with the same scale.
      * For example, the literal '1.45d' will be converted to '1.45'.
      * <p>
@@ -812,7 +812,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * <p>
      * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
      * the most expected answer for most programming scenarios.
-     * Any <code>double</code> literal in code will be converted to
+     * Any {@code double} literal in code will be converted to
      * exactly the same BigDecimal with the same scale.
      * For example, the literal '1.45d' will be converted to '1.45'.
      * <p>
@@ -835,7 +835,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * <p>
      * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
      * the most expected answer for most programming scenarios.
-     * Any <code>double</code> literal in code will be converted to
+     * Any {@code double} literal in code will be converted to
      * exactly the same BigDecimal with the same scale.
      * For example, the literal '1.45d' will be converted to '1.45'.
      * <p>
@@ -904,7 +904,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * <p>
      * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
      * the most expected answer for most programming scenarios.
-     * Any <code>double</code> literal in code will be converted to
+     * Any {@code double} literal in code will be converted to
      * exactly the same BigDecimal with the same scale.
      * For example, the literal '1.45d' will be converted to '1.45'.
      * <p>
@@ -960,7 +960,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * <p>
      * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
      * the most expected answer for most programming scenarios.
-     * Any <code>double</code> literal in code will be converted to
+     * Any {@code double} literal in code will be converted to
      * exactly the same BigDecimal with the same scale.
      * For example, the literal '1.45d' will be converted to '1.45'.
      * <p>
@@ -1063,8 +1063,8 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
 
     //-----------------------------------------------------------------------
     /**
-     * Implements the <code>BigMoneyProvider</code> interface, returning a
-     * <code>BigMoney</code> instance with the same currency, amount and scale.
+     * Implements the {@code BigMoneyProvider} interface, returning a
+     * {@code BigMoney} instance with the same currency, amount and scale.
      * 
      * @return the money instance, never null
      * @throws MoneyException if conversion is not possible
@@ -1100,7 +1100,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     /**
      * Checks if this monetary value is equal to another.
      * <p>
-     * This allows <code>Money</code> to be compared to <code>BigMoney</code>.
+     * This allows {@code Money} to be compared to {@code BigMoney}.
      * Scale is ignored, so 'USD 30.00' and 'USD 30' are equal.
      * <p>
      * The compared values must be in the same currency.
@@ -1158,7 +1158,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     }
 
     /**
-     * Returns a hash code for this instance.
+     * Returns a hash code for this monetary value.
      * 
      * @return a suitable hash code
      */
@@ -1174,7 +1174,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * The format is the 3 letter ISO currency code, followed by a space,
      * followed by the amount as per {@link BigDecimal#toPlainString()}.
      * 
-     * @return the monetary value, never null
+     * @return the string representation of this monetary value, never null
      */
     @Override
     public String toString() {
