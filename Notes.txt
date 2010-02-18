@@ -1,0 +1,24 @@
+
+JScience - MoneyAmount, based on Javaloution classes
+http://jscience.org/api/org/jscience/economics/money/MoneyAmount.html
+
+JMoney - long directly
+https://jmoney.svn.sourceforge.net/svnroot/jmoney/trunk/net.sf.jmoney/src/net/sf/jmoney/model2/
+
+TimeAndMoney - Money class with currency scale (BigDecimal + JDK Currency)
+http://timeandmoney.svn.sourceforge.net/viewvc/timeandmoney/timeandmoney/trunk/src/main/java/com/domainlanguage/money/Money.java?revision=340&view=markup
+
+JCash - BigDecimal directly
+http://jcash.cvs.sourceforge.net/viewvc/jcash/jcash/src/jcash/
+
+Eurobudget - double directly
+http://eurobudget.cvs.sourceforge.net/viewvc/eurobudget/eurobudget/src/com/pjsofts/eurobudget/beans/
+
+Java practices - Class based on BigDecimal
+http://www.javapractices.com/topic/TopicAction.do?Id=13
+
+Grails Currency Plugin - Class based on float
+http://github.com/ricardojmendez/grails-currencies/blob/master/grails-app/domain/Money.groovy
+
+Design document
+http://www.objectivelogic.com/resources/Java%20and%20Monetary%20Data/Java%20and%20Monetary%20Data.pdf 
