@@ -197,7 +197,7 @@ public final class MoneyFormatterBuilder {
      * {@code MoneyFormatter} to be used. Calling this method does not
      * change the state of this instance, so it can still be used.
      * <p>
-     * The locale is simply the initial locale used.
+     * This method uses the default locale within the returned formatter.
      * It can be changed by calling {@link MoneyFormatter#withLocale(Locale)}.
      * 
      * @return the formatter built from this builder, never null
@@ -213,7 +213,7 @@ public final class MoneyFormatterBuilder {
      * {@code MoneyFormatter} to be used. Calling this method does not
      * change the state of this instance, so it can still be used.
      * <p>
-     * The locale is simply the initial locale used.
+     * This method uses the specified locale within the returned formatter.
      * It can be changed by calling {@link MoneyFormatter#withLocale(Locale)}.
      * 
      * @param locale  the initial locale for the formatter, not null
