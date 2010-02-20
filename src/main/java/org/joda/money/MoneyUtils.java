@@ -43,12 +43,14 @@ public final class MoneyUtils {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks if the {@code StandardMoney} is zero, treating null as zero
+     * Checks if the monetary value is zero, treating null as zero.
+     * <p>
+     * This method accepts any implementation of {@code MoneyProvider}.
      * 
      * @return true if the money is null or zero
      */
-    public static boolean isZero(StandardMoney money) {
-        return (money == null || money.isZero());
+    public static boolean isZero(MoneyProvider moneyProvider) {
+        return (moneyProvider == null || moneyProvider.toMoney().isZero());
     }
 
     //-----------------------------------------------------------------------
@@ -153,16 +155,6 @@ public final class MoneyUtils {
             return money2.negated();
         }
         return money1.minus(money2);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the {@code StandardMoney} is zero, treating null as zero
-     * 
-     * @return true if the money is null or zero
-     */
-    public static boolean isZero(Money money) {
-        return (money == null || money.isZero());
     }
 
     //-----------------------------------------------------------------------
