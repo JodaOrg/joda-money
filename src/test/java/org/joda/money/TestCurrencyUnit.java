@@ -119,7 +119,12 @@ public class TestCurrencyUnit {
 
     @Test(expectedExceptions = MoneyException.class)
     public void test_factory_of_String_unknownCurrency() {
-        CurrencyUnit.of("ABC");
+        try {
+            CurrencyUnit.of("ABC");
+        } catch (MoneyException ex) {
+            assertEquals(ex.getMessage(), "Unknown currency 'ABC'");
+            throw ex;
+        }
     }
 
     @Test(expectedExceptions = MoneyException.class)
@@ -167,7 +172,12 @@ public class TestCurrencyUnit {
 
     @Test(expectedExceptions = MoneyException.class)
     public void test_factory_ofNumericCode_String_unknownCurrency() {
-        CurrencyUnit.ofNumericCode("111");
+        try {
+            CurrencyUnit.ofNumericCode("111");
+        } catch (MoneyException ex) {
+            assertEquals(ex.getMessage(), "Unknown currency '111'");
+            throw ex;
+        }
     }
 
     @Test(expectedExceptions = MoneyException.class)
@@ -177,12 +187,22 @@ public class TestCurrencyUnit {
 
     @Test(expectedExceptions = MoneyException.class)
     public void test_factory_ofNumericCode_String_empty() {
-        CurrencyUnit.ofNumericCode("");
+        try {
+            CurrencyUnit.ofNumericCode("");
+        } catch (MoneyException ex) {
+            assertEquals(ex.getMessage(), "Unknown currency ''");
+            throw ex;
+        }
     }
 
     @Test(expectedExceptions = MoneyException.class)
     public void test_factory_ofNumericCode_String_tooLong() {
-        CurrencyUnit.ofNumericCode("1234");
+        try {
+            CurrencyUnit.ofNumericCode("1234");
+        } catch (MoneyException ex) {
+            assertEquals(ex.getMessage(), "Unknown currency '1234'");
+            throw ex;
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -205,17 +225,32 @@ public class TestCurrencyUnit {
 
     @Test(expectedExceptions = MoneyException.class)
     public void test_factory_ofNumericCode_int_unknownCurrency() {
-        CurrencyUnit.ofNumericCode(111);
+        try {
+            CurrencyUnit.ofNumericCode(111);
+        } catch (MoneyException ex) {
+            assertEquals(ex.getMessage(), "Unknown currency '111'");
+            throw ex;
+        }
     }
 
     @Test(expectedExceptions = MoneyException.class)
     public void test_factory_ofNumericCode_int_negative() {
-        CurrencyUnit.ofNumericCode(-1);
+        try {
+            CurrencyUnit.ofNumericCode(-1);
+        } catch (MoneyException ex) {
+            assertEquals(ex.getMessage(), "Unknown currency '-1'");
+            throw ex;
+        }
     }
 
     @Test(expectedExceptions = MoneyException.class)
     public void test_factory_ofNumericCode_int_tooLong() {
-        CurrencyUnit.ofNumericCode(1234);
+        try {
+            CurrencyUnit.ofNumericCode(1234);
+        } catch (MoneyException ex) {
+            assertEquals(ex.getMessage(), "Unknown currency '1234'");
+            throw ex;
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -233,7 +268,12 @@ public class TestCurrencyUnit {
 
     @Test(expectedExceptions = MoneyException.class)
     public void test_factory_of_Locale_unknownCurrency() {
-        CurrencyUnit.of(new Locale("en", "XY"));
+        try {
+            CurrencyUnit.of(new Locale("en", "XY"));
+        } catch (MoneyException ex) {
+            assertEquals(ex.getMessage(), "Unknown currency for locale 'en_XY'");
+            throw ex;
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -251,7 +291,12 @@ public class TestCurrencyUnit {
 
     @Test(expectedExceptions = MoneyException.class)
     public void test_factory_ofCountry_String_unknownCurrency() {
-        CurrencyUnit.ofCountry("gb");
+        try {
+            CurrencyUnit.ofCountry("gb");
+        } catch (MoneyException ex) {
+            assertEquals(ex.getMessage(), "Unknown currency for country 'gb'");
+            throw ex;
+        }
     }
 
     //-----------------------------------------------------------------------

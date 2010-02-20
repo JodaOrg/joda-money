@@ -161,7 +161,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
         CurrencyUnit currency = cCurrenciesByCode.get(currencyCode);
         if (currency == null) {
-            throw new MoneyException("Unknown currency: " + currencyCode);
+            throw new MoneyException("Unknown currency '" + currencyCode + '\'');
         }
         return currency;
     }
@@ -189,7 +189,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
                                      (numericCurrencyCode.charAt(1) - '0') * 10 +
                                       numericCurrencyCode.charAt(2) - '0');
             default:
-                throw new MoneyException("Unknown currency: " + numericCurrencyCode);
+                throw new MoneyException("Unknown currency '" + numericCurrencyCode + '\'');
         }
     }
 
@@ -204,7 +204,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     public static CurrencyUnit ofNumericCode(int numericCurrencyCode) {
         CurrencyUnit currency = cCurrenciesByNumericCode.get(numericCurrencyCode);
         if (currency == null) {
-            throw new MoneyException("Unknown currency: " + numericCurrencyCode);
+            throw new MoneyException("Unknown currency '" + numericCurrencyCode + '\'');
         }
         return currency;
     }
@@ -222,7 +222,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         MoneyUtils.checkNotNull(locale, "Locale must not be null");
         CurrencyUnit currency = cCurrenciesByCountry.get(locale.getCountry());
         if (currency == null) {
-            throw new MoneyException("Unknown currency for locale: " + locale);
+            throw new MoneyException("Unknown currency for locale '" + locale + '\'');
         }
         return currency;
     }
@@ -241,7 +241,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         MoneyUtils.checkNotNull(countryCode, "Country code must not be null");
         CurrencyUnit currency = cCurrenciesByCountry.get(countryCode);
         if (currency == null) {
-            throw new MoneyException("Unknown currency for country code: " + countryCode);
+            throw new MoneyException("Unknown currency for country '" + countryCode + '\'');
         }
         return currency;
     }
