@@ -13,6 +13,11 @@
         Initial version.
       </action>              
     </release>
+    <release version="0.6" date="2009-11-16" description="Major updates">
+      <action dev="scolebourne" type="add">
+        Major updates and changes.
+      </action>              
+    </release>
 
   </body>
 </document>
