@@ -257,6 +257,36 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
 
     //-----------------------------------------------------------------------
     /**
+     * Ensures that a {@code FixedMoney} is not {@code null}.
+     * <p>
+     * If the input money is not {@code null}, then it is returned, providing
+     * that the currency and scale match those specified.
+     * If the input money is {@code null}, then zero money in the currency and
+     * scale is returned.
+     * 
+     * @param money  the monetary value to check, may be null
+     * @param currency  the currency to use, not null
+     * @param scale  the scale to use, zero or positive
+     * @return the input money or zero in the specified currency and scale, never null
+     * @throws MoneyException if the input money is non-null and the currencies differ
+     */
+    public static FixedMoney nonNull(FixedMoney money, CurrencyUnit currency, int scale) {
+        if (money == null) {
+            return zero(currency, scale);
+        }
+        MoneyUtils.checkNotNull(currency, "Currency must not be null");
+        checkScale(scale);
+        if (money.getCurrencyUnit().equals(currency) == false) {
+            throw new MoneyException("FixedMoney does not match specified currency");
+        }
+        if (money.getScale() != scale) {
+            throw new MoneyException("FixedMoney does not match specified scale");
+        }
+        return money;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Validates the scale.
      * 
      * @param scale  the scale to validate

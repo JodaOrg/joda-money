@@ -198,6 +198,31 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
 
     //-----------------------------------------------------------------------
     /**
+     * Ensures that a {@code Money} is not {@code null}.
+     * <p>
+     * If the input money is not {@code null}, then it is returned, providing
+     * that the currency matches the specified currency.
+     * If the input money is {@code null}, then zero money in the currency
+     * is returned with a scale of zero.
+     * 
+     * @param money  the monetary value to check, may be null
+     * @param currency  the currency to use, not null
+     * @return the input money or zero in the specified currency, never null
+     * @throws MoneyException if the input money is non-null and the currencies differ
+     */
+    public static Money nonNull(Money money, CurrencyUnit currency) {
+        if (money == null) {
+            return zero(currency);
+        }
+        if (money.getCurrencyUnit().equals(currency) == false) {
+            MoneyUtils.checkNotNull(currency, "Currency must not be null");
+            throw new MoneyException("Money does not match specified currency");
+        }
+        return money;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Constructor, creating a new monetary instance.
      * 
      * @param currency  the currency to use, not null

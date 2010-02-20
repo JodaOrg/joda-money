@@ -365,6 +365,34 @@ public class TestStandardMoney {
     }
 
     //-----------------------------------------------------------------------
+    // nonNull(StandardMoney,CurrencyUnit)
+    //-----------------------------------------------------------------------
+    public void test_nonNull_StandardMoneyCurrencyUnit_nonNull() {
+        StandardMoney test = StandardMoney.nonNull(GBP_1_23, GBP);
+        assertSame(test, GBP_1_23);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_nonNull_StandardMoneyCurrencyUnit_nonNullCurrencyMismatch() {
+        StandardMoney.nonNull(GBP_1_23, JPY);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_nonNull_StandardMoneyCurrencyUnit_nonNull_nullCurrency() {
+        StandardMoney.nonNull(GBP_1_23, null);
+    }
+
+    public void test_nonNull_StandardMoneyCurrencyUnit_null() {
+        StandardMoney test = StandardMoney.nonNull(null, GBP);
+        assertEquals(test, GBP_0_00);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_nonNull_StandardMoneyCurrencyUnit_null_nullCurrency() {
+        StandardMoney.nonNull(null, null);
+    }
+
+    //-----------------------------------------------------------------------
     // constructor
     //-----------------------------------------------------------------------
     public void test_constructor_null1() throws Exception {
@@ -753,7 +781,7 @@ public class TestStandardMoney {
     }
 
     //-----------------------------------------------------------------------
-    // plus(Money)
+    // plus(StandardMoney)
     //-----------------------------------------------------------------------
     public void test_plus_Money_zero() {
         StandardMoney test = GBP_2_34.plus(GBP_0_00);
@@ -939,7 +967,7 @@ public class TestStandardMoney {
     }
 
     //-----------------------------------------------------------------------
-    // minus(Money)
+    // minus(StandardMoney)
     //-----------------------------------------------------------------------
     public void test_minus_Money_zero() {
         StandardMoney test = GBP_2_34.minus(GBP_0_00);

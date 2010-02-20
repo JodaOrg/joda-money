@@ -316,6 +316,44 @@ public class TestFixedMoney {
     }
 
     //-----------------------------------------------------------------------
+    // nonNull(FixedMoney,CurrencyUnit,int)
+    //-----------------------------------------------------------------------
+    public void test_nonNull_StandardMoneyCurrencyUnitint_nonNull() {
+        FixedMoney test = FixedMoney.nonNull(GBP_1_23, GBP, 2);
+        assertSame(test, GBP_1_23);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_nonNull_StandardMoneyCurrencyUnitint_nonNullCurrencyMismatch() {
+        FixedMoney.nonNull(GBP_1_23, JPY, 2);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_nonNull_StandardMoneyCurrencyUnitint_nonNull_nullCurrency() {
+        FixedMoney.nonNull(GBP_1_23, null, 2);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_nonNull_StandardMoneyCurrencyUnitint_notNull_invalidScale() {
+        FixedMoney.nonNull(GBP_1_23, GBP, -1);
+    }
+
+    public void test_nonNull_StandardMoneyCurrencyUnitint_null() {
+        FixedMoney test = FixedMoney.nonNull(null, GBP, 2);
+        assertEquals(test, GBP_0_00);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_nonNull_StandardMoneyCurrencyUnitint_null_nullCurrency() {
+        FixedMoney.nonNull(null, null, 2);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_nonNull_StandardMoneyCurrencyUnitint_null_invalidScale() {
+        FixedMoney.nonNull(null, GBP, -1);
+    }
+
+    //-----------------------------------------------------------------------
     // constructor
     //-----------------------------------------------------------------------
     public void test_constructor() throws Exception {

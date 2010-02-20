@@ -262,6 +262,34 @@ public class TestMoney {
     }
 
     //-----------------------------------------------------------------------
+    // nonNull(Money,CurrencyUnit)
+    //-----------------------------------------------------------------------
+    public void test_nonNull_MoneyCurrencyUnit_nonNull() {
+        Money test = Money.nonNull(GBP_1_23, GBP);
+        assertSame(test, GBP_1_23);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_nonNull_MoneyCurrencyUnit_nonNullCurrencyMismatch() {
+        Money.nonNull(GBP_1_23, JPY);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_nonNull_MoneyCurrencyUnit_nonNull_nullCurrency() {
+        Money.nonNull(GBP_1_23, null);
+    }
+
+    public void test_nonNull_MoneyCurrencyUnit_null() {
+        Money test = Money.nonNull(null, GBP);
+        assertEquals(test, Money.ofMajor(GBP, 0));
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_nonNull_MoneyCurrencyUnit_null_nullCurrency() {
+        Money.nonNull(null, null);
+    }
+
+    //-----------------------------------------------------------------------
     // constructor
     //-----------------------------------------------------------------------
     public void test_constructor_null1() throws Exception {
