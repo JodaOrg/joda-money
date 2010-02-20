@@ -49,16 +49,16 @@ public class TestStandardMoney {
     private static final StandardMoney GBP_5_78 = StandardMoney.parse("GBP 5.78");
     private static final StandardMoney GBP_M1_23 = StandardMoney.parse("GBP -1.23");
     private static final StandardMoney GBP_M5_78 = StandardMoney.parse("GBP -5.78");
-    private static final StandardMoney GBP_INT_MAX_PLUS1 = StandardMoney.ofMinor("GBP", ((long) Integer.MAX_VALUE) + 1);
-    private static final StandardMoney GBP_INT_MIN_MINUS1 = StandardMoney.ofMinor("GBP", ((long) Integer.MIN_VALUE) - 1);
-    private static final StandardMoney GBP_INT_MAX_MAJOR_PLUS1 = StandardMoney.ofMinor("GBP", (((long) Integer.MAX_VALUE) + 1) * 100);
-    private static final StandardMoney GBP_INT_MIN_MAJOR_MINUS1 = StandardMoney.ofMinor("GBP", (((long) Integer.MIN_VALUE) - 1) * 100);
-    private static final StandardMoney GBP_LONG_MAX_PLUS1 = StandardMoney.of("GBP", BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.ONE));
+    private static final StandardMoney GBP_INT_MAX_PLUS1 = StandardMoney.ofMinor(GBP, ((long) Integer.MAX_VALUE) + 1);
+    private static final StandardMoney GBP_INT_MIN_MINUS1 = StandardMoney.ofMinor(GBP, ((long) Integer.MIN_VALUE) - 1);
+    private static final StandardMoney GBP_INT_MAX_MAJOR_PLUS1 = StandardMoney.ofMinor(GBP, (((long) Integer.MAX_VALUE) + 1) * 100);
+    private static final StandardMoney GBP_INT_MIN_MAJOR_MINUS1 = StandardMoney.ofMinor(GBP, (((long) Integer.MIN_VALUE) - 1) * 100);
+    private static final StandardMoney GBP_LONG_MAX_PLUS1 = StandardMoney.of(GBP, BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.ONE));
     private static final StandardMoney GBP_LONG_MIN_MINUS1 =
-        StandardMoney.of("GBP", BigDecimal.valueOf(Long.MIN_VALUE).subtract(BigDecimal.ONE));
-    private static final StandardMoney GBP_LONG_MAX_MAJOR_PLUS1 = StandardMoney.of("GBP",
+        StandardMoney.of(GBP, BigDecimal.valueOf(Long.MIN_VALUE).subtract(BigDecimal.ONE));
+    private static final StandardMoney GBP_LONG_MAX_MAJOR_PLUS1 = StandardMoney.of(GBP,
             BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.ONE).multiply(BigDecimal.valueOf(100)));
-    private static final StandardMoney GBP_LONG_MIN_MAJOR_MINUS1 = StandardMoney.of("GBP",
+    private static final StandardMoney GBP_LONG_MIN_MAJOR_MINUS1 = StandardMoney.of(GBP,
             BigDecimal.valueOf(Long.MIN_VALUE).subtract(BigDecimal.ONE).multiply(BigDecimal.valueOf(100)));
     private static final StandardMoney JPY_423 = StandardMoney.parse("JPY 423");
     private static final StandardMoney USD_1_23 = StandardMoney.parse("USD 1.23");
@@ -83,31 +83,6 @@ public class TestStandardMoney {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_factory_of_Currency_BigDecimal_nullBigDecimal() {
         StandardMoney.of(GBP, (BigDecimal) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // of(String,BigDecimal)
-    //-----------------------------------------------------------------------
-    public void test_factory_of_String_BigDecimal() {
-        StandardMoney test = StandardMoney.of("GBP", BIGDEC_2_34);
-        assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmountMinorInt(), 234);
-        assertEquals(test.getAmount().scale(), 2);
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void test_factory_of_String_BigDecimal_badCurrency() {
-        StandardMoney.of("GBX", BIGDEC_2_34);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_factory_of_String_BigDecimal_nullCurrency() {
-        StandardMoney.of((String) null, BIGDEC_2_34);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_factory_of_String_BigDecimal_nullBigDecimal() {
-        StandardMoney.of("GBP", (BigDecimal) null);
     }
 
     //-----------------------------------------------------------------------
@@ -155,55 +130,6 @@ public class TestStandardMoney {
     }
 
     //-----------------------------------------------------------------------
-    // of(String,BigDecimal,RoundingMode)
-    //-----------------------------------------------------------------------
-    public void test_factory_of_String_BigDecimal_GBP_RoundingMode_DOWN() {
-        StandardMoney test = StandardMoney.of("GBP", BIGDEC_2_34, RoundingMode.DOWN);
-        assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmountMinorInt(), 234);
-        assertEquals(test.getAmount().scale(), 2);
-    }
-
-    public void test_factory_of_String_BigDecimal_JPY_RoundingMode_DOWN() {
-        StandardMoney test = StandardMoney.of("JPY", BIGDEC_2_34, RoundingMode.DOWN);
-        assertEquals(test.getCurrencyUnit(), JPY);
-        assertEquals(test.getAmountMinorInt(), 2);
-        assertEquals(test.getAmount().scale(), 0);
-    }
-
-    public void test_factory_of_String_BigDecimal_JPY_RoundingMode_UP() {
-        StandardMoney test = StandardMoney.of("JPY", BIGDEC_2_34, RoundingMode.UP);
-        assertEquals(test.getCurrencyUnit(), JPY);
-        assertEquals(test.getAmountMinorInt(), 3);
-        assertEquals(test.getAmount().scale(), 0);
-    }
-
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_factory_of_String_BigDecimal_RoundingMode_UNNECESSARY() {
-        StandardMoney.of("JPY", BIGDEC_2_34, RoundingMode.UNNECESSARY);
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void test_factory_of_String_BigDecimal_RoundingMode_badCurrency() {
-        StandardMoney.of("GBX", BIGDEC_2_34, RoundingMode.DOWN);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_factory_of_String_BigDecimal_RoundingMode_nullCurrency() {
-        StandardMoney.of((String) null, BIGDEC_2_34, RoundingMode.DOWN);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_factory_of_String_BigDecimal_RoundingMode_nullBigDecimal() {
-        StandardMoney.of("GBP", (BigDecimal) null, RoundingMode.DOWN);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_factory_of_String_BigDecimal_RoundingMode_nullRoundingMode() {
-        StandardMoney.of("GBP", BIGDEC_2_34, (RoundingMode) null);
-    }
-
-    //-----------------------------------------------------------------------
     // ofMajor(Currency,long)
     //-----------------------------------------------------------------------
     public void test_factory_ofMajor_Currency_long() {
@@ -216,26 +142,6 @@ public class TestStandardMoney {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_factory_ofMajor_Currency_long_nullCurrency() {
         StandardMoney.ofMajor((CurrencyUnit) null, 234);
-    }
-
-    //-----------------------------------------------------------------------
-    // ofMajor(String,long)
-    //-----------------------------------------------------------------------
-    public void test_factory_ofMajor_String_long() {
-        StandardMoney test = StandardMoney.ofMajor("GBP", 234);
-        assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmountMinorInt(), 23400);
-        assertEquals(test.getAmount().scale(), 2);
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void test_factory_ofMajor_String_long_badCurrency() {
-        StandardMoney.ofMajor("GBX", 234);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_factory_ofMajor_String_long_nullCurrency() {
-        StandardMoney.ofMajor((String) null, 234);
     }
 
     //-----------------------------------------------------------------------
@@ -254,26 +160,6 @@ public class TestStandardMoney {
     }
 
     //-----------------------------------------------------------------------
-    // ofMinor(String,long)
-    //-----------------------------------------------------------------------
-    public void test_factory_ofMinor_String_long() {
-        StandardMoney test = StandardMoney.ofMinor("GBP", 234);
-        assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmountMinorInt(), 234);
-        assertEquals(test.getAmount().scale(), 2);
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void test_factory_ofMinor_String_long_badCurrency() {
-        StandardMoney.ofMinor("GBX", 234);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_factory_ofMinor_String_long_nullCurrency() {
-        StandardMoney.ofMinor((String) null, 234);
-    }
-
-    //-----------------------------------------------------------------------
     // zero(Currency)
     //-----------------------------------------------------------------------
     public void test_factory_zero_Currency() {
@@ -286,26 +172,6 @@ public class TestStandardMoney {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_factory_zero_Currency_nullCurrency() {
         StandardMoney.zero((CurrencyUnit) null);
-    }
-
-    //-----------------------------------------------------------------------
-    // zero(String)
-    //-----------------------------------------------------------------------
-    public void test_factory_zero_String() {
-        StandardMoney test = StandardMoney.zero("GBP");
-        assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmountMinorInt(), 0);
-        assertEquals(test.getAmount().scale(), 2);
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void test_factory_zero_String_badCurrency() {
-        StandardMoney.zero("GBX");
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_factory_zero_String_nullString() {
-        StandardMoney.zero((String) null);
     }
 
     //-----------------------------------------------------------------------

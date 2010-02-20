@@ -78,24 +78,6 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
     }
 
     /**
-     * Gets an instance of {@code Money} in the specified currency.
-     * <p>
-     * This allows you to create an instance with a specific currency and amount.
-     * The scale of the money will be that of the BigDecimal.
-     *
-     * @param currencyCode  the currency code, not null
-     * @param amount  the amount of money, not null
-     * @return the new instance, never null
-     * @throws IllegalArgumentException if the currency is unknown
-     */
-    public static Money of(String currencyCode, BigDecimal amount) {
-        MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        MoneyUtils.checkNotNull(amount, "Amount must not be null");
-        return Money.of(CurrencyUnit.of(currencyCode), amount);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets an instance of {@code Money} in the specified currency,
      * using a well-defined conversion from a {@code double}.
      * <p>
@@ -115,29 +97,6 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
     public static Money of(CurrencyUnit currency, double amount) {
         MoneyUtils.checkNotNull(currency, "Currency must not be null");
         return Money.of(currency, BigDecimal.valueOf(amount));
-    }
-
-    /**
-     * Gets an instance of {@code Money} in the specified currency,
-     * using a well-defined conversion from a {@code double}.
-     * <p>
-     * This allows you to create an instance with a specific currency and amount.
-     * <p>
-     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
-     * the most expected answer for most programming scenarios.
-     * Any {@code double} literal in code will be converted to
-     * exactly the same BigDecimal with the same scale.
-     * For example, the literal '1.425d' will be converted to '1.425'.
-     * The scale of the money will be that of the BigDecimal produced.
-     *
-     * @param currencyCode  the currency code, not null
-     * @param amount  the amount of money, not null
-     * @return the new instance, never null
-     * @throws IllegalArgumentException if the currency is unknown
-     */
-    public static Money of(String currencyCode, double amount) {
-        MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        return Money.of(CurrencyUnit.of(currencyCode), amount);
     }
 
     //-----------------------------------------------------------------------
@@ -162,26 +121,6 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
         return Money.of(currency, amount);
     }
 
-    /**
-     * Gets an instance of {@code Money} in the specified currency,
-     * using the scale of the currency rounding as necessary.
-     * <p>
-     * This allows you to create an instance with a specific currency and amount.
-     * The scale of the money will be that of the currency, such as 2 for USD or 0 for JPY.
-     * If the BigDecimal has excess fractional digits, they are rounded using the rounding mode.
-     *
-     * @param currencyCode  the currency code, not null
-     * @param amount  the amount of money, not null
-     * @param roundingMode  the rounding mode to use, not null
-     * @return the new instance, never null
-     * @throws ArithmeticException if the rounding fails
-     */
-    public static Money ofCurrencyScale(String currencyCode, BigDecimal amount, RoundingMode roundingMode) {
-        MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        MoneyUtils.checkNotNull(amount, "Amount must not be null");
-        return Money.ofCurrencyScale(CurrencyUnit.of(currencyCode), amount, roundingMode);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets an instance of {@code Money} specifying the amount in major units.
@@ -203,28 +142,6 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
     }
 
     /**
-     * Gets an instance of {@code Money} specifying the amount in major units.
-     * <p>
-     * This allows you to create an instance with a specific currency and amount.
-     * The scale of the money will be zero.
-     * <p>
-     * The amount is a whole number only. Thus you can initialise the value
-     * 'USD 20', but not the value 'USD 20.32'.
-     * For example, {@code ofMajor(USD, 25)} creates the instance {@code USD 25}.
-     *
-     * @param currencyCode  the currency code, not null
-     * @param amountMajor  the amount of money in the major division of the currency
-     * @return the new instance, never null
-     * @throws IllegalArgumentException if the currency is unknown
-     * @throws ArithmeticException if the amount is too large
-     */
-    public static Money ofMajor(String currencyCode, long amountMajor) {
-        MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        return Money.ofMajor(CurrencyUnit.of(currencyCode), amountMajor);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets an instance of {@code Money} in the specifying the amount in minor units.
      * <p>
      * This allows you to create an instance with a specific currency and amount
@@ -244,27 +161,6 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
         return Money.of(currency, BigDecimal.valueOf(amountMinor, currency.getDecimalPlaces()));
     }
 
-    /**
-     * Gets an instance of {@code Money} in the specifying the amount in minor units.
-     * <p>
-     * This allows you to create an instance with a specific currency and amount
-     * expressed in terms of the minor unit.
-     * The scale of the money will be that of the currency, such as 2 for USD or 0 for JPY.
-     * <p>
-     * For example, if constructing US Dollars, the input to this method represents cents.
-     * Note that when a currency has zero decimal places, the major and minor units are the same.
-     * For example, {@code ofMajor(USD, 2595)} creates the instance {@code USD 25.95}.
-     *
-     * @param currencyCode  the currency code, not null
-     * @param amountMinor  the amount of money in the minor division of the currency
-     * @return the new instance, never null
-     * @throws IllegalArgumentException if the currency is unknown
-     */
-    public static Money ofMinor(String currencyCode, long amountMinor) {
-        MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        return Money.ofMinor(CurrencyUnit.of(currencyCode), amountMinor);
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets an instance of {@code Money} representing zero in the specified currency.
@@ -277,21 +173,6 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
      */
     public static Money zero(CurrencyUnit currency) {
         return Money.of(currency, BigDecimal.ZERO);
-    }
-
-    /**
-     * Gets an instance of {@code Money} representing zero in the specified currency.
-     * <p>
-     * The scale of the money will be zero.
-     * For example, {@code zero(USD)} creates the instance {@code USD 0}.
-     *
-     * @param currencyCode  the currency code, not null
-     * @return the instance representing zero, never null
-     * @throws IllegalArgumentException if the currency is unknown
-     */
-    public static Money zero(String currencyCode) {
-        MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        return Money.zero(CurrencyUnit.of(currencyCode));
     }
 
     //-----------------------------------------------------------------------

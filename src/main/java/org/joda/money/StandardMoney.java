@@ -59,7 +59,7 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * @param currency  the currency, not null
      * @param amount  the amount of money, not null
      * @return the new instance, never null
-     * @throws ArithmeticException if the scale of the amount is too large
+     * @throws ArithmeticException if the scale exceeds the currency scale
      */
     public static StandardMoney of(CurrencyUnit currency, BigDecimal amount) {
         MoneyUtils.checkNotNull(currency, "Currency must not be null");
@@ -69,25 +69,6 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
         return StandardMoney.of(currency, amount, RoundingMode.UNNECESSARY);
     }
 
-    /**
-     * Gets an instance of {@code StandardMoney} in the specified currency.
-     * <p>
-     * This allows you to create an instance with a specific currency and amount.
-     * No rounding is performed on the amount, so it must have a scale compatible
-     * with the currency.
-     *
-     * @param currencyCode  the currency code, not null
-     * @param amount  the amount of money, not null
-     * @return the new instance, never null
-     * @throws IllegalArgumentException if the currency is unknown
-     * @throws ArithmeticException if the scale of the amount is too large
-     */
-    public static StandardMoney of(String currencyCode, BigDecimal amount) {
-        MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        return StandardMoney.of(CurrencyUnit.of(currencyCode), amount);
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Gets an instance of {@code StandardMoney} in the specified currency, rounding as necessary.
      * <p>
@@ -103,24 +84,6 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      */
     public static StandardMoney of(CurrencyUnit currency, BigDecimal amount, RoundingMode roundingMode) {
         return new StandardMoney(Money.ofCurrencyScale(currency, amount, roundingMode));
-    }
-
-    /**
-     * Gets an instance of {@code StandardMoney} in the specified currency, rounding as necessary.
-     * <p>
-     * This allows you to create an instance with a specific currency and amount.
-     * If the amount has a scale in excess of the scale of the currency then the excess
-     * fractional digits are rounded using the rounding mode.
-     *
-     * @param currencyCode  the currency code, not null
-     * @param amount  the amount of money, not null
-     * @param roundingMode  the rounding mode to use, not null
-     * @return the new instance, never null
-     * @throws ArithmeticException if the rounding fails
-     */
-    public static StandardMoney of(String currencyCode, BigDecimal amount, RoundingMode roundingMode) {
-        MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        return StandardMoney.of(CurrencyUnit.of(currencyCode), amount, roundingMode);
     }
 
     //-----------------------------------------------------------------------
@@ -145,27 +108,6 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
     /**
      * Gets an instance of {@code StandardMoney} in the specified currency.
      * <p>
-     * This allows you to create an instance with a specific currency and amount.
-     * The amount is a whole number only. Thus you can initialise the value
-     * 'USD 20', but not the value 'USD 20.32'.
-     * <p>
-     * For example, {@code ofMajor("USD", 25)} creates the instance {@code USD 25.00}.
-     *
-     * @param currencyCode  the currency code, not null
-     * @param amountMajor  the amount of money in the major division of the currency
-     * @return the new instance, never null
-     * @throws IllegalArgumentException if the currency is unknown
-     * @throws ArithmeticException if the amount is too large
-     */
-    public static StandardMoney ofMajor(String currencyCode, long amountMajor) {
-        MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        return StandardMoney.ofMajor(CurrencyUnit.of(currencyCode), amountMajor);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets an instance of {@code StandardMoney} in the specified currency.
-     * <p>
      * This allows you to create an instance with a specific currency and amount
      * expressed in terms of the minor unit.
      * For example, if constructing US Dollars, the input to this method represents cents.
@@ -179,25 +121,6 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      */
     public static StandardMoney ofMinor(CurrencyUnit currency, long amountMinor) {
         return new StandardMoney(Money.ofMinor(currency, amountMinor));
-    }
-
-    /**
-     * Gets an instance of {@code StandardMoney} in the specified currency.
-     * <p>
-     * This allows you to create an instance with a specific currency and amount
-     * expressed in terms of the minor unit.
-     * For example, if constructing US Dollars, the input to this method represents cents.
-     * Note that when a currency has zero decimal places, the major and minor units are the same.
-     * <p>
-     * For example, {@code ofMajor("USD", 2595)} creates the instance {@code USD 25.95}.
-     *
-     * @param currencyCode  the currency code, not null
-     * @param amountMinor  the amount of money in the minor division of the currency
-     * @return the new instance, never null
-     * @throws IllegalArgumentException if the currency is unknown
-     */
-    public static StandardMoney ofMinor(String currencyCode, long amountMinor) {
-        return new StandardMoney(Money.ofMinor(currencyCode, amountMinor));
     }
 
     //-----------------------------------------------------------------------
@@ -215,20 +138,6 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
         return new StandardMoney(Money.of(currency, bd));
     }
 
-    /**
-     * Gets an instance of {@code StandardMoney} representing zero in the specified currency.
-     * <p>
-     * For example, {@code zero("USD")} creates the instance {@code USD 0.00}.
-     *
-     * @param currencyCode  the currency code, not null
-     * @return the instance representing zero, never null
-     * @throws IllegalArgumentException if the currency is unknown
-     */
-    public static StandardMoney zero(String currencyCode) {
-        MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        return StandardMoney.zero(CurrencyUnit.of(currencyCode));
-    }
-
     //-----------------------------------------------------------------------
     /**
      * Gets an instance of {@code StandardMoney} from the provider, rounding as necessary.
@@ -240,7 +149,7 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      *
      * @param moneyProvider  the money to convert, not null
      * @return the new instance, never null
-     * @throws ArithmeticException if the rounding fails
+     * @throws ArithmeticException if the scale exceeds the currency scale
      */
     public static StandardMoney from(MoneyProvider moneyProvider) {
         return StandardMoney.from(moneyProvider, RoundingMode.UNNECESSARY);
