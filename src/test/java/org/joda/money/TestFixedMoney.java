@@ -54,10 +54,10 @@ public class TestFixedMoney {
     private static final FixedMoney GBP_5_78 = FixedMoney.parse("GBP 5.78");
     private static final FixedMoney GBP_M1_23 = FixedMoney.parse("GBP -1.23");
     private static final FixedMoney GBP_M5_78 = FixedMoney.parse("GBP -5.78");
-    private static final FixedMoney GBP_INT_MAX_PLUS1 = FixedMoney.ofScaled(GBP, ((long) Integer.MAX_VALUE) + 1, 2);
-    private static final FixedMoney GBP_INT_MIN_MINUS1 = FixedMoney.ofScaled(GBP, ((long) Integer.MIN_VALUE) - 1, 2);
-    private static final FixedMoney GBP_INT_MAX_MAJOR_PLUS1 = FixedMoney.ofScaled(GBP, (((long) Integer.MAX_VALUE) + 1) * 100, 2);
-    private static final FixedMoney GBP_INT_MIN_MAJOR_MINUS1 = FixedMoney.ofScaled(GBP, (((long) Integer.MIN_VALUE) - 1) * 100, 2);
+    private static final FixedMoney GBP_INT_MAX_PLUS1 = FixedMoney.ofScale(GBP, ((long) Integer.MAX_VALUE) + 1, 2);
+    private static final FixedMoney GBP_INT_MIN_MINUS1 = FixedMoney.ofScale(GBP, ((long) Integer.MIN_VALUE) - 1, 2);
+    private static final FixedMoney GBP_INT_MAX_MAJOR_PLUS1 = FixedMoney.ofScale(GBP, (((long) Integer.MAX_VALUE) + 1) * 100, 2);
+    private static final FixedMoney GBP_INT_MIN_MAJOR_MINUS1 = FixedMoney.ofScale(GBP, (((long) Integer.MIN_VALUE) - 1) * 100, 2);
     private static final FixedMoney GBP_LONG_MAX_PLUS1 = FixedMoney.of(GBP, BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.ONE), 2);
     private static final FixedMoney GBP_LONG_MIN_MINUS1 =
         FixedMoney.of(GBP, BigDecimal.valueOf(Long.MIN_VALUE).subtract(BigDecimal.ONE), 2);
@@ -100,62 +100,62 @@ public class TestFixedMoney {
     }
 
     //-----------------------------------------------------------------------
-    // of(Currency,BigDecimal,RoundingMode)
+    // of(Currency,BigDecimal,int,RoundingMode)
     //-----------------------------------------------------------------------
-    public void test_factory_of_Currency_BigDecimal_RoundingMode_DOWN() {
+    public void test_factory_of_Currency_BigDecimal_int_RoundingMode_DOWN() {
         FixedMoney test = FixedMoney.of(GBP, BIGDEC_2_34, 1, RoundingMode.DOWN);
         assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmount(), BigDecimal.valueOf(23, 1));
     }
 
-    public void test_factory_of_Currency_BigDecimal_JPY_RoundingMode_UP() {
+    public void test_factory_of_Currency_BigDecimal_int_JPY_RoundingMode_UP() {
         FixedMoney test = FixedMoney.of(JPY, BIGDEC_2_34, 0, RoundingMode.UP);
         assertEquals(test.getCurrencyUnit(), JPY);
         assertEquals(test.getAmount(), BigDecimal.valueOf(3, 0));
     }
 
     @Test(expectedExceptions = ArithmeticException.class)
-    public void test_factory_of_Currency_BigDecimal_RoundingMode_UNNECESSARY() {
+    public void test_factory_of_Currency_BigDecimal_int_RoundingMode_UNNECESSARY() {
         FixedMoney.of(JPY, BIGDEC_2_34, 1, RoundingMode.UNNECESSARY);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
-    public void test_factory_of_Currency_BigDecimal_RoundingMode_nullCurrency() {
+    public void test_factory_of_Currency_BigDecimal_int_RoundingMode_nullCurrency() {
         FixedMoney.of((CurrencyUnit) null, BIGDEC_2_34, 2, RoundingMode.DOWN);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
-    public void test_factory_of_Currency_BigDecimal_RoundingMode_nullBigDecimal() {
+    public void test_factory_of_Currency_BigDecimal_int_RoundingMode_nullBigDecimal() {
         FixedMoney.of(GBP, (BigDecimal) null, 2, RoundingMode.DOWN);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void test_factory_of_Currency_BigDecimal_RoundingMode_negativeScale() {
+    public void test_factory_of_Currency_BigDecimal_int_RoundingMode_negativeScale() {
         FixedMoney.of(GBP, BIGDEC_2_34, -2, RoundingMode.DOWN);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
-    public void test_factory_of_Currency_BigDecimal_RoundingMode_nullRoundingMode() {
+    public void test_factory_of_Currency_BigDecimal_int_RoundingMode_nullRoundingMode() {
         FixedMoney.of(GBP, BIGDEC_2_34, 2, (RoundingMode) null);
     }
 
     //-----------------------------------------------------------------------
-    // ofScaled(Currency,long, int)
+    // ofScale(Currency,long, int)
     //-----------------------------------------------------------------------
-    public void test_factory_ofScaled_Currency_long_int() {
-        FixedMoney test = FixedMoney.ofScaled(GBP, 234, 4);
+    public void test_factory_ofScale_Currency_long_int() {
+        FixedMoney test = FixedMoney.ofScale(GBP, 234, 4);
         assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmount(), BigDecimal.valueOf(234, 4));
     }
 
     @Test(expectedExceptions = NullPointerException.class)
-    public void test_factory_ofScaled_Currency_long_int_nullCurrency() {
-        FixedMoney.ofScaled((CurrencyUnit) null, 234, 2);
+    public void test_factory_ofScale_Currency_long_int_nullCurrency() {
+        FixedMoney.ofScale((CurrencyUnit) null, 234, 2);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void test_factory_ofScaled_Currency_long_int_negativeScale() {
-        FixedMoney.ofScaled(GBP, 234, -1);
+    public void test_factory_ofScale_Currency_long_int_negativeScale() {
+        FixedMoney.ofScale(GBP, 234, -1);
     }
 
     //-----------------------------------------------------------------------
@@ -1478,7 +1478,7 @@ public class TestFixedMoney {
     }
 
     public void test_toString_scaled() {
-        FixedMoney test = FixedMoney.ofScaled(GBP, 1234567, 5);
+        FixedMoney test = FixedMoney.ofScale(GBP, 1234567, 5);
         assertEquals(test.toString(), "GBP 12.34567");
     }
 

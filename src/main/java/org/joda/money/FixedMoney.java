@@ -65,8 +65,8 @@ public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyPr
     }
 
     /**
-     * Obtains an instance of {@code FixedMoney} from a {@code double} using a
-     * well-defined conversion, rounding as necessary.
+     * Obtains an instance of {@code FixedMoney} from a {@code BigDecimal} at
+     * a specific scale, rounding as necessary.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      * If the amount has a scale in excess of the scale of the currency then the excess
@@ -91,23 +91,23 @@ public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyPr
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code FixedMoney} from an scaled amount.
+     * Obtains an instance of {@code FixedMoney} from a scaled amount.
      * <p>
      * This allows you to create an instance with a specific currency, amount and scale.
      * The amount is defined in terms of the specified scale.
      * <p>
-     * For example, {@code ofScaled(USD, 234, 2)} creates the instance {@code USD 2.34}.
+     * For example, {@code ofScale(USD, 234, 2)} creates the instance {@code USD 2.34}.
      *
      * @param currency  the currency, not null
-     * @param amountMajor  the amount of money in the major division of the currency
+     * @param unscaledAmount  the unscaled amount of money
      * @param scale  the scale to use, zero or positive
      * @return the new instance, never null
      * @throws IllegalArgumentException if the scale is negative
      */
-    public static FixedMoney ofScaled(CurrencyUnit currency, long amountInScale, int scale) {
+    public static FixedMoney ofScale(CurrencyUnit currency, long unscaledAmount, int scale) {
         MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
         checkScale(scale);
-        BigDecimal amount = BigDecimal.valueOf(amountInScale, scale);
+        BigDecimal amount = BigDecimal.valueOf(unscaledAmount, scale);
         return new FixedMoney(BigMoney.of(currency, amount));
     }
 
