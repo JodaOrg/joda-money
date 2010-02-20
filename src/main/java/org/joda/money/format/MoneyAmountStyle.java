@@ -15,6 +15,7 @@
  */
 package org.joda.money.format;
 
+import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -44,83 +45,99 @@ import java.util.concurrent.ConcurrentMap;
  * <p>
  * MoneyAmountStyle is immutable and thread-safe.
  */
-public final class MoneyAmountStyle {
+public final class MoneyAmountStyle implements Serializable {
 
     /**
-     * A style that uses ASCII digits, the decimal point and groups in 3's using a comma.
+     * A style that uses ASCII digits/negative sign, the decimal point
+     * and groups large amounts in 3's using a comma.
      * Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle ASCII_DECIMAL_POINT_GROUP3_COMMA =
-        new MoneyAmountStyle('0', '.', ',', true, 3, false);
+        new MoneyAmountStyle('0', '+', '-', '.', ',', 3, true, false);
     /**
-     * A style that uses ASCII digits, the decimal point and groups in 3's using a space.
+     * A style that uses ASCII digits/negative sign, the decimal point
+     * and groups large amounts in 3's using a space.
      * Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle ASCII_DECIMAL_POINT_GROUP3_SPACE =
-        new MoneyAmountStyle('0', '.', ' ', true, 3, false);
+        new MoneyAmountStyle('0', '+', '-', '.', ' ', 3, true, false);
     /**
-     * A style that uses ASCII digits and the decimal point.
-     * Grouping is setup to group in 3's using a comma, but is disabled.
+     * A style that uses ASCII digits/negative sign, the decimal point
+     * and no grouping of large amounts.
      * Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle ASCII_DECIMAL_POINT_NO_GROUPING =
-        new MoneyAmountStyle('0', '.', ',', false, 3, false);
+        new MoneyAmountStyle('0', '+', '-', '.', ',', 3, false, false);
     /**
-     * A style that uses ASCII digits, the decimal comma and groups in 3's using a dot.
+     * A style that uses ASCII digits/negative sign, the decimal comma
+     * and groups large amounts in 3's using a dot.
      * Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle ASCII_DECIMAL_COMMA_GROUP3_DOT =
-        new MoneyAmountStyle('0', ',', '.', true, 3, false);
+        new MoneyAmountStyle('0', '+', '-', ',', '.', 3, true, false);
     /**
-     * A style that uses ASCII digits, the decimal comma and groups in 3's using a space.
+     * A style that uses ASCII digits/negative sign, the decimal comma
+     * and groups large amounts in 3's using a space.
      * Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle ASCII_DECIMAL_COMMA_GROUP3_SPACE =
-        new MoneyAmountStyle('0', ',', ' ', true, 3, false);
+        new MoneyAmountStyle('0', '+', '-', ',', ' ', 3, true, false);
     /**
-     * A style that uses ASCII digits and the decimal comma.
-     * Grouping is setup to group in 3's using a dot, but is disabled.
+     * A style that uses ASCII digits/negative sign, the decimal point
+     * and no grouping of large amounts.
      * Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle ASCII_DECIMAL_COMMA_NO_GROUPING =
-        new MoneyAmountStyle('0', ',', '.', false, 3, false);
+        new MoneyAmountStyle('0', '+', '-', ',', '.', 3, false, false);
     /**
      * A style that will be filled in with localized values using the locale of the formatter.
      * Grouping is enabled. Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle LOCALIZED_GROUPING =
-        new MoneyAmountStyle(null, null, null, true, null, false);
+        new MoneyAmountStyle(-1, -1, -1, -1, -1, -1, true, false);
     /**
      * A style that will be filled in with localized values using the locale of the formatter.
      * Grouping is disabled. Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle LOCALIZED_NO_GROUPING =
-        new MoneyAmountStyle(null, null, null, false, null, false);
+        new MoneyAmountStyle(-1, -1, -1, -1, -1, -1, false, false);
     /**
-     * Cache of symbols.
+     * Cache of localized styles.
      */
-    private static final ConcurrentMap<Locale, MoneyAmountStyle> SYMBOLS_CACHE = new ConcurrentHashMap<Locale, MoneyAmountStyle>();
+    private static final ConcurrentMap<Locale, MoneyAmountStyle> LOCALIZED_CACHE = new ConcurrentHashMap<Locale, MoneyAmountStyle>();
+    /**
+     * Serialization version.
+     */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The character defining zero, and thus the numbers zero to nine.
      */
-    private final Character iZeroCharacter;
+    private final int iZeroCharacter;
+    /**
+     * The character representing the positive sign.
+     */
+    private final int iPositiveCharacter;
+    /**
+     * The prefix string when the amount is negative.
+     */
+    private final int iNegativeCharacter;
     /**
      * The character used for the decimal point.
      */
-    private final Character iDecimalPointCharacter;
+    private final int iDecimalPointCharacter;
     /**
      * The character used for grouping.
      */
-    private final Character iGroupingCharacter;
+    private final int iGroupingCharacter;
+    /**
+     * The size of each group.
+     */
+    private final int iGroupingSize;
     /**
      * Whether to group or not.
      */
     private final boolean iGrouping;
-    /**
-     * The size of each group.
-     */
-    private final Integer iGroupingSize;
     /**
      * Whether to always require the decimal point to be visible.
      */
@@ -137,32 +154,34 @@ public final class MoneyAmountStyle {
      * @return the new instance, never null
      */
     public static MoneyAmountStyle of(Locale locale) {
-        return LOCALIZED_GROUPING.localize(locale);
+        return getLocalizedStyle(locale);
     }
 
     //-----------------------------------------------------------------------
     /**
      * Constructor, creating a new monetary instance.
      * 
+     * @param zeroCharacter  the zero character
+     * @param postiveCharacter  the positive sign
+     * @param negativeCharacter  the negative sign
      * @param decimalPointCharacter  the decimal point character
      * @param groupingCharacter  the grouping character
-     * @param group  whether to use the group character
      * @param groupingSize  the grouping size
+     * @param group  whether to use the group character
      * @param forceDecimalPoint  whether to always use the decimal point character
-     * @param locale  the locale to use, not null
-     * @param postivePattern  the positive pattern
-     * @param negativePattern  the negative pattern
-     * @param zeroPattern  the zero pattern
      */
     private MoneyAmountStyle(
-                Character zeroCharacter,
-                Character decimalPointCharacter, Character groupingCharacter,
-                boolean group, Integer groupingSize, boolean forceDecimalPoint) {
+                int zeroCharacter,
+                int positiveCharacter, int negativeCharacter,
+                int decimalPointCharacter, int groupingCharacter,
+                int groupingSize, boolean group, boolean forceDecimalPoint) {
         iZeroCharacter = zeroCharacter;
+        iPositiveCharacter = positiveCharacter;
+        iNegativeCharacter = negativeCharacter;
         iDecimalPointCharacter = decimalPointCharacter;
         iGroupingCharacter = groupingCharacter;
-        iGrouping = group;
         iGroupingSize = groupingSize;
+        iGrouping = group;
         iForceDecimalPoint = forceDecimalPoint;
     }
 
@@ -185,20 +204,28 @@ public final class MoneyAmountStyle {
         MoneyFormatter.checkNotNull(locale, "Locale must not be null");
         MoneyAmountStyle result = this;
         MoneyAmountStyle protoStyle = null;
-        if (iZeroCharacter == null) {
-            protoStyle = getProtoStyle(locale);
+        if (iZeroCharacter < 0) {
+            protoStyle = getLocalizedStyle(locale);
             result = result.withZeroCharacter(protoStyle.getZeroCharacter());
         }
-        if (iDecimalPointCharacter == null) {
-            protoStyle = (protoStyle == null ? getProtoStyle(locale) : protoStyle);
+        if (iPositiveCharacter < 0) {
+            protoStyle = getLocalizedStyle(locale);
+            result = result.withPositiveSignCharacter(protoStyle.getPositiveSignCharacter());
+        }
+        if (iNegativeCharacter < 0) {
+            protoStyle = getLocalizedStyle(locale);
+            result = result.withNegativeSignCharacter(protoStyle.getNegativeSignCharacter());
+        }
+        if (iDecimalPointCharacter < 0) {
+            protoStyle = (protoStyle == null ? getLocalizedStyle(locale) : protoStyle);
             result = result.withDecimalPointCharacter(protoStyle.getDecimalPointCharacter());
         }
-        if (iGroupingCharacter == null) {
-            protoStyle = (protoStyle == null ? getProtoStyle(locale) : protoStyle);
+        if (iGroupingCharacter < 0) {
+            protoStyle = (protoStyle == null ? getLocalizedStyle(locale) : protoStyle);
             result = result.withGroupingCharacter(protoStyle.getGroupingCharacter());
         }
-        if (iGroupingSize == null) {
-            protoStyle = (protoStyle == null ? getProtoStyle(locale) : protoStyle);
+        if (iGroupingSize < 0) {
+            protoStyle = (protoStyle == null ? getLocalizedStyle(locale) : protoStyle);
             result = result.withGroupingSize(protoStyle.getGroupingSize());
         }
         return result;
@@ -217,24 +244,25 @@ public final class MoneyAmountStyle {
      * @param locale  the {@link Locale} used to get the correct {@link DecimalFormatSymbols}
      * @return the symbols, never null
      */
-    private static MoneyAmountStyle getProtoStyle(Locale locale) {
-        MoneyAmountStyle protoStyle = SYMBOLS_CACHE.get(locale);
-        if (protoStyle != null) {
-            return protoStyle;
+    private static MoneyAmountStyle getLocalizedStyle(Locale locale) {
+        MoneyAmountStyle protoStyle = LOCALIZED_CACHE.get(locale);
+        if (protoStyle == null) {
+            DecimalFormatSymbols symbols;
+            try {
+                Method method = DecimalFormatSymbols.class.getMethod("getInstance", new Class[] {Locale.class});
+                symbols = (DecimalFormatSymbols) method.invoke(null, new Object[] {locale});  // handle JDK 6
+            } catch (Exception ex) {
+                symbols = new DecimalFormatSymbols(locale);  // handle JDK 5
+            }
+            NumberFormat format = NumberFormat.getCurrencyInstance(locale);
+            int size = (format instanceof DecimalFormat ? ((DecimalFormat) format).getGroupingSize() : 3);
+            protoStyle = new MoneyAmountStyle(
+                    symbols.getZeroDigit(),
+                    '+', symbols.getMinusSign(),
+                    symbols.getMonetaryDecimalSeparator(),
+                    symbols.getGroupingSeparator(), size, true, false);
+            LOCALIZED_CACHE.putIfAbsent(locale, protoStyle);
         }
-        DecimalFormatSymbols symbols;
-        try {           
-            Method method = DecimalFormatSymbols.class.getMethod("getInstance", new Class[] {Locale.class});
-            symbols = (DecimalFormatSymbols) method.invoke(null, new Object[] {locale});
-        } catch (Exception ex) {
-            symbols = new DecimalFormatSymbols(locale);
-        }
-        NumberFormat format = NumberFormat.getCurrencyInstance(locale);
-        int size = (format instanceof DecimalFormat ? ((DecimalFormat) format).getGroupingSize() : 3);
-        protoStyle = new MoneyAmountStyle(
-                symbols.getZeroDigit(), symbols.getMonetaryDecimalSeparator(),
-                symbols.getGroupingSeparator(), false, size, false);
-        SYMBOLS_CACHE.putIfAbsent(locale, protoStyle);
         return protoStyle;
     }
 
@@ -249,11 +277,11 @@ public final class MoneyAmountStyle {
      * @return the zero character, null if to be determined by locale
      */
     public Character getZeroCharacter() {
-        return iZeroCharacter;
+        return iZeroCharacter < 0 ? null : (char) iZeroCharacter;
     }
 
     /**
-     * Returns a copy of this instance with the specified zero character.
+     * Returns a copy of this style with the specified zero character.
      * <p>
      * The UTF-8 standard supports a number of different numeric scripts.
      * Each script has the characters in order from zero to nine.
@@ -266,13 +294,79 @@ public final class MoneyAmountStyle {
      * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle withZeroCharacter(Character zeroCharacter) {
-        if (zeroCharacter == iZeroCharacter ||
-                (zeroCharacter != null && zeroCharacter.equals(iZeroCharacter))) {
+        int zeroVal = (zeroCharacter == null ? -1 : zeroCharacter);
+        if (zeroVal == iZeroCharacter) {
             return this;
         }
         return new MoneyAmountStyle(
-                zeroCharacter, iDecimalPointCharacter, iGroupingCharacter,
-                iGrouping, iGroupingSize, iForceDecimalPoint);
+                zeroVal,
+                iPositiveCharacter, iNegativeCharacter,
+                iDecimalPointCharacter, iGroupingCharacter,
+                iGroupingSize, iGrouping, iForceDecimalPoint);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the character used for the positive sign character.
+     * <p>
+     * The standard ASCII symbol is '+'.
+     * 
+     * @return the format for positive amounts, null if to be determined by locale
+     */
+    public Character getPositiveSignCharacter() {
+        return iPositiveCharacter < 0 ? null : (char) iPositiveCharacter;
+    }
+
+    /**
+     * Returns a copy of this style with the specified positive sign character.
+     * <p>
+     * The standard ASCII symbol is '+'.
+     * 
+     * @param zeroCharacter  the zero character, null if to be determined by locale
+     * @return the new instance for chaining, never null
+     */
+    public MoneyAmountStyle withPositiveSignCharacter(Character positiveCharacter) {
+        int positiveVal = (positiveCharacter == null ? -1 : positiveCharacter);
+        if (positiveVal == iPositiveCharacter) {
+            return this;
+        }
+        return new MoneyAmountStyle(
+                iZeroCharacter,
+                positiveVal, iNegativeCharacter,
+                iDecimalPointCharacter, iGroupingCharacter,
+                iGroupingSize, iGrouping, iForceDecimalPoint);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the character used for the negative sign character.
+     * <p>
+     * The standard ASCII symbol is '-'.
+     * 
+     * @return the format for negative amounts, null if to be determined by locale
+     */
+    public Character getNegativeSignCharacter() {
+        return iNegativeCharacter < 0 ? null : (char) iNegativeCharacter;
+    }
+
+    /**
+     * Returns a copy of this style with the specified negative sign character.
+     * <p>
+     * The standard ASCII symbol is '-'.
+     * 
+     * @param zeroCharacter  the zero character, null if to be determined by locale
+     * @return the new instance for chaining, never null
+     */
+    public MoneyAmountStyle withNegativeSignCharacter(Character negativeCharacter) {
+        int negativeVal = (negativeCharacter == null ? -1 : negativeCharacter);
+        if (negativeVal == iNegativeCharacter) {
+            return this;
+        }
+        return new MoneyAmountStyle(
+                iZeroCharacter,
+                iPositiveCharacter, negativeVal,
+                iDecimalPointCharacter, iGroupingCharacter,
+                iGroupingSize, iGrouping, iForceDecimalPoint);
     }
 
     //-----------------------------------------------------------------------
@@ -282,11 +376,11 @@ public final class MoneyAmountStyle {
      * @return the decimal point character, null if to be determined by locale
      */
     public Character getDecimalPointCharacter() {
-        return iDecimalPointCharacter;
+        return iDecimalPointCharacter < 0 ? null : (char) iDecimalPointCharacter;
     }
 
     /**
-     * Returns a copy of this instance with the specified decimal point character.
+     * Returns a copy of this style with the specified decimal point character.
      * <p>
      * For English, this is a dot.
      * 
@@ -294,13 +388,15 @@ public final class MoneyAmountStyle {
      * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle withDecimalPointCharacter(Character decimalPointCharacter) {
-        if (decimalPointCharacter == iDecimalPointCharacter ||
-                (decimalPointCharacter != null && decimalPointCharacter.equals(iDecimalPointCharacter))) {
+        int dpVal = (decimalPointCharacter == null ? -1 : decimalPointCharacter);
+        if (dpVal == iDecimalPointCharacter) {
             return this;
         }
         return new MoneyAmountStyle(
-                iZeroCharacter, decimalPointCharacter, iGroupingCharacter,
-                iGrouping, iGroupingSize, iForceDecimalPoint);
+                iZeroCharacter,
+                iPositiveCharacter, iNegativeCharacter,
+                dpVal, iGroupingCharacter,
+                iGroupingSize, iGrouping, iForceDecimalPoint);
     }
 
     //-----------------------------------------------------------------------
@@ -310,11 +406,11 @@ public final class MoneyAmountStyle {
      * @return the grouping character, null if to be determined by locale
      */
     public Character getGroupingCharacter() {
-        return iGroupingCharacter;
+        return iGroupingCharacter < 0 ? null : (char) iGroupingCharacter;
     }
 
     /**
-     * Returns a copy of this instance with the specified grouping character.
+     * Returns a copy of this style with the specified grouping character.
      * <p>
      * For English, this is a comma.
      * 
@@ -322,13 +418,48 @@ public final class MoneyAmountStyle {
      * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle withGroupingCharacter(Character groupingCharacter) {
-        if (groupingCharacter == iGroupingCharacter ||
-                (groupingCharacter != null && groupingCharacter.equals(iGroupingCharacter))) {
+        int groupingVal = (groupingCharacter == null ? -1 : groupingCharacter);
+        if (groupingVal == iGroupingCharacter) {
             return this;
         }
         return new MoneyAmountStyle(
-                iZeroCharacter, iDecimalPointCharacter, groupingCharacter,
-                iGrouping, iGroupingSize, iForceDecimalPoint);
+                iZeroCharacter,
+                iPositiveCharacter, iNegativeCharacter,
+                iDecimalPointCharacter, groupingVal,
+                iGroupingSize, iGrouping, iForceDecimalPoint);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the size of each group, typically 3 for thousands.
+     * 
+     * @return the size of each group, null if to be determined by locale
+     */
+    public Integer getGroupingSize() {
+        return iGroupingSize < 0 ? null : iGroupingSize;
+    }
+
+    /**
+     * Returns a copy of this style with the specified grouping size.
+     * 
+     * @param groupingSize  the size of each group, such as 3 for thousands,
+     *          not zero or negative, null if to be determined by locale
+     * @return the new instance for chaining, never null
+     * @throws IllegalArgumentException if the grouping size is zero or less
+     */
+    public MoneyAmountStyle withGroupingSize(Integer groupingSize) {
+        int sizeVal = (groupingSize == null ? -1 : groupingSize);
+        if (groupingSize != null && sizeVal <= 0 ) {
+            throw new IllegalArgumentException("Grouping size must be greater than zero");
+        }
+        if (sizeVal == iGroupingSize) {
+            return this;
+        }
+        return new MoneyAmountStyle(
+                iZeroCharacter,
+                iPositiveCharacter, iNegativeCharacter,
+                iDecimalPointCharacter, iGroupingCharacter,
+                sizeVal, iGrouping, iForceDecimalPoint);
     }
 
     //-----------------------------------------------------------------------
@@ -342,7 +473,7 @@ public final class MoneyAmountStyle {
     }
 
     /**
-     * Returns a copy of this instance with the specified grouping setting.
+     * Returns a copy of this style with the specified grouping setting.
      * 
      * @param grouping  true to use the grouping separator, false to not use it
      * @return the new instance for chaining, never null
@@ -352,33 +483,10 @@ public final class MoneyAmountStyle {
             return this;
         }
         return new MoneyAmountStyle(
-                iZeroCharacter, iDecimalPointCharacter, iGroupingCharacter,
-                grouping, iGroupingSize, iForceDecimalPoint);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the size of each group, typically 3 for thousands.
-     * 
-     * @return the size of each group, null if to be determined by locale
-     */
-    public Integer getGroupingSize() {
-        return iGroupingSize;
-    }
-
-    /**
-     * Returns a copy of this instance with the specified grouping size.
-     * 
-     * @param groupingSize  the size of each group, such as 3 for thousands, null if to be determined by locale
-     * @return the new instance for chaining, never null
-     */
-    public MoneyAmountStyle withGroupingSize(Integer groupingSize) {
-        if (groupingSize == iGroupingSize || (groupingSize != null && groupingSize.equals(iGroupingSize))) {
-            return this;
-        }
-        return new MoneyAmountStyle(
-                iZeroCharacter, iDecimalPointCharacter, iGroupingCharacter,
-                iGrouping, groupingSize, iForceDecimalPoint);
+                iZeroCharacter,
+                iPositiveCharacter, iNegativeCharacter,
+                iDecimalPointCharacter, iGroupingCharacter,
+                iGroupingSize, grouping, iForceDecimalPoint);
     }
 
     //-----------------------------------------------------------------------
@@ -392,7 +500,7 @@ public final class MoneyAmountStyle {
     }
 
     /**
-     * Returns a copy of this instance with the specified decimal point setting.
+     * Returns a copy of this style with the specified decimal point setting.
      * 
      * @param forceDecimalPoint  true to force the use of the decimal point, false to use it if required
      * @return the new instance for chaining, never null
@@ -402,8 +510,10 @@ public final class MoneyAmountStyle {
             return this;
         }
         return new MoneyAmountStyle(
-                iZeroCharacter, iDecimalPointCharacter, iGroupingCharacter,
-                iGrouping, iGroupingSize, forceDecimalPoint);
+                iZeroCharacter,
+                iPositiveCharacter, iNegativeCharacter,
+                iDecimalPointCharacter, iGroupingCharacter,
+                iGroupingSize, iGrouping, forceDecimalPoint);
     }
 
     //-----------------------------------------------------------------------
@@ -422,15 +532,13 @@ public final class MoneyAmountStyle {
             return false;
         }
         MoneyAmountStyle otherStyle = (MoneyAmountStyle) other;
-        return (iZeroCharacter == otherStyle.iZeroCharacter ||
-                    iZeroCharacter != null && iZeroCharacter.equals(otherStyle.iZeroCharacter)) &&
-                (iDecimalPointCharacter == otherStyle.iDecimalPointCharacter ||
-                    iDecimalPointCharacter != null && iDecimalPointCharacter.equals(otherStyle.iDecimalPointCharacter)) &&
-                (iGroupingCharacter == otherStyle.iGroupingCharacter ||
-                    iGroupingCharacter != null && iGroupingCharacter.equals(otherStyle.iGroupingCharacter)) &&
+        return (iZeroCharacter == otherStyle.iZeroCharacter) &&
+                (iPositiveCharacter == otherStyle.iPositiveCharacter) &&
+                (iNegativeCharacter == otherStyle.iNegativeCharacter) &&
+                (iDecimalPointCharacter == otherStyle.iDecimalPointCharacter) &&
+                (iGroupingCharacter == otherStyle.iGroupingCharacter) &&
+                (iGroupingSize == otherStyle.iGroupingSize) &&
                 (iGrouping == otherStyle.iGrouping) &&
-                (iGroupingSize == otherStyle.iGroupingSize ||
-                    iGroupingSize != null && iGroupingSize.equals(otherStyle.iGroupingSize)) &&
                 (iForceDecimalPoint == otherStyle.iForceDecimalPoint);
     }
 
@@ -442,13 +550,29 @@ public final class MoneyAmountStyle {
     @Override
     public int hashCode() {
         int hash = 13;
-        hash += (iZeroCharacter == null ? 0 : iZeroCharacter.hashCode()) * 17;
-        hash += (iDecimalPointCharacter == null ? 0 : iDecimalPointCharacter.hashCode()) * 17;
-        hash += (iGroupingCharacter == null ? 0 : iGroupingCharacter.hashCode()) * 17;
-        hash += (iGroupingSize == null ? 0 : iGroupingSize.hashCode()) * 17;
+        hash += iZeroCharacter * 17;
+        hash += iPositiveCharacter * 17;
+        hash += iNegativeCharacter * 17;
+        hash += iDecimalPointCharacter * 17;
+        hash += iGroupingCharacter * 17;
+        hash += iGroupingSize * 17;
         hash += (iGrouping ? 1 : 0);
         hash += (iForceDecimalPoint ? 2 : 4);
         return hash;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets a string summary of the style.
+     * 
+     * @return a string summarising the style, never null
+     */
+    @Override
+    public String toString() {
+        return "MoneyAmountStyle['" + getZeroCharacter() + "','" + getPositiveSignCharacter() + "','" +
+            getNegativeSignCharacter() + "','" + getDecimalPointCharacter() + "','" +
+            getGroupingCharacter() + "','" + getGroupingSize() +
+            "'," + isGrouping() + "," + isForcedDecimalPoint() + "]";
     }
 
 }

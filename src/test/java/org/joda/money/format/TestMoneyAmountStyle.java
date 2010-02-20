@@ -50,6 +50,8 @@ public class TestMoneyAmountStyle {
     public void test_ASCII_DECIMAL_POINT_GROUP3_COMMA() {
         MoneyAmountStyle style = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA;
         assertEquals(style.getZeroCharacter(), (Character) '0');
+        assertEquals(style.getPositiveSignCharacter(), (Character) '+');
+        assertEquals(style.getNegativeSignCharacter(), (Character) '-');
         assertEquals(style.getDecimalPointCharacter(), (Character) '.');
         assertEquals(style.getGroupingCharacter(), (Character) ',');
         assertEquals(style.isGrouping(), true);
@@ -60,6 +62,8 @@ public class TestMoneyAmountStyle {
     public void test_ASCII_DECIMAL_POINT_GROUP3_SPACE() {
         MoneyAmountStyle style = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_SPACE;
         assertEquals(style.getZeroCharacter(), (Character) '0');
+        assertEquals(style.getPositiveSignCharacter(), (Character) '+');
+        assertEquals(style.getNegativeSignCharacter(), (Character) '-');
         assertEquals(style.getDecimalPointCharacter(), (Character) '.');
         assertEquals(style.getGroupingCharacter(), (Character) ' ');
         assertEquals(style.isGrouping(), true);
@@ -70,6 +74,8 @@ public class TestMoneyAmountStyle {
     public void test_ASCII_DECIMAL_POINT_NO_GROUPING() {
         MoneyAmountStyle style = MoneyAmountStyle.ASCII_DECIMAL_POINT_NO_GROUPING;
         assertEquals(style.getZeroCharacter(), (Character) '0');
+        assertEquals(style.getPositiveSignCharacter(), (Character) '+');
+        assertEquals(style.getNegativeSignCharacter(), (Character) '-');
         assertEquals(style.getDecimalPointCharacter(), (Character) '.');
         assertEquals(style.getGroupingCharacter(), (Character) ',');
         assertEquals(style.isGrouping(), false);
@@ -80,6 +86,8 @@ public class TestMoneyAmountStyle {
     public void test_ASCII_ASCII_DECIMAL_COMMA_GROUP3_DOT() {
         MoneyAmountStyle style = MoneyAmountStyle.ASCII_DECIMAL_COMMA_GROUP3_DOT;
         assertEquals(style.getZeroCharacter(), (Character) '0');
+        assertEquals(style.getPositiveSignCharacter(), (Character) '+');
+        assertEquals(style.getNegativeSignCharacter(), (Character) '-');
         assertEquals(style.getDecimalPointCharacter(), (Character) ',');
         assertEquals(style.getGroupingCharacter(), (Character) '.');
         assertEquals(style.isGrouping(), true);
@@ -90,6 +98,8 @@ public class TestMoneyAmountStyle {
     public void test_ASCII_DECIMAL_COMMA_GROUP3_SPACE() {
         MoneyAmountStyle style = MoneyAmountStyle.ASCII_DECIMAL_COMMA_GROUP3_SPACE;
         assertEquals(style.getZeroCharacter(), (Character) '0');
+        assertEquals(style.getPositiveSignCharacter(), (Character) '+');
+        assertEquals(style.getNegativeSignCharacter(), (Character) '-');
         assertEquals(style.getDecimalPointCharacter(), (Character) ',');
         assertEquals(style.getGroupingCharacter(), (Character) ' ');
         assertEquals(style.isGrouping(), true);
@@ -100,6 +110,8 @@ public class TestMoneyAmountStyle {
     public void test_ASCII_DECIMAL_COMMA_NO_GROUPING() {
         MoneyAmountStyle style = MoneyAmountStyle.ASCII_DECIMAL_COMMA_NO_GROUPING;
         assertEquals(style.getZeroCharacter(), (Character) '0');
+        assertEquals(style.getPositiveSignCharacter(), (Character) '+');
+        assertEquals(style.getNegativeSignCharacter(), (Character) '-');
         assertEquals(style.getDecimalPointCharacter(), (Character) ',');
         assertEquals(style.getGroupingCharacter(), (Character) '.');
         assertEquals(style.isGrouping(), false);
@@ -110,6 +122,8 @@ public class TestMoneyAmountStyle {
     public void test_LOCALIZED_GROUPING() {
         MoneyAmountStyle style = MoneyAmountStyle.LOCALIZED_GROUPING;
         assertEquals(style.getZeroCharacter(), null);
+        assertEquals(style.getPositiveSignCharacter(), null);
+        assertEquals(style.getNegativeSignCharacter(), null);
         assertEquals(style.getDecimalPointCharacter(), null);
         assertEquals(style.getGroupingCharacter(), null);
         assertEquals(style.isGrouping(), true);
@@ -120,6 +134,8 @@ public class TestMoneyAmountStyle {
     public void test_LOCALIZED_NO_GROUPING() {
         MoneyAmountStyle style = MoneyAmountStyle.LOCALIZED_NO_GROUPING;
         assertEquals(style.getZeroCharacter(), null);
+        assertEquals(style.getPositiveSignCharacter(), null);
+        assertEquals(style.getNegativeSignCharacter(), null);
         assertEquals(style.getDecimalPointCharacter(), null);
         assertEquals(style.getGroupingCharacter(), null);
         assertEquals(style.isGrouping(), false);
@@ -133,6 +149,8 @@ public class TestMoneyAmountStyle {
     public void test_of_Locale_GB() {
         MoneyAmountStyle style = MoneyAmountStyle.of(TEST_GB_LOCALE);
         assertEquals(style.getZeroCharacter(), (Character) '0');
+        assertEquals(style.getPositiveSignCharacter(), (Character) '+');
+        assertEquals(style.getNegativeSignCharacter(), (Character) '-');
         assertEquals(style.getDecimalPointCharacter(), (Character) '.');
         assertEquals(style.getGroupingCharacter(), (Character) ',');
         assertEquals(style.isGrouping(), true);
@@ -143,6 +161,8 @@ public class TestMoneyAmountStyle {
     public void test_of_Locale_DE() {
         MoneyAmountStyle style = MoneyAmountStyle.of(TEST_DE_LOCALE);
         assertEquals(style.getZeroCharacter(), (Character) '0');
+        assertEquals(style.getPositiveSignCharacter(), (Character) '+');
+        assertEquals(style.getNegativeSignCharacter(), (Character) '-');
         assertEquals(style.getDecimalPointCharacter(), (Character) ',');
         assertEquals(style.getGroupingCharacter(), (Character) '.');
         assertEquals(style.isGrouping(), true);
@@ -156,6 +176,8 @@ public class TestMoneyAmountStyle {
     public void test_localize_GB() {
         MoneyAmountStyle style = MoneyAmountStyle.LOCALIZED_GROUPING.localize(TEST_GB_LOCALE);
         assertEquals(style.getZeroCharacter(), (Character) '0');
+        assertEquals(style.getPositiveSignCharacter(), (Character) '+');
+        assertEquals(style.getNegativeSignCharacter(), (Character) '-');
         assertEquals(style.getDecimalPointCharacter(), (Character) '.');
         assertEquals(style.getGroupingCharacter(), (Character) ',');
         assertEquals(style.isGrouping(), true);
@@ -166,6 +188,8 @@ public class TestMoneyAmountStyle {
     public void test_localize_DE() {
         MoneyAmountStyle style = MoneyAmountStyle.LOCALIZED_GROUPING.localize(TEST_DE_LOCALE);
         assertEquals(style.getZeroCharacter(), (Character) '0');
+        assertEquals(style.getPositiveSignCharacter(), (Character) '+');
+        assertEquals(style.getNegativeSignCharacter(), (Character) '-');
         assertEquals(style.getDecimalPointCharacter(), (Character) ',');
         assertEquals(style.getGroupingCharacter(), (Character) '.');
         assertEquals(style.isGrouping(), true);
@@ -177,8 +201,62 @@ public class TestMoneyAmountStyle {
         MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING.withZeroCharacter('_');
         MoneyAmountStyle style = base.localize(TEST_DE_LOCALE);
         assertEquals(style.getZeroCharacter(), (Character) '_');
+        assertEquals(style.getPositiveSignCharacter(), (Character) '+');
+        assertEquals(style.getNegativeSignCharacter(), (Character) '-');
         assertEquals(style.getDecimalPointCharacter(), (Character) ',');
         assertEquals(style.getGroupingCharacter(), (Character) '.');
+        assertEquals(style.isGrouping(), true);
+        assertEquals(style.getGroupingSize(), (Integer) 3);
+        assertEquals(style.isForcedDecimalPoint(), false);
+    }
+
+    public void test_localize_DE_fixedPositive() {
+        MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING.withPositiveSignCharacter('_');
+        MoneyAmountStyle style = base.localize(TEST_DE_LOCALE);
+        assertEquals(style.getZeroCharacter(), (Character) '0');
+        assertEquals(style.getPositiveSignCharacter(), (Character) '_');
+        assertEquals(style.getNegativeSignCharacter(), (Character) '-');
+        assertEquals(style.getDecimalPointCharacter(), (Character) ',');
+        assertEquals(style.getGroupingCharacter(), (Character) '.');
+        assertEquals(style.isGrouping(), true);
+        assertEquals(style.getGroupingSize(), (Integer) 3);
+        assertEquals(style.isForcedDecimalPoint(), false);
+    }
+
+    public void test_localize_DE_fixedNegative() {
+        MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING.withNegativeSignCharacter('_');
+        MoneyAmountStyle style = base.localize(TEST_DE_LOCALE);
+        assertEquals(style.getZeroCharacter(), (Character) '0');
+        assertEquals(style.getPositiveSignCharacter(), (Character) '+');
+        assertEquals(style.getNegativeSignCharacter(), (Character) '_');
+        assertEquals(style.getDecimalPointCharacter(), (Character) ',');
+        assertEquals(style.getGroupingCharacter(), (Character) '.');
+        assertEquals(style.isGrouping(), true);
+        assertEquals(style.getGroupingSize(), (Integer) 3);
+        assertEquals(style.isForcedDecimalPoint(), false);
+    }
+
+    public void test_localize_DE_fixedDecimal() {
+        MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING.withDecimalPointCharacter('_');
+        MoneyAmountStyle style = base.localize(TEST_DE_LOCALE);
+        assertEquals(style.getZeroCharacter(), (Character) '0');
+        assertEquals(style.getPositiveSignCharacter(), (Character) '+');
+        assertEquals(style.getNegativeSignCharacter(), (Character) '-');
+        assertEquals(style.getDecimalPointCharacter(), (Character) '_');
+        assertEquals(style.getGroupingCharacter(), (Character) '.');
+        assertEquals(style.isGrouping(), true);
+        assertEquals(style.getGroupingSize(), (Integer) 3);
+        assertEquals(style.isForcedDecimalPoint(), false);
+    }
+
+    public void test_localize_DE_fixedGrouping() {
+        MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING.withGroupingCharacter('_');
+        MoneyAmountStyle style = base.localize(TEST_DE_LOCALE);
+        assertEquals(style.getZeroCharacter(), (Character) '0');
+        assertEquals(style.getPositiveSignCharacter(), (Character) '+');
+        assertEquals(style.getNegativeSignCharacter(), (Character) '-');
+        assertEquals(style.getDecimalPointCharacter(), (Character) ',');
+        assertEquals(style.getGroupingCharacter(), (Character) '_');
         assertEquals(style.isGrouping(), true);
         assertEquals(style.getGroupingSize(), (Integer) 3);
         assertEquals(style.isForcedDecimalPoint(), false);
@@ -188,6 +266,8 @@ public class TestMoneyAmountStyle {
         MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING.withZeroCharacter('_').withDecimalPointCharacter('-');
         MoneyAmountStyle style = base.localize(TEST_DE_LOCALE);
         assertEquals(style.getZeroCharacter(), (Character) '_');
+        assertEquals(style.getPositiveSignCharacter(), (Character) '+');
+        assertEquals(style.getNegativeSignCharacter(), (Character) '-');
         assertEquals(style.getDecimalPointCharacter(), (Character) '-');
         assertEquals(style.getGroupingCharacter(), (Character) '.');
         assertEquals(style.isGrouping(), true);
@@ -220,6 +300,53 @@ public class TestMoneyAmountStyle {
         assertSame(test, base);
     }
 
+    //-----------------------------------------------------------------------
+    public void test_withPositiveSignCharacter() {
+        MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING;
+        assertEquals(base.getPositiveSignCharacter(), null);
+        MoneyAmountStyle test = base.withPositiveSignCharacter('_');
+        assertEquals(base.getPositiveSignCharacter(), null);
+        assertEquals(test.getPositiveSignCharacter(), (Character) '_');
+    }
+
+    public void test_withPositiveSignCharacter_same() {
+        MoneyAmountStyle base = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA;
+        assertEquals(base.getPositiveSignCharacter(), (Character) '+');
+        MoneyAmountStyle test = base.withPositiveSignCharacter('+');
+        assertSame(test, base);
+    }
+
+    public void test_withPositiveSignCharacter_sameNull() {
+        MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING;
+        assertEquals(base.getPositiveSignCharacter(), null);
+        MoneyAmountStyle test = base.withPositiveSignCharacter(null);
+        assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_withNegativeSignCharacter() {
+        MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING;
+        assertEquals(base.getNegativeSignCharacter(), null);
+        MoneyAmountStyle test = base.withNegativeSignCharacter('_');
+        assertEquals(base.getNegativeSignCharacter(), null);
+        assertEquals(test.getNegativeSignCharacter(), (Character) '_');
+    }
+
+    public void test_withNegativeSignCharacter_same() {
+        MoneyAmountStyle base = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA;
+        assertEquals(base.getNegativeSignCharacter(), (Character) '-');
+        MoneyAmountStyle test = base.withNegativeSignCharacter('-');
+        assertSame(test, base);
+    }
+
+    public void test_withNegativeSignCharacter_sameNull() {
+        MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING;
+        assertEquals(base.getNegativeSignCharacter(), null);
+        MoneyAmountStyle test = base.withNegativeSignCharacter(null);
+        assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
     public void test_withDecimalPointCharacter() {
         MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING;
         assertEquals(base.getDecimalPointCharacter(), null);
@@ -242,6 +369,7 @@ public class TestMoneyAmountStyle {
         assertSame(test, base);
     }
 
+    //-----------------------------------------------------------------------
     public void test_withGroupingCharacter() {
         MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING;
         assertEquals(base.getGroupingCharacter(), null);
@@ -264,6 +392,7 @@ public class TestMoneyAmountStyle {
         assertSame(test, base);
     }
 
+    //-----------------------------------------------------------------------
     public void test_withGrouping() {
         MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING;
         assertEquals(base.isGrouping(), true);
@@ -279,6 +408,7 @@ public class TestMoneyAmountStyle {
         assertSame(test, base);
     }
 
+    //-----------------------------------------------------------------------
     public void test_withGroupingSize() {
         MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING;
         assertEquals(base.getGroupingSize(), null);
@@ -301,6 +431,7 @@ public class TestMoneyAmountStyle {
         assertSame(test, base);
     }
 
+    //-----------------------------------------------------------------------
     public void test_withForcedDecimalPoint() {
         MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING;
         assertEquals(base.isForcedDecimalPoint(), false);
@@ -345,6 +476,36 @@ public class TestMoneyAmountStyle {
     public void test_equals_notEqual_zeroChar() {
         MoneyAmountStyle a = MoneyAmountStyle.LOCALIZED_GROUPING;
         MoneyAmountStyle b = MoneyAmountStyle.LOCALIZED_GROUPING.withZeroCharacter('_');
+        assertEquals(a.equals(b), false);
+        assertEquals(b.equals(a), false);
+    }
+
+    public void test_equals_equal_positiveChar() {
+        MoneyAmountStyle a = MoneyAmountStyle.LOCALIZED_GROUPING.withPositiveSignCharacter('_');
+        MoneyAmountStyle b = MoneyAmountStyle.LOCALIZED_GROUPING.withPositiveSignCharacter('_');
+        assertEquals(a.equals(b), true);
+        assertEquals(b.equals(a), true);
+        assertEquals(a.hashCode(), b.hashCode());
+    }
+
+    public void test_equals_notEqual_positiveChar() {
+        MoneyAmountStyle a = MoneyAmountStyle.LOCALIZED_GROUPING;
+        MoneyAmountStyle b = MoneyAmountStyle.LOCALIZED_GROUPING.withPositiveSignCharacter('_');
+        assertEquals(a.equals(b), false);
+        assertEquals(b.equals(a), false);
+    }
+
+    public void test_equals_equal_negativeChar() {
+        MoneyAmountStyle a = MoneyAmountStyle.LOCALIZED_GROUPING.withNegativeSignCharacter('_');
+        MoneyAmountStyle b = MoneyAmountStyle.LOCALIZED_GROUPING.withNegativeSignCharacter('_');
+        assertEquals(a.equals(b), true);
+        assertEquals(b.equals(a), true);
+        assertEquals(a.hashCode(), b.hashCode());
+    }
+
+    public void test_equals_notEqual_negativeChar() {
+        MoneyAmountStyle a = MoneyAmountStyle.LOCALIZED_GROUPING;
+        MoneyAmountStyle b = MoneyAmountStyle.LOCALIZED_GROUPING.withNegativeSignCharacter('_');
         assertEquals(a.equals(b), false);
         assertEquals(b.equals(a), false);
     }

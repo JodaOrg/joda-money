@@ -21,8 +21,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-import org.joda.money.Money;
 import org.joda.money.CurrencyUnit;
+import org.joda.money.Money;
 import org.joda.money.MoneyException;
 
 /**
@@ -219,6 +219,7 @@ public final class MoneyFormatterBuilder {
      * @param locale  the initial locale for the formatter, not null
      * @return the formatter built from this builder, never null
      */
+    @SuppressWarnings("cast")
     public MoneyFormatter toFormatter(Locale locale) {
         MoneyFormatter.checkNotNull(locale, "Locale must not be null");
         MoneyPrinter[] printers = (MoneyPrinter[]) iPrinters.toArray(new MoneyPrinter[iPrinters.size()]);
@@ -318,7 +319,7 @@ public final class MoneyFormatterBuilder {
         /** Serialization version. */
         private static final long serialVersionUID = 1L;
         /** The style to use. */
-        private volatile MoneyAmountStyle iStyle;
+        private final MoneyAmountStyle iStyle;
         /**
          * Constructor.
          * @param style  the style, not null
@@ -328,26 +329,24 @@ public final class MoneyFormatterBuilder {
         }
         /** {@inheritDoc} */
         public void print(MoneyPrintContext context, Appendable appendable, Money money) throws IOException {
-            iStyle = iStyle.localize(context.getLocale());
+            MoneyAmountStyle style = iStyle.localize(context.getLocale());
             String str = money.getAmount().toPlainString();
-            char zeroChar = iStyle.getZeroCharacter();
+            char zeroChar = style.getZeroCharacter();
             if (zeroChar != '0') {
                 int diff = zeroChar - '0';
-                StringBuilder zeroConvert = new StringBuilder(str.length());
+                StringBuilder zeroConvert = new StringBuilder(str);
                 for (int i = 0; i < str.length(); i++) {
                     char ch = str.charAt(i);
                     if (ch >= '0' && ch <= '9') {
-                        zeroConvert.append((char) (ch + diff));
-                    } else {
-                        zeroConvert.append(ch);
+                        zeroConvert.setCharAt(i, (char) (ch + diff));
                     }
                 }
                 str = zeroConvert.toString();
             }
             int decPoint = str.indexOf('.');
-            if (iStyle.isGrouping()) {
-                int groupingSize = iStyle.getGroupingSize();
-                char groupingChar = iStyle.getGroupingCharacter();
+            if (style.isGrouping()) {
+                int groupingSize = style.getGroupingSize();
+                char groupingChar = style.getGroupingCharacter();
                 int pre = (decPoint < 0 ? str.length() : decPoint);
                 int post = (decPoint < 0 ? 0 : str.length() - decPoint - 1);
                 for (int i = 0; pre > 0; i++, pre--) {
@@ -356,8 +355,8 @@ public final class MoneyFormatterBuilder {
                         appendable.append(groupingChar);
                     }
                 }
-                if (decPoint >= 0 || iStyle.isForcedDecimalPoint()) {
-                    appendable.append(iStyle.getDecimalPointCharacter());
+                if (decPoint >= 0 || style.isForcedDecimalPoint()) {
+                    appendable.append(style.getDecimalPointCharacter());
                 }
                 decPoint++;
                 for (int i = 0; i < post; i++) {
@@ -369,12 +368,12 @@ public final class MoneyFormatterBuilder {
             } else {
                 if (decPoint < 0) {
                     appendable.append(str);
-                    if (iStyle.isForcedDecimalPoint()) {
-                        appendable.append(iStyle.getDecimalPointCharacter());
+                    if (style.isForcedDecimalPoint()) {
+                        appendable.append(style.getDecimalPointCharacter());
                     }
                 } else {
                     appendable.append(str.subSequence(0, decPoint))
-                        .append(iStyle.getDecimalPointCharacter()).append(str.substring(decPoint + 1));
+                        .append(style.getDecimalPointCharacter()).append(str.substring(decPoint + 1));
                 }
             }
         }
