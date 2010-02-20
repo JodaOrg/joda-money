@@ -28,6 +28,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.NoSuchElementException;
 
 import org.testng.annotations.Test;
 
@@ -313,6 +316,75 @@ public class TestStandardMoney {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_factory_from_MoneyProvider_RoundingMode_nullRoundingMode() {
         StandardMoney.from(Money.parse("GBP 104.235"), (RoundingMode) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // total(Iterable)
+    //-----------------------------------------------------------------------
+    public void test_factory_total_Iterable() {
+        Iterable<StandardMoney> iterable = Arrays.asList(GBP_1_23, GBP_2_33, GBP_2_36);
+        StandardMoney test = StandardMoney.total(iterable);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmountMinorInt(), 592);
+    }
+
+    @Test(expectedExceptions = NoSuchElementException.class)
+    public void test_factory_total_Iterable_empty() {
+        Iterable<StandardMoney> iterable = Collections.emptyList();
+        StandardMoney.total(iterable);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_total_Iterable_currenciesDiffer() {
+        Iterable<StandardMoney> iterable = Arrays.asList(GBP_2_33, JPY_423);
+        StandardMoney.total(iterable);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_total_Iterable_nullFirst() {
+        Iterable<StandardMoney> iterable = Arrays.asList(null, GBP_2_33, GBP_2_36);
+        StandardMoney.total(iterable);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_total_Iterable_nullNotFirst() {
+        Iterable<StandardMoney> iterable = Arrays.asList(GBP_2_33, null, GBP_2_36);
+        StandardMoney.total(iterable);
+    }
+
+    //-----------------------------------------------------------------------
+    // total(CurrencyUnit,Iterable)
+    //-----------------------------------------------------------------------
+    public void test_factory_total_CurrencyUnitIterable() {
+        Iterable<StandardMoney> iterable = Arrays.asList(GBP_1_23, GBP_2_33, GBP_2_36);
+        StandardMoney test = StandardMoney.total(GBP, iterable);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmountMinorInt(), 592);
+    }
+
+    public void test_factory_total_CurrencyUnitIterable_empty() {
+        Iterable<StandardMoney> iterable = Collections.emptyList();
+        StandardMoney test = StandardMoney.total(GBP, iterable);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmountMinorInt(), 0);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_total_CurrencyUnitIterable_currenciesDiffer() {
+        Iterable<StandardMoney> iterable = Arrays.asList(GBP_2_33, JPY_423);
+        StandardMoney.total(GBP, iterable);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_total_CurrencyUnitIterable_nullFirst() {
+        Iterable<StandardMoney> iterable = Arrays.asList(null, GBP_2_33, GBP_2_36);
+        StandardMoney.total(GBP, iterable);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_total_CurrencyUnitIterable_nullNotFirst() {
+        Iterable<StandardMoney> iterable = Arrays.asList(GBP_2_33, null, GBP_2_36);
+        StandardMoney.total(GBP, iterable);
     }
 
     //-----------------------------------------------------------------------

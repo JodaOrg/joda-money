@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.util.Iterator;
 
 /**
  * An amount of money with unrestricted decimal place precision.
@@ -168,6 +169,49 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
         Money money = moneyProvider.toMoney();
         MoneyUtils.checkNotNull(money, "MoneyProvider must not return null");
         return money;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code Money} as the total value of
+     * an iterable collection.
+     * <p>
+     * The iterable must provide at least one monetary value.
+     * Subsequent amounts are added as though using {@link #plus(Money)}.
+     * 
+     * @param monies  the non-empty iterable provider of non-null monetary values, not null
+     * @return the total, never null
+     * @throws java.util.NoSuchElementException if the iterable is empty
+     * @throws MoneyException if the currencies differ
+     */
+    public static Money total(Iterable<Money> monies) {
+        Iterator<Money> it = monies.iterator();
+        Money total = it.next();
+        MoneyUtils.checkNotNull(total, "Iterator must not contain null entries");
+        while (it.hasNext()) {
+            total = total.plus((Money) it.next());
+        }
+        return total;
+    }
+
+    /**
+     * Obtains an instance of {@code Money} as the total value of
+     * a possible empty iterable collection.
+     * <p>
+     * The amounts are added as though using {@link #plus(Money)} starting
+     * from zero in the specified currency.
+     * 
+     * @param currency  the currency to total in, not null
+     * @param monies  the iterable provider of non-null monetary values, not null
+     * @return the total, never null
+     * @throws MoneyException if the currencies differ
+     */
+    public static Money total(CurrencyUnit currency, Iterable<Money> monies) {
+        Money total = Money.zero(currency);
+        for (Money money : monies) {
+            total = total.plus(money);
+        }
+        return total;
     }
 
     //-----------------------------------------------------------------------
