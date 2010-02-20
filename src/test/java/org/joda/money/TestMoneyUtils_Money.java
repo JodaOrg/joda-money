@@ -18,6 +18,9 @@ package org.joda.money;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
+
 import org.testng.annotations.Test;
 
 /**
@@ -35,6 +38,16 @@ public class TestMoneyUtils_Money {
     private static final Money GBP_M30 = Money.parse("GBP -30");
     private static final Money EUR_0 = Money.parse("EUR 0");
     private static final Money EUR_30 = Money.parse("EUR 30");
+
+    //-----------------------------------------------------------------------
+    // constructor
+    //-----------------------------------------------------------------------
+    public void test_constructor() throws Exception {
+        Constructor<MoneyUtils> con = MoneyUtils.class.getDeclaredConstructor();
+        assertEquals(Modifier.isPrivate(con.getModifiers()), true);
+        con.setAccessible(true);
+        con.newInstance();
+    }
 
     //-----------------------------------------------------------------------
     // checkNotNull(Object,String)
