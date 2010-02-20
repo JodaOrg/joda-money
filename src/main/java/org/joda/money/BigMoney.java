@@ -101,6 +101,66 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
 
     //-----------------------------------------------------------------------
     /**
+     * Obtains an instance of {@code BigMoney} from a {@code BigDecimal} at a specific scale.
+     * <p>
+     * This allows you to create an instance with a specific currency and amount.
+     * No rounding is performed on the amount, so it must have a
+     * scale less than or equal to the new scale.
+     *
+     * @param currency  the currency, not null
+     * @param amount  the amount of money, not null
+     * @param scale  the scale to use, zero or positive
+     * @return the new instance, never null
+     * @throws ArithmeticException if the scale exceeds the currency scale
+     */
+    public static BigMoney ofScale(CurrencyUnit currency, BigDecimal amount, int scale) {
+        return BigMoney.ofScale(currency, amount, scale, RoundingMode.UNNECESSARY);
+    }
+
+    /**
+     * Obtains an instance of {@code BigMoney} from a {@code double} using a
+     * well-defined conversion, rounding as necessary.
+     * <p>
+     * This allows you to create an instance with a specific currency and amount.
+     * If the amount has a scale in excess of the scale of the currency then the excess
+     * fractional digits are rounded using the rounding mode.
+     *
+     * @param currency  the currency, not null
+     * @param amount  the amount of money, not null
+     * @param scale  the scale to use, zero or positive
+     * @param roundingMode  the rounding mode to use, not null
+     * @return the new instance, never null
+     * @throws IllegalArgumentException if the scale is negative
+     * @throws ArithmeticException if the rounding fails
+     */
+    public static BigMoney ofScale(CurrencyUnit currency, BigDecimal amount, int scale, RoundingMode roundingMode) {
+        MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
+        MoneyUtils.checkNotNull(amount, "Amount must not be null");
+        MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
+        amount = amount.setScale(scale, roundingMode);
+        return BigMoney.of(currency, amount);
+    }
+
+    /**
+     * Obtains an instance of {@code BigMoney} from a scaled amount.
+     * <p>
+     * This allows you to create an instance with a specific currency, amount and scale.
+     * The amount is defined in terms of the specified scale.
+     * <p>
+     * For example, {@code ofScale(USD, 234, 2)} creates the instance {@code USD 2.34}.
+     *
+     * @param currency  the currency, not null
+     * @param unscaledAmount  the unscaled amount of money
+     * @param scale  the scale to use
+     * @return the new instance, never null
+     */
+    public static BigMoney ofScale(CurrencyUnit currency, long unscaledAmount, int scale) {
+        MoneyUtils.checkNotNull(currency, "Currency must not be null");
+        return BigMoney.of(currency, BigDecimal.valueOf(unscaledAmount, scale));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Obtains an instance of {@code BigMoney} from an amount in major units.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
@@ -151,6 +211,20 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      */
     public static BigMoney zero(CurrencyUnit currency) {
         return BigMoney.of(currency, BigDecimal.ZERO);
+    }
+
+    /**
+     * Obtains an instance of {@code BigMoney} representing zero at a specific scale.
+     * <p>
+     * For example, {@code zero(USD, 2)} creates the instance {@code USD 0.00}.
+     *
+     * @param currency  the currency, not null
+     * @param scale  the scale to use, zero or positive
+     * @return the instance representing zero, never null
+     * @throws IllegalArgumentException if the scale is negative
+     */
+    public static BigMoney zero(CurrencyUnit currency, int scale) {
+        return BigMoney.of(currency, BigDecimal.valueOf(0, scale));
     }
 
     //-----------------------------------------------------------------------

@@ -159,6 +159,97 @@ public class TestBigMoney {
     }
 
     //-----------------------------------------------------------------------
+    // ofScale(Currency,BigDecimal, int)
+    //-----------------------------------------------------------------------
+    public void test_factory_ofScale_Currency_BigDecimal_int() {
+        BigMoney test = BigMoney.ofScale(GBP, BIGDEC_2_34, 4);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), BigDecimal.valueOf(23400, 4));
+    }
+
+    public void test_factory_ofScale_Currency_BigDecimal_negativeScale() {
+        BigMoney test = BigMoney.ofScale(GBP, BigDecimal.valueOf(23400), -2);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), BigDecimal.valueOf(234, -2));
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_factory_ofScale_Currency_BigDecimal_invalidScale() {
+        BigMoney.ofScale(GBP, BIGDEC_2_345, 2);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_ofScale_Currency_BigDecimal_nullCurrency() {
+        BigMoney.ofScale((CurrencyUnit) null, BIGDEC_2_34, 2);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_ofScale_Currency_BigDecimal_nullBigDecimal() {
+        BigMoney.ofScale(GBP, (BigDecimal) null, 2);
+    }
+
+    //-----------------------------------------------------------------------
+    // ofScale(Currency,BigDecimal,int,RoundingMode)
+    //-----------------------------------------------------------------------
+    public void test_factory_ofScale_Currency_BigDecimal_int_RoundingMode_DOWN() {
+        BigMoney test = BigMoney.ofScale(GBP, BIGDEC_2_34, 1, RoundingMode.DOWN);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), BigDecimal.valueOf(23, 1));
+    }
+
+    public void test_factory_ofScale_Currency_BigDecimal_int_JPY_RoundingMode_UP() {
+        BigMoney test = BigMoney.ofScale(JPY, BIGDEC_2_34, 0, RoundingMode.UP);
+        assertEquals(test.getCurrencyUnit(), JPY);
+        assertEquals(test.getAmount(), BigDecimal.valueOf(3, 0));
+    }
+
+    public void test_factory_ofScale_Currency_BigDecimal_int_RoundingMode_negativeScale() {
+        BigMoney test = BigMoney.ofScale(GBP, BigDecimal.valueOf(23400), -2, RoundingMode.DOWN);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), BigDecimal.valueOf(234, -2));
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_factory_ofScale_Currency_BigDecimal_int_RoundingMode_UNNECESSARY() {
+        BigMoney.ofScale(JPY, BIGDEC_2_34, 1, RoundingMode.UNNECESSARY);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_ofScale_Currency_BigDecimal_int_RoundingMode_nullCurrency() {
+        BigMoney.ofScale((CurrencyUnit) null, BIGDEC_2_34, 2, RoundingMode.DOWN);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_ofScale_Currency_BigDecimal_int_RoundingMode_nullBigDecimal() {
+        BigMoney.ofScale(GBP, (BigDecimal) null, 2, RoundingMode.DOWN);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_ofScale_Currency_BigDecimal_int_RoundingMode_nullRoundingMode() {
+        BigMoney.ofScale(GBP, BIGDEC_2_34, 2, (RoundingMode) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // ofScale(Currency,long, int)
+    //-----------------------------------------------------------------------
+    public void test_factory_ofScale_Currency_long_int() {
+        BigMoney test = BigMoney.ofScale(GBP, 234, 4);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), BigDecimal.valueOf(234, 4));
+    }
+
+    public void test_factory_ofScale_Currency_long_int_negativeScale() {
+        BigMoney test = BigMoney.ofScale(GBP, 234, -4);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), BigDecimal.valueOf(234, -4));
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_ofScale_Currency_long_int_nullCurrency() {
+        BigMoney.ofScale((CurrencyUnit) null, 234, 2);
+    }
+
+    //-----------------------------------------------------------------------
     // ofMajor(Currency,long)
     //-----------------------------------------------------------------------
     public void test_factory_ofMajor_Currency_long() {
@@ -201,6 +292,26 @@ public class TestBigMoney {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_factory_zero_Currency_nullCurrency() {
         BigMoney.zero((CurrencyUnit) null);
+    }
+
+    //-----------------------------------------------------------------------
+    // zero(Currency, int)
+    //-----------------------------------------------------------------------
+    public void test_factory_zero_Currency_int() {
+        BigMoney test = BigMoney.zero(GBP, 3);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), BigDecimal.valueOf(0, 3));
+    }
+
+    public void test_factory_zero_Currency_int_negativeScale() {
+        BigMoney test = BigMoney.zero(GBP, -3);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), BigDecimal.valueOf(0, -3));
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_zero_Currency_int_nullCurrency() {
+        BigMoney.zero((CurrencyUnit) null, 3);
     }
 
     //-----------------------------------------------------------------------
