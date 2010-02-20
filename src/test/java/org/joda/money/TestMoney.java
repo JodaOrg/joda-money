@@ -152,41 +152,6 @@ public class TestMoney {
     }
 
     //-----------------------------------------------------------------------
-    // ofCurrencyScale(Currency,BigDecimal,RoundingMode)
-    //-----------------------------------------------------------------------
-    public void test_factory_ofCurrencyScale_Currency_BigDecimal_RoundingMode_DOWN() {
-        Money test = Money.ofCurrencyScale(JPY, BIGDEC_2_34, RoundingMode.DOWN);
-        assertEquals(test.getCurrencyUnit(), JPY);
-        assertEquals(test.getAmountMinorInt(), 2);
-    }
-
-    public void test_factory_ofCurrencyScale_Currency_BigDecimal_RoundingMode_UP() {
-        Money test = Money.ofCurrencyScale(JPY, BIGDEC_2_34, RoundingMode.UP);
-        assertEquals(test.getCurrencyUnit(), JPY);
-        assertEquals(test.getAmountMinorInt(), 3);
-    }
-
-    @Test(expectedExceptions = ArithmeticException.class)
-    public void test_factory_ofCurrencyScale_Currency_BigDecimal_RoundingMode_UNNECESSARY() {
-        Money.ofCurrencyScale(JPY, BIGDEC_2_34, RoundingMode.UNNECESSARY);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_factory_ofCurrencyScale_Currency_BigDecimal_RoundingMode_nullCurrency() {
-        Money.ofCurrencyScale((CurrencyUnit) null, BIGDEC_2_34, RoundingMode.DOWN);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_factory_ofCurrencyScale_Currency_BigDecimal_RoundingMode_nullBigDecimal() {
-        Money.ofCurrencyScale(GBP, (BigDecimal) null, RoundingMode.DOWN);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_factory_ofCurrencyScale_Currency_BigDecimal_RoundingMode_nullRoundingMode() {
-        Money.ofCurrencyScale(GBP, BIGDEC_2_34, (RoundingMode) null);
-    }
-
-    //-----------------------------------------------------------------------
     // ofMajor(Currency,long)
     //-----------------------------------------------------------------------
     public void test_factory_ofMajor_Currency_long() {

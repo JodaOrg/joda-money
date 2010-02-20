@@ -50,7 +50,7 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of {@code StandardMoney} in the specified currency.
+     * Gets an instance of {@code StandardMoney}.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      * No rounding is performed on the amount, so it must have a scale compatible
@@ -70,7 +70,32 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
     }
 
     /**
-     * Gets an instance of {@code StandardMoney} in the specified currency, rounding as necessary.
+     * Gets an instance of {@code StandardMoney} using a well-defined conversion
+     * from a {@code double}.
+     * <p>
+     * This allows you to create an instance with a specific currency and amount.
+     * No rounding is performed on the amount, so it must have a scale compatible
+     * with the currency.
+     * <p>
+     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
+     * the most expected answer for most programming scenarios.
+     * Any {@code double} literal in code will be converted to
+     * exactly the same BigDecimal with the same scale.
+     * For example, the literal '1.45d' will be converted to '1.45'.
+     *
+     * @param currency  the currency, not null
+     * @param amount  the amount of money, not null
+     * @return the new instance, never null
+     * @throws ArithmeticException if the scale exceeds the currency scale
+     */
+    public static StandardMoney of(CurrencyUnit currency, double amount) {
+        return StandardMoney.of(currency, BigDecimal.valueOf(amount));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets an instance of {@code StandardMoney} using a well-defined conversion
+     * from a {@code double}, rounding as necessary.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      * If the amount has a scale in excess of the scale of the currency then the excess
@@ -83,12 +108,39 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * @throws ArithmeticException if the rounding fails
      */
     public static StandardMoney of(CurrencyUnit currency, BigDecimal amount, RoundingMode roundingMode) {
-        return new StandardMoney(Money.ofCurrencyScale(currency, amount, roundingMode));
+        MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
+        MoneyUtils.checkNotNull(amount, "Amount must not be null");
+        MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
+        amount = amount.setScale(currency.getDecimalPlaces(), roundingMode);
+        return new StandardMoney(Money.of(currency, amount));
+    }
+
+    /**
+     * Gets an instance of {@code StandardMoney}, rounding as necessary.
+     * <p>
+     * This allows you to create an instance with a specific currency and amount.
+     * If the amount has a scale in excess of the scale of the currency then the excess
+     * fractional digits are rounded using the rounding mode.
+     * <p>
+     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
+     * the most expected answer for most programming scenarios.
+     * Any {@code double} literal in code will be converted to
+     * exactly the same BigDecimal with the same scale.
+     * For example, the literal '1.45d' will be converted to '1.45'.
+     *
+     * @param currency  the currency, not null
+     * @param amount  the amount of money, not null
+     * @param roundingMode  the rounding mode to use, not null
+     * @return the new instance, never null
+     * @throws ArithmeticException if the rounding fails
+     */
+    public static StandardMoney of(CurrencyUnit currency, double amount, RoundingMode roundingMode) {
+        return StandardMoney.of(currency, BigDecimal.valueOf(amount), roundingMode);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of {@code StandardMoney} in the specified currency.
+     * Gets an instance of {@code StandardMoney} with an amount in major units.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      * The amount is a whole number only. Thus you can initialise the value
@@ -106,7 +158,7 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
     }
 
     /**
-     * Gets an instance of {@code StandardMoney} in the specified currency.
+     * Gets an instance of {@code StandardMoney} with an amount in minor units.
      * <p>
      * This allows you to create an instance with a specific currency and amount
      * expressed in terms of the minor unit.
@@ -125,7 +177,7 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of {@code StandardMoney} representing zero in the specified currency.
+     * Gets an instance of {@code StandardMoney} representing zero.
      * <p>
      * For example, {@code zero(USD)} creates the instance {@code USD 0.00}.
      *

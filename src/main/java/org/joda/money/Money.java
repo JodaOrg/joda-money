@@ -52,7 +52,7 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of {@code Money} in the specified currency.
+     * Gets an instance of {@code Money}.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      * The scale of the money will be that of the BigDecimal.
@@ -78,8 +78,7 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
     }
 
     /**
-     * Gets an instance of {@code Money} in the specified currency,
-     * using a well-defined conversion from a {@code double}.
+     * Gets an instance of {@code Money} using a well-defined conversion from a {@code double}.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      * <p>
@@ -101,29 +100,7 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of {@code Money} in the specified currency,
-     * using the scale of the currency rounding as necessary.
-     * <p>
-     * This allows you to create an instance with a specific currency and amount.
-     * The scale of the money will be that of the currency, such as 2 for USD or 0 for JPY.
-     * If the BigDecimal has excess fractional digits, they are rounded using the rounding mode.
-     *
-     * @param currency  the currency, not null
-     * @param amount  the amount of money, not null
-     * @param roundingMode  the rounding mode to use, not null
-     * @return the new instance, never null
-     * @throws ArithmeticException if the rounding fails
-     */
-    public static Money ofCurrencyScale(CurrencyUnit currency, BigDecimal amount, RoundingMode roundingMode) {
-        MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
-        MoneyUtils.checkNotNull(amount, "Amount must not be null");
-        amount = amount.setScale(currency.getDecimalPlaces(), roundingMode);
-        return Money.of(currency, amount);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets an instance of {@code Money} specifying the amount in major units.
+     * Gets an instance of {@code Money} with an amount in major units.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      * The scale of the money will be zero.
@@ -142,7 +119,7 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
     }
 
     /**
-     * Gets an instance of {@code Money} in the specifying the amount in minor units.
+     * Gets an instance of {@code Money} with an amount in minor units.
      * <p>
      * This allows you to create an instance with a specific currency and amount
      * expressed in terms of the minor unit.
@@ -163,7 +140,7 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of {@code Money} representing zero in the specified currency.
+     * Gets an instance of {@code Money} representing zero.
      * <p>
      * The scale of the money will be zero.
      * For example, {@code zero(USD)} creates the instance {@code USD 0}.
