@@ -20,23 +20,21 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 /**
- * An amount of money with the standard decimal places defined by the currency.
+ * An amount of money with a fixed number of decimal places.
  * <p>
- * This class represents a quantity of money, stored as a {@code BigDecimal} amount
- * in a single {@link CurrencyUnit currency}.
+ * This class represents a quantity of money, stored as an amount in a
+ * single {@link CurrencyUnit currency}.
  * <p>
- * Every currency has a certain standard number of decimal places.
- * This is typically 2 (Euro, British Pound, US Dollar) but might be
- * 0 (Japanese Yen), 1 (Vietnamese Dong) or 3 (Bahrain Dinar).
- * The {@code StandardMoney} class is fixed to this number of decimal places.
+ * This class models a fixed scale amount where the scale is zero or positive.
+ * See {@link BigDecimal} for a discussion of scale.
  * <p>
- * For example, US dollars has a standard number of decimal places of 2.
- * The major units are dollars. The minor units are cents, 100 to the dollar.
- * This class does not allow calculations on fractions of a cent.
+ * For example, if the application must store and manipulate all monetary values to
+ * a scale of 9, then the scale is simply passed to the factory method and
+ * all methods will operate based on that scale.
  * <p>
- * StandardMoney is immutable and thread-safe.
+ * FixedMoney is immutable and thread-safe.
  */
-public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvider>, Serializable {
+public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider>, Serializable {
 
     /**
      * The serialisation version.
@@ -50,183 +48,184 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code StandardMoney} from a {@code BigDecimal}.
+     * Obtains an instance of {@code FixedMoney} from a {@code BigDecimal} at a specific scale.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
-     * No rounding is performed on the amount, so it must have a scale compatible
-     * with the currency.
+     * No rounding is performed on the amount, so it must have a
+     * scale less than or equal to the new scale.
      *
      * @param currency  the currency, not null
      * @param amount  the amount of money, not null
+     * @param scale  the scale to use, zero or positive
      * @return the new instance, never null
      * @throws ArithmeticException if the scale exceeds the currency scale
      */
-    public static StandardMoney of(CurrencyUnit currency, BigDecimal amount) {
-        MoneyUtils.checkNotNull(currency, "Currency must not be null");
-        if (amount.scale() > currency.getDecimalPlaces()) {
-            throw new ArithmeticException("Scale of amount " + amount + " is greater than the scale of the currency " + currency);
-        }
-        return StandardMoney.of(currency, amount, RoundingMode.UNNECESSARY);
+    public static FixedMoney of(CurrencyUnit currency, BigDecimal amount, int scale) {
+        return FixedMoney.of(currency, amount, scale, RoundingMode.UNNECESSARY);
     }
 
     /**
-     * Obtains an instance of {@code StandardMoney} from a {@code BigDecimal}, rounding as necessary.
-     * <p>
-     * This allows you to create an instance with a specific currency and amount.
-     * If the amount has a scale in excess of the scale of the currency then the excess
-     * fractional digits are rounded using the rounding mode.
-     *
-     * @param currency  the currency, not null
-     * @param amount  the amount of money, not null
-     * @param roundingMode  the rounding mode to use, not null
-     * @return the new instance, never null
-     * @throws ArithmeticException if the rounding fails
-     */
-    public static StandardMoney of(CurrencyUnit currency, BigDecimal amount, RoundingMode roundingMode) {
-        MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
-        MoneyUtils.checkNotNull(amount, "Amount must not be null");
-        MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
-        amount = amount.setScale(currency.getDecimalPlaces(), roundingMode);
-        return new StandardMoney(Money.of(currency, amount));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Obtains an instance of {@code StandardMoney} from a {@code double} using a
-     * well-defined conversion.
-     * <p>
-     * This allows you to create an instance with a specific currency and amount.
-     * No rounding is performed on the amount, so it must have a scale compatible
-     * with the currency.
-     * <p>
-     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
-     * the most expected answer for most programming scenarios.
-     * Any {@code double} literal in code will be converted to
-     * exactly the same BigDecimal with the same scale.
-     * For example, the literal '1.45d' will be converted to '1.45'.
-     *
-     * @param currency  the currency, not null
-     * @param amount  the amount of money, not null
-     * @return the new instance, never null
-     * @throws ArithmeticException if the scale exceeds the currency scale
-     */
-    public static StandardMoney of(CurrencyUnit currency, double amount) {
-        return StandardMoney.of(currency, BigDecimal.valueOf(amount));
-    }
-
-    /**
-     * Obtains an instance of {@code StandardMoney} from a {@code double} using a
+     * Obtains an instance of {@code FixedMoney} from a {@code double} using a
      * well-defined conversion, rounding as necessary.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      * If the amount has a scale in excess of the scale of the currency then the excess
      * fractional digits are rounded using the rounding mode.
-     * <p>
-     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
-     * the most expected answer for most programming scenarios.
-     * Any {@code double} literal in code will be converted to
-     * exactly the same BigDecimal with the same scale.
-     * For example, the literal '1.45d' will be converted to '1.45'.
      *
      * @param currency  the currency, not null
      * @param amount  the amount of money, not null
+     * @param scale  the scale to use, zero or positive
      * @param roundingMode  the rounding mode to use, not null
      * @return the new instance, never null
+     * @throws IllegalArgumentException if the scale is negative
      * @throws ArithmeticException if the rounding fails
      */
-    public static StandardMoney of(CurrencyUnit currency, double amount, RoundingMode roundingMode) {
-        return StandardMoney.of(currency, BigDecimal.valueOf(amount), roundingMode);
+    public static FixedMoney of(CurrencyUnit currency, BigDecimal amount, int scale, RoundingMode roundingMode) {
+        MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
+        MoneyUtils.checkNotNull(amount, "Amount must not be null");
+        checkScale(scale);
+        MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
+        amount = amount.setScale(scale, roundingMode);
+        return new FixedMoney(Money.of(currency, amount));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code StandardMoney} from an amount in major units.
+     * Obtains an instance of {@code FixedMoney} from an scaled amount.
+     * <p>
+     * This allows you to create an instance with a specific currency, amount and scale.
+     * The amount is defined in terms of the specified scale.
+     * <p>
+     * For example, {@code ofScaled(USD, 234, 2)} creates the instance {@code USD 2.34}.
+     *
+     * @param currency  the currency, not null
+     * @param amountMajor  the amount of money in the major division of the currency
+     * @param scale  the scale to use, zero or positive
+     * @return the new instance, never null
+     * @throws IllegalArgumentException if the scale is negative
+     */
+    public static FixedMoney ofScaled(CurrencyUnit currency, long amountInScale, int scale) {
+        MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
+        checkScale(scale);
+        BigDecimal amount = BigDecimal.valueOf(amountInScale, scale);
+        return new FixedMoney(Money.of(currency, amount));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Obtains an instance of {@code FixedMoney} from an amount in major units at a scale of zero.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      * The amount is a whole number only. Thus you can initialise the value
      * 'USD 20', but not the value 'USD 20.32'.
      * <p>
-     * For example, {@code ofMajor(USD, 25)} creates the instance {@code USD 25.00}.
+     * For example, {@code ofMajor(USD, 25)} creates the instance {@code USD 25}.
      *
      * @param currency  the currency, not null
      * @param amountMajor  the amount of money in the major division of the currency
      * @return the new instance, never null
      */
-    public static StandardMoney ofMajor(CurrencyUnit currency, long amountMajor) {
-        return StandardMoney.of(currency, BigDecimal.valueOf(amountMajor), RoundingMode.UNNECESSARY);
+    public static FixedMoney ofMajor(CurrencyUnit currency, long amountMajor) {
+        return ofMajor(currency, amountMajor, 0);
     }
 
     /**
-     * Obtains an instance of {@code StandardMoney} from an amount in minor units.
+     * Obtains an instance of {@code FixedMoney} from an amount in major units at a specific scale.
      * <p>
-     * This allows you to create an instance with a specific currency and amount
-     * expressed in terms of the minor unit.
-     * For example, if constructing US Dollars, the input to this method represents cents.
-     * Note that when a currency has zero decimal places, the major and minor units are the same.
+     * This allows you to create an instance with a specific currency, amount and scale.
+     * The amount is a whole number only. Thus you can initialise the value
+     * 'USD 20', but not the value 'USD 20.32'.
      * <p>
-     * For example, {@code ofMajor(USD, 2595)} creates the instance {@code USD 25.95}.
+     * For example, {@code ofMajor(USD, 25, 2)} creates the instance {@code USD 25.00}.
      *
      * @param currency  the currency, not null
-     * @param amountMinor  the amount of money in the minor division of the currency
+     * @param amountMajor  the amount of money in the major division of the currency
+     * @param scale  the scale to use, zero or positive
      * @return the new instance, never null
+     * @throws IllegalArgumentException if the scale is negative
      */
-    public static StandardMoney ofMinor(CurrencyUnit currency, long amountMinor) {
-        return new StandardMoney(Money.ofMinor(currency, amountMinor));
+    public static FixedMoney ofMajor(CurrencyUnit currency, long amountMajor, int scale) {
+        MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
+        checkScale(scale);
+        BigDecimal amount = BigDecimal.valueOf(amountMajor).setScale(scale);
+        return new FixedMoney(Money.of(currency, amount));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code StandardMoney} representing zero.
+     * Obtains an instance of {@code FixedMoney} representing zero at a scale of zero.
      * <p>
-     * For example, {@code zero(USD)} creates the instance {@code USD 0.00}.
+     * For example, {@code zero(USD)} creates the instance {@code USD 0}.
      *
      * @param currency  the currency, not null
      * @return the instance representing zero, never null
      */
-    public static StandardMoney zero(CurrencyUnit currency) {
+    public static FixedMoney zero(CurrencyUnit currency) {
         MoneyUtils.checkNotNull(currency, "Currency must not be null");
-        BigDecimal bd = BigDecimal.valueOf(0, currency.getDecimalPlaces());
-        return new StandardMoney(Money.of(currency, bd));
+        return new FixedMoney(Money.of(currency, BigDecimal.ZERO));
+    }
+
+    /**
+     * Obtains an instance of {@code FixedMoney} representing zero at a specific scale.
+     * <p>
+     * For example, {@code zero(USD, 2)} creates the instance {@code USD 0.00}.
+     *
+     * @param currency  the currency, not null
+     * @param scale  the scale to use, zero or positive
+     * @return the instance representing zero, never null
+     * @throws IllegalArgumentException if the scale is negative
+     */
+    public static FixedMoney zero(CurrencyUnit currency, int scale) {
+        MoneyUtils.checkNotNull(currency, "Currency must not be null");
+        checkScale(scale);
+        return new FixedMoney(Money.of(currency, BigDecimal.valueOf(0, scale)));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code StandardMoney} from a provider.
+     * Obtains an instance of {@code FixedMoney} from a provider.
      * <p>
      * This allows you to create an instance from any class that implements the
      * provider, such as {@code Money}.
-     * No rounding is performed on the amount, so it must have a scale compatible
-     * with the currency.
+     * <p>
+     * If the scale of the provided money is negative, the result will have a scale of zero.
+     * Otherwise, the scale of the result will equal that of the provided money.
      *
      * @param moneyProvider  the money to convert, not null
      * @return the new instance, never null
-     * @throws ArithmeticException if the scale exceeds the currency scale
      */
-    public static StandardMoney from(MoneyProvider moneyProvider) {
-        return StandardMoney.from(moneyProvider, RoundingMode.UNNECESSARY);
+    public static FixedMoney from(MoneyProvider moneyProvider) {
+        Money money = Money.from(moneyProvider);
+        if (money.getScale() < 0) {
+            money = money.withScale(0);
+        }
+        return new FixedMoney(money);
     }
 
     /**
-     * Obtains an instance of {@code StandardMoney} from a provider, rounding as necessary.
+     * Obtains an instance of {@code FixedMoney} from a provider, rounding as necessary.
      * <p>
      * This allows you to create an instance from any class that implements the
      * provider, such as {@code Money}.
      * The rounding mode is used to adjust the scale to the scale of the currency.
      *
      * @param moneyProvider  the money to convert, not null
+     * @param scale  the scale to use, zero or positive
      * @param roundingMode  the rounding mode to use, not null
      * @return the new instance, never null
+     * @throws IllegalArgumentException if the scale is negative
      * @throws ArithmeticException if the rounding fails
      */
-    public static StandardMoney from(MoneyProvider moneyProvider, RoundingMode roundingMode) {
+    public static FixedMoney from(MoneyProvider moneyProvider, int scale, RoundingMode roundingMode) {
         MoneyUtils.checkNotNull(moneyProvider, "MoneyProvider must not be null");
+        checkScale(scale);
         MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
-        return new StandardMoney(Money.from(moneyProvider).withCurrencyScale(roundingMode));
+        return new FixedMoney(Money.from(moneyProvider).withScale(scale, roundingMode));
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Parses an instance of {@code StandardMoney} from a string.
+     * Parses an instance of {@code FixedMoney} from a string.
      * <p>
      * The string format is '<currencyCode> <amount>'.
      * The currency code must be three letters, and the amount must be a number.
@@ -234,14 +233,39 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * <p>
      * For example, {@code of("USD 25")} creates the instance {@code USD 25.00}
      * while {@code of("USD 25.95")} creates the instance {@code USD 25.95}.
+     * <p>
+     * If the scale of the provided money is negative, the result will have a scale of zero.
+     * Otherwise, the scale of the result will equal that of the provided money.
      *
      * @param moneyStr  the money string to parse, not null
      * @return the parsed instance, never null
      * @throws IllegalArgumentException if the string is malformed
      * @throws ArithmeticException if the amount is too large
      */
-    public static StandardMoney parse(String moneyStr) {
-        return StandardMoney.from(Money.parse(moneyStr));
+    public static FixedMoney parse(String moneyStr) {
+        MoneyUtils.checkNotNull(moneyStr, "Money must not be null");
+        if (moneyStr.length() < 5 || moneyStr.charAt(3) != ' ') {
+            throw new IllegalArgumentException("Money '" + moneyStr + "' cannot be parsed");
+        }
+        String currStr = moneyStr.substring(0, 3);
+        CurrencyUnit curr = CurrencyUnit.of(currStr);
+        String amountStr = moneyStr.substring(4);
+        BigDecimal amount = new BigDecimal(amountStr);
+        amount = amount.setScale(Math.max(amount.scale(), 0));
+        return new FixedMoney(Money.of(curr, amount));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Validates the scale.
+     * 
+     * @param scale  the scale to validate
+     * @throws IllegalArgumentException if the scale is invalid
+     */
+    private static void checkScale(int scale) {
+        if (scale < 0) {
+            throw new IllegalArgumentException("Invalid scale " + scale);
+        }
     }
 
     //-----------------------------------------------------------------------
@@ -250,26 +274,25 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * 
      * @param money  the underlying money, not null
      */
-    private StandardMoney(Money money) {
+    private FixedMoney(Money money) {
         assert money != null : "Joda-Money bug: Money must not be null";
-        assert money.isCurrencyScale() : "Joda-Money bug: Only currency scale is valid for StandardMoney";
         iMoney = money;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a new {@code StandardMoney}, returning {@code this} if possible.
+     * Returns a new {@code FixedMoney}, returning {@code this} if possible.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
      * @param currency  the currency to use, not null
      * @return the new instance with the input currency set, never null
      */
-    private StandardMoney with(Money newInstance) {
+    private FixedMoney with(Money newInstance) {
         if (newInstance == iMoney) {
             return this;
         }
-        return new StandardMoney(newInstance);
+        return new FixedMoney(newInstance);
     }
 
     //-----------------------------------------------------------------------
@@ -287,36 +310,16 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * Returns a copy of this monetary value with the specified currency.
      * <p>
      * The returned instance will have the specified currency and the amount
-     * from this instance. If the scale differs between the currencies such
-     * that rounding would be required, then an exception is thrown.
+     * from this instance.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param currency  the currency to use, not null
      * @return the new instance with the input currency set, never null
-     * @throws ArithmeticException if the scale of the new currency is less than
-     *  the scale of this currency
      */
-    public StandardMoney withCurrencyUnit(CurrencyUnit currency) {
-        return withCurrencyUnit(currency, RoundingMode.UNNECESSARY);
-    }
-
-    /**
-     * Returns a copy of this monetary value with the specified currency.
-     * <p>
-     * The returned instance will have the specified currency and the amount
-     * from this instance. If the number of decimal places differs between the
-     * currencies, then the amount may be rounded.
-     * <p>
-     * This instance is immutable and unaffected by this method.
-     * 
-     * @param currency  the currency to use, not null
-     * @param roundingMode  the rounding mode to use to bring the decimal places back in line, not null
-     * @return the new instance with the input currency set, never null
-     * @throws ArithmeticException if the rounding fails
-     */
-    public StandardMoney withCurrencyUnit(CurrencyUnit currency, RoundingMode roundingMode) {
-        return with(iMoney.withCurrencyUnit(currency).withCurrencyScale(roundingMode));
+    public FixedMoney withCurrencyUnit(CurrencyUnit currency) {
+        return with(iMoney.withCurrencyUnit(currency));
     }
 
     //-----------------------------------------------------------------------
@@ -328,12 +331,54 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * For example, a scale of 2 means that the money will have two decimal places
      * such as 'USD 43.25'.
      * <p>
-     * For {@code StandardMoney}, the scale is fixed and always matches that of the currency.
+     * For {@code FixedMoney}, the scale is fixed by the factory method and doesn't
+     * change from the calculation methods.
      * 
-     * @return the scale in use, typically 2 but could be 0, 1 and 3
+     * @return the scale in use, zero or greater
      */
     public int getScale() {
         return iMoney.getScale();
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this monetary value with the specified scale.
+     * <p>
+     * The returned instance will have this currency and the new scaled amount.
+     * For example, scaling 'USD 43.271' to a scale of 1 will yield 'USD 43.2'.
+     * No rounding is performed on the amount, so it must have a
+     * scale less than or equal to the new scale.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param scale  the scale to use, zero or greater
+     * @return the new instance with the input amount set, never null
+     * @throws IllegalArgumentException if the scale is negative
+     * @throws ArithmeticException if the scale of the amount is too large
+     */
+    public FixedMoney withScale(int scale) {
+        return withScale(scale, RoundingMode.UNNECESSARY);
+    }
+
+    /**
+     * Returns a copy of this monetary value with the specified scale,
+     * using the specified rounding mode if necessary.
+     * <p>
+     * The returned instance will have this currency and the new scaled amount.
+     * For example, scaling 'USD 43.271' to a scale of 1 with HALF_EVEN rounding
+     * will yield 'USD 43.3'.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param scale  the scale to use, zero or greater
+     * @param roundingMode  the rounding mode to use, not null
+     * @return the new instance with the input amount set, never null
+     * @throws IllegalArgumentException if the scale is negative
+     * @throws ArithmeticException if the rounding fails
+     */
+    public FixedMoney withScale(int scale, RoundingMode roundingMode) {
+        checkScale(scale);
+        return with(iMoney.withScale(scale, roundingMode));
     }
 
     //-----------------------------------------------------------------------
@@ -503,105 +548,44 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
 
     //-----------------------------------------------------------------------
     /**
-     * Returns a copy of this monetary value with the specified amount.
+     * Returns a copy of this monetary value with the amount added.
      * <p>
-     * The returned instance will have this currency and the new amount.
+     * This adds the specified amount to this monetary amount, returning a new object.
+     * The amount added must be in the same currency.
+     * <p>
      * No rounding is performed on the amount to be added, so it must have a
-     * scale compatible with the currency.
+     * scale less than or equal to the scale of this monetary value.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
-     * @param amount  the monetary amount to set in the returned instance, not null
-     * @return the new instance with the input amount set, never null
-     * @throws ArithmeticException if the scale of the amount is too large
+     * @param moneyToAdd  the monetary value to add, not null
+     * @return the new instance with the input amount added, never null
+     * @throws MoneyException if the currencies differ
+     * @throws ArithmeticException if the scale of the money is too large
      */
-    public StandardMoney withAmount(BigDecimal amount) {
-        return withAmount(amount, RoundingMode.UNNECESSARY);
+    public FixedMoney plus(MoneyProvider moneyToAdd) {
+        return plus(moneyToAdd, RoundingMode.UNNECESSARY);
     }
 
-    /**
-     * Returns a copy of this monetary value with the specified amount.
-     * <p>
-     * The returned instance will have this currency and the new amount.
-     * If the scale of the {@code BigDecimal} needs to be adjusted, then
-     * it will be rounded using the specified mode.
-     * <p>
-     * This instance is immutable and unaffected by this method.
-     * 
-     * @param amount  the monetary amount to set in the returned instance, not null
-     * @param roundingMode  the rounding mode to adjust the scale, not null
-     * @return the new instance with the input amount set, never null
-     */
-    public StandardMoney withAmount(BigDecimal amount, RoundingMode roundingMode) {
-        return with(iMoney.withAmount(amount).withCurrencyScale(roundingMode));
-    }
-
-    /**
-     * Returns a copy of this monetary value with the specified amount using a well-defined
-     * conversion from a {@code double}.
-     * <p>
-     * The returned instance will have this currency and the new amount.
-     * No rounding is performed on the amount to be added, so it must have a
-     * scale compatible with the currency.
-     * <p>
-     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
-     * the most expected answer for most programming scenarios.
-     * Any {@code double} literal in code will be converted to
-     * exactly the same BigDecimal with the same scale.
-     * For example, the literal '1.45d' will be converted to '1.45'.
-     * <p>
-     * This instance is immutable and unaffected by this method.
-     * 
-     * @param amount  the monetary amount to set in the returned instance, not null
-     * @return the new instance with the input amount set, never null
-     * @throws ArithmeticException if the scale of the amount is too large
-     */
-    public StandardMoney withAmount(double amount) {
-        return withAmount(amount, RoundingMode.UNNECESSARY);
-    }
-
-    /**
-     * Returns a copy of this monetary value with the specified amount using a well-defined
-     * conversion from a {@code double}.
-     * <p>
-     * The returned instance will have this currency and the new amount.
-     * If the scale of the {@code BigDecimal} needs to be adjusted, then
-     * it will be rounded using the specified mode.
-     * <p>
-     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
-     * the most expected answer for most programming scenarios.
-     * Any {@code double} literal in code will be converted to
-     * exactly the same BigDecimal with the same scale.
-     * For example, the literal '1.45d' will be converted to '1.45'.
-     * <p>
-     * This instance is immutable and unaffected by this method.
-     * 
-     * @param amount  the monetary amount to set in the returned instance, not null
-     * @param roundingMode  the rounding mode to adjust the scale, not null
-     * @return the new instance with the input amount set, never null
-     */
-    public StandardMoney withAmount(double amount, RoundingMode roundingMode) {
-        return with(iMoney.withAmount(amount).withCurrencyScale(roundingMode));
-    }
-
-    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this monetary value with the amount added.
      * <p>
      * This adds the specified amount to this monetary amount, returning a new object.
      * The amount added must be in the same currency.
      * <p>
-     * The addition has no rounding issues and is always accurate.
-     * For example,'USD 25.95' plus 'USD 3.02' will 'USD 28.97'.
+     * No rounding is performed on the amount to be added, so it must have a
+     * scale less than or equal to the scale of this monetary value.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param moneyToAdd  the monetary value to add, not null
      * @return the new instance with the input amount added, never null
      * @throws MoneyException if the currencies differ
      */
-    public StandardMoney plus(StandardMoney moneyToAdd) {
-        return with(iMoney.plus(moneyToAdd));
+    public FixedMoney plus(MoneyProvider moneyToAdd, RoundingMode roundingMode) {
+        return with(iMoney.plusRetainScale(moneyToAdd, roundingMode));
     }
 
     /**
@@ -609,15 +593,16 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * <p>
      * This adds the specified amount to this monetary amount, returning a new object.
      * No rounding is performed on the amount to be added, so it must have a
-     * scale compatible with the currency.
+     * scale less than or equal to the scale of this monetary value.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param amountToAdd  the monetary value to add, not null
      * @return the new instance with the input amount added, never null
      * @throws ArithmeticException if the scale of the amount is too large
      */
-    public StandardMoney plus(BigDecimal amountToAdd) {
+    public FixedMoney plus(BigDecimal amountToAdd) {
         return plus(amountToAdd, RoundingMode.UNNECESSARY);
     }
 
@@ -629,11 +614,12 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * rounding mode will be used to adjust the result.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param amountToAdd  the monetary value to add, not null
      * @return the new instance with the input amount added, never null
      */
-    public StandardMoney plus(BigDecimal amountToAdd, RoundingMode roundingMode) {
+    public FixedMoney plus(BigDecimal amountToAdd, RoundingMode roundingMode) {
         return with(iMoney.plusRetainScale(amountToAdd, roundingMode));
     }
 
@@ -642,7 +628,7 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * <p>
      * This adds the specified amount to this monetary amount, returning a new object.
      * No rounding is performed on the amount to be added, so it must have a
-     * scale compatible with the currency.
+     * scale less than or equal to the scale of this monetary value.
      * <p>
      * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
      * the most expected answer for most programming scenarios.
@@ -651,12 +637,13 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * For example, the literal '1.45d' will be converted to '1.45'.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param amountToAdd  the monetary value to add, not null
      * @return the new instance with the input amount added, never null
      * @throws ArithmeticException if the scale of the amount is too large
      */
-    public StandardMoney plus(double amountToAdd) {
+    public FixedMoney plus(double amountToAdd) {
         return plus(amountToAdd, RoundingMode.UNNECESSARY);
     }
 
@@ -674,11 +661,12 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * For example, the literal '1.45d' will be converted to '1.45'.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param amountToAdd  the monetary value to add, not null
      * @return the new instance with the input amount added, never null
      */
-    public StandardMoney plus(double amountToAdd, RoundingMode roundingMode) {
+    public FixedMoney plus(double amountToAdd, RoundingMode roundingMode) {
         return with(iMoney.plusRetainScale(amountToAdd, roundingMode));
     }
 
@@ -689,27 +677,13 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * For example, USD 23.45 plus 138 gives USD 161.45.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param amountToAdd  the monetary value to add, not null
      * @return the new instance with the input amount added, never null
      */
-    public StandardMoney plusMajor(long amountToAdd) {
+    public FixedMoney plusMajor(long amountToAdd) {
         return with(iMoney.plusMajor(amountToAdd));
-    }
-
-    /**
-     * Returns a copy of this monetary value with the amount in minor units added.
-     * <p>
-     * This adds an amount in minor units.
-     * For example, USD 23.45 plus 138 gives USD 24.83.
-     * <p>
-     * This instance is immutable and unaffected by this method.
-     * 
-     * @param amountToAdd  the monetary value to add, not null
-     * @return the new instance with the input amount added, never null
-     */
-    public StandardMoney plusMinor(long amountToAdd) {
-        return with(iMoney.plusMinor(amountToAdd));
     }
 
     //-----------------------------------------------------------------------
@@ -719,17 +693,39 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * This subtracts the specified amount from this monetary amount, returning a new object.
      * The amount subtracted must be in the same currency.
      * <p>
-     * The subtraction has no rounding issues and is always accurate.
-     * For example,'USD 25.95' minus 'USD 3.02' will 'USD 22.93'.
+     * No rounding is performed on the amount to be subtracted, so it must have a
+     * scale less than or equal to the scale of this monetary value.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
+     * 
+     * @param moneyToSubtract  the monetary value to subtract, not null
+     * @return the new instance with the input amount subtracted, never null
+     * @throws MoneyException if the currencies differ
+     * @throws ArithmeticException if the scale of the money is too large
+     */
+    public FixedMoney minus(MoneyProvider moneyToSubtract) {
+        return minus(moneyToSubtract, RoundingMode.UNNECESSARY);
+    }
+
+    /**
+     * Returns a copy of this monetary value with the amount subtracted.
+     * <p>
+     * This subtracts the specified amount from this monetary amount, returning a new object.
+     * The amount subtracted must be in the same currency.
+     * <p>
+     * No rounding is performed on the amount to be subtracted, so it must have a
+     * scale less than or equal to the scale of this monetary value.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param moneyToSubtract  the monetary value to subtract, not null
      * @return the new instance with the input amount subtracted, never null
      * @throws MoneyException if the currencies differ
      */
-    public StandardMoney minus(StandardMoney moneyToSubtract) {
-        return with(iMoney.minus(moneyToSubtract));
+    public FixedMoney minus(MoneyProvider moneyToSubtract, RoundingMode roundingMode) {
+        return with(iMoney.minusRetainScale(moneyToSubtract, roundingMode));
     }
 
     /**
@@ -737,15 +733,16 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * <p>
      * This subtracts the specified amount from this monetary amount, returning a new object.
      * No rounding is performed on the amount to be subtracted, so it must have a
-     * scale compatible with the currency.
+     * scale less than or equal to the scale of this monetary value.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param amountToSubtract  the monetary value to subtract, not null
      * @return the new instance with the input amount subtracted, never null
      * @throws ArithmeticException if the scale of the amount is too large
      */
-    public StandardMoney minus(BigDecimal amountToSubtract) {
+    public FixedMoney minus(BigDecimal amountToSubtract) {
         return minus(amountToSubtract, RoundingMode.UNNECESSARY);
     }
 
@@ -757,11 +754,12 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * rounding mode will be used to adjust the result.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param amountToSubtract  the monetary value to subtract, not null
      * @return the new instance with the input amount subtracted, never null
      */
-    public StandardMoney minus(BigDecimal amountToSubtract, RoundingMode roundingMode) {
+    public FixedMoney minus(BigDecimal amountToSubtract, RoundingMode roundingMode) {
         return with(iMoney.minusRetainScale(amountToSubtract, roundingMode));
     }
 
@@ -770,7 +768,7 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * <p>
      * This subtracts the specified amount from this monetary amount, returning a new object.
      * No rounding is performed on the amount to be subtracted, so it must have a
-     * scale compatible with the currency.
+     * scale less than or equal to the scale of this monetary value.
      * <p>
      * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
      * the most expected answer for most programming scenarios.
@@ -779,12 +777,13 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * For example, the literal '1.45d' will be converted to '1.45'.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param amountToSubtract  the monetary value to subtract, not null
      * @return the new instance with the input amount subtracted, never null
      * @throws ArithmeticException if the scale of the amount is too large
      */
-    public StandardMoney minus(double amountToSubtract) {
+    public FixedMoney minus(double amountToSubtract) {
         return minus(amountToSubtract, RoundingMode.UNNECESSARY);
     }
 
@@ -802,11 +801,12 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * For example, the literal '1.45d' will be converted to '1.45'.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param amountToSubtract  the monetary value to subtract, not null
      * @return the new instance with the input amount subtracted, never null
      */
-    public StandardMoney minus(double amountToSubtract, RoundingMode roundingMode) {
+    public FixedMoney minus(double amountToSubtract, RoundingMode roundingMode) {
         return with(iMoney.minusRetainScale(amountToSubtract, roundingMode));
     }
 
@@ -817,27 +817,13 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * For example, USD 23.45 minus 138 gives USD -114.55.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param amountToSubtract  the monetary value to subtract, not null
      * @return the new instance with the input amount subtracted, never null
      */
-    public StandardMoney minusMajor(long amountToSubtract) {
+    public FixedMoney minusMajor(long amountToSubtract) {
         return with(iMoney.minusMajor(amountToSubtract));
-    }
-
-    /**
-     * Returns a copy of this monetary value with the amount in minor units subtracted.
-     * <p>
-     * This subtracts an amount in minor units.
-     * For example, USD 23.45 minus 138 gives USD 22.07.
-     * <p>
-     * This instance is immutable and unaffected by this method.
-     * 
-     * @param amountToSubtract  the monetary value to subtract, not null
-     * @return the new instance with the input amount subtracted, never null
-     */
-    public StandardMoney minusMinor(long amountToSubtract) {
-        return with(iMoney.minusMinor(amountToSubtract));
     }
 
     //-----------------------------------------------------------------------
@@ -848,13 +834,14 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * the result is rounded as specified.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param valueToMultiplyBy  the scalar value to multiply by, not null
      * @param roundingMode  the rounding mode to use to bring the decimal places back in line, not null
      * @return the new multiplied instance, never null
      * @throws ArithmeticException if the rounding fails
      */
-    public StandardMoney multipliedBy(BigDecimal valueToMultiplyBy, RoundingMode roundingMode) {
+    public FixedMoney multipliedBy(BigDecimal valueToMultiplyBy, RoundingMode roundingMode) {
         return with(iMoney.multiplyRetainScale(valueToMultiplyBy, roundingMode));
     }
 
@@ -871,13 +858,14 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * For example, the literal '1.45d' will be converted to '1.45'.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param valueToMultiplyBy  the scalar value to multiply by, not null
      * @param roundingMode  the rounding mode to use to bring the decimal places back in line, not null
      * @return the new multiplied instance, never null
      * @throws ArithmeticException if the rounding fails
      */
-    public StandardMoney multipliedBy(double valueToMultiplyBy, RoundingMode roundingMode) {
+    public FixedMoney multipliedBy(double valueToMultiplyBy, RoundingMode roundingMode) {
         return with(iMoney.multiplyRetainScale(valueToMultiplyBy, roundingMode));
     }
 
@@ -887,11 +875,12 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * This takes this amount and multiplies it by the specified value.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param valueToMultiplyBy  the scalar value to multiply by, not null
      * @return the new multiplied instance, never null
      */
-    public StandardMoney multipliedBy(long valueToMultiplyBy) {
+    public FixedMoney multipliedBy(long valueToMultiplyBy) {
         return with(iMoney.multipliedBy(valueToMultiplyBy));
     }
 
@@ -903,6 +892,7 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * the result is rounded as specified.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param valueToDivideBy  the scalar value to divide by, not null
      * @param roundingMode  the rounding mode to use, not null
@@ -910,7 +900,7 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * @throws ArithmeticException if dividing by zero
      * @throws ArithmeticException if the rounding fails
      */
-    public StandardMoney dividedBy(BigDecimal valueToDivideBy, RoundingMode roundingMode) {
+    public FixedMoney dividedBy(BigDecimal valueToDivideBy, RoundingMode roundingMode) {
         return with(iMoney.dividedBy(valueToDivideBy, roundingMode));
     }
 
@@ -927,6 +917,7 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * For example, the literal '1.45d' will be converted to '1.45'.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param valueToDivideBy  the scalar value to divide by, not null
      * @param roundingMode  the rounding mode to use, not null
@@ -934,7 +925,7 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * @throws ArithmeticException if dividing by zero
      * @throws ArithmeticException if the rounding fails
      */
-    public StandardMoney dividedBy(double valueToDivideBy, RoundingMode roundingMode) {
+    public FixedMoney dividedBy(double valueToDivideBy, RoundingMode roundingMode) {
         return with(iMoney.dividedBy(valueToDivideBy, roundingMode));
     }
 
@@ -945,13 +936,14 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * the result is rounded as specified.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param valueToDivideBy  the scalar value to divide by, not null
      * @return the new divided instance, never null
      * @throws ArithmeticException if dividing by zero
      * @throws ArithmeticException if the rounding fails
      */
-    public StandardMoney dividedBy(long valueToDivideBy, RoundingMode roundingMode) {
+    public FixedMoney dividedBy(long valueToDivideBy, RoundingMode roundingMode) {
         return with(iMoney.dividedBy(valueToDivideBy, roundingMode));
     }
 
@@ -960,10 +952,11 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * Returns a copy of this monetary value with the amount negated.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @return the new instance with the amount negated, never null
      */
-    public StandardMoney negated() {
+    public FixedMoney negated() {
         return with(iMoney.negated());
     }
 
@@ -971,10 +964,11 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * Returns a copy of this monetary value with a positive amount.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @return the new instance with the amount converted to be positive, never null
      */
-    public StandardMoney abs() {
+    public FixedMoney abs() {
         return (isNegative() ? negated() : this);
     }
 
@@ -994,13 +988,14 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * </ul>
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param scale  the new scale
      * @param roundingMode  the rounding mode to use, not null
      * @return the new instance with the amount converted to be positive, never null
      * @throws ArithmeticException if the rounding fails
      */
-    public StandardMoney rounded(int scale, RoundingMode roundingMode) {
+    public FixedMoney rounded(int scale, RoundingMode roundingMode) {
         return with(iMoney.rounded(scale, roundingMode));
     }
 
@@ -1011,6 +1006,7 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * the decimal places in the result.
      * <p>
      * This instance is immutable and unaffected by this method.
+     * The result will have the same scale as this monetary value.
      * 
      * @param currency  the new currency, not null
      * @param conversionMultipler  the conversion factor between the currencies, not null
@@ -1020,7 +1016,7 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * @throws MoneyException if the conversion multiplier is negative
      * @throws ArithmeticException if the rounding fails
      */
-    public StandardMoney convertedTo(CurrencyUnit currency, BigDecimal conversionMultipler, RoundingMode roundingMode) {
+    public FixedMoney convertedTo(CurrencyUnit currency, BigDecimal conversionMultipler, RoundingMode roundingMode) {
         return with(iMoney.convertedTo(currency, conversionMultipler).withCurrencyScale(roundingMode));
     }
 
@@ -1036,12 +1032,25 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
     }
 
     /**
-     * Converts this money to an instance of {@code FixedMoney} with the currency scale.
+     * Converts this money to an instance of {@code StandardMoney} without rounding.
+     * If the scale of this money exceeds the currency scale an exception will be thrown.
      * 
      * @return the money instance, never null
+     * @throws ArithmeticException if the rounding fails
      */
-    public FixedMoney toFixedMoney() {
-        return FixedMoney.from(this);
+    public StandardMoney toStandardMoney() {
+        return StandardMoney.from(this);
+    }
+
+    /**
+     * Converts this money to an instance of {@code StandardMoney}.
+     * 
+     * @param roundingMode  the rounding mode to use, not null
+     * @return the money instance, never null
+     * @throws ArithmeticException if the rounding fails
+     */
+    public StandardMoney toStandardMoney(RoundingMode roundingMode) {
+        return StandardMoney.from(this, roundingMode);
     }
 
     //-----------------------------------------------------------------------
@@ -1059,7 +1068,7 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
     /**
      * Compares this monetary value to another.
      * <p>
-     * This allows {@code StandardMoney} to be compared to any {@code MoneyProvider}.
+     * This allows {@code FixedMoney} to be compared to any {@code MoneyProvider}.
      * Scale is ignored in the comparison.
      * The compared values must be in the same currency.
      * 
@@ -1074,7 +1083,7 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
     /**
      * Checks if this monetary value is equal to another.
      * <p>
-     * This allows {@code StandardMoney} to be compared to any {@code MoneyProvider}.
+     * This allows {@code FixedMoney} to be compared to any {@code MoneyProvider}.
      * Scale is ignored, so 'USD 30.00' and 'USD 30' are equal.
      * The compared values must be in the same currency.
      * 
@@ -1090,7 +1099,7 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
     /**
      * Checks if this monetary value is greater than another.
      * <p>
-     * This allows {@code StandardMoney} to be compared to any {@code MoneyProvider}.
+     * This allows {@code FixedMoney} to be compared to any {@code MoneyProvider}.
      * Scale is ignored in the comparison.
      * The compared values must be in the same currency.
      * 
@@ -1105,7 +1114,7 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
     /**
      * Checks if this monetary value is less than another.
      * <p>
-     * This allows {@code StandardMoney} to be compared to any {@code MoneyProvider}.
+     * This allows {@code FixedMoney} to be compared to any {@code MoneyProvider}.
      * Scale is ignored in the comparison.
      * The compared values must be in the same currency.
      * 
@@ -1131,8 +1140,8 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
         if (this == other) {
             return true;
         }
-        if (other instanceof StandardMoney) {
-            StandardMoney otherMoney = (StandardMoney) other;
+        if (other instanceof FixedMoney) {
+            FixedMoney otherMoney = (FixedMoney) other;
             return iMoney.equals(otherMoney.iMoney);
         }
         return false;
@@ -1154,6 +1163,7 @@ public final class StandardMoney implements MoneyProvider, Comparable<MoneyProvi
      * <p>
      * The format is the 3 letter ISO currency code, followed by a space,
      * followed by the amount as per {@link BigDecimal#toPlainString()}.
+     * The scale is represented by the number of printed decimal places.
      * 
      * @return the string representation of this monetary value, never null
      */

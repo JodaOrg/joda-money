@@ -17,11 +17,15 @@ package org.joda.money;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
+import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
@@ -258,6 +262,32 @@ public class TestMoney {
     }
 
     //-----------------------------------------------------------------------
+    // constructor
+    //-----------------------------------------------------------------------
+    public void test_constructor_null1() throws Exception {
+        Constructor<Money> con = Money.class.getDeclaredConstructor(CurrencyUnit.class, BigDecimal.class);
+        assertEquals(Modifier.isPrivate(con.getModifiers()), true);
+        try {
+            con.setAccessible(true);
+            con.newInstance(new Object[] { null, BIGDEC_2_34 });
+            fail();
+        } catch (InvocationTargetException ex) {
+            assertEquals(ex.getCause().getClass(), AssertionError.class);
+        }
+    }
+
+    public void test_constructor_null2() throws Exception {
+        Constructor<Money> con = Money.class.getDeclaredConstructor(CurrencyUnit.class, BigDecimal.class);
+        try {
+            con.setAccessible(true);
+            con.newInstance(new Object[] { GBP, null });
+            fail();
+        } catch (InvocationTargetException ex) {
+            assertEquals(ex.getCause().getClass(), AssertionError.class);
+        }
+    }
+
+    //-----------------------------------------------------------------------
     // serialization
     //-----------------------------------------------------------------------
     public void test_serialization() throws Exception {
@@ -338,32 +368,31 @@ public class TestMoney {
     //-----------------------------------------------------------------------
     public void test_withScale_int_same() {
         Money test = GBP_2_34.withScale(2);
-        assertEquals(test, GBP_2_34);
-    }
-
-    public void test_withScale_int_less() {
-        Money test = Money.parse("GBP 2.34").withScale(1);
-        assertEquals(test.getAmount(), bd("2.3"));
-        assertEquals(test.getScale(), 1);
+        assertSame(test, GBP_2_34);
     }
 
     public void test_withScale_int_more() {
-        Money test = Money.parse("GBP 2.34").withScale(3);
+        Money test = GBP_2_34.withScale(3);
         assertEquals(test.getAmount(), bd("2.340"));
         assertEquals(test.getScale(), 3);
+    }
+
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_withScale_int_less() {
+        Money.parse("GBP 2.345").withScale(2);
     }
 
     //-----------------------------------------------------------------------
     // withScale(int,RoundingMode)
     //-----------------------------------------------------------------------
     public void test_withScale_intRoundingMode_less() {
-        Money test = Money.parse("GBP 2.34").withScale(1, RoundingMode.UP);
+        Money test = GBP_2_34.withScale(1, RoundingMode.UP);
         assertEquals(test.getAmount(), bd("2.4"));
         assertEquals(test.getScale(), 1);
     }
 
     public void test_withScale_intRoundingMode_more() {
-        Money test = Money.parse("GBP 2.34").withScale(3, RoundingMode.UP);
+        Money test = GBP_2_34.withScale(3, RoundingMode.UP);
         assertEquals(test.getAmount(), bd("2.340"));
         assertEquals(test.getScale(), 3);
     }
@@ -371,10 +400,9 @@ public class TestMoney {
     //-----------------------------------------------------------------------
     // withCurrencyScale()
     //-----------------------------------------------------------------------
-    public void test_withCurrencyScale_int_less() {
-        Money test = Money.parse("GBP 2.345").withCurrencyScale();
-        assertEquals(test.getAmount(), bd("2.34"));
-        assertEquals(test.getScale(), 2);
+    public void test_withCurrencyScale_int_same() {
+        Money test = GBP_2_34.withCurrencyScale();
+        assertSame(test, GBP_2_34);
     }
 
     public void test_withCurrencyScale_int_more() {
@@ -383,10 +411,9 @@ public class TestMoney {
         assertEquals(test.getScale(), 2);
     }
 
-    public void test_withCurrencyScale_int_lessJPY() {
-        Money test = Money.parse("JPY 2.345").withCurrencyScale();
-        assertEquals(test.getAmount(), bd("2"));
-        assertEquals(test.getScale(), 0);
+    @Test(expectedExceptions = ArithmeticException.class)
+    public void test_withCurrencyScale_int_less() {
+        Money.parse("GBP 2.345").withCurrencyScale();
     }
 
     //-----------------------------------------------------------------------
@@ -1492,10 +1519,17 @@ public class TestMoney {
     }
 
     //-----------------------------------------------------------------------
+    // toFixedMoney()
+    //-----------------------------------------------------------------------
+    public void test_toFixedMoney() {
+        assertEquals(GBP_2_34.toFixedMoney(), FixedMoney.of(GBP, BIGDEC_2_34, 2));
+    }
+
+    //-----------------------------------------------------------------------
     // toStandardMoney()
     //-----------------------------------------------------------------------
     public void test_toStandardMoney() {
-        assertEquals(GBP_2_34.toStandardMoney(), StandardMoney.parse("GBP 2.34"));
+        assertEquals(GBP_2_34.toStandardMoney(), StandardMoney.of(GBP, BIGDEC_2_34));
     }
 
     //-----------------------------------------------------------------------
@@ -1570,6 +1604,13 @@ public class TestMoney {
         Money a = GBP_2_34;
         Money b = USD_2_35;
         a.compareTo(b);
+    }
+
+    @Test(expectedExceptions = ClassCastException.class)
+    @SuppressWarnings("unchecked")
+    public void test_compareTo_wrongType() {
+        Comparable a = GBP_2_34;
+        a.compareTo("NotRightType");
     }
 
     //-----------------------------------------------------------------------

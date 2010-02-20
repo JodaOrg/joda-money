@@ -39,7 +39,7 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
     /**
      * The serialisation version.
      */
-    private static final long serialVersionUID = 723473581L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * The currency, not null.
@@ -52,7 +52,7 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of {@code Money}.
+     * Obtains an instance of {@code Money} from a {@code BigDecimal}.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      * The scale of the money will be that of the BigDecimal.
@@ -78,7 +78,7 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
     }
 
     /**
-     * Gets an instance of {@code Money} using a well-defined conversion from a {@code double}.
+     * Obtains an instance of {@code Money} from a {@code double} using a well-defined conversion.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      * <p>
@@ -100,7 +100,7 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of {@code Money} with an amount in major units.
+     * Obtains an instance of {@code Money} from an amount in major units.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
      * The scale of the money will be zero.
@@ -119,7 +119,7 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
     }
 
     /**
-     * Gets an instance of {@code Money} with an amount in minor units.
+     * Obtains an instance of {@code Money} from an amount in minor units.
      * <p>
      * This allows you to create an instance with a specific currency and amount
      * expressed in terms of the minor unit.
@@ -140,7 +140,7 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of {@code Money} representing zero.
+     * Obtains an instance of {@code Money} representing zero.
      * <p>
      * The scale of the money will be zero.
      * For example, {@code zero(USD)} creates the instance {@code USD 0}.
@@ -154,7 +154,7 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
 
     //-----------------------------------------------------------------------
     /**
-     * Gets an instance of {@code Money} from the specified provider.
+     * Obtains an instance of {@code Money} from a provider.
      * <p>
      * This allows you to create an instance from any class that implements the
      * provider, such as {@code StandardMoney}.
@@ -286,6 +286,8 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
      * <p>
      * The returned instance will have this currency and the new scaled amount.
      * For example, scaling 'USD 43.271' to a scale of 1 will yield 'USD 43.2'.
+     * No rounding is performed on the amount, so it must have a
+     * scale less than or equal to the new scale.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
@@ -294,7 +296,7 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
      * @throws ArithmeticException if the rounding fails
      */
     public Money withScale(int scale) {
-        return withScale(scale, RoundingMode.DOWN);
+        return withScale(scale, RoundingMode.UNNECESSARY);
     }
 
     /**
@@ -320,12 +322,15 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
         return Money.of(iCurrency, iAmount.setScale(scale, roundingMode));
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Returns a copy of this monetary value with the scale of the currency,
      * truncating the amount if necessary.
      * <p>
      * The returned instance will have this currency and the new scaled amount.
      * For example, scaling 'USD 43.271' will yield 'USD 43.27' as USD has a scale of 2.
+     * No rounding is performed on the amount, so it must have a
+     * scale less than or equal to the new scale.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
@@ -333,7 +338,7 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
      * @throws ArithmeticException if the rounding fails
      */
     public Money withCurrencyScale() {
-        return withScale(iCurrency.getDecimalPlaces(), RoundingMode.DOWN);
+        return withScale(iCurrency.getDecimalPlaces(), RoundingMode.UNNECESSARY);
     }
 
     /**
@@ -1078,24 +1083,6 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
     }
 
     //-----------------------------------------------------------------------
-//    /**
-//     * Returns a copy of this monetary value divided by the specified value,
-//     * rounding down the result to have the same scale as this money.
-//     * <p>
-//     * The result has the same scale as this instance.
-//     * For example, 'USD 1.13' divided by 2.5 yields 'USD 0.45'
-//     * (amount rounded down from 0.452).
-//     * <p>
-//     * This instance is immutable and unaffected by this method.
-//     * 
-//     * @param valueToDivideBy  the scalar value to multiply by, not null
-//     * @return the new divided instance, never null
-//     * @throws ArithmeticException if dividing by zero
-//     */
-//    public Money dividedBy(BigDecimal valueToDivideBy) {
-//        return dividedBy(valueToDivideBy, RoundingMode.DOWN);
-//    }
-
     /**
      * Returns a copy of this monetary value divided by the specified value
      * using the specified rounding mode to adjust the scale.
@@ -1121,32 +1108,6 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
         BigDecimal amount = iAmount.divide(valueToDivideBy, roundingMode);
         return Money.of(iCurrency, amount);
     }
-
-//    /**
-//     * Returns a copy of this monetary value divided by the specified value,
-//     * rounding down the result to have the same scale as this money.
-//     * <p>
-//     * The result has the same scale as this instance.
-//     * For example, 'USD 1.13' divided by 2.5 yields 'USD 0.45'
-//     * (amount rounded down from 0.452).
-//     * <p>
-//     * The amount is converted via {@link BigDecimal#valueOf(double)} which yields
-//     * the most expected answer for most programming scenarios.
-//     * Any {@code double} literal in code will be converted to
-//     * exactly the same BigDecimal with the same scale.
-//     * For example, the literal '1.45d' will be converted to '1.45'.
-//     * <p>
-//     * This instance is immutable and unaffected by this method.
-//     * 
-//     * @param valueToDivideBy  the scalar value to divide by, not null
-//     * @param roundingMode  the rounding mode to use, not null
-//     * @return the new divided instance, never null
-//     * @throws ArithmeticException if dividing by zero
-//     * @throws ArithmeticException if the rounding fails
-//     */
-//    public Money dividedBy(double valueToDivideBy) {
-//        return dividedBy(valueToDivideBy, RoundingMode.DOWN);
-//    }
 
     /**
      * Returns a copy of this monetary value divided by the specified value
@@ -1178,24 +1139,6 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
         BigDecimal amount = iAmount.divide(BigDecimal.valueOf(valueToDivideBy), roundingMode);
         return Money.of(iCurrency, amount);
     }
-
-//    /**
-//     * Returns a copy of this monetary value divided by the specified value
-//     * rounding down if necessary.
-//     * <p>
-//     * The result has the same scale as this instance.
-//     * For example, 'USD 1.13' divided by 2 yields 'USD 0.56'
-//     * (amount rounded down from 0.565).
-//     * <p>
-//     * This instance is immutable and unaffected by this method.
-//     * 
-//     * @param valueToDivideBy  the scalar value to divide by, not null
-//     * @return the new divided instance, never null
-//     * @throws ArithmeticException if dividing by zero
-//     */
-//    public Money dividedBy(long valueToDivideBy) {
-//        return dividedBy(valueToDivideBy, RoundingMode.DOWN);
-//    }
 
     /**
      * Returns a copy of this monetary value divided by the specified value
@@ -1336,10 +1279,18 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
      * returning {@code this}.
      * 
      * @return the money instance, never null
-     * @throws MoneyException if conversion is not possible
      */
     public Money toMoney() {
         return this;
+    }
+
+    /**
+     * Converts this money to an instance of {@code FixedMoney} with the same scale.
+     * 
+     * @return the money instance, never null
+     */
+    public FixedMoney toFixedMoney() {
+        return FixedMoney.from(this);
     }
 
     /**
@@ -1347,7 +1298,6 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
      * If the scale of this money exceeds the currency scale an exception will be thrown.
      * 
      * @return the money instance, never null
-     * @throws MoneyException if conversion is not possible
      * @throws ArithmeticException if the rounding fails
      */
     public StandardMoney toStandardMoney() {
@@ -1359,7 +1309,6 @@ public final class Money implements MoneyProvider, Comparable<MoneyProvider>, Se
      * 
      * @param roundingMode  the rounding mode to use, not null
      * @return the money instance, never null
-     * @throws MoneyException if conversion is not possible
      * @throws ArithmeticException if the rounding fails
      */
     public StandardMoney toStandardMoney(RoundingMode roundingMode) {
