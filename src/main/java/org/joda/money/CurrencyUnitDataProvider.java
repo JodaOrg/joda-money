@@ -71,6 +71,7 @@ public abstract class CurrencyUnitDataProvider {
          * 
          * @throws Exception if an error occurs
          */
+        @Override
         protected void registerCurrencies() throws Exception {
             InputStream in = getClass().getResourceAsStream("/org/joda/money/MoneyData.csv");
             if (in == null) {
