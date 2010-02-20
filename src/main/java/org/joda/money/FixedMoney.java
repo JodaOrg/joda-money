@@ -34,7 +34,7 @@ import java.math.RoundingMode;
  * <p>
  * FixedMoney is immutable and thread-safe.
  */
-public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider>, Serializable {
+public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyProvider>, Serializable {
 
     /**
      * The serialisation version.
@@ -44,7 +44,7 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
     /**
      * The money, not null.
      */
-    private final Money iMoney;
+    private final BigMoney iMoney;
 
     //-----------------------------------------------------------------------
     /**
@@ -86,7 +86,7 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
         checkScale(scale);
         MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
         amount = amount.setScale(scale, roundingMode);
-        return new FixedMoney(Money.of(currency, amount));
+        return new FixedMoney(BigMoney.of(currency, amount));
     }
 
     //-----------------------------------------------------------------------
@@ -108,7 +108,7 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
         MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
         checkScale(scale);
         BigDecimal amount = BigDecimal.valueOf(amountInScale, scale);
-        return new FixedMoney(Money.of(currency, amount));
+        return new FixedMoney(BigMoney.of(currency, amount));
     }
 
     //-----------------------------------------------------------------------
@@ -148,7 +148,7 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
         MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
         checkScale(scale);
         BigDecimal amount = BigDecimal.valueOf(amountMajor).setScale(scale);
-        return new FixedMoney(Money.of(currency, amount));
+        return new FixedMoney(BigMoney.of(currency, amount));
     }
 
     //-----------------------------------------------------------------------
@@ -162,7 +162,7 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
      */
     public static FixedMoney zero(CurrencyUnit currency) {
         MoneyUtils.checkNotNull(currency, "Currency must not be null");
-        return new FixedMoney(Money.of(currency, BigDecimal.ZERO));
+        return new FixedMoney(BigMoney.of(currency, BigDecimal.ZERO));
     }
 
     /**
@@ -178,7 +178,7 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
     public static FixedMoney zero(CurrencyUnit currency, int scale) {
         MoneyUtils.checkNotNull(currency, "Currency must not be null");
         checkScale(scale);
-        return new FixedMoney(Money.of(currency, BigDecimal.valueOf(0, scale)));
+        return new FixedMoney(BigMoney.of(currency, BigDecimal.valueOf(0, scale)));
     }
 
     //-----------------------------------------------------------------------
@@ -186,7 +186,7 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
      * Obtains an instance of {@code FixedMoney} from a provider.
      * <p>
      * This allows you to create an instance from any class that implements the
-     * provider, such as {@code Money}.
+     * provider, such as {@code BigMoney}.
      * <p>
      * If the scale of the provided money is negative, the result will have a scale of zero.
      * Otherwise, the scale of the result will equal that of the provided money.
@@ -194,8 +194,8 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
      * @param moneyProvider  the money to convert, not null
      * @return the new instance, never null
      */
-    public static FixedMoney from(MoneyProvider moneyProvider) {
-        Money money = Money.from(moneyProvider);
+    public static FixedMoney from(BigMoneyProvider moneyProvider) {
+        BigMoney money = BigMoney.from(moneyProvider);
         if (money.getScale() < 0) {
             money = money.withScale(0);
         }
@@ -206,7 +206,7 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
      * Obtains an instance of {@code FixedMoney} from a provider, rounding as necessary.
      * <p>
      * This allows you to create an instance from any class that implements the
-     * provider, such as {@code Money}.
+     * provider, such as {@code BigMoney}.
      * The rounding mode is used to adjust the scale to the scale of the currency.
      *
      * @param moneyProvider  the money to convert, not null
@@ -216,11 +216,11 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
      * @throws IllegalArgumentException if the scale is negative
      * @throws ArithmeticException if the rounding fails
      */
-    public static FixedMoney from(MoneyProvider moneyProvider, int scale, RoundingMode roundingMode) {
-        MoneyUtils.checkNotNull(moneyProvider, "MoneyProvider must not be null");
+    public static FixedMoney from(BigMoneyProvider moneyProvider, int scale, RoundingMode roundingMode) {
+        MoneyUtils.checkNotNull(moneyProvider, "BigMoneyProvider must not be null");
         checkScale(scale);
         MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
-        return new FixedMoney(Money.from(moneyProvider).withScale(scale, roundingMode));
+        return new FixedMoney(BigMoney.from(moneyProvider).withScale(scale, roundingMode));
     }
 
     //-----------------------------------------------------------------------
@@ -252,7 +252,7 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
         String amountStr = moneyStr.substring(4);
         BigDecimal amount = new BigDecimal(amountStr);
         amount = amount.setScale(Math.max(amount.scale(), 0));
-        return new FixedMoney(Money.of(curr, amount));
+        return new FixedMoney(BigMoney.of(curr, amount));
     }
 
     //-----------------------------------------------------------------------
@@ -304,8 +304,8 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
      * 
      * @param money  the underlying money, not null
      */
-    private FixedMoney(Money money) {
-        assert money != null : "Joda-Money bug: Money must not be null";
+    private FixedMoney(BigMoney money) {
+        assert money != null : "Joda-Money bug: BigMoney must not be null";
         iMoney = money;
     }
 
@@ -318,7 +318,7 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
      * @param currency  the currency to use, not null
      * @return the new instance with the input currency set, never null
      */
-    private FixedMoney with(Money newInstance) {
+    private FixedMoney with(BigMoney newInstance) {
         if (newInstance == iMoney) {
             return this;
         }
@@ -594,7 +594,7 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
      * @throws MoneyException if the currencies differ
      * @throws ArithmeticException if the scale of the money is too large
      */
-    public FixedMoney plus(MoneyProvider moneyToAdd) {
+    public FixedMoney plus(BigMoneyProvider moneyToAdd) {
         return plus(moneyToAdd, RoundingMode.UNNECESSARY);
     }
 
@@ -614,7 +614,7 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
      * @return the new instance with the input amount added, never null
      * @throws MoneyException if the currencies differ
      */
-    public FixedMoney plus(MoneyProvider moneyToAdd, RoundingMode roundingMode) {
+    public FixedMoney plus(BigMoneyProvider moneyToAdd, RoundingMode roundingMode) {
         return with(iMoney.plusRetainScale(moneyToAdd, roundingMode));
     }
 
@@ -734,7 +734,7 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
      * @throws MoneyException if the currencies differ
      * @throws ArithmeticException if the scale of the money is too large
      */
-    public FixedMoney minus(MoneyProvider moneyToSubtract) {
+    public FixedMoney minus(BigMoneyProvider moneyToSubtract) {
         return minus(moneyToSubtract, RoundingMode.UNNECESSARY);
     }
 
@@ -754,7 +754,7 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
      * @return the new instance with the input amount subtracted, never null
      * @throws MoneyException if the currencies differ
      */
-    public FixedMoney minus(MoneyProvider moneyToSubtract, RoundingMode roundingMode) {
+    public FixedMoney minus(BigMoneyProvider moneyToSubtract, RoundingMode roundingMode) {
         return with(iMoney.minusRetainScale(moneyToSubtract, roundingMode));
     }
 
@@ -1052,35 +1052,35 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
 
     //-----------------------------------------------------------------------
     /**
-     * Implements the {@code MoneyProvider} interface, returning a
-     * {@code Money} instance with the same currency, amount and scale.
+     * Implements the {@code BigMoneyProvider} interface, returning a
+     * {@code BigMoney} instance with the same currency, amount and scale.
      * 
      * @return the money instance, never null
      */
-    public Money toMoney() {
+    public BigMoney toBigMoney() {
         return iMoney;
     }
 
     /**
-     * Converts this money to an instance of {@code StandardMoney} without rounding.
+     * Converts this money to an instance of {@code Money} without rounding.
      * If the scale of this money exceeds the currency scale an exception will be thrown.
      * 
      * @return the money instance, never null
      * @throws ArithmeticException if the rounding fails
      */
-    public StandardMoney toStandardMoney() {
-        return StandardMoney.from(this);
+    public Money toMoney() {
+        return Money.from(this);
     }
 
     /**
-     * Converts this money to an instance of {@code StandardMoney}.
+     * Converts this money to an instance of {@code Money}.
      * 
      * @param roundingMode  the rounding mode to use, not null
      * @return the money instance, never null
      * @throws ArithmeticException if the rounding fails
      */
-    public StandardMoney toStandardMoney(RoundingMode roundingMode) {
-        return StandardMoney.from(this, roundingMode);
+    public Money toMoney(RoundingMode roundingMode) {
+        return Money.from(this, roundingMode);
     }
 
     //-----------------------------------------------------------------------
@@ -1090,7 +1090,7 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
      * @param money  the money to check, not null
      * @return true if they have the same currency
      */
-    public boolean isSameCurrency(MoneyProvider money) {
+    public boolean isSameCurrency(BigMoneyProvider money) {
         return iMoney.isSameCurrency(money);
     }
 
@@ -1098,7 +1098,7 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
     /**
      * Compares this monetary value to another.
      * <p>
-     * This allows {@code FixedMoney} to be compared to any {@code MoneyProvider}.
+     * This allows {@code FixedMoney} to be compared to any {@code BigMoneyProvider}.
      * Scale is ignored in the comparison.
      * The compared values must be in the same currency.
      * 
@@ -1106,14 +1106,14 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
      * @return -1 if this is less than , 0 if equal, 1 if greater than
      * @throws MoneyException if the currencies differ
      */
-    public int compareTo(MoneyProvider other) {
+    public int compareTo(BigMoneyProvider other) {
         return iMoney.compareTo(other);
     }
 
     /**
      * Checks if this monetary value is equal to another.
      * <p>
-     * This allows {@code FixedMoney} to be compared to any {@code MoneyProvider}.
+     * This allows {@code FixedMoney} to be compared to any {@code BigMoneyProvider}.
      * Scale is ignored, so 'USD 30.00' and 'USD 30' are equal.
      * The compared values must be in the same currency.
      * 
@@ -1122,14 +1122,14 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
      * @throws MoneyException if the currencies differ
      * @see #equals(Object)
      */
-    public boolean isEqual(MoneyProvider other) {
+    public boolean isEqual(BigMoneyProvider other) {
         return iMoney.isEqual(other);
     }
 
     /**
      * Checks if this monetary value is greater than another.
      * <p>
-     * This allows {@code FixedMoney} to be compared to any {@code MoneyProvider}.
+     * This allows {@code FixedMoney} to be compared to any {@code BigMoneyProvider}.
      * Scale is ignored in the comparison.
      * The compared values must be in the same currency.
      * 
@@ -1137,14 +1137,14 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
      * @return true is this is greater than the specified monetary value
      * @throws MoneyException if the currencies differ
      */
-    public boolean isGreaterThan(MoneyProvider other) {
+    public boolean isGreaterThan(BigMoneyProvider other) {
         return iMoney.isGreaterThan(other);
     }
 
     /**
      * Checks if this monetary value is less than another.
      * <p>
-     * This allows {@code FixedMoney} to be compared to any {@code MoneyProvider}.
+     * This allows {@code FixedMoney} to be compared to any {@code BigMoneyProvider}.
      * Scale is ignored in the comparison.
      * The compared values must be in the same currency.
      * 
@@ -1152,7 +1152,7 @@ public final class FixedMoney implements MoneyProvider, Comparable<MoneyProvider
      * @return true is this is less than the specified monetary value
      * @throws MoneyException if the currencies differ
      */
-    public boolean isLessThan(MoneyProvider other) {
+    public boolean isLessThan(BigMoneyProvider other) {
         return iMoney.isLessThan(other);
     }
 

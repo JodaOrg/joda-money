@@ -18,23 +18,36 @@ package org.joda.money;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
+
 import org.testng.annotations.Test;
 
 /**
  * Test MoneyUtils.
  */
 @Test
-public class TestMoneyUtils_StandardMoney {
+public class TestMoneyUtils_BigMoney {
 
     private static final CurrencyUnit GBP = CurrencyUnit.of("GBP");
-    private static final StandardMoney GBP_0 = StandardMoney.parse("GBP 0");
-    private static final StandardMoney GBP_20 = StandardMoney.parse("GBP 20");
-    private static final StandardMoney GBP_30 = StandardMoney.parse("GBP 30");
-    private static final StandardMoney GBP_50 = StandardMoney.parse("GBP 50");
-    private static final StandardMoney GBP_M10 = StandardMoney.parse("GBP -10");
-    private static final StandardMoney GBP_M30 = StandardMoney.parse("GBP -30");
-    private static final StandardMoney EUR_0 = StandardMoney.parse("EUR 0");
-    private static final StandardMoney EUR_30 = StandardMoney.parse("EUR 30");
+    private static final BigMoney GBP_0 = BigMoney.parse("GBP 0");
+    private static final BigMoney GBP_20 = BigMoney.parse("GBP 20");
+    private static final BigMoney GBP_30 = BigMoney.parse("GBP 30");
+    private static final BigMoney GBP_50 = BigMoney.parse("GBP 50");
+    private static final BigMoney GBP_M10 = BigMoney.parse("GBP -10");
+    private static final BigMoney GBP_M30 = BigMoney.parse("GBP -30");
+    private static final BigMoney EUR_0 = BigMoney.parse("EUR 0");
+    private static final BigMoney EUR_30 = BigMoney.parse("EUR 30");
+
+    //-----------------------------------------------------------------------
+    // constructor
+    //-----------------------------------------------------------------------
+    public void test_constructor() throws Exception {
+        Constructor<MoneyUtils> con = MoneyUtils.class.getDeclaredConstructor();
+        assertEquals(Modifier.isPrivate(con.getModifiers()), true);
+        con.setAccessible(true);
+        con.newInstance();
+    }
 
     //-----------------------------------------------------------------------
     // checkNotNull(Object,String)
@@ -69,7 +82,7 @@ public class TestMoneyUtils_StandardMoney {
     }
 
     public void test_isZero_null() {
-        assertSame(MoneyUtils.isZero((StandardMoney) null), true);
+        assertSame(MoneyUtils.isZero((BigMoney) null), true);
     }
 
     //-----------------------------------------------------------------------
@@ -80,7 +93,7 @@ public class TestMoneyUtils_StandardMoney {
     }
 
     public void test_defaultToZero_null() {
-        assertEquals(MoneyUtils.defaultToZero((StandardMoney) null, GBP), GBP_0);
+        assertEquals(MoneyUtils.defaultToZero((BigMoney) null, GBP), GBP_0);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -105,15 +118,15 @@ public class TestMoneyUtils_StandardMoney {
     }
 
     public void test_max_null1() {
-        assertSame(MoneyUtils.max((StandardMoney) null, GBP_30), GBP_30);
+        assertSame(MoneyUtils.max((BigMoney) null, GBP_30), GBP_30);
     }
 
     public void test_max_null2() {
-        assertSame(MoneyUtils.max(GBP_20, (StandardMoney) null), GBP_20);
+        assertSame(MoneyUtils.max(GBP_20, (BigMoney) null), GBP_20);
     }
 
     public void test_max_nullBoth() {
-        assertEquals(MoneyUtils.max((StandardMoney) null, (StandardMoney) null), null);
+        assertEquals(MoneyUtils.max((BigMoney) null, (BigMoney) null), null);
     }
 
     //-----------------------------------------------------------------------
@@ -133,15 +146,15 @@ public class TestMoneyUtils_StandardMoney {
     }
 
     public void test_min_null1() {
-        assertSame(MoneyUtils.min((StandardMoney) null, GBP_30), GBP_30);
+        assertSame(MoneyUtils.min((BigMoney) null, GBP_30), GBP_30);
     }
 
     public void test_min_null2() {
-        assertSame(MoneyUtils.min(GBP_20, (StandardMoney) null), GBP_20);
+        assertSame(MoneyUtils.min(GBP_20, (BigMoney) null), GBP_20);
     }
 
     public void test_min_nullBoth() {
-        assertEquals(MoneyUtils.min((StandardMoney) null, (StandardMoney) null), null);
+        assertEquals(MoneyUtils.min((BigMoney) null, (BigMoney) null), null);
     }
 
     //-----------------------------------------------------------------------
@@ -157,15 +170,15 @@ public class TestMoneyUtils_StandardMoney {
     }
 
     public void test_add_null1() {
-        assertSame(MoneyUtils.add((StandardMoney) null, GBP_30), GBP_30);
+        assertSame(MoneyUtils.add((BigMoney) null, GBP_30), GBP_30);
     }
 
     public void test_add_null2() {
-        assertSame(MoneyUtils.add(GBP_20, (StandardMoney) null), GBP_20);
+        assertSame(MoneyUtils.add(GBP_20, (BigMoney) null), GBP_20);
     }
 
     public void test_add_nullBoth() {
-        assertEquals(MoneyUtils.add((StandardMoney) null, (StandardMoney) null), null);
+        assertEquals(MoneyUtils.add((BigMoney) null, (BigMoney) null), null);
     }
 
     //-----------------------------------------------------------------------
@@ -181,15 +194,15 @@ public class TestMoneyUtils_StandardMoney {
     }
 
     public void test_subtract_null1() {
-        assertEquals(MoneyUtils.subtract((StandardMoney) null, GBP_30), GBP_M30);
+        assertEquals(MoneyUtils.subtract((BigMoney) null, GBP_30), GBP_M30);
     }
 
     public void test_subtract_null2() {
-        assertSame(MoneyUtils.subtract(GBP_20, (StandardMoney) null), GBP_20);
+        assertSame(MoneyUtils.subtract(GBP_20, (BigMoney) null), GBP_20);
     }
 
     public void test_subtract_nullBoth() {
-        assertEquals(MoneyUtils.subtract((StandardMoney) null, (StandardMoney) null), null);
+        assertEquals(MoneyUtils.subtract((BigMoney) null, (BigMoney) null), null);
     }
 
 }
