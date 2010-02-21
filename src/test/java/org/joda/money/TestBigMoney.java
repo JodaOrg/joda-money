@@ -531,7 +531,8 @@ public class TestBigMoney {
     //-----------------------------------------------------------------------
     public void test_constructor_null1() throws Exception {
         Constructor<BigMoney> con = BigMoney.class.getDeclaredConstructor(CurrencyUnit.class, BigDecimal.class);
-        assertEquals(Modifier.isPrivate(con.getModifiers()), true);
+        assertEquals(Modifier.isPublic(con.getModifiers()), false);
+        assertEquals(Modifier.isProtected(con.getModifiers()), false);
         try {
             con.setAccessible(true);
             con.newInstance(new Object[] { null, BIGDEC_2_34 });

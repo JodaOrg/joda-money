@@ -469,7 +469,8 @@ public class TestMoney {
     //-----------------------------------------------------------------------
     public void test_constructor_null1() throws Exception {
         Constructor<Money> con = Money.class.getDeclaredConstructor(BigMoney.class);
-        assertEquals(Modifier.isPrivate(con.getModifiers()), true);
+        assertEquals(Modifier.isPublic(con.getModifiers()), false);
+        assertEquals(Modifier.isProtected(con.getModifiers()), false);
         try {
             con.setAccessible(true);
             con.newInstance(new Object[] { null });

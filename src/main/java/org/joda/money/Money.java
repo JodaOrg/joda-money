@@ -318,10 +318,19 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * 
      * @param money  the underlying money, not null
      */
-    private Money(BigMoney money) {
+    Money(BigMoney money) {
         assert money != null : "Joda-Money bug: BigMoney must not be null";
         assert money.isCurrencyScale() : "Joda-Money bug: Only currency scale is valid for Money";
         iMoney = money;
+    }
+
+    /**
+     * Uses a serialization delegate.
+     * 
+     * @return the replacing object, never null
+     */
+    private Object writeReplace() {
+        return new Ser(Ser.MONEY, this);
     }
 
     //-----------------------------------------------------------------------

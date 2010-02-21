@@ -355,7 +355,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @param currency  the currency to use, not null
      * @param amount  the amount of money, not null
      */
-    private BigMoney(CurrencyUnit currency, BigDecimal amount) {
+    BigMoney(CurrencyUnit currency, BigDecimal amount) {
         assert currency != null : "Joda-Money bug: Currency must not be null";
         assert amount != null : "Joda-Money bug: Amount must not be null";
         iCurrency = currency;
@@ -363,12 +363,12 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     }
 
     /**
-     * Resolves singletons.
+     * Uses a serialization delegate.
      * 
-     * @return the singleton instance
+     * @return the replacing object, never null
      */
-    private Object readResolve() {
-        return BigMoney.of(iCurrency, iAmount);
+    private Object writeReplace() {
+        return new Ser(Ser.BIG_MONEY, this);
     }
 
     //-----------------------------------------------------------------------
