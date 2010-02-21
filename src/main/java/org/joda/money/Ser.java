@@ -80,11 +80,7 @@ final class Ser implements Externalizable {
             }
             case MONEY: {
                 Money obj = (Money) iObject;
-                out.writeUTF(obj.getCurrencyUnit().getCurrencyCode());
-                byte[] bytes = obj.getAmount().unscaledValue().toByteArray();
-                out.writeInt(bytes.length);
-                out.write(bytes);
-                out.writeInt(obj.getScale());  // what to do with currency serialization?
+                out.writeObject(obj.toBigMoney());
                 return;
             }
             case CURRENCY_UNIT: {
@@ -102,7 +98,7 @@ final class Ser implements Externalizable {
      * @param in  the input stream
      * @throws IOException if an error occurs
      */
-    public void readExternal(ObjectInput in) throws IOException {
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         iType = in.readByte();
         switch (iType) {
             case BIG_MONEY: {
@@ -114,11 +110,7 @@ final class Ser implements Externalizable {
                 return;
             }
             case MONEY: {
-                CurrencyUnit currency = CurrencyUnit.of(in.readUTF());
-                byte[] bytes = new byte[in.readInt()];
-                in.readFully(bytes);
-                BigDecimal bd = new BigDecimal(new BigInteger(bytes), in.readInt());
-                iObject = new Money(new BigMoney(currency, bd));
+                iObject = new Money((BigMoney) in.readObject());
                 return;
             }
             case CURRENCY_UNIT: {
