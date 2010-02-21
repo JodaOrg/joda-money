@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Iterator;
+import java.util.regex.Pattern;
 
 /**
  * An amount of money with unrestricted decimal place precision.
@@ -41,6 +42,10 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * The serialisation version.
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * The regex for parsing.
+     */
+    private static final Pattern PARSE_REGEX = Pattern.compile("[+-]?[0-9]*[.]?[0-9]*");
 
     /**
      * The currency, not null.
@@ -293,7 +298,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * Parses an instance of {@code BigMoney} from a string.
      * <p>
      * The string format is '<currencyCode> <amount>'.
-     * The currency code must be three letters, and the amount must be a number.
+     * The currency code must be a valid three letter currency.
+     * The amount must match the regular expression {@code [+-]?[0-9]*[.]?[0-9]*}.
      * This matches the output from {@link #toString()}.
      * <p>
      * For example, {@code parse("USD 25")} creates the instance {@code USD 25}
@@ -311,6 +317,9 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         }
         String currStr = moneyStr.substring(0, 3);
         String amountStr = moneyStr.substring(4);
+        if (PARSE_REGEX.matcher(amountStr).matches() == false) {
+            throw new IllegalArgumentException("Money amount '" + moneyStr + "' cannot be parsed");
+        }
         return BigMoney.of(CurrencyUnit.of(currStr), new BigDecimal(amountStr));
     }
 

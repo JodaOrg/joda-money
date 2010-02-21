@@ -410,8 +410,15 @@ public class TestBigMoney {
     //-----------------------------------------------------------------------
     // parse(String)
     //-----------------------------------------------------------------------
-    public void test_factory_parse_String_positive() {
+    public void test_factory_parse_String() {
         BigMoney test = BigMoney.parse("GBP 2.43");
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), bd("2.43"));
+        assertEquals(test.getScale(), 2);
+    }
+
+    public void test_factory_parse_String_positive() {
+        BigMoney test = BigMoney.parse("GBP +2.43");
         assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmount(), bd("2.43"));
         assertEquals(test.getScale(), 2);
@@ -424,6 +431,48 @@ public class TestBigMoney {
         assertEquals(test.getScale(), 2);
     }
 
+    public void test_factory_parse_String_decimalStart() {
+        BigMoney test = BigMoney.parse("GBP .43");
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), bd("0.43"));
+        assertEquals(test.getScale(), 2);
+    }
+
+    public void test_factory_parse_String_decimalStartPositive() {
+        BigMoney test = BigMoney.parse("GBP +.43");
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), bd("0.43"));
+        assertEquals(test.getScale(), 2);
+    }
+
+    public void test_factory_parse_String_decimalStartNegative() {
+        BigMoney test = BigMoney.parse("GBP -.43");
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), bd("-0.43"));
+        assertEquals(test.getScale(), 2);
+    }
+
+    public void test_factory_parse_String_decimalEnd() {
+        BigMoney test = BigMoney.parse("GBP 43.");
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), bd("43"));
+        assertEquals(test.getScale(), 0);
+    }
+
+    public void test_factory_parse_String_decimalEndPositive() {
+        BigMoney test = BigMoney.parse("GBP +43.");
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), bd("43"));
+        assertEquals(test.getScale(), 0);
+    }
+
+    public void test_factory_parse_String_decimalEndNegative() {
+        BigMoney test = BigMoney.parse("GBP -43.");
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), bd("-43"));
+        assertEquals(test.getScale(), 0);
+    }
+
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_factory_parse_String_tooShort() {
         BigMoney.parse("GBP ");
@@ -432,6 +481,11 @@ public class TestBigMoney {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_factory_parse_String_noSpace() {
         BigMoney.parse("GBP2.34");
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_factory_parse_String_exponent() {
+        BigMoney.parse("GBP 234E2");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)

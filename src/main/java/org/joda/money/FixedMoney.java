@@ -228,8 +228,8 @@ public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyPr
      * Parses an instance of {@code FixedMoney} from a string.
      * <p>
      * The string format is '<currencyCode> <amount>'.
-     * The currency code must be three letters, and the amount must be a number.
-     * This matches the output from {@link #toString()}.
+     * The currency code must be a valid three letter currency.
+     * The amount must match the regular expression {@code [+-]?[0-9]*[.]?[0-9]*}.
      * <p>
      * For example, {@code of("USD 25")} creates the instance {@code USD 25.00}
      * while {@code of("USD 25.95")} creates the instance {@code USD 25.95}.
@@ -243,16 +243,9 @@ public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyPr
      * @throws ArithmeticException if the amount is too large
      */
     public static FixedMoney parse(String moneyStr) {
-        MoneyUtils.checkNotNull(moneyStr, "Money must not be null");
-        if (moneyStr.length() < 5 || moneyStr.charAt(3) != ' ') {
-            throw new IllegalArgumentException("Money '" + moneyStr + "' cannot be parsed");
-        }
-        String currStr = moneyStr.substring(0, 3);
-        CurrencyUnit curr = CurrencyUnit.of(currStr);
-        String amountStr = moneyStr.substring(4);
-        BigDecimal amount = new BigDecimal(amountStr);
-        amount = amount.setScale(Math.max(amount.scale(), 0));
-        return new FixedMoney(BigMoney.of(curr, amount));
+        BigMoney money = BigMoney.parse(moneyStr);
+        money = money.withScale(Math.max(money.getScale(), 0));
+        return new FixedMoney(money);
     }
 
     //-----------------------------------------------------------------------
