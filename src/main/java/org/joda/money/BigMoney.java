@@ -1436,14 +1436,14 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         return this;
     }
 
-    /**
-     * Converts this money to an instance of {@code FixedMoney} with the same scale.
-     * 
-     * @return the money instance, never null
-     */
-    public FixedMoney toFixedMoney() {
-        return FixedMoney.from(this);
-    }
+//    /**
+//     * Converts this money to an instance of {@code FixedMoney} with the same scale.
+//     * 
+//     * @return the money instance, never null
+//     */
+//    public FixedMoney toFixedMoney() {
+//        return FixedMoney.from(this);
+//    }
 
     /**
      * Converts this money to an instance of {@code Money} without rounding.

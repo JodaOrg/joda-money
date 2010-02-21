@@ -1784,12 +1784,12 @@ public class TestBigMoney {
         assertSame(GBP_2_34.toBigMoney(), GBP_2_34);
     }
 
-    //-----------------------------------------------------------------------
-    // toFixedMoney()
-    //-----------------------------------------------------------------------
-    public void test_toFixedMoney() {
-        assertEquals(GBP_2_34.toFixedMoney(), FixedMoney.of(GBP, BIGDEC_2_34, 2));
-    }
+//    //-----------------------------------------------------------------------
+//    // toFixedMoney()
+//    //-----------------------------------------------------------------------
+//    public void test_toFixedMoney() {
+//        assertEquals(GBP_2_34.toFixedMoney(), FixedMoney.of(GBP, BIGDEC_2_34, 2));
+//    }
 
     //-----------------------------------------------------------------------
     // toMoney()
