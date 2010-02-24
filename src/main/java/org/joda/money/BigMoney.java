@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 
@@ -252,45 +253,88 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code BigMoney} as the total value of
-     * an iterable collection.
+     * Obtains an instance of {@code BigMoney} as the total value of an array.
      * <p>
-     * The iterable must provide at least one monetary value.
-     * Subsequent amounts are added as though using {@link #plus(BigMoney)}.
+     * The array must contain at least one monetary value.
+     * Subsequent amounts are added as though using {@link #plus(BigMoneyProvider)}.
+     * All amounts must be in the same currency.
      * 
-     * @param monies  the non-empty iterable provider of non-null monetary values, not null
+     * @param monies  the monetary values to total, not empty, no null elements, not null
      * @return the total, never null
-     * @throws java.util.NoSuchElementException if the iterable is empty
+     * @throws IllegalArgumentException if the array is empty
      * @throws MoneyException if the currencies differ
      */
-    public static BigMoney total(Iterable<BigMoney> monies) {
-        Iterator<BigMoney> it = monies.iterator();
-        BigMoney total = it.next();
-        MoneyUtils.checkNotNull(total, "Iterator must not contain null entries");
-        while (it.hasNext()) {
-            total = total.plus((BigMoney) it.next());
+    public static BigMoney total(BigMoneyProvider... monies) {
+        MoneyUtils.checkNotNull(monies, "Money array must not be null");
+        if (monies.length == 0) {
+            throw new IllegalArgumentException("Money array must not be empty");
+        }
+        BigMoney total = from(monies[0]);
+        MoneyUtils.checkNotNull(total, "Money arary must not contain null entries");
+        for (int i = 1; i < monies.length; i++) {
+            total = total.plus(from(monies[i]));
         }
         return total;
     }
 
     /**
-     * Obtains an instance of {@code BigMoney} as the total value of
-     * a possible empty iterable collection.
+     * Obtains an instance of {@code BigMoney} as the total value of a collection.
      * <p>
-     * The amounts are added as though using {@link #plus(BigMoney)} starting
+     * The iterable must provide at least one monetary value.
+     * Subsequent amounts are added as though using {@link #plus(BigMoneyProvider)}.
+     * All amounts must be in the same currency.
+     * 
+     * @param monies  the monetary values to total, not empty, no null elements, not null
+     * @return the total, never null
+     * @throws IllegalArgumentException if the iterable is empty
+     * @throws MoneyException if the currencies differ
+     */
+    public static BigMoney total(Iterable<? extends BigMoneyProvider> monies) {
+        MoneyUtils.checkNotNull(monies, "Money iterator must not be null");
+        Iterator<? extends BigMoneyProvider> it = monies.iterator();
+        if (it.hasNext() == false) {
+            throw new IllegalArgumentException("Money iterator must not be empty");
+        }
+        BigMoney total = from(it.next());
+        MoneyUtils.checkNotNull(total, "Money iterator must not contain null entries");
+        while (it.hasNext()) {
+            total = total.plus(it.next());
+        }
+        return total;
+    }
+
+    /**
+     * Obtains an instance of {@code Money} as the total value of
+     * a possibly empty array.
+     * <p>
+     * The amounts are added as though using {@link #plus(BigMoneyProvider)} starting
      * from zero in the specified currency.
+     * All amounts must be in the same currency.
      * 
      * @param currency  the currency to total in, not null
-     * @param monies  the iterable provider of non-null monetary values, not null
+     * @param monies  the monetary values to total, no null elements, not null
      * @return the total, never null
      * @throws MoneyException if the currencies differ
      */
-    public static BigMoney total(CurrencyUnit currency, Iterable<BigMoney> monies) {
-        BigMoney total = BigMoney.zero(currency);
-        for (BigMoney money : monies) {
-            total = total.plus(money);
-        }
-        return total;
+    public static BigMoney total(CurrencyUnit currency, BigMoneyProvider... monies) {
+        return BigMoney.zero(currency).plus(Arrays.asList(monies));
+    }
+
+    /**
+     * Obtains an instance of {@code Money} as the total value of
+     * a possibly empty collection.
+     * <p>
+     * The amounts are added as though using {@link #plus(BigMoneyProvider)} starting
+     * from zero in the specified currency.
+     * All amounts must be in the same currency.
+     * 
+     * @param currency  the currency to total in, not null
+     * @param monies  the monetary values to total, no null elements, not null
+     * @return the total, never null
+     * @throws MoneyException if the currencies differ
+     */
+    public static BigMoney total(CurrencyUnit currency, Iterable<? extends BigMoneyProvider> monies) {
+        return BigMoney.zero(currency).plus(monies);
     }
 
     //-----------------------------------------------------------------------
@@ -369,6 +413,22 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      */
     private Object writeReplace() {
         return new Ser(Ser.BIG_MONEY, this);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a new {@code BigMoney}, returning {@code this} if possible.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param newAmount  the new amount to use, not null
+     * @return the new instance, never null
+     */
+    private BigMoney with(BigDecimal newAmount) {
+        if (newAmount == iAmount) {
+            return this;
+        }
+        return new BigMoney(iCurrency, newAmount);
     }
 
     //-----------------------------------------------------------------------
@@ -738,6 +798,29 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a copy of this monetary value with a collection of monetary amounts added.
+     * <p>
+     * This adds the specified amounts to this monetary amount, returning a new object.
+     * The amounts are added as though using {@link #plus(Money)}.
+     * The amounts must be in the same currency.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param moniesToAdd  the monetary values to add, no null elements, not null
+     * @return the new instance with the input amounts added, never null
+     * @throws MoneyException if the currencies differ
+     */
+    public BigMoney plus(Iterable<? extends BigMoneyProvider> moniesToAdd) {
+        BigDecimal total = iAmount;
+        for (BigMoneyProvider moneyProvider : moniesToAdd) {
+            BigMoney money = checkCurrencyEqual(moneyProvider);
+            total = total.add(money.iAmount);
+        }
+        return with(total);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a copy of this monetary value with the amount added.
      * <p>
      * This adds the specified amount to this monetary amount, returning a new object.
@@ -923,6 +1006,29 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         BigDecimal amount = iAmount.add(BigDecimal.valueOf(amountToAdd));
         amount = amount.setScale(getScale(), roundingMode);
         return BigMoney.of(iCurrency, amount);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this monetary value with a collection of monetary amounts subtracted.
+     * <p>
+     * This subtracts the specified amounts from this monetary amount, returning a new object.
+     * The amounts are subtracted one by one as though using {@link #minus(Money)}.
+     * The amounts must be in the same currency.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param moniesToSubtract  the monetary values to subtract, no null elements, not null
+     * @return the new instance with the input amounts subtracted, never null
+     * @throws MoneyException if the currencies differ
+     */
+    public BigMoney minus(Iterable<? extends BigMoneyProvider> moniesToSubtract) {
+        BigDecimal total = iAmount;
+        for (BigMoneyProvider moneyProvider : moniesToSubtract) {
+            BigMoney money = checkCurrencyEqual(moneyProvider);
+            total = total.subtract(money.iAmount);
+        }
+        return with(total);
     }
 
     //-----------------------------------------------------------------------

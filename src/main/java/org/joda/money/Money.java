@@ -18,6 +18,7 @@ package org.joda.money;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Arrays;
 import java.util.Iterator;
 
 /**
@@ -227,45 +228,88 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code Money} as the total value of
-     * an iterable collection.
+     * Obtains an instance of {@code Money} as the total value of an array.
+     * <p>
+     * The array must contain at least one monetary value.
+     * Subsequent amounts are added as though using {@link #plus(Money)}.
+     * All amounts must be in the same currency.
+     * 
+     * @param monies  the monetary values to total, not empty, no null elements, not null
+     * @return the total, never null
+     * @throws IllegalArgumentException if the array is empty
+     * @throws MoneyException if the currencies differ
+     */
+    public static Money total(Money... monies) {
+        MoneyUtils.checkNotNull(monies, "Money array must not be null");
+        if (monies.length == 0) {
+            throw new IllegalArgumentException("Money array must not be empty");
+        }
+        Money total = monies[0];
+        MoneyUtils.checkNotNull(total, "Money arary must not contain null entries");
+        for (int i = 1; i < monies.length; i++) {
+            total = total.plus(monies[i]);
+        }
+        return total;
+    }
+
+    /**
+     * Obtains an instance of {@code Money} as the total value of a collection.
      * <p>
      * The iterable must provide at least one monetary value.
      * Subsequent amounts are added as though using {@link #plus(Money)}.
+     * All amounts must be in the same currency.
      * 
-     * @param monies  the non-empty iterable provider of non-null monetary values, not null
+     * @param monies  the monetary values to total, not empty, no null elements, not null
      * @return the total, never null
-     * @throws java.util.NoSuchElementException if the iterable is empty
+     * @throws IllegalArgumentException if the iterable is empty
      * @throws MoneyException if the currencies differ
      */
     public static Money total(Iterable<Money> monies) {
+        MoneyUtils.checkNotNull(monies, "Money iterator must not be null");
         Iterator<Money> it = monies.iterator();
+        if (it.hasNext() == false) {
+            throw new IllegalArgumentException("Money iterator must not be empty");
+        }
         Money total = it.next();
-        MoneyUtils.checkNotNull(total, "Iterator must not contain null entries");
+        MoneyUtils.checkNotNull(total, "Money iterator must not contain null entries");
         while (it.hasNext()) {
-            total = total.plus((Money) it.next());
+            total = total.plus(it.next());
         }
         return total;
     }
 
     /**
      * Obtains an instance of {@code Money} as the total value of
-     * a possible empty iterable collection.
+     * a possibly empty array.
      * <p>
      * The amounts are added as though using {@link #plus(Money)} starting
      * from zero in the specified currency.
+     * All amounts must be in the same currency.
      * 
      * @param currency  the currency to total in, not null
-     * @param monies  the iterable provider of non-null monetary values, not null
+     * @param monies  the monetary values to total, no null elements, not null
+     * @return the total, never null
+     * @throws MoneyException if the currencies differ
+     */
+    public static Money total(CurrencyUnit currency, Money... monies) {
+        return Money.zero(currency).plus(Arrays.asList(monies));
+    }
+
+    /**
+     * Obtains an instance of {@code Money} as the total value of
+     * a possibly empty collection.
+     * <p>
+     * The amounts are added as though using {@link #plus(Money)} starting
+     * from zero in the specified currency.
+     * All amounts must be in the same currency.
+     * 
+     * @param currency  the currency to total in, not null
+     * @param monies  the monetary values to total, no null elements, not null
      * @return the total, never null
      * @throws MoneyException if the currencies differ
      */
     public static Money total(CurrencyUnit currency, Iterable<Money> monies) {
-        Money total = Money.zero(currency);
-        for (Money money : monies) {
-            total = total.plus(money);
-        }
-        return total;
+        return Money.zero(currency).plus(monies);
     }
 
     //-----------------------------------------------------------------------
@@ -339,8 +383,8 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
-     * @param currency  the currency to use, not null
-     * @return the new instance with the input currency set, never null
+     * @param newInstance  the new money to use, not null
+     * @return the new instance, never null
      */
     private Money with(BigMoney newInstance) {
         if (newInstance == iMoney) {
@@ -663,6 +707,28 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
 
     //-----------------------------------------------------------------------
     /**
+     * Returns a copy of this monetary value with a collection of monetary amounts added.
+     * <p>
+     * This adds the specified amounts to this monetary amount, returning a new object.
+     * The amounts are added as though using {@link #plus(Money)}.
+     * The amounts must be in the same currency.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param moniesToAdd  the monetary values to add, no null elements, not null
+     * @return the new instance with the input amounts added, never null
+     * @throws MoneyException if the currencies differ
+     */
+    public Money plus(Iterable<Money> moniesToAdd) {
+        BigMoney total = iMoney;
+        for (Money money : moniesToAdd) {
+            total = total.plus(money);
+        }
+        return with(total);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Returns a copy of this monetary value with the amount added.
      * <p>
      * This adds the specified amount to this monetary amount, returning a new object.
@@ -787,6 +853,28 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      */
     public Money plusMinor(long amountToAdd) {
         return with(iMoney.plusMinor(amountToAdd));
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Returns a copy of this monetary value with a collection of monetary amounts subtracted.
+     * <p>
+     * This subtracts the specified amounts from this monetary amount, returning a new object.
+     * The amounts are subtracted one by one as though using {@link #minus(Money)}.
+     * The amounts must be in the same currency.
+     * <p>
+     * This instance is immutable and unaffected by this method.
+     * 
+     * @param moniesToSubtract  the monetary values to subtract, no null elements, not null
+     * @return the new instance with the input amounts subtracted, never null
+     * @throws MoneyException if the currencies differ
+     */
+    public Money minus(Iterable<Money> moniesToSubtract) {
+        BigMoney total = iMoney;
+        for (Money money : moniesToSubtract) {
+            total = total.minus(money);
+        }
+        return with(total);
     }
 
     //-----------------------------------------------------------------------

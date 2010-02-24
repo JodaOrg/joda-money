@@ -31,7 +31,6 @@ import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.NoSuchElementException;
 
 import org.testng.annotations.Test;
 
@@ -72,6 +71,11 @@ public class TestBigMoney {
     private static final BigMoney USD_1_23 = BigMoney.parse("USD 1.23");
     private static final BigMoney USD_2_34 = BigMoney.parse("USD 2.34");
     private static final BigMoney USD_2_35 = BigMoney.parse("USD 2.35");
+    private static final BigMoneyProvider BAD_PROVIDER = new BigMoneyProvider() {
+        public BigMoney toBigMoney() {
+            return null;  // shouldn't return null
+        }
+    };
 
     private static BigDecimal bd(String str) {
         return new BigDecimal(str);
@@ -331,11 +335,98 @@ public class TestBigMoney {
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_factory_from_BigMoneyProvider_badProvider() {
-        BigMoney.from(new BigMoneyProvider() {
-            public BigMoney toBigMoney() {
-                return null;  // shouldn't return null
-            }
-        });
+        BigMoney.from(BAD_PROVIDER);
+    }
+
+    //-----------------------------------------------------------------------
+    // total(BigMoneyProvider...)
+    //-----------------------------------------------------------------------
+    public void test_factory_total_varargs_1BigMoney() {
+        BigMoney test = BigMoney.total(GBP_1_23);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmountMinorInt(), 123);
+    }
+
+    public void test_factory_total_array_1BigMoney() {
+        BigMoneyProvider[] array = new BigMoneyProvider[] {GBP_1_23};
+        BigMoney test = BigMoney.total(array);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmountMinorInt(), 123);
+    }
+
+    public void test_factory_total_varargs_3Mixed() {
+        BigMoney test = BigMoney.total(GBP_1_23, GBP_2_33.toMoney(), GBP_2_36);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmountMinorInt(), 592);
+    }
+
+    public void test_factory_total_array_3Mixed() {
+        BigMoneyProvider[] array = new BigMoneyProvider[] {GBP_1_23, GBP_2_33.toMoney(), GBP_2_36};
+        BigMoney test = BigMoney.total(array);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmountMinorInt(), 592);
+    }
+
+    public void test_factory_total_array_3Money() {
+        Money[] array = new Money[] {GBP_1_23.toMoney(), GBP_2_33.toMoney(), GBP_2_36.toMoney()};
+        BigMoney test = BigMoney.total(array);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmountMinorInt(), 592);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_factory_total_varargs_empty() {
+        BigMoney.total();
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_factory_total_array_empty() {
+        BigMoneyProvider[] array = new BigMoneyProvider[0];
+        BigMoney.total(array);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_total_varargs_currenciesDiffer() {
+        BigMoney.total(GBP_2_33, JPY_423);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_total_array_currenciesDiffer() {
+        BigMoneyProvider[] array = new BigMoneyProvider[] {GBP_2_33, JPY_423};
+        BigMoney.total(array);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_total_varargs_nullFirst() {
+        BigMoney.total((BigMoney) null, GBP_2_33, GBP_2_36);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_total_array_nullFirst() {
+        BigMoneyProvider[] array = new BigMoneyProvider[] {null, GBP_2_33, GBP_2_36};
+        BigMoney.total(array);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_total_varargs_nullNotFirst() {
+        BigMoney.total(GBP_2_33, null, GBP_2_36);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_total_array_nullNotFirst() {
+        BigMoneyProvider[] array = new BigMoneyProvider[] {GBP_2_33, null, GBP_2_36};
+        BigMoney.total(array);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_total_varargs_badProvider() {
+        BigMoney.total(BAD_PROVIDER);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_total_array_badProvider() {
+        BigMoneyProvider[] array = new BigMoneyProvider[] {BAD_PROVIDER};
+        BigMoney.total(array);
     }
 
     //-----------------------------------------------------------------------
@@ -348,7 +439,14 @@ public class TestBigMoney {
         assertEquals(test.getAmount(), BigDecimal.valueOf(5921, 3));
     }
 
-    @Test(expectedExceptions = NoSuchElementException.class)
+    public void test_factory_total_Iterable_Mixed() {
+        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_1_23.toMoney(), GBP_2_33);
+        BigMoney test = BigMoney.total(iterable);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), BigDecimal.valueOf(356, 2));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_factory_total_Iterable_empty() {
         Iterable<BigMoney> iterable = Collections.emptyList();
         BigMoney.total(iterable);
@@ -372,6 +470,129 @@ public class TestBigMoney {
         BigMoney.total(iterable);
     }
 
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_total_Iterable_badProvider() {
+        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(BAD_PROVIDER);
+        BigMoney.total(iterable);
+    }
+
+    //-----------------------------------------------------------------------
+    // total(CurrencyUnit,BigMoneyProvider...)
+    //-----------------------------------------------------------------------
+    public void test_factory_total_CurrencyUnitVarargs_1() {
+        BigMoney test = BigMoney.total(GBP, GBP_1_23);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmountMinorInt(), 123);
+    }
+
+    public void test_factory_total_CurrencyUnitArray_1() {
+        BigMoney[] array = new BigMoney[] {GBP_1_23};
+        BigMoney test = BigMoney.total(GBP, array);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmountMinorInt(), 123);
+    }
+
+    public void test_factory_total_CurrencyUnitVarargs_3() {
+        BigMoney test = BigMoney.total(GBP, GBP_1_23, GBP_2_33, GBP_2_36);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmountMinorInt(), 592);
+    }
+
+    public void test_factory_total_CurrencyUnitArray_3() {
+        BigMoney[] array = new BigMoney[] {GBP_1_23, GBP_2_33, GBP_2_36};
+        BigMoney test = BigMoney.total(GBP, array);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmountMinorInt(), 592);
+    }
+
+    public void test_factory_total_CurrencyUnitVarargs_3Mixed() {
+        BigMoney test = BigMoney.total(GBP, GBP_1_23, GBP_2_33.toMoney(), GBP_2_36);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmountMinorInt(), 592);
+    }
+
+    public void test_factory_total_CurrencyUnitArray_3Mixed() {
+        BigMoneyProvider[] array = new BigMoneyProvider[] {GBP_1_23, GBP_2_33.toMoney(), GBP_2_36};
+        BigMoney test = BigMoney.total(GBP, array);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmountMinorInt(), 592);
+    }
+
+    public void test_factory_total_CurrencyUnitArray_3Money() {
+        Money[] array = new Money[] {GBP_1_23.toMoney(), GBP_2_33.toMoney(), GBP_2_36.toMoney()};
+        BigMoney test = BigMoney.total(GBP, array);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmountMinorInt(), 592);
+    }
+
+    public void test_factory_total_CurrencyUnitVarargs_empty() {
+        BigMoney test = BigMoney.total(GBP);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmountMinorInt(), 0);
+    }
+
+    public void test_factory_total_CurrencyUnitArray_empty() {
+        BigMoney[] array = new BigMoney[0];
+        BigMoney test = BigMoney.total(GBP, array);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmountMinorInt(), 0);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_total_CurrencyUnitVarargs_currenciesDiffer() {
+        BigMoney.total(GBP, JPY_423);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_total_CurrencyUnitArray_currenciesDiffer() {
+        BigMoney[] array = new BigMoney[] {JPY_423};
+        BigMoney.total(GBP, array);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_total_CurrencyUnitVarargs_currenciesDifferInArray() {
+        BigMoney.total(GBP, GBP_2_33, JPY_423);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_total_CurrencyUnitArray_currenciesDifferInArray() {
+        BigMoney[] array = new BigMoney[] {GBP_2_33, JPY_423};
+        BigMoney.total(GBP, array);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_total_CurrencyUnitVarargs_nullFirst() {
+        BigMoney.total(GBP, null, GBP_2_33, GBP_2_36);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_total_CurrencyUnitArray_nullFirst() {
+        BigMoney[] array = new BigMoney[] {null, GBP_2_33, GBP_2_36};
+        BigMoney.total(GBP, array);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_total_CurrencyUnitVarargs_nullNotFirst() {
+        BigMoney.total(GBP, GBP_2_33, null, GBP_2_36);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_total_CurrencyUnitArray_nullNotFirst() {
+        BigMoney[] array = new BigMoney[] {GBP_2_33, null, GBP_2_36};
+        BigMoney.total(GBP, array);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_total_CurrencyUnitVarargs_badProvider() {
+        BigMoney.total(GBP, BAD_PROVIDER);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_total_CurrencyUnitArray_badProvider() {
+        BigMoneyProvider[] array = new BigMoneyProvider[] {BAD_PROVIDER};
+        BigMoney.total(GBP, array);
+    }
+
     //-----------------------------------------------------------------------
     // total(CurrencyUnit,Iterable)
     //-----------------------------------------------------------------------
@@ -380,6 +601,13 @@ public class TestBigMoney {
         BigMoney test = BigMoney.total(GBP, iterable);
         assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmount(), BigDecimal.valueOf(5921, 3));
+    }
+
+    public void test_factory_total_CurrencyUnitIterable_Mixed() {
+        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_1_23.toMoney(), GBP_2_33);
+        BigMoney test = BigMoney.total(GBP, iterable);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), BigDecimal.valueOf(356, 2));
     }
 
     public void test_factory_total_CurrencyUnitIterable_empty() {
@@ -391,6 +619,12 @@ public class TestBigMoney {
 
     @Test(expectedExceptions = MoneyException.class)
     public void test_factory_total_CurrencyUnitIterable_currenciesDiffer() {
+        Iterable<BigMoney> iterable = Arrays.asList(JPY_423);
+        BigMoney.total(GBP, iterable);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_factory_total_CurrencyUnitIterable_currenciesDifferInIterable() {
         Iterable<BigMoney> iterable = Arrays.asList(GBP_2_33, JPY_423);
         BigMoney.total(GBP, iterable);
     }
@@ -404,6 +638,12 @@ public class TestBigMoney {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_factory_total_CurrencyUnitIterable_nullNotFirst() {
         Iterable<BigMoney> iterable = Arrays.asList(GBP_2_33, null, GBP_2_36);
+        BigMoney.total(GBP, iterable);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_factory_total_CurrencyUnitIterable_badProvider() {
+        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(BAD_PROVIDER);
         BigMoney.total(GBP, iterable);
     }
 
@@ -910,6 +1150,70 @@ public class TestBigMoney {
     }
 
     //-----------------------------------------------------------------------
+    // plus(Iterable)
+    //-----------------------------------------------------------------------
+    public void test_plus_Iterable_BigMoneyProvider() {
+        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_2_33, GBP_1_23);
+        BigMoney test = GBP_2_34.plus(iterable);
+        assertEquals(test.toString(), "GBP 5.90");
+    }
+
+    public void test_plus_Iterable_BigMoney() {
+        Iterable<BigMoney> iterable = Arrays.<BigMoney>asList(GBP_2_33, GBP_1_23);
+        BigMoney test = GBP_2_34.plus(iterable);
+        assertEquals(test.toString(), "GBP 5.90");
+    }
+
+    public void test_plus_Iterable_Money() {
+        Iterable<Money> iterable = Arrays.<Money>asList(GBP_2_33.toMoney(), GBP_1_23.toMoney());
+        BigMoney test = GBP_2_34.plus(iterable);
+        assertEquals(test.toString(), "GBP 5.90");
+    }
+
+    public void test_plus_Iterable_Mixed() {
+        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_2_33.toMoney(), new BigMoneyProvider() {
+            public BigMoney toBigMoney() {
+                return GBP_1_23;
+            }
+        });
+        BigMoney test = GBP_2_34.plus(iterable);
+        assertEquals(test.toString(), "GBP 5.90");
+    }
+
+    public void test_plus_Iterable_zero() {
+        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_0_00);
+        BigMoney test = GBP_2_34.plus(iterable);
+        assertEquals(test, GBP_2_34);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_plus_Iterable_currencyMismatch() {
+        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_2_33, JPY_423);
+        GBP_M5_78.plus(iterable);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_plus_Iterable_nullEntry() {
+        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_2_33, null);
+        GBP_M5_78.plus(iterable);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_plus_Iterable_nullIterable() {
+        GBP_M5_78.plus((Iterable<BigMoneyProvider>) null);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_plus_Iterable_badProvider() {
+        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(new BigMoneyProvider() {
+            public BigMoney toBigMoney() {
+                return null;
+            }
+        });
+        GBP_M5_78.plus(iterable);
+    }
+
+    //-----------------------------------------------------------------------
     // plus(BigMoneyProvider)
     //-----------------------------------------------------------------------
     public void test_plus_BigMoneyProvider_zero() {
@@ -949,6 +1253,15 @@ public class TestBigMoney {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_plus_BigMoneyProvider_nullBigMoneyProvider() {
         GBP_M5_78.plus((BigMoneyProvider) null);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_plus_BigMoneyProvider_badProvider() {
+        GBP_M5_78.plus(new BigMoneyProvider() {
+            public BigMoney toBigMoney() {
+                return null;
+            }
+        });
     }
 
     //-----------------------------------------------------------------------
@@ -1164,6 +1477,70 @@ public class TestBigMoney {
     }
 
     //-----------------------------------------------------------------------
+    // minus(Iterable)
+    //-----------------------------------------------------------------------
+    public void test_minus_Iterable_BigMoneyProvider() {
+        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_2_33, GBP_1_23);
+        BigMoney test = GBP_2_34.minus(iterable);
+        assertEquals(test.toString(), "GBP -1.22");
+    }
+
+    public void test_minus_Iterable_BigMoney() {
+        Iterable<BigMoney> iterable = Arrays.<BigMoney>asList(GBP_2_33, GBP_1_23);
+        BigMoney test = GBP_2_34.minus(iterable);
+        assertEquals(test.toString(), "GBP -1.22");
+    }
+
+    public void test_minus_Iterable_Money() {
+        Iterable<Money> iterable = Arrays.<Money>asList(GBP_2_33.toMoney(), GBP_1_23.toMoney());
+        BigMoney test = GBP_2_34.minus(iterable);
+        assertEquals(test.toString(), "GBP -1.22");
+    }
+
+    public void test_minus_Iterable_Mixed() {
+        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_2_33.toMoney(), new BigMoneyProvider() {
+            public BigMoney toBigMoney() {
+                return GBP_1_23;
+            }
+        });
+        BigMoney test = GBP_2_34.minus(iterable);
+        assertEquals(test.toString(), "GBP -1.22");
+    }
+
+    public void test_minus_Iterable_zero() {
+        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_0_00);
+        BigMoney test = GBP_2_34.minus(iterable);
+        assertEquals(test, GBP_2_34);
+    }
+
+    @Test(expectedExceptions = MoneyException.class)
+    public void test_minus_Iterable_currencyMismatch() {
+        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_2_33, JPY_423);
+        GBP_M5_78.minus(iterable);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_minus_Iterable_nullEntry() {
+        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_2_33, null);
+        GBP_M5_78.minus(iterable);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_minus_Iterable_nullIterable() {
+        GBP_M5_78.minus((Iterable<BigMoneyProvider>) null);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_minus_Iterable_badProvider() {
+        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(new BigMoneyProvider() {
+            public BigMoney toBigMoney() {
+                return null;
+            }
+        });
+        GBP_M5_78.minus(iterable);
+    }
+
+    //-----------------------------------------------------------------------
     // minus(BigMoneyProvider)
     //-----------------------------------------------------------------------
     public void test_minus_BigMoneyProvider_zero() {
@@ -1203,6 +1580,15 @@ public class TestBigMoney {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_minus_BigMoneyProvider_nullBigMoneyProvider() {
         GBP_M5_78.minus((BigMoneyProvider) null);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_minus_BigMoneyProvider_badProvider() {
+        GBP_M5_78.minus(new BigMoneyProvider() {
+            public BigMoney toBigMoney() {
+                return null;
+            }
+        });
     }
 
     //-----------------------------------------------------------------------
