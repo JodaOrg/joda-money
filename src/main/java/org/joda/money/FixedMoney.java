@@ -33,6 +33,8 @@ import java.math.RoundingMode;
  * all methods will operate based on that scale.
  * <p>
  * FixedMoney is immutable and thread-safe.
+ * <p>
+ * THIS CLASS MAY BE REMOVED IN FUTURE VERSIONS (prior to v1.0).
  */
 public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyProvider>, Serializable {
 
