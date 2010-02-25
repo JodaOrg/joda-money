@@ -26,7 +26,6 @@ import org.testng.annotations.Test;
 @Test
 public class TestMoneyUtils_Money {
 
-    private static final CurrencyUnit GBP = CurrencyUnit.of("GBP");
     private static final Money GBP_0 = Money.parse("GBP 0");
     private static final Money GBP_20 = Money.parse("GBP 20");
     private static final Money GBP_30 = Money.parse("GBP 30");
@@ -70,22 +69,6 @@ public class TestMoneyUtils_Money {
 
     public void test_isZero_null() {
         assertSame(MoneyUtils.isZero((Money) null), true);
-    }
-
-    //-----------------------------------------------------------------------
-    // defaultToZero(Money,CurrencyUnit)
-    //-----------------------------------------------------------------------
-    public void test_defaultToZero_nonNull() {
-        assertSame(MoneyUtils.defaultToZero(GBP_20, GBP), GBP_20);
-    }
-
-    public void test_defaultToZero_null() {
-        assertEquals(MoneyUtils.defaultToZero((Money) null, GBP), GBP_0);
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_defaultToZero_nullCurrency() {
-        MoneyUtils.defaultToZero(GBP_20, (CurrencyUnit) null);
     }
 
     //-----------------------------------------------------------------------

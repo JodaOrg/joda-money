@@ -55,23 +55,6 @@ public final class MoneyUtils {
 
     //-----------------------------------------------------------------------
     /**
-     * Checks a {@code Money} returning a non-null value.
-     * <p>
-     * This returns {@code money} if it is non-null.
-     * Otherwise it returns a zero value based on the currency.
-     * 
-     * @param money  the money to check, null returns zero
-     * @param currency  the currency of the monetary values, used to return zero
-     * @return the defaulted money, never null
-     * @throws NullPointerException if the currency is null
-     */
-    public static Money defaultToZero(Money money, CurrencyUnit currency) {
-        MoneyUtils.checkNotNull(currency, "Currency must not be null");
-        return (money != null ? money : Money.zero(currency));
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Finds the maximum {@code Money} value, handing null.
      * <p>
      * This returns the greater of money1 or money2 where null is ignored.
@@ -155,23 +138,6 @@ public final class MoneyUtils {
             return money2.negated();
         }
         return money1.minus(money2);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Checks a {@code BigMoney} returning a non-null value.
-     * <p>
-     * This returns {@code money} if it is non-null.
-     * Otherwise it returns a zero value based on the currency.
-     * 
-     * @param money  the money to check, null returns zero
-     * @param currency  the currency of the monetary values, used to return zero
-     * @return the defaulted money, never null
-     * @throws NullPointerException if the currency is null
-     */
-    public static BigMoney defaultToZero(BigMoney money, CurrencyUnit currency) {
-        MoneyUtils.checkNotNull(currency, "Currency must not be null");
-        return (money != null ? money : BigMoney.zero(currency));
     }
 
     //-----------------------------------------------------------------------
