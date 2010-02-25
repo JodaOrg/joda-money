@@ -27,19 +27,22 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Defines the style that the amount of a monetary value will be formatted with.
  * <p>
- * The style contains four fields that may be configured based on the locale:
+ * The style contains a number of fields that may be configured based on the locale:
  * <ul>
  * <li>character used for zero, which defined all the numbers from zero to nine
+ * <li>character used for positive and negative symbols
  * <li>character used for the decimal point
  * <li>character used for grouping, such as grouping thousands
  * <li>size for each group, such as 3 for thousands
+ * <li>whether to group the amount
+ * <li>whether to always use a decimal point
  * </ul>
  * <p>
  * The style can be used in three basic ways.
  * <ul>
  * <li>set all the fields manually, resulting in the same amount style for all locales
  * <li>call {@link #localize} manually and optionally adjust to set as required
- * <li>leave the four localized fields as {@code null} and let the locale in the
+ * <li>leave the localized fields as {@code null} and let the locale in the
  *  formatter to determine the style
  * </ul>
  * <p>
