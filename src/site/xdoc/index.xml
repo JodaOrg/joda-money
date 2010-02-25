@@ -12,15 +12,36 @@
 <section name="Joda Money">
 <p>
 Joda-Money provides a library of classes to store amounts of money.
+</p>
+<p>
+Joda-Money does not provide, nor is it intended to provide, monetary algorithms beyond the most basic and obvious.
+This is because the requirements for these algorithms vary widely between domains.
 This library is intended to act as the base layer, providing classes that should be in the JDK.
-Classes to handle the intricacies of financial transactions are not included.
 </p>
 <p>
+As a flavour of Joda-Money, here's some example code:
+<source>
+  // create a monetary value
+  Money money = Money.parse("USD 23.87");
+  
+  // add another amount (safe double conversion)
+  CurrencyUnit usd = CurrencyUnit.of("USD");
+  money = money.plus(Money.of(usd, 12.43d));
+  
+  // subtracts an amount in dollars
+  money = money.minusMajor(2);
+  
+  // multiplies by 3.5
+  money = money.multipliedBy(3);  // safe double conversion
+  
+  // compare
+  boolean bigAmount = money.isGreaterThan(dailyWage);
+</source>
+</p>
+<p>
+Version 0.6 was released on 2010-02-25 -
+<a href="https://sourceforge.net/projects/joda-money/files/joda-money/0.6/">Download now</a><br />
 Joda Money is licensed under the business-friendly <a href="license.html">Apache 2.0 licence</a>.
-</p>
-<p>
-Version 0.5 was released on 2009-11-17 -
-<a href="https://sourceforge.net/projects/joda-money/files/joda-money/">Download now</a>
 </p>
 </section>
 
@@ -30,7 +51,7 @@ Version 0.5 was released on 2009-11-17 -
 Various documentation is available:
 <ul>
 <li>The javadoc for the <a href="apidocs/index.html">current release</a></li>
-<!--li>The <a href="userguide.html">user guide</a></li-->
+<li>The <a href="userguide.html">user guide</a></li>
 <!--li>A <a href="faq.html">FAQ</a> list</li-->
 <li>The <a href="http://joda-money.svn.sourceforge.net/viewvc/joda-money/JodaMoney/trunk/">Subversion repository</a></li>
 </ul>
@@ -41,8 +62,9 @@ Various documentation is available:
 <section name="Releases">
 <p>
 There are no full releases yet!
-<a href="https://sourceforge.net/projects/joda-money/files/joda-money/0.5/">Release 0.5</a>
+<a href="https://sourceforge.net/projects/joda-money/files/joda-money/0.6/">Release 0.6</a>
 is the current development release intended for feedback rather than production use.
+(The code is fully tested, but there may yet be bugs and the API may yet change).
 </p>
 <p>
 There are no dependencies beyond JDK 1.5.

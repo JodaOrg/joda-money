@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<document>
+
+ <properties>
+  <title>User guide</title>
+  <author>Stephen Colebourne</author>
+ </properties>
+
+ <body>
+
+<section name="User guide">
+<p>
+Joda-Money is a small Java library providing classes to store, format and parse amounts of money.
+This is a brief user guide to the features available.
+</p>
+</section>
+
+
+<section name="Main classes">
+<p>
+There are two main classes which are both based on <code>BigDecimal</code>:
+<ul>
+<li><b><code>Money</code></b> - an amount in a single currency where the decimal places is determined by the currency</li>
+<li><b><code>BigMoney</code></b> - an amount in a single currency where there is no restriction on the scale</li>
+</ul>
+</p>
+<p>
+For example, the currencies of US dollars, Euros and British Pounds all use 2 decimal places,
+thus a <code>Money</code> instance for any of these currencies will have 2 decimal places.
+By contrast, the Japanese Yen has 0 decimal places, and thus any <code>Money</code> instance with that
+currency will have 0 decimal places.
+</p>
+<p>
+Instances of <code>BigMoney</code> may have any scale that can be supported by <code>BigDecimal</code>.
+</p>
+<p>
+Conversion between a <code>Money</code> and a <code>BigMoney</code> can be performed using the methods
+<code>toBigMoney()</code> and <code>toMoney()</code>. The latter optionally takes a rounding mode to
+handle the case where information must be lost.
+</p>
+<p>
+Both classes implement the <code>BigMoneyProvider</code> interface.
+This allows many different classes, including user supplied classes, to interoperate with Joda-Money.
+A common pattern when writing flexible methods for handling money is to accept this interface.
+The formatting code is a good example of this.
+</p>
+</section>
+
+
+<section name="Currency information">
+<p>
+Joda-Money includes its own currency class as the implementation in the JDK is too restrictive.
+The data for the Joda-Money class is provided by a single configuration file.
+</p>
+<p>
+The file <code>MoneyData.csv</code> holds a list of all the valid currencies.
+The columns are as follows:
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/ISO_4217">ISO-4217</a> currency code - three letters, mandatory</li>
+<li><a href="http://en.wikipedia.org/wiki/ISO_4217">ISO-4217</a> numeric code - from 1 to 999, set to -1 if no numeric code</li>
+<li>Number of decimal places in common usage - the supplied data is based on various sources</li>
+<li>Country codes - a list of <a href="http://en.wikipedia.org/wiki/ISO_3166-1">ISO-3166-1</a>country codes,
+adjacent to one another and without separators</li>
+</ul>
+</p>
+<p>
+The library will load the first version of this file it finds in the classpath based on the
+class loader that Joda-Money is loaded in.
+</p>
+</section>
+
+
+<section name="Formatting">
+<p>
+Formatting is based around the <code>MoneyFormatterBuilder</code> class.
+The builder is used to create a suitable format which is then converted to an immutable <code>MoneyFormatter</code> instance.
+The format may contain localized aspects which can be use by calling <code>withLocale()</code> on the formatter.
+This returns a new formatter as it is immutable.
+</p>
+<p>
+The symbol information for formatting is currently provided by the JDK.
+</p>
+<p>
+<br />
+</p>
+<p>
+<br />
+</p>
+</section>
+
+</body>
+</document>

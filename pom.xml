@@ -76,13 +76,34 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.1</version>
         <configuration>
           <verbose>true</verbose>
           <fork>true</fork>
-          <executable>${JAVA_1_5_HOME}/bin/javac</executable>
           <compilerVersion>1.5</compilerVersion>
           <source>1.5</source>
           <target>1.5</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-toolchains-plugin</artifactId>
+        <version>1.0</version>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+            <goals>
+              <goal>toolchain</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <toolchains>
+            <jdk>
+              <version>1.5</version>
+              <vendor>sun</vendor>
+            </jdk>
+          </toolchains>
         </configuration>
       </plugin>
       <plugin>

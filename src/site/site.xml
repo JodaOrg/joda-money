@@ -15,12 +15,12 @@
   <body>
     <menu name="Joda Money">
       <item name="Overview" href="index.html"/>
-      <!--item name="Users guide" href="userguide.html"/-->
+      <item name="User guide" href="userguide.html"/>
       <!--item name="FAQ" href="faq.html"/-->
-      <item name="Javadoc (Release)" href="apidocs/index.html"/>
+      <item name="Javadoc" href="apidocs/index.html"/>
       <item name="License" href="licensecover.html"/>
       <item name="Release notes" href="changes-report.html"/>
-      <item name="Download" href="http://sourceforge.net/projects/joda-money/files/joda-money/"/>
+      <item name="Download" href="http://sourceforge.net/projects/joda-money/files/joda-money/0.6/"/>
     </menu>
 
     <menu name="Development">
