@@ -165,7 +165,7 @@ public final class MoneyParseContext {
     /**
      * Sets the parsed currency.
      * 
-     * @param curency  the parsed currency, may be null
+     * @param currency  the parsed currency, may be null
      */
     public void setCurrency(CurrencyUnit currency) {
         this.iCurrency = currency;

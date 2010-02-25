@@ -801,7 +801,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * Returns a copy of this monetary value with a collection of monetary amounts added.
      * <p>
      * This adds the specified amounts to this monetary amount, returning a new object.
-     * The amounts are added as though using {@link #plus(Money)}.
+     * The amounts are added as though using {@link #plus(BigMoneyProvider)}.
      * The amounts must be in the same currency.
      * <p>
      * This instance is immutable and unaffected by this method.
@@ -1013,7 +1013,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * Returns a copy of this monetary value with a collection of monetary amounts subtracted.
      * <p>
      * This subtracts the specified amounts from this monetary amount, returning a new object.
-     * The amounts are subtracted one by one as though using {@link #minus(Money)}.
+     * The amounts are subtracted one by one as though using {@link #minus(BigMoneyProvider)}.
      * The amounts must be in the same currency.
      * <p>
      * This instance is immutable and unaffected by this method.

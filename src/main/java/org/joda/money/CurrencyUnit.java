@@ -172,7 +172,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * <p>
      * This method is lenient and does not require the string to be left padded with zeroes.
      *
-     * @param currencyCode  the currency code, not null
+     * @param numericCurrencyCode  the currency code, not null
      * @return the singleton instance, never null
      * @throws IllegalCurrencyException if the currency is unknown
      */

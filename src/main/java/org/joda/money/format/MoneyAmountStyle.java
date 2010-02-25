@@ -325,7 +325,7 @@ public final class MoneyAmountStyle implements Serializable {
      * <p>
      * The standard ASCII symbol is '+'.
      * 
-     * @param zeroCharacter  the zero character, null if to be determined by locale
+     * @param positiveCharacter  the positive character, null if to be determined by locale
      * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle withPositiveSignCharacter(Character positiveCharacter) {
@@ -357,7 +357,7 @@ public final class MoneyAmountStyle implements Serializable {
      * <p>
      * The standard ASCII symbol is '-'.
      * 
-     * @param zeroCharacter  the zero character, null if to be determined by locale
+     * @param negativeCharacter  the negative character, null if to be determined by locale
      * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle withNegativeSignCharacter(Character negativeCharacter) {
