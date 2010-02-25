@@ -357,15 +357,27 @@ public class TestMoney {
         Money.total(array);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_factory_total_varargs_currenciesDiffer() {
-        Money.total(GBP_2_33, JPY_423);
+        try {
+            Money.total(GBP_2_33, JPY_423);
+        } catch (CurrencyMismatchException ex) {
+            assertEquals(ex.getFirstCurrency(), GBP);
+            assertEquals(ex.getSecondCurrency(), JPY);
+            throw ex;
+        }
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_factory_total_array_currenciesDiffer() {
-        Money[] array = new Money[] {GBP_2_33, JPY_423};
-        Money.total(array);
+        try {
+            Money[] array = new Money[] {GBP_2_33, JPY_423};
+            Money.total(array);
+        } catch (CurrencyMismatchException ex) {
+            assertEquals(ex.getFirstCurrency(), GBP);
+            assertEquals(ex.getSecondCurrency(), JPY);
+            throw ex;
+        }
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -406,10 +418,16 @@ public class TestMoney {
         Money.total(iterable);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_factory_total_Iterable_currenciesDiffer() {
-        Iterable<Money> iterable = Arrays.asList(GBP_2_33, JPY_423);
-        Money.total(iterable);
+        try {
+            Iterable<Money> iterable = Arrays.asList(GBP_2_33, JPY_423);
+            Money.total(iterable);
+        } catch (CurrencyMismatchException ex) {
+            assertEquals(ex.getFirstCurrency(), GBP);
+            assertEquals(ex.getSecondCurrency(), JPY);
+            throw ex;
+        }
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -466,26 +484,50 @@ public class TestMoney {
         assertEquals(test.getAmountMinorInt(), 0);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_factory_total_CurrencyUnitVarargs_currenciesDiffer() {
-        Money.total(GBP, JPY_423);
+        try {
+            Money.total(GBP, JPY_423);
+        } catch (CurrencyMismatchException ex) {
+            assertEquals(ex.getFirstCurrency(), GBP);
+            assertEquals(ex.getSecondCurrency(), JPY);
+            throw ex;
+        }
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_factory_total_CurrencyUnitArray_currenciesDiffer() {
-        Money[] array = new Money[] {JPY_423};
-        Money.total(GBP, array);
+        try {
+            Money[] array = new Money[] {JPY_423};
+            Money.total(GBP, array);
+        } catch (CurrencyMismatchException ex) {
+            assertEquals(ex.getFirstCurrency(), GBP);
+            assertEquals(ex.getSecondCurrency(), JPY);
+            throw ex;
+        }
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_factory_total_CurrencyUnitVarargs_currenciesDifferInArray() {
-        Money.total(GBP, GBP_2_33, JPY_423);
+        try {
+            Money.total(GBP, GBP_2_33, JPY_423);
+        } catch (CurrencyMismatchException ex) {
+            assertEquals(ex.getFirstCurrency(), GBP);
+            assertEquals(ex.getSecondCurrency(), JPY);
+            throw ex;
+        }
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_factory_total_CurrencyUnitArray_currenciesDifferInArray() {
-        Money[] array = new Money[] {GBP_2_33, JPY_423};
-        Money.total(GBP, array);
+        try {
+            Money[] array = new Money[] {GBP_2_33, JPY_423};
+            Money.total(GBP, array);
+        } catch (CurrencyMismatchException ex) {
+            assertEquals(ex.getFirstCurrency(), GBP);
+            assertEquals(ex.getSecondCurrency(), JPY);
+            throw ex;
+        }
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -527,16 +569,28 @@ public class TestMoney {
         assertEquals(test.getAmountMinorInt(), 0);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_factory_total_CurrencyUnitIterable_currenciesDiffer() {
-        Iterable<Money> iterable = Arrays.asList(JPY_423);
-        Money.total(GBP, iterable);
+        try {
+            Iterable<Money> iterable = Arrays.asList(JPY_423);
+            Money.total(GBP, iterable);
+        } catch (CurrencyMismatchException ex) {
+            assertEquals(ex.getFirstCurrency(), GBP);
+            assertEquals(ex.getSecondCurrency(), JPY);
+            throw ex;
+        }
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_factory_total_CurrencyUnitIterable_currenciesDifferInIterable() {
-        Iterable<Money> iterable = Arrays.asList(GBP_2_33, JPY_423);
-        Money.total(GBP, iterable);
+        try {
+            Iterable<Money> iterable = Arrays.asList(GBP_2_33, JPY_423);
+            Money.total(GBP, iterable);
+        } catch (CurrencyMismatchException ex) {
+            assertEquals(ex.getFirstCurrency(), GBP);
+            assertEquals(ex.getSecondCurrency(), JPY);
+            throw ex;
+        }
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -608,9 +662,15 @@ public class TestMoney {
         assertSame(test, GBP_1_23);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_nonNull_MoneyCurrencyUnit_nonNullCurrencyMismatch() {
-        Money.nonNull(GBP_1_23, JPY);
+        try {
+            Money.nonNull(GBP_1_23, JPY);
+        } catch (CurrencyMismatchException ex) {
+            assertEquals(ex.getFirstCurrency(), GBP);
+            assertEquals(ex.getSecondCurrency(), JPY);
+            throw ex;
+        }
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -1032,10 +1092,16 @@ public class TestMoney {
         assertSame(test, GBP_2_34);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_plus_Iterable_currencyMismatch() {
-        Iterable<Money> iterable = Arrays.asList(GBP_2_33, JPY_423);
-        GBP_M5_78.plus(iterable);
+        try {
+            Iterable<Money> iterable = Arrays.asList(GBP_2_33, JPY_423);
+            GBP_M5_78.plus(iterable);
+        } catch (CurrencyMismatchException ex) {
+            assertEquals(ex.getFirstCurrency(), GBP);
+            assertEquals(ex.getSecondCurrency(), JPY);
+            throw ex;
+        }
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -1067,9 +1133,15 @@ public class TestMoney {
         assertEquals(test.toString(), "GBP 1.11");
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_plus_Money_currencyMismatch() {
-        GBP_M5_78.plus(USD_1_23);
+        try {
+            GBP_M5_78.plus(USD_1_23);
+        } catch (CurrencyMismatchException ex) {
+            assertEquals(ex.getFirstCurrency(), GBP);
+            assertEquals(ex.getSecondCurrency(), USD);
+            throw ex;
+        }
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -1250,10 +1322,16 @@ public class TestMoney {
         assertSame(test, GBP_2_34);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_minus_Iterable_currencyMismatch() {
-        Iterable<Money> iterable = Arrays.asList(GBP_2_33, JPY_423);
-        GBP_M5_78.minus(iterable);
+        try {
+            Iterable<Money> iterable = Arrays.asList(GBP_2_33, JPY_423);
+            GBP_M5_78.minus(iterable);
+        } catch (CurrencyMismatchException ex) {
+            assertEquals(ex.getFirstCurrency(), GBP);
+            assertEquals(ex.getSecondCurrency(), JPY);
+            throw ex;
+        }
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -1285,9 +1363,15 @@ public class TestMoney {
         assertEquals(test.toString(), "GBP 3.57");
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_minus_Money_currencyMismatch() {
-        GBP_M5_78.minus(USD_1_23);
+        try {
+            GBP_M5_78.minus(USD_1_23);
+        } catch (CurrencyMismatchException ex) {
+            assertEquals(ex.getFirstCurrency(), GBP);
+            assertEquals(ex.getSecondCurrency(), USD);
+            throw ex;
+        }
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -1708,12 +1792,12 @@ public class TestMoney {
         assertEquals(test.toString(), "EUR 5.83");
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_convertedTo_BigDecimalRoundingMode_negative() {
         GBP_2_33.convertedTo(EUR, new BigDecimal("-2.5"), RoundingMode.FLOOR);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_convertedTo_BigDecimalRoundingMode_sameCurrency() {
         GBP_2_33.convertedTo(GBP, new BigDecimal("2.5"), RoundingMode.DOWN);
     }
@@ -1802,7 +1886,7 @@ public class TestMoney {
         assertEquals(t.compareTo(c), -1);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_compareTo_currenciesDiffer() {
         Money a = GBP_2_34;
         Money b = USD_2_35;
@@ -1843,7 +1927,7 @@ public class TestMoney {
         assertEquals(a.isEqual(b), true);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_isEqual_currenciesDiffer() {
         Money a = GBP_2_34;
         Money b = USD_2_35;
@@ -1871,7 +1955,7 @@ public class TestMoney {
         assertEquals(c.isGreaterThan(b), true);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_isGreaterThan_currenciesDiffer() {
         Money a = GBP_2_34;
         Money b = USD_2_35;
@@ -1899,7 +1983,7 @@ public class TestMoney {
         assertEquals(c.isLessThan(b), false);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_isLessThan_currenciesDiffer() {
         Money a = GBP_2_34;
         Money b = USD_2_35;

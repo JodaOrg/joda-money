@@ -99,7 +99,7 @@ public class TestMoneyUtils_Money {
         assertSame(MoneyUtils.max(GBP_30, GBP_20), GBP_30);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_max_differentCurrencies() {
         MoneyUtils.max(GBP_20, EUR_30);
     }
@@ -127,7 +127,7 @@ public class TestMoneyUtils_Money {
         assertSame(MoneyUtils.min(GBP_30, GBP_20), GBP_20);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_min_differentCurrencies() {
         MoneyUtils.min(GBP_20, EUR_30);
     }
@@ -151,7 +151,7 @@ public class TestMoneyUtils_Money {
         assertEquals(MoneyUtils.add(GBP_20, GBP_30), GBP_50);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_add_differentCurrencies() {
         MoneyUtils.add(GBP_20, EUR_30);
     }
@@ -175,7 +175,7 @@ public class TestMoneyUtils_Money {
         assertEquals(MoneyUtils.subtract(GBP_20, GBP_30), GBP_M10);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_subtract_differentCurrencies() {
         MoneyUtils.subtract(GBP_20, EUR_30);
     }

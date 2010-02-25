@@ -263,7 +263,7 @@ public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyPr
      * @param currency  the currency to use, not null
      * @param scale  the scale to use, zero or positive
      * @return the input money or zero in the specified currency and scale, never null
-     * @throws MoneyException if the input money is non-null and the currencies differ
+     * @throws CurrencyMismatchException if the input money is non-null and the currencies differ
      */
     public static FixedMoney nonNull(FixedMoney money, CurrencyUnit currency, int scale) {
         if (money == null) {
@@ -272,10 +272,10 @@ public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyPr
         MoneyUtils.checkNotNull(currency, "Currency must not be null");
         checkScale(scale);
         if (money.getCurrencyUnit().equals(currency) == false) {
-            throw new MoneyException("FixedMoney does not match specified currency");
+            throw new CurrencyMismatchException(money.getCurrencyUnit(), currency);
         }
         if (money.getScale() != scale) {
-            throw new MoneyException("FixedMoney does not match specified scale");
+            throw new IllegalArgumentException("FixedMoney does not match specified scale");
         }
         return money;
     }
@@ -586,7 +586,7 @@ public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyPr
      * 
      * @param moneyToAdd  the monetary value to add, not null
      * @return the new instance with the input amount added, never null
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      * @throws ArithmeticException if the scale of the money is too large
      */
     public FixedMoney plus(BigMoneyProvider moneyToAdd) {
@@ -607,7 +607,7 @@ public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyPr
      * 
      * @param moneyToAdd  the monetary value to add, not null
      * @return the new instance with the input amount added, never null
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public FixedMoney plus(BigMoneyProvider moneyToAdd, RoundingMode roundingMode) {
         return with(iMoney.plusRetainScale(moneyToAdd, roundingMode));
@@ -726,7 +726,7 @@ public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyPr
      * 
      * @param moneyToSubtract  the monetary value to subtract, not null
      * @return the new instance with the input amount subtracted, never null
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      * @throws ArithmeticException if the scale of the money is too large
      */
     public FixedMoney minus(BigMoneyProvider moneyToSubtract) {
@@ -747,7 +747,7 @@ public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyPr
      * 
      * @param moneyToSubtract  the monetary value to subtract, not null
      * @return the new instance with the input amount subtracted, never null
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public FixedMoney minus(BigMoneyProvider moneyToSubtract, RoundingMode roundingMode) {
         return with(iMoney.minusRetainScale(moneyToSubtract, roundingMode));
@@ -1037,8 +1037,8 @@ public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyPr
      * @param conversionMultipler  the conversion factor between the currencies, not null
      * @param roundingMode  the rounding mode to use to bring the decimal places back in line, not null
      * @return the new multiplied instance, never null
-     * @throws MoneyException if the currency is the same as this currency
-     * @throws MoneyException if the conversion multiplier is negative
+     * @throws IllegalArgumentException if the currency is the same as this currency
+     * @throws IllegalArgumentException if the conversion multiplier is negative
      * @throws ArithmeticException if the rounding fails
      */
     public FixedMoney convertedTo(CurrencyUnit currency, BigDecimal conversionMultipler, RoundingMode roundingMode) {
@@ -1099,7 +1099,7 @@ public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyPr
      * 
      * @param other  the other monetary value, not null
      * @return -1 if this is less than , 0 if equal, 1 if greater than
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public int compareTo(BigMoneyProvider other) {
         return iMoney.compareTo(other);
@@ -1114,7 +1114,7 @@ public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyPr
      * 
      * @param other  the other monetary value, not null
      * @return true is this is greater than the specified monetary value
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      * @see #equals(Object)
      */
     public boolean isEqual(BigMoneyProvider other) {
@@ -1130,7 +1130,7 @@ public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyPr
      * 
      * @param other  the other monetary value, not null
      * @return true is this is greater than the specified monetary value
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public boolean isGreaterThan(BigMoneyProvider other) {
         return iMoney.isGreaterThan(other);
@@ -1145,7 +1145,7 @@ public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyPr
      * 
      * @param other  the other monetary value, not null
      * @return true is this is less than the specified monetary value
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public boolean isLessThan(BigMoneyProvider other) {
         return iMoney.isLessThan(other);

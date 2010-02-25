@@ -80,7 +80,7 @@ public final class MoneyUtils {
      * @param money1  the first money instance, null returns money2
      * @param money2  the first money instance, null returns money1
      * @return the maximum value, null if both inputs are null
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public static Money max(Money money1, Money money2) {
         if (money1 == null) {
@@ -101,7 +101,7 @@ public final class MoneyUtils {
      * @param money1  the first money instance, null returns money2
      * @param money2  the first money instance, null returns money1
      * @return the minimum value, null if both inputs are null
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public static Money min(Money money1, Money money2) {
         if (money1 == null) {
@@ -123,7 +123,7 @@ public final class MoneyUtils {
      * @param money1  the first money instance, null returns money2
      * @param money2  the first money instance, null returns money1
      * @return the total, where null is ignored, null if both inputs are null
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public static Money add(Money money1, Money money2) {
         if (money1 == null) {
@@ -145,7 +145,7 @@ public final class MoneyUtils {
      * @param money1  the first money instance, null treated as zero
      * @param money2  the first money instance, null returns money1
      * @return the total, where null is ignored, null if both inputs are null
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public static Money subtract(Money money1, Money money2) {
         if (money2 == null) {
@@ -184,7 +184,7 @@ public final class MoneyUtils {
      * @param money1  the first money instance, null returns money2
      * @param money2  the first money instance, null returns money1
      * @return the maximum value, null if both inputs are null
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public static BigMoney max(BigMoney money1, BigMoney money2) {
         if (money1 == null) {
@@ -205,7 +205,7 @@ public final class MoneyUtils {
      * @param money1  the first money instance, null returns money2
      * @param money2  the first money instance, null returns money1
      * @return the minimum value, null if both inputs are null
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public static BigMoney min(BigMoney money1, BigMoney money2) {
         if (money1 == null) {
@@ -227,7 +227,7 @@ public final class MoneyUtils {
      * @param money1  the first money instance, null returns money2
      * @param money2  the first money instance, null returns money1
      * @return the total, where null is ignored, null if both inputs are null
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public static BigMoney add(BigMoney money1, BigMoney money2) {
         if (money1 == null) {
@@ -249,7 +249,7 @@ public final class MoneyUtils {
      * @param money1  the first money instance, null treated as zero
      * @param money2  the first money instance, null returns money1
      * @return the total, where null is ignored, null if both inputs are null
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public static BigMoney subtract(BigMoney money1, BigMoney money2) {
         if (money2 == null) {

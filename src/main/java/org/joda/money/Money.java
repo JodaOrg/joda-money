@@ -237,7 +237,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @param monies  the monetary values to total, not empty, no null elements, not null
      * @return the total, never null
      * @throws IllegalArgumentException if the array is empty
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public static Money total(Money... monies) {
         MoneyUtils.checkNotNull(monies, "Money array must not be null");
@@ -262,7 +262,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @param monies  the monetary values to total, not empty, no null elements, not null
      * @return the total, never null
      * @throws IllegalArgumentException if the iterable is empty
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public static Money total(Iterable<Money> monies) {
         MoneyUtils.checkNotNull(monies, "Money iterator must not be null");
@@ -289,7 +289,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @param currency  the currency to total in, not null
      * @param monies  the monetary values to total, no null elements, not null
      * @return the total, never null
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public static Money total(CurrencyUnit currency, Money... monies) {
         return Money.zero(currency).plus(Arrays.asList(monies));
@@ -306,7 +306,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @param currency  the currency to total in, not null
      * @param monies  the monetary values to total, no null elements, not null
      * @return the total, never null
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public static Money total(CurrencyUnit currency, Iterable<Money> monies) {
         return Money.zero(currency).plus(monies);
@@ -343,7 +343,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @param money  the monetary value to check, may be null
      * @param currency  the currency to use, not null
      * @return the input money or zero in the specified currency, never null
-     * @throws MoneyException if the input money is non-null and the currencies differ
+     * @throws CurrencyMismatchException if the input money is non-null and the currencies differ
      */
     public static Money nonNull(Money money, CurrencyUnit currency) {
         if (money == null) {
@@ -351,7 +351,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
         }
         if (money.getCurrencyUnit().equals(currency) == false) {
             MoneyUtils.checkNotNull(currency, "Currency must not be null");
-            throw new MoneyException("Money does not match specified currency");
+            throw new CurrencyMismatchException(money.getCurrencyUnit(), currency);
         }
         return money;
     }
@@ -717,7 +717,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * 
      * @param moniesToAdd  the monetary values to add, no null elements, not null
      * @return the new instance with the input amounts added, never null
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public Money plus(Iterable<Money> moniesToAdd) {
         BigMoney total = iMoney;
@@ -741,7 +741,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * 
      * @param moneyToAdd  the monetary value to add, not null
      * @return the new instance with the input amount added, never null
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public Money plus(Money moneyToAdd) {
         return with(iMoney.plus(moneyToAdd));
@@ -867,7 +867,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * 
      * @param moniesToSubtract  the monetary values to subtract, no null elements, not null
      * @return the new instance with the input amounts subtracted, never null
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public Money minus(Iterable<Money> moniesToSubtract) {
         BigMoney total = iMoney;
@@ -891,7 +891,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * 
      * @param moneyToSubtract  the monetary value to subtract, not null
      * @return the new instance with the input amount subtracted, never null
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public Money minus(Money moneyToSubtract) {
         return with(iMoney.minus(moneyToSubtract));
@@ -1181,8 +1181,8 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @param conversionMultipler  the conversion factor between the currencies, not null
      * @param roundingMode  the rounding mode to use to bring the decimal places back in line, not null
      * @return the new multiplied instance, never null
-     * @throws MoneyException if the currency is the same as this currency
-     * @throws MoneyException if the conversion multiplier is negative
+     * @throws IllegalArgumentException if the currency is the same as this currency
+     * @throws IllegalArgumentException if the conversion multiplier is negative
      * @throws ArithmeticException if the rounding fails
      */
     public Money convertedTo(CurrencyUnit currency, BigDecimal conversionMultipler, RoundingMode roundingMode) {
@@ -1230,7 +1230,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * 
      * @param other  the other monetary value, not null
      * @return -1 if this is less than , 0 if equal, 1 if greater than
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public int compareTo(BigMoneyProvider other) {
         return iMoney.compareTo(other);
@@ -1245,7 +1245,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * 
      * @param other  the other monetary value, not null
      * @return true is this is greater than the specified monetary value
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      * @see #equals(Object)
      */
     public boolean isEqual(BigMoneyProvider other) {
@@ -1261,7 +1261,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * 
      * @param other  the other monetary value, not null
      * @return true is this is greater than the specified monetary value
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public boolean isGreaterThan(BigMoneyProvider other) {
         return iMoney.isGreaterThan(other);
@@ -1276,7 +1276,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * 
      * @param other  the other monetary value, not null
      * @return true is this is less than the specified monetary value
-     * @throws MoneyException if the currencies differ
+     * @throws CurrencyMismatchException if the currencies differ
      */
     public boolean isLessThan(BigMoneyProvider other) {
         return iMoney.isLessThan(other);

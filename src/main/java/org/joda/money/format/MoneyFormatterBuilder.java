@@ -23,7 +23,7 @@ import java.util.Locale;
 
 import org.joda.money.BigMoney;
 import org.joda.money.CurrencyUnit;
-import org.joda.money.MoneyException;
+import org.joda.money.IllegalCurrencyException;
 
 /**
  * Provides the ability to build a formatter for monetary values.
@@ -445,7 +445,7 @@ public final class MoneyFormatterBuilder {
                     try {
                         context.setCurrency(CurrencyUnit.of(code));
                         context.setIndex(endPos);
-                    } catch (MoneyException ex) {
+                    } catch (IllegalCurrencyException ex) {
                         context.setError();
                     }
                 }
@@ -465,7 +465,7 @@ public final class MoneyFormatterBuilder {
                 try {
                     context.setCurrency(CurrencyUnit.ofNumericCode(code));
                     context.setIndex(endPos);
-                } catch (MoneyException ex) {
+                } catch (IllegalCurrencyException ex) {
                     context.setError();
                 }
             }
@@ -489,7 +489,7 @@ public final class MoneyFormatterBuilder {
                 try {
                     context.setCurrency(CurrencyUnit.ofNumericCode(code));
                     context.setIndex(endPos);
-                } catch (MoneyException ex) {
+                } catch (IllegalCurrencyException ex) {
                     context.setError();
                 }
             }

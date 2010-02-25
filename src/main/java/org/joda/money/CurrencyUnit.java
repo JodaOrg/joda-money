@@ -155,13 +155,13 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      *
      * @param currencyCode  the currency code, not null
      * @return the singleton instance, never null
-     * @throws MoneyException if the currency is unknown
+     * @throws IllegalCurrencyException if the currency is unknown
      */
     public static CurrencyUnit of(String currencyCode) {
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
         CurrencyUnit currency = cCurrenciesByCode.get(currencyCode);
         if (currency == null) {
-            throw new MoneyException("Unknown currency '" + currencyCode + '\'');
+            throw new IllegalCurrencyException("Unknown currency '" + currencyCode + '\'');
         }
         return currency;
     }
@@ -174,7 +174,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      *
      * @param currencyCode  the currency code, not null
      * @return the singleton instance, never null
-     * @throws MoneyException if the currency is unknown
+     * @throws IllegalCurrencyException if the currency is unknown
      */
     public static CurrencyUnit ofNumericCode(String numericCurrencyCode) {
         MoneyUtils.checkNotNull(numericCurrencyCode, "Currency code must not be null");
@@ -189,7 +189,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
                                      (numericCurrencyCode.charAt(1) - '0') * 10 +
                                       numericCurrencyCode.charAt(2) - '0');
             default:
-                throw new MoneyException("Unknown currency '" + numericCurrencyCode + '\'');
+                throw new IllegalCurrencyException("Unknown currency '" + numericCurrencyCode + '\'');
         }
     }
 
@@ -199,12 +199,12 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      *
      * @param numericCurrencyCode  the numeric currency code, not null
      * @return the singleton instance, never null
-     * @throws MoneyException if the currency is unknown
+     * @throws IllegalCurrencyException if the currency is unknown
      */
     public static CurrencyUnit ofNumericCode(int numericCurrencyCode) {
         CurrencyUnit currency = cCurrenciesByNumericCode.get(numericCurrencyCode);
         if (currency == null) {
-            throw new MoneyException("Unknown currency '" + numericCurrencyCode + '\'');
+            throw new IllegalCurrencyException("Unknown currency '" + numericCurrencyCode + '\'');
         }
         return currency;
     }
@@ -216,13 +216,13 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      *
      * @param locale  the locale, not null
      * @return the singleton instance, never null
-     * @throws MoneyException if the currency is unknown
+     * @throws IllegalCurrencyException if the currency is unknown
      */
     public static CurrencyUnit of(Locale locale) {
         MoneyUtils.checkNotNull(locale, "Locale must not be null");
         CurrencyUnit currency = cCurrenciesByCountry.get(locale.getCountry());
         if (currency == null) {
-            throw new MoneyException("Unknown currency for locale '" + locale + '\'');
+            throw new IllegalCurrencyException("Unknown currency for locale '" + locale + '\'');
         }
         return currency;
     }
@@ -235,13 +235,13 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      *
      * @param countryCode  the country code, not null
      * @return the singleton instance, never null
-     * @throws MoneyException if the currency is unknown
+     * @throws IllegalCurrencyException if the currency is unknown
      */
     public static CurrencyUnit ofCountry(String countryCode) {
         MoneyUtils.checkNotNull(countryCode, "Country code must not be null");
         CurrencyUnit currency = cCurrenciesByCountry.get(countryCode);
         if (currency == null) {
-            throw new MoneyException("Unknown currency for country '" + countryCode + '\'');
+            throw new IllegalCurrencyException("Unknown currency for country '" + countryCode + '\'');
         }
         return currency;
     }
@@ -254,7 +254,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      *
      * @param currencyCode  the currency code, not null
      * @return the singleton instance, never null
-     * @throws MoneyException if the currency is unknown
+     * @throws IllegalCurrencyException if the currency is unknown
      */
     public static CurrencyUnit getInstance(String currencyCode) {
         return CurrencyUnit.of(currencyCode);
@@ -267,7 +267,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      *
      * @param locale  the locale, not null
      * @return the singleton instance, never null
-     * @throws MoneyException if the currency is unknown
+     * @throws IllegalCurrencyException if the currency is unknown
      */
     public static CurrencyUnit getInstance(Locale locale) {
         return CurrencyUnit.of(locale);
@@ -389,7 +389,6 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * is returned.
      * 
      * @return the JDK currency instance, never null
-     * @throws IllegalArgumentException if no matching currency exists in the JDK
      */
     public String getSymbol() {
         try {
@@ -405,8 +404,8 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * If this currency doesn't have a JDK equivalent, then the currency code
      * is returned.
      * 
+     * @param locale  the locale to get the symbol for, not null
      * @return the JDK currency instance, never null
-     * @throws IllegalArgumentException if no matching currency exists in the JDK
      */
     public String getSymbol(Locale locale) {
         MoneyUtils.checkNotNull(locale, "Locale must not be null");

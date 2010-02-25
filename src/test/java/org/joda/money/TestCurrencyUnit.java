@@ -117,22 +117,22 @@ public class TestCurrencyUnit {
         CurrencyUnit.of((String) null);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = IllegalCurrencyException.class)
     public void test_factory_of_String_unknownCurrency() {
         try {
             CurrencyUnit.of("ABC");
-        } catch (MoneyException ex) {
+        } catch (IllegalCurrencyException ex) {
             assertEquals(ex.getMessage(), "Unknown currency 'ABC'");
             throw ex;
         }
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = IllegalCurrencyException.class)
     public void test_factory_of_String_empty() {
         CurrencyUnit.of("");
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = IllegalCurrencyException.class)
     public void test_factory_of_String_tooLong() {
         CurrencyUnit.of("ABCD");
     }
@@ -170,36 +170,36 @@ public class TestCurrencyUnit {
         CurrencyUnit.ofNumericCode((String) null);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = IllegalCurrencyException.class)
     public void test_factory_ofNumericCode_String_unknownCurrency() {
         try {
             CurrencyUnit.ofNumericCode("111");
-        } catch (MoneyException ex) {
+        } catch (IllegalCurrencyException ex) {
             assertEquals(ex.getMessage(), "Unknown currency '111'");
             throw ex;
         }
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = IllegalCurrencyException.class)
     public void test_factory_ofNumericCode_String_negative() {
         CurrencyUnit.ofNumericCode("-1");
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = IllegalCurrencyException.class)
     public void test_factory_ofNumericCode_String_empty() {
         try {
             CurrencyUnit.ofNumericCode("");
-        } catch (MoneyException ex) {
+        } catch (IllegalCurrencyException ex) {
             assertEquals(ex.getMessage(), "Unknown currency ''");
             throw ex;
         }
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = IllegalCurrencyException.class)
     public void test_factory_ofNumericCode_String_tooLong() {
         try {
             CurrencyUnit.ofNumericCode("1234");
-        } catch (MoneyException ex) {
+        } catch (IllegalCurrencyException ex) {
             assertEquals(ex.getMessage(), "Unknown currency '1234'");
             throw ex;
         }
@@ -223,31 +223,31 @@ public class TestCurrencyUnit {
         assertEquals(test.getCurrencyCode(), "ALL");
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = IllegalCurrencyException.class)
     public void test_factory_ofNumericCode_int_unknownCurrency() {
         try {
             CurrencyUnit.ofNumericCode(111);
-        } catch (MoneyException ex) {
+        } catch (IllegalCurrencyException ex) {
             assertEquals(ex.getMessage(), "Unknown currency '111'");
             throw ex;
         }
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = IllegalCurrencyException.class)
     public void test_factory_ofNumericCode_int_negative() {
         try {
             CurrencyUnit.ofNumericCode(-1);
-        } catch (MoneyException ex) {
+        } catch (IllegalCurrencyException ex) {
             assertEquals(ex.getMessage(), "Unknown currency '-1'");
             throw ex;
         }
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = IllegalCurrencyException.class)
     public void test_factory_ofNumericCode_int_tooLong() {
         try {
             CurrencyUnit.ofNumericCode(1234);
-        } catch (MoneyException ex) {
+        } catch (IllegalCurrencyException ex) {
             assertEquals(ex.getMessage(), "Unknown currency '1234'");
             throw ex;
         }
@@ -266,11 +266,11 @@ public class TestCurrencyUnit {
         CurrencyUnit.of((Locale) null);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = IllegalCurrencyException.class)
     public void test_factory_of_Locale_unknownCurrency() {
         try {
             CurrencyUnit.of(new Locale("en", "XY"));
-        } catch (MoneyException ex) {
+        } catch (IllegalCurrencyException ex) {
             assertEquals(ex.getMessage(), "Unknown currency for locale 'en_XY'");
             throw ex;
         }
@@ -289,11 +289,11 @@ public class TestCurrencyUnit {
         CurrencyUnit.ofCountry((String) null);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = IllegalCurrencyException.class)
     public void test_factory_ofCountry_String_unknownCurrency() {
         try {
             CurrencyUnit.ofCountry("gb");
-        } catch (MoneyException ex) {
+        } catch (IllegalCurrencyException ex) {
             assertEquals(ex.getMessage(), "Unknown currency for country 'gb'");
             throw ex;
         }
@@ -312,7 +312,7 @@ public class TestCurrencyUnit {
         CurrencyUnit.getInstance((String) null);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = IllegalCurrencyException.class)
     public void test_factory_getInstance_String_unknownCurrency() {
         CurrencyUnit.getInstance("ABC");
     }
@@ -330,7 +330,7 @@ public class TestCurrencyUnit {
         CurrencyUnit.getInstance((Locale) null);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = IllegalCurrencyException.class)
     public void test_factory_getInstance_Locale_unknownCurrency() {
         CurrencyUnit.getInstance(new Locale("en", "XY"));
     }

@@ -16,32 +16,25 @@
 package org.joda.money;
 
 /**
- * Exception thrown when a monetary calculation fails.
+ * Exception thrown when the requested currency is illegal.
+ * <p>
+ * For example, this exception would be thrown when trying to obtain a
+ * currency using an unrecognised currency code or locale.
  *
  * @author Stephen Colebourne
  */
-public class MoneyException extends IllegalArgumentException {
+public class IllegalCurrencyException extends IllegalArgumentException {
 
     /** Serialization lock. */
-    private static final long serialVersionUID = 735871535128L;
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructor.
      * 
-     * @param message  the message
+     * @param message  the message, may be null
      */
-    public MoneyException(String message) {
+    public IllegalCurrencyException(String message) {
         super(message);
-    }
-
-    /**
-     * Constructor.
-     * 
-     * @param message  the message
-     * @param cause  the exception cause
-     */
-    public MoneyException(String message, Throwable cause) {
-        super(message, cause);
     }
 
 }

@@ -323,7 +323,7 @@ public class TestFixedMoney {
         assertSame(test, GBP_1_23);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_nonNull_MoneyCurrencyUnitint_nonNullCurrencyMismatch() {
         FixedMoney.nonNull(GBP_1_23, JPY, 2);
     }
@@ -655,7 +655,7 @@ public class TestFixedMoney {
         assertEquals(test.toString(), "GBP 1.11");
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_plus_Money_currencyMismatch() {
         GBP_M5_78.plus(USD_1_23);
     }
@@ -823,7 +823,7 @@ public class TestFixedMoney {
         assertEquals(test.toString(), "GBP 3.57");
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_minus_Money_currencyMismatch() {
         GBP_M5_78.minus(USD_1_23);
     }
@@ -1228,12 +1228,12 @@ public class TestFixedMoney {
         assertEquals(test.toString(), "EUR 5.83");
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_convertedTo_BigDecimalRoundingMode_negative() {
         GBP_2_33.convertedTo(EUR, new BigDecimal("-2.5"), RoundingMode.FLOOR);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_convertedTo_BigDecimalRoundingMode_sameCurrency() {
         GBP_2_33.convertedTo(GBP, new BigDecimal("2.5"), RoundingMode.DOWN);
     }
@@ -1334,7 +1334,7 @@ public class TestFixedMoney {
         assertEquals(t.compareTo(c), -1);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_compareTo_currenciesDiffer() {
         FixedMoney a = GBP_2_34;
         FixedMoney b = USD_2_35;
@@ -1375,7 +1375,7 @@ public class TestFixedMoney {
         assertEquals(a.isEqual(b), true);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_isEqual_currenciesDiffer() {
         FixedMoney a = GBP_2_34;
         FixedMoney b = USD_2_35;
@@ -1403,7 +1403,7 @@ public class TestFixedMoney {
         assertEquals(c.isGreaterThan(b), true);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_isGreaterThan_currenciesDiffer() {
         FixedMoney a = GBP_2_34;
         FixedMoney b = USD_2_35;
@@ -1431,7 +1431,7 @@ public class TestFixedMoney {
         assertEquals(c.isLessThan(b), false);
     }
 
-    @Test(expectedExceptions = MoneyException.class)
+    @Test(expectedExceptions = CurrencyMismatchException.class)
     public void test_isLessThan_currenciesDiffer() {
         FixedMoney a = GBP_2_34;
         FixedMoney b = USD_2_35;

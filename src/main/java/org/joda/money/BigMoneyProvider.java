@@ -44,7 +44,7 @@ public interface BigMoneyProvider {
      * performing the conversion multiple times.
      * 
      * @return the converted money instance, never null
-     * @throws MoneyException if conversion is not possible
+     * @throws RuntimeException if conversion is not possible
      */
     BigMoney toBigMoney();
 

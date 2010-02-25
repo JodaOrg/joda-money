@@ -16,51 +16,27 @@
 package org.joda.money;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertSame;
 
 import org.testng.annotations.Test;
 
 /**
- * Test MoneyException.
+ * Test IllegalCurrencyException.
  */
 @Test
-public class TestMoneyException {
+public class TestIllegalCurrencyException {
 
     //-----------------------------------------------------------------------
     // new (String)
     //-----------------------------------------------------------------------
     public void test_String() {
-        MoneyException test = new MoneyException("PROBLEM");
+        IllegalCurrencyException test = new IllegalCurrencyException("PROBLEM");
         assertEquals(test.getMessage(), "PROBLEM");
         assertEquals(test.getCause(), null);
     }
 
     public void test_String_nullString() {
-        MoneyException test = new MoneyException(null);
+        IllegalCurrencyException test = new IllegalCurrencyException(null);
         assertEquals(test.getMessage(), null);
-        assertEquals(test.getCause(), null);
-    }
-
-    //-----------------------------------------------------------------------
-    // new (String,Throwable)
-    //-----------------------------------------------------------------------
-    public void test_StringThrowable() {
-        NullPointerException npe = new NullPointerException();
-        MoneyException test = new MoneyException("PROBLEM", npe);
-        assertEquals(test.getMessage(), "PROBLEM");
-        assertSame(test.getCause(), npe);
-    }
-
-    public void test_StringThrowable_nullString() {
-        NullPointerException npe = new NullPointerException();
-        MoneyException test = new MoneyException(null, npe);
-        assertEquals(test.getMessage(), null);
-        assertSame(test.getCause(), npe);
-    }
-
-    public void test_StringThrowable_nullThrowable() {
-        MoneyException test = new MoneyException("PROBLEM", null);
-        assertEquals(test.getMessage(), "PROBLEM");
         assertEquals(test.getCause(), null);
     }
 
