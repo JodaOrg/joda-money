@@ -133,7 +133,7 @@ public final class MoneyParseContext {
      * @return the error index, negative if no error
      */
     public int getErrorIndex() {
-        return iTextIndex;
+        return iTextErrorIndex;
     }
 
     /**

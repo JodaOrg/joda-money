@@ -17,6 +17,7 @@ package org.joda.money.format;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -119,11 +120,13 @@ public final class MoneyFormatterBuilder {
      * <p>
      * The localized currency symbol is the symbol as chosen by the locale
      * of the formatter.
+     * <p>
+     * Symbols cannot be parsed.
      * 
      * @return this, for chaining, never null
      */
     public MoneyFormatterBuilder appendCurrencySymbolLocalized() {
-        return appendInternal(Singletons.LOCALIZED_SYMBOL, Singletons.LOCALIZED_SYMBOL);
+        return appendInternal(Singletons.LOCALIZED_SYMBOL, null);
     }
 
     /**
@@ -379,7 +382,53 @@ public final class MoneyFormatterBuilder {
         }
         /** {@inheritDoc} */
         public void parse(MoneyParseContext context) {
-            throw new UnsupportedOperationException("Unable to parse amount");
+            final int len = context.getTextLength();
+            final MoneyAmountStyle style = iStyle.localize(context.getLocale());
+            char[] buf = new char[len - context.getIndex()];
+            int bufPos = 0;
+            boolean dpSeen = false;
+            boolean lastWasGroup = false;
+            int pos = context.getIndex();
+            if (pos < len) {
+                char ch = context.getText().charAt(pos++);
+                if (ch == style.getNegativeSignCharacter()) {
+                    buf[bufPos++] = '-';
+                } else if (ch == style.getPositiveSignCharacter()) {
+                    buf[bufPos++] = '+';
+                } else if (ch >= style.getZeroCharacter() && ch < style.getZeroCharacter() + 10) {
+                    buf[bufPos++] = (char) ('0' + ch - style.getZeroCharacter());
+                } else if (ch == style.getDecimalPointCharacter()) {
+                    buf[bufPos++] = '.';
+                    dpSeen = true;
+                } else {
+                    context.setError();
+                    return;
+                }
+            }
+            for (; pos < len; pos++) {
+                char ch = context.getText().charAt(pos);
+                if (ch >= style.getZeroCharacter() && ch < style.getZeroCharacter() + 10) {
+                    buf[bufPos++] = (char) ('0' + ch - style.getZeroCharacter());
+                    lastWasGroup = false;
+                } else if (ch == style.getDecimalPointCharacter() && dpSeen == false) {
+                    buf[bufPos++] = '.';
+                    dpSeen = true;
+                    lastWasGroup = false;
+                } else if (ch == style.getGroupingCharacter() && lastWasGroup == false) {
+                    lastWasGroup = true;
+                } else {
+                    break;
+                }
+            }
+            if (lastWasGroup) {
+                pos--;
+            }
+            try {
+                context.setAmount(new BigDecimal(buf, 0, bufPos));
+                context.setIndex(pos);
+            } catch (NumberFormatException ex) {
+                throw new MoneyFormatException("Invalid amount", ex);
+            }
         }
         /** {@inheritDoc} */
         @Override
