@@ -53,6 +53,50 @@ public final class MoneyUtils {
         return (moneyProvider == null || moneyProvider.toBigMoney().isZero());
     }
 
+    /**
+     * Checks if the monetary value is positive and non-zero, treating null as zero.
+     * <p>
+     * This method accepts any implementation of {@code BigMoneyProvider}.
+     * 
+     * @return true if the money is non-null and positive
+     */
+    public static boolean isPositive(BigMoneyProvider moneyProvider) {
+        return (moneyProvider != null && moneyProvider.toBigMoney().isPositive());
+    }
+
+    /**
+     * Checks if the monetary value is positive or zero, treating null as zero.
+     * <p>
+     * This method accepts any implementation of {@code BigMoneyProvider}.
+     * 
+     * @return true if the money is null, zero or positive
+     */
+    public static boolean isPositiveOrZero(BigMoneyProvider moneyProvider) {
+        return (moneyProvider == null || moneyProvider.toBigMoney().isPositiveOrZero());
+    }
+
+    /**
+     * Checks if the monetary value is negative and non-zero, treating null as zero.
+     * <p>
+     * This method accepts any implementation of {@code BigMoneyProvider}.
+     * 
+     * @return true if the money is non-null and negative
+     */
+    public static boolean isNegative(BigMoneyProvider moneyProvider) {
+        return (moneyProvider != null && moneyProvider.toBigMoney().isNegative());
+    }
+
+    /**
+     * Checks if the monetary value is negative or zero, treating null as zero.
+     * <p>
+     * This method accepts any implementation of {@code BigMoneyProvider}.
+     * 
+     * @return true if the money is null, zero or negative
+     */
+    public static boolean isNegativeOrZero(BigMoneyProvider moneyProvider) {
+        return (moneyProvider == null || moneyProvider.toBigMoney().isNegativeOrZero());
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Finds the maximum {@code Money} value, handing null.

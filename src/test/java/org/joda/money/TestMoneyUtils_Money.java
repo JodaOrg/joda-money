@@ -32,7 +32,6 @@ public class TestMoneyUtils_Money {
     private static final Money GBP_50 = Money.parse("GBP 50");
     private static final Money GBP_M10 = Money.parse("GBP -10");
     private static final Money GBP_M30 = Money.parse("GBP -30");
-    private static final Money EUR_0 = Money.parse("EUR 0");
     private static final Money EUR_30 = Money.parse("EUR 30");
 
     //-----------------------------------------------------------------------
@@ -55,20 +54,51 @@ public class TestMoneyUtils_Money {
     //-----------------------------------------------------------------------
     // isZero(Money)
     //-----------------------------------------------------------------------
-    public void test_isZero_trueGBP() {
+    public void test_isZero() {
+        assertSame(MoneyUtils.isZero(null), true);
         assertSame(MoneyUtils.isZero(GBP_0), true);
+        assertSame(MoneyUtils.isZero(GBP_30), false);
+        assertSame(MoneyUtils.isZero(GBP_M30), false);
     }
 
-    public void test_isZero_trueEUR() {
-        assertSame(MoneyUtils.isZero(EUR_0), true);
+    //-----------------------------------------------------------------------
+    // isPositive(Money)
+    //-----------------------------------------------------------------------
+    public void test_isPositive() {
+        assertSame(MoneyUtils.isPositive(null), false);
+        assertSame(MoneyUtils.isPositive(GBP_0), false);
+        assertSame(MoneyUtils.isPositive(GBP_30), true);
+        assertSame(MoneyUtils.isPositive(GBP_M30), false);
     }
 
-    public void test_isZero_false() {
-        assertSame(MoneyUtils.isZero(GBP_20), false);
+    //-----------------------------------------------------------------------
+    // isPositiveOrZero(Money)
+    //-----------------------------------------------------------------------
+    public void test_isPositiveOrZero() {
+        assertSame(MoneyUtils.isPositiveOrZero(null), true);
+        assertSame(MoneyUtils.isPositiveOrZero(GBP_0), true);
+        assertSame(MoneyUtils.isPositiveOrZero(GBP_30), true);
+        assertSame(MoneyUtils.isPositiveOrZero(GBP_M30), false);
     }
 
-    public void test_isZero_null() {
-        assertSame(MoneyUtils.isZero((Money) null), true);
+    //-----------------------------------------------------------------------
+    // isNegative(Money)
+    //-----------------------------------------------------------------------
+    public void test_isNegative() {
+        assertSame(MoneyUtils.isNegative(null), false);
+        assertSame(MoneyUtils.isNegative(GBP_0), false);
+        assertSame(MoneyUtils.isNegative(GBP_30), false);
+        assertSame(MoneyUtils.isNegative(GBP_M30), true);
+    }
+
+    //-----------------------------------------------------------------------
+    // isNegativeOrZero(Money)
+    //-----------------------------------------------------------------------
+    public void test_isNegativeOrZero() {
+        assertSame(MoneyUtils.isNegativeOrZero(null), true);
+        assertSame(MoneyUtils.isNegativeOrZero(GBP_0), true);
+        assertSame(MoneyUtils.isNegativeOrZero(GBP_30), false);
+        assertSame(MoneyUtils.isNegativeOrZero(GBP_M30), true);
     }
 
     //-----------------------------------------------------------------------

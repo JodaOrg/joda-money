@@ -35,7 +35,6 @@ public class TestMoneyUtils_BigMoney {
     private static final BigMoney GBP_50 = BigMoney.parse("GBP 50");
     private static final BigMoney GBP_M10 = BigMoney.parse("GBP -10");
     private static final BigMoney GBP_M30 = BigMoney.parse("GBP -30");
-    private static final BigMoney EUR_0 = BigMoney.parse("EUR 0");
     private static final BigMoney EUR_30 = BigMoney.parse("EUR 30");
 
     //-----------------------------------------------------------------------
@@ -49,39 +48,53 @@ public class TestMoneyUtils_BigMoney {
     }
 
     //-----------------------------------------------------------------------
-    // checkNotNull(Object,String)
+    // isZero(BigMoney)
     //-----------------------------------------------------------------------
-    public void test_checkNotNull_notNull() {
-        MoneyUtils.checkNotNull(new Object(), "");
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void test_checkNotNull_null() {
-        try {
-            MoneyUtils.checkNotNull(null, "Hello");
-        } catch (NullPointerException ex) {
-            assertEquals(ex.getMessage(), "Hello");
-            throw ex;
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    // isZero(Money)
-    //-----------------------------------------------------------------------
-    public void test_isZero_trueGBP() {
+    public void test_isZero() {
+        assertSame(MoneyUtils.isZero(null), true);
         assertSame(MoneyUtils.isZero(GBP_0), true);
+        assertSame(MoneyUtils.isZero(GBP_30), false);
+        assertSame(MoneyUtils.isZero(GBP_M30), false);
     }
 
-    public void test_isZero_trueEUR() {
-        assertSame(MoneyUtils.isZero(EUR_0), true);
+    //-----------------------------------------------------------------------
+    // isPositive(BigMoney)
+    //-----------------------------------------------------------------------
+    public void test_isPositive() {
+        assertSame(MoneyUtils.isPositive(null), false);
+        assertSame(MoneyUtils.isPositive(GBP_0), false);
+        assertSame(MoneyUtils.isPositive(GBP_30), true);
+        assertSame(MoneyUtils.isPositive(GBP_M30), false);
     }
 
-    public void test_isZero_false() {
-        assertSame(MoneyUtils.isZero(GBP_20), false);
+    //-----------------------------------------------------------------------
+    // isPositiveOrZero(BigMoney)
+    //-----------------------------------------------------------------------
+    public void test_isPositiveOrZero() {
+        assertSame(MoneyUtils.isPositiveOrZero(null), true);
+        assertSame(MoneyUtils.isPositiveOrZero(GBP_0), true);
+        assertSame(MoneyUtils.isPositiveOrZero(GBP_30), true);
+        assertSame(MoneyUtils.isPositiveOrZero(GBP_M30), false);
     }
 
-    public void test_isZero_null() {
-        assertSame(MoneyUtils.isZero((BigMoney) null), true);
+    //-----------------------------------------------------------------------
+    // isNegative(BigMoney)
+    //-----------------------------------------------------------------------
+    public void test_isNegative() {
+        assertSame(MoneyUtils.isNegative(null), false);
+        assertSame(MoneyUtils.isNegative(GBP_0), false);
+        assertSame(MoneyUtils.isNegative(GBP_30), false);
+        assertSame(MoneyUtils.isNegative(GBP_M30), true);
+    }
+
+    //-----------------------------------------------------------------------
+    // isNegativeOrZero(BigMoney)
+    //-----------------------------------------------------------------------
+    public void test_isNegativeOrZero() {
+        assertSame(MoneyUtils.isNegativeOrZero(null), true);
+        assertSame(MoneyUtils.isNegativeOrZero(GBP_0), true);
+        assertSame(MoneyUtils.isNegativeOrZero(GBP_30), false);
+        assertSame(MoneyUtils.isNegativeOrZero(GBP_M30), true);
     }
 
     //-----------------------------------------------------------------------
