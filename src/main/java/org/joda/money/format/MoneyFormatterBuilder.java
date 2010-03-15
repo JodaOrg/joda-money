@@ -16,8 +16,6 @@
 package org.joda.money.format;
 
 import java.io.IOException;
-import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -59,7 +57,7 @@ public final class MoneyFormatterBuilder {
      * @return this, for chaining, never null
      */
     public MoneyFormatterBuilder appendAmount() {
-        Amount pp = new Amount(MoneyAmountStyle.LOCALIZED_GROUPING);
+        AmountPrinterParser pp = new AmountPrinterParser(MoneyAmountStyle.LOCALIZED_GROUPING);
         return appendInternal(pp, pp);
     }
 
@@ -76,7 +74,7 @@ public final class MoneyFormatterBuilder {
      */
     public MoneyFormatterBuilder appendAmount(MoneyAmountStyle style) {
         MoneyFormatter.checkNotNull(style, "MoneyAmountStyle must not be null");
-        Amount pp = new Amount(style);
+        AmountPrinterParser pp = new AmountPrinterParser(style);
         return appendInternal(pp, pp);
     }
 
@@ -142,7 +140,7 @@ public final class MoneyFormatterBuilder {
         if (literal == null || literal.length() == 0) {
             return this;
         }
-        Literal pp = new Literal(literal.toString());
+        LiteralPrinterParser pp = new LiteralPrinterParser(literal.toString());
         return appendInternal(pp, pp);
     }
 
@@ -313,166 +311,6 @@ public final class MoneyFormatterBuilder {
 //        return new MoneyFormatterBuilder(iLocale, iZeroCharacter, iDecimalPointCharacter, iGroupingCharacter,
 //                iGrouping, iGroupingSize, iForceDecimalPoint, positivePattern, negativePattern, zeroPattern);
 //    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Handles the amount.
-     */
-    private static class Amount implements MoneyPrinter, MoneyParser, Serializable {
-        /** Serialization version. */
-        private static final long serialVersionUID = 1L;
-        /** The style to use. */
-        private final MoneyAmountStyle iStyle;
-        /**
-         * Constructor.
-         * @param style  the style, not null
-         */
-        Amount(MoneyAmountStyle style) {
-            iStyle = style;
-        }
-        /** {@inheritDoc} */
-        public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
-            MoneyAmountStyle style = iStyle.localize(context.getLocale());
-            String str = money.getAmount().toPlainString();
-            char zeroChar = style.getZeroCharacter();
-            if (zeroChar != '0') {
-                int diff = zeroChar - '0';
-                StringBuilder zeroConvert = new StringBuilder(str);
-                for (int i = 0; i < str.length(); i++) {
-                    char ch = str.charAt(i);
-                    if (ch >= '0' && ch <= '9') {
-                        zeroConvert.setCharAt(i, (char) (ch + diff));
-                    }
-                }
-                str = zeroConvert.toString();
-            }
-            int decPoint = str.indexOf('.');
-            if (style.isGrouping()) {
-                int groupingSize = style.getGroupingSize();
-                char groupingChar = style.getGroupingCharacter();
-                int pre = (decPoint < 0 ? str.length() : decPoint);
-                int post = (decPoint < 0 ? 0 : str.length() - decPoint - 1);
-                for (int i = 0; pre > 0; i++, pre--) {
-                    appendable.append(str.charAt(i));
-                    if (pre > 3 && pre % groupingSize == 1) {
-                        appendable.append(groupingChar);
-                    }
-                }
-                if (decPoint >= 0 || style.isForcedDecimalPoint()) {
-                    appendable.append(style.getDecimalPointCharacter());
-                }
-                decPoint++;
-                for (int i = 0; i < post; i++) {
-                    appendable.append(str.charAt(i + decPoint));
-                    if (i % groupingSize == 2) {
-                        appendable.append(groupingChar);
-                    }
-                }
-            } else {
-                if (decPoint < 0) {
-                    appendable.append(str);
-                    if (style.isForcedDecimalPoint()) {
-                        appendable.append(style.getDecimalPointCharacter());
-                    }
-                } else {
-                    appendable.append(str.subSequence(0, decPoint))
-                        .append(style.getDecimalPointCharacter()).append(str.substring(decPoint + 1));
-                }
-            }
-        }
-        /** {@inheritDoc} */
-        public void parse(MoneyParseContext context) {
-            final int len = context.getTextLength();
-            final MoneyAmountStyle style = iStyle.localize(context.getLocale());
-            char[] buf = new char[len - context.getIndex()];
-            int bufPos = 0;
-            boolean dpSeen = false;
-            boolean lastWasGroup = false;
-            int pos = context.getIndex();
-            if (pos < len) {
-                char ch = context.getText().charAt(pos++);
-                if (ch == style.getNegativeSignCharacter()) {
-                    buf[bufPos++] = '-';
-                } else if (ch == style.getPositiveSignCharacter()) {
-                    buf[bufPos++] = '+';
-                } else if (ch >= style.getZeroCharacter() && ch < style.getZeroCharacter() + 10) {
-                    buf[bufPos++] = (char) ('0' + ch - style.getZeroCharacter());
-                } else if (ch == style.getDecimalPointCharacter()) {
-                    buf[bufPos++] = '.';
-                    dpSeen = true;
-                } else {
-                    context.setError();
-                    return;
-                }
-            }
-            for (; pos < len; pos++) {
-                char ch = context.getText().charAt(pos);
-                if (ch >= style.getZeroCharacter() && ch < style.getZeroCharacter() + 10) {
-                    buf[bufPos++] = (char) ('0' + ch - style.getZeroCharacter());
-                    lastWasGroup = false;
-                } else if (ch == style.getDecimalPointCharacter() && dpSeen == false) {
-                    buf[bufPos++] = '.';
-                    dpSeen = true;
-                    lastWasGroup = false;
-                } else if (ch == style.getGroupingCharacter() && lastWasGroup == false) {
-                    lastWasGroup = true;
-                } else {
-                    break;
-                }
-            }
-            if (lastWasGroup) {
-                pos--;
-            }
-            try {
-                context.setAmount(new BigDecimal(buf, 0, bufPos));
-                context.setIndex(pos);
-            } catch (NumberFormatException ex) {
-                throw new MoneyFormatException("Invalid amount", ex);
-            }
-        }
-        /** {@inheritDoc} */
-        @Override
-        public String toString() {
-            return "${amount}";
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Handles a literal.
-     */
-    private static class Literal implements MoneyPrinter, MoneyParser, Serializable {
-        /** Serialization version. */
-        private static final long serialVersionUID = 1L;
-        /** Literal. */
-        private final String iLiteral;
-        /**
-         * Constructor.
-         * @param literal  the literal text, not null
-         */
-        Literal(String literal) {
-            iLiteral = literal;
-        }
-        /** {@inheritDoc} */
-        public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
-            appendable.append(iLiteral);
-        }
-        /** {@inheritDoc} */
-        public void parse(MoneyParseContext context) {
-            int endPos = context.getIndex() + iLiteral.length();
-            if (endPos <= context.getTextLength() &&
-                    context.getTextSubstring(context.getIndex(), endPos).equals(iLiteral)) {
-                context.setIndex(endPos);
-            } else {
-                context.setError();
-            }
-        }
-        /** {@inheritDoc} */
-        @Override
-        public String toString() {
-            return "'" + iLiteral + "'";
-        }
-    }
 
     //-----------------------------------------------------------------------
     /**
