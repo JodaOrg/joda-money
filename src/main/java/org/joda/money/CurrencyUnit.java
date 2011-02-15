@@ -63,6 +63,37 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
             throw new RuntimeException(ex.toString(), ex);
         }
     }
+
+    // a selection of commonly traded, stable currencies
+    /**
+     * The currency 'USD' - United States Dollar.
+     */
+    public static final CurrencyUnit USD = of("USD");
+    /**
+     * The currency 'EUR' - Euro.
+     */
+    public static final CurrencyUnit EUR = of("EUR");
+    /**
+     * The currency 'JPY' - Japanese Yen.
+     */
+    public static final CurrencyUnit JPY = of("JPY");
+    /**
+     * The currency 'GBP' - British pound.
+     */
+    public static final CurrencyUnit GBP = of("GBP");
+    /**
+     * The currency 'EUR' - Swiss Franc.
+     */
+    public static final CurrencyUnit CHF = of("CHF");
+    /**
+     * The currency 'AUD' - Australian Dollar.
+     */
+    public static final CurrencyUnit AUD = of("AUD");
+    /**
+     * The currency 'CAD' - Canadian Dollar.
+     */
+    public static final CurrencyUnit CAD = of("CAD");
+
     /**
      * The currency code, not null.
      */

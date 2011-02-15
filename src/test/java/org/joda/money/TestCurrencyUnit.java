@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Currency;
 import java.util.List;
@@ -45,7 +46,7 @@ public class TestCurrencyUnit {
         List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
         boolean found = false;
         for (CurrencyUnit currencyUnit : curList) {
-            if (currencyUnit.getCurrencyCode().equals("GBP")) {
+            if (currencyUnit.getCode().equals("GBP")) {
                 found = true;
                 break;
             }
@@ -58,6 +59,51 @@ public class TestCurrencyUnit {
         List<CurrencyUnit> curList2 = CurrencyUnit.registeredCurrencies();
         Collections.sort(curList2);
         assertEquals(curList1, curList2);
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_registeredCurrency_nullCode() {
+        CurrencyUnit.registerCurrency(null, 991, 2, Arrays.asList("TS"));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_registeredCurrency_invalidNumericCode_small() {
+        CurrencyUnit.registerCurrency("TST", -2, 2, Arrays.asList("TS"));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_registeredCurrency_invalidNumericCode_big() {
+        CurrencyUnit.registerCurrency("TST", 1000, 2, Arrays.asList("TS"));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_registeredCurrency_invalidDP_small() {
+        CurrencyUnit.registerCurrency("TST", 991, -2, Arrays.asList("TS"));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_registeredCurrency_invalidDP_big() {
+        CurrencyUnit.registerCurrency("TST", 991, 4, Arrays.asList("TS"));
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void test_registeredCurrency_nullCountry() {
+        CurrencyUnit.registerCurrency("TST", 991, 2, Arrays.asList((String) null));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_registeredCurrency_alreadyRegisteredCode() {
+        CurrencyUnit.registerCurrency("GBP", 991, 2, Arrays.asList("GB"));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_registeredCurrency_alreadyRegisteredNumericCode() {
+        CurrencyUnit.registerCurrency("TST", 826, 2, Arrays.asList("TS"));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_registeredCurrency_alreadyRegisteredCountry() {
+        CurrencyUnit.registerCurrency("GBX", 991, 2, Arrays.asList("GB"));
     }
 
 //    public void test_registeredCurrencies_crossCheck() {
@@ -90,11 +136,32 @@ public class TestCurrencyUnit {
 //    }
 
     //-----------------------------------------------------------------------
+    // constants
+    //-----------------------------------------------------------------------
+    public void test_constants() {
+        assertEquals(CurrencyUnit.USD, CurrencyUnit.of("USD"));
+        assertEquals(CurrencyUnit.EUR, CurrencyUnit.of("EUR"));
+        assertEquals(CurrencyUnit.JPY, CurrencyUnit.of("JPY"));
+        assertEquals(CurrencyUnit.GBP, CurrencyUnit.of("GBP"));
+        assertEquals(CurrencyUnit.CHF, CurrencyUnit.of("CHF"));
+        assertEquals(CurrencyUnit.AUD, CurrencyUnit.of("AUD"));
+        assertEquals(CurrencyUnit.CAD, CurrencyUnit.of("CAD"));
+    }
+
+    //-----------------------------------------------------------------------
+    // constructor assert
+    //-----------------------------------------------------------------------
+    @Test(expectedExceptions = AssertionError.class)
+    public void test_constructor_nullCode() {
+        new CurrencyUnit(null, (short) 1, (short) 2);
+    }
+
+    //-----------------------------------------------------------------------
     // of(Currency)
     //-----------------------------------------------------------------------
     public void test_factory_of_Currency() {
         CurrencyUnit test = CurrencyUnit.of(JDK_GBP);
-        assertEquals(test.getCurrencyCode(), "GBP");
+        assertEquals(test.getCode(), "GBP");
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -107,7 +174,7 @@ public class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     public void test_factory_of_String() {
         CurrencyUnit test = CurrencyUnit.of("GBP");
-        assertEquals(test.getCurrencyCode(), "GBP");
+        assertEquals(test.getCode(), "GBP");
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -140,27 +207,27 @@ public class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     public void test_factory_ofNumericCode_String() {
         CurrencyUnit test = CurrencyUnit.ofNumericCode("826");
-        assertEquals(test.getCurrencyCode(), "GBP");
+        assertEquals(test.getCode(), "GBP");
     }
 
     public void test_factory_ofNumericCode_String_2char() {
         CurrencyUnit test = CurrencyUnit.ofNumericCode("051");
-        assertEquals(test.getCurrencyCode(), "AMD");
+        assertEquals(test.getCode(), "AMD");
     }
 
     public void test_factory_ofNumericCode_String_2charNoPad() {
         CurrencyUnit test = CurrencyUnit.ofNumericCode("51");
-        assertEquals(test.getCurrencyCode(), "AMD");
+        assertEquals(test.getCode(), "AMD");
     }
 
     public void test_factory_ofNumericCode_String_1char() {
         CurrencyUnit test = CurrencyUnit.ofNumericCode("008");
-        assertEquals(test.getCurrencyCode(), "ALL");
+        assertEquals(test.getCode(), "ALL");
     }
 
     public void test_factory_ofNumericCode_String_1charNoPad() {
         CurrencyUnit test = CurrencyUnit.ofNumericCode("8");
-        assertEquals(test.getCurrencyCode(), "ALL");
+        assertEquals(test.getCode(), "ALL");
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -208,17 +275,17 @@ public class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     public void test_factory_ofNumericCode_int() {
         CurrencyUnit test = CurrencyUnit.ofNumericCode(826);
-        assertEquals(test.getCurrencyCode(), "GBP");
+        assertEquals(test.getCode(), "GBP");
     }
 
     public void test_factory_ofNumericCode_int_2char() {
         CurrencyUnit test = CurrencyUnit.ofNumericCode(51);
-        assertEquals(test.getCurrencyCode(), "AMD");
+        assertEquals(test.getCode(), "AMD");
     }
 
     public void test_factory_ofNumericCode_int_1char() {
         CurrencyUnit test = CurrencyUnit.ofNumericCode(8);
-        assertEquals(test.getCurrencyCode(), "ALL");
+        assertEquals(test.getCode(), "ALL");
     }
 
     @Test(expectedExceptions = IllegalCurrencyException.class)
@@ -256,7 +323,7 @@ public class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     public void test_factory_of_Locale() {
         CurrencyUnit test = CurrencyUnit.of(Locale.UK);
-        assertEquals(test.getCurrencyCode(), "GBP");
+        assertEquals(test.getCode(), "GBP");
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -279,7 +346,7 @@ public class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     public void test_factory_ofCountry_String() {
         CurrencyUnit test = CurrencyUnit.ofCountry("GB");
-        assertEquals(test.getCurrencyCode(), "GBP");
+        assertEquals(test.getCode(), "GBP");
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -302,7 +369,7 @@ public class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     public void test_factory_getInstance_String() {
         CurrencyUnit test = CurrencyUnit.getInstance("GBP");
-        assertEquals(test.getCurrencyCode(), "GBP");
+        assertEquals(test.getCode(), "GBP");
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -320,7 +387,7 @@ public class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     public void test_factory_getInstance_Locale() {
         CurrencyUnit test = CurrencyUnit.getInstance(Locale.UK);
-        assertEquals(test.getCurrencyCode(), "GBP");
+        assertEquals(test.getCode(), "GBP");
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -388,6 +455,7 @@ public class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     public void test_getCurrencyCode_GBP() {
         CurrencyUnit test = CurrencyUnit.of("GBP");
+        assertEquals(test.getCode(), "GBP");
         assertEquals(test.getCurrencyCode(), "GBP");
     }
 
