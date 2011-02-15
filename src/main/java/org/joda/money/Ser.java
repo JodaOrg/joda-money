@@ -98,7 +98,7 @@ final class Ser implements Externalizable {
     }
 
     private void writeCurrency(ObjectOutput out, CurrencyUnit obj) throws IOException {
-        out.writeUTF(obj.getCurrencyCode());
+        out.writeUTF(obj.getCode());
         out.writeShort(obj.getNumericCode());
         out.writeShort(obj.getDefaultFractionDigits());
     }

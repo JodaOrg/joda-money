@@ -1681,7 +1681,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     @Override
     public String toString() {
         return new StringBuilder()
-            .append(iCurrency.getCurrencyCode())
+            .append(iCurrency.getCode())
             .append(' ')
             .append(iAmount.toPlainString())
             .toString();

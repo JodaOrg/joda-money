@@ -334,7 +334,7 @@ public final class MoneyFormatterBuilder {
         CODE("${code}") {
             /** {@inheritDoc} */
             public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
-                appendable.append(money.getCurrencyUnit().getCurrencyCode());
+                appendable.append(money.getCurrencyUnit().getCode());
             }
             /** {@inheritDoc} */
             public void parse(MoneyParseContext context) {

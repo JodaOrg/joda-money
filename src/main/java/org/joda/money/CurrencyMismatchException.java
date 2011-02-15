@@ -40,8 +40,8 @@ public class CurrencyMismatchException extends IllegalArgumentException {
      */
     public CurrencyMismatchException(CurrencyUnit firstCurrency, CurrencyUnit secondCurrency) {
         super("Currencies differ: " +
-                (firstCurrency != null ? firstCurrency.getCurrencyCode() : "null") + '/' +
-                (secondCurrency != null ? secondCurrency.getCurrencyCode() : "null"));
+                (firstCurrency != null ? firstCurrency.getCode() : "null") + '/' +
+                (secondCurrency != null ? secondCurrency.getCode() : "null"));
         iFirstCurrency = firstCurrency;
         iSecondCurrency = secondCurrency;
     }
