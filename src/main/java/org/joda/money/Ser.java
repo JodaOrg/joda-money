@@ -72,27 +72,35 @@ final class Ser implements Externalizable {
         switch (iType) {
             case BIG_MONEY: {
                 BigMoney obj = (BigMoney) iObject;
-                out.writeUTF(obj.getCurrencyUnit().getCurrencyCode());
-                byte[] bytes = obj.getAmount().unscaledValue().toByteArray();
-                out.writeInt(bytes.length);
-                out.write(bytes);
-                out.writeInt(obj.getScale());
+                writeBigMoney(out, obj);
                 return;
             }
             case MONEY: {
                 Money obj = (Money) iObject;
-                out.writeObject(obj.toBigMoney());
+                writeBigMoney(out, obj.toBigMoney());
                 return;
             }
             case CURRENCY_UNIT: {
                 CurrencyUnit obj = (CurrencyUnit) iObject;
-                out.writeUTF(obj.getCurrencyCode());
-                out.writeShort(obj.getNumericCode());
-                out.writeShort(obj.getDefaultFractionDigits());
+                writeCurrency(out, obj);
                 return;
             }
         }
         throw new InvalidClassException("Joda-Money bug: Serialization broken");
+    }
+
+    private void writeBigMoney(ObjectOutput out, BigMoney obj) throws IOException {
+        writeCurrency(out, obj.getCurrencyUnit());
+        byte[] bytes = obj.getAmount().unscaledValue().toByteArray();
+        out.writeInt(bytes.length);
+        out.write(bytes);
+        out.writeInt(obj.getScale());
+    }
+
+    private void writeCurrency(ObjectOutput out, CurrencyUnit obj) throws IOException {
+        out.writeUTF(obj.getCurrencyCode());
+        out.writeShort(obj.getNumericCode());
+        out.writeShort(obj.getDefaultFractionDigits());
     }
 
     /**
@@ -105,31 +113,40 @@ final class Ser implements Externalizable {
         iType = in.readByte();
         switch (iType) {
             case BIG_MONEY: {
-                CurrencyUnit currency = CurrencyUnit.of(in.readUTF());
-                byte[] bytes = new byte[in.readInt()];
-                in.readFully(bytes);
-                BigDecimal bd = new BigDecimal(new BigInteger(bytes), in.readInt());
-                iObject = new BigMoney(currency, bd);
+                iObject = readBigMoney(in);
                 return;
             }
             case MONEY: {
-                iObject = new Money((BigMoney) in.readObject());
+                iObject = new Money(readBigMoney(in));
                 return;
             }
             case CURRENCY_UNIT: {
-                String code = in.readUTF();
-                CurrencyUnit singletonCurrency = CurrencyUnit.of(code);
-                if (singletonCurrency.getNumericCode() != in.readShort()) {
-                    throw new InvalidObjectException("Deserialization found a mismatch in the numeric code for currency " + code);
-                }
-                if (singletonCurrency.getDefaultFractionDigits() != in.readShort()) {
-                    throw new InvalidObjectException("Deserialization found a mismatch in the decimal places for currency " + code);
-                }
-                iObject = singletonCurrency;
+                iObject = readCurrency(in);
                 return;
             }
         }
         throw new StreamCorruptedException("Serialization input has invalid type");
+    }
+
+    private BigMoney readBigMoney(ObjectInput in) throws IOException {
+        CurrencyUnit currency = readCurrency(in);
+        byte[] bytes = new byte[in.readInt()];
+        in.readFully(bytes);
+        BigDecimal bd = new BigDecimal(new BigInteger(bytes), in.readInt());
+        BigMoney bigMoney = new BigMoney(currency, bd);
+        return bigMoney;
+    }
+
+    private CurrencyUnit readCurrency(ObjectInput in) throws IOException {
+        String code = in.readUTF();
+        CurrencyUnit singletonCurrency = CurrencyUnit.of(code);
+        if (singletonCurrency.getNumericCode() != in.readShort()) {
+            throw new InvalidObjectException("Deserialization found a mismatch in the numeric code for currency " + code);
+        }
+        if (singletonCurrency.getDefaultFractionDigits() != in.readShort()) {
+            throw new InvalidObjectException("Deserialization found a mismatch in the decimal places for currency " + code);
+        }
+        return singletonCurrency;
     }
 
     /**

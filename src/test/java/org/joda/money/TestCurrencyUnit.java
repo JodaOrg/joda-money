@@ -17,14 +17,12 @@ package org.joda.money;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.Currency;
 import java.util.List;
@@ -349,11 +347,9 @@ public class TestCurrencyUnit {
         assertEquals(input, cu);
     }
 
+    @Test(expectedExceptions = InvalidObjectException.class)
     public void test_serialization_invalidNumericCode() throws Exception {
-        @SuppressWarnings("unchecked")
-        Constructor<CurrencyUnit> con = (Constructor<CurrencyUnit>) CurrencyUnit.class.getDeclaredConstructors()[0];
-        con.setAccessible(true);
-        CurrencyUnit cu = con.newInstance("GBP", (short) 234, (short) 2);
+        CurrencyUnit cu = new CurrencyUnit("GBP", (short) 234, (short) 2);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(cu);
@@ -361,14 +357,15 @@ public class TestCurrencyUnit {
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         try {
             ois.readObject();
-            fail();
         } catch (InvalidObjectException ex) {
             // expected
             assertTrue(ex.getMessage().contains("numeric code"));
             assertTrue(ex.getMessage().contains("currency GBP"));
+            throw ex;
         }
     }
 
+    @Test(expectedExceptions = InvalidObjectException.class)
     public void test_serialization_invalidDecimalPlaces() throws Exception {
         CurrencyUnit cu = new CurrencyUnit("GBP", (short) 826, (short) 1);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -378,11 +375,11 @@ public class TestCurrencyUnit {
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         try {
             ois.readObject();
-            fail();
         } catch (InvalidObjectException ex) {
             // expected
             assertTrue(ex.getMessage().contains("decimal places"));
             assertTrue(ex.getMessage().contains("currency GBP"));
+            throw ex;
         }
     }
 

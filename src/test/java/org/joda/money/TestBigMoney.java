@@ -21,6 +21,7 @@ import static org.testng.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.Constructor;
@@ -808,6 +809,30 @@ public class TestBigMoney {
         ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
         BigMoney input = (BigMoney) ois.readObject();
         assertEquals(input, a);
+    }
+
+    @Test(expectedExceptions = InvalidObjectException.class)
+    public void test_serialization_invalidNumericCode() throws Exception {
+        CurrencyUnit cu = new CurrencyUnit("GBP", (short) 234, (short) 2);
+        BigMoney m = BigMoney.of(cu, 123.43d);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(m);
+        oos.close();
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+        ois.readObject();
+    }
+
+    @Test(expectedExceptions = InvalidObjectException.class)
+    public void test_serialization_invalidDecimalPlaces() throws Exception {
+        CurrencyUnit cu = new CurrencyUnit("GBP", (short) 826, (short) 1);
+        BigMoney m = BigMoney.of(cu, 123.43d);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ObjectOutputStream oos = new ObjectOutputStream(baos);
+        oos.writeObject(m);
+        oos.close();
+        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+        ois.readObject();
     }
 
     //-----------------------------------------------------------------------
