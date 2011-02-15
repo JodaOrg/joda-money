@@ -147,7 +147,6 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * This allows you to create an instance with a specific currency and amount.
      * The amount is a whole number only. Thus you can initialise the value
      * 'USD 20', but not the value 'USD 20.32'.
-     * <p>
      * For example, {@code ofMajor(USD, 25)} creates the instance {@code USD 25.00}.
      *
      * @param currency  the currency, not null
@@ -165,7 +164,6 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * expressed in terms of the minor unit.
      * For example, if constructing US Dollars, the input to this method represents cents.
      * Note that when a currency has zero decimal places, the major and minor units are the same.
-     * <p>
      * For example, {@code ofMajor(USD, 2595)} creates the instance {@code USD 25.95}.
      *
      * @param currency  the currency, not null
@@ -319,6 +317,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * The string format is '<currencyCode> <amount>'.
      * The currency code must be a valid three letter currency.
      * The amount must match the regular expression {@code [+-]?[0-9]*[.]?[0-9]*}.
+     * This matches the output from {@link #toString()}.
      * <p>
      * For example, {@code of("USD 25")} creates the instance {@code USD 25.00}
      * while {@code of("USD 25.95")} creates the instance {@code USD 25.95}.
@@ -387,7 +386,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the new instance, never null
      */
     private Money with(BigMoney newInstance) {
-        if (newInstance == iMoney) {
+        if (iMoney.equals(newInstance)) {
             return this;
         }
         return new Money(newInstance);
@@ -710,7 +709,6 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * Returns a copy of this monetary value with a collection of monetary amounts added.
      * <p>
      * This adds the specified amounts to this monetary amount, returning a new object.
-     * The amounts are added as though using {@link #plus(Money)}.
      * The amounts must be in the same currency.
      * <p>
      * This instance is immutable and unaffected by this method.
@@ -720,11 +718,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws CurrencyMismatchException if the currencies differ
      */
     public Money plus(Iterable<Money> moniesToAdd) {
-        BigMoney total = iMoney;
-        for (Money money : moniesToAdd) {
-            total = total.plus(money);
-        }
-        return with(total);
+        return with(iMoney.plus(moniesToAdd));
     }
 
     //-----------------------------------------------------------------------
@@ -860,7 +854,6 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * Returns a copy of this monetary value with a collection of monetary amounts subtracted.
      * <p>
      * This subtracts the specified amounts from this monetary amount, returning a new object.
-     * The amounts are subtracted one by one as though using {@link #minus(Money)}.
      * The amounts must be in the same currency.
      * <p>
      * This instance is immutable and unaffected by this method.
@@ -870,11 +863,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws CurrencyMismatchException if the currencies differ
      */
     public Money minus(Iterable<Money> moniesToSubtract) {
-        BigMoney total = iMoney;
-        for (Money money : moniesToSubtract) {
-            total = total.minus(money);
-        }
-        return with(total);
+        return with(iMoney.minus(moniesToSubtract));
     }
 
     //-----------------------------------------------------------------------
@@ -1199,15 +1188,6 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     public BigMoney toBigMoney() {
         return iMoney;
     }
-
-//    /**
-//     * Converts this money to an instance of {@code FixedMoney} with the currency scale.
-//     * 
-//     * @return the money instance, never null
-//     */
-//    public FixedMoney toFixedMoney() {
-//        return FixedMoney.from(this);
-//    }
 
     //-----------------------------------------------------------------------
     /**

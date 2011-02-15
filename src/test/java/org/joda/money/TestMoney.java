@@ -1894,7 +1894,7 @@ public class TestMoney {
     }
 
     @Test(expectedExceptions = ClassCastException.class)
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void test_compareTo_wrongType() {
         Comparable a = GBP_2_34;
         a.compareTo("NotRightType");

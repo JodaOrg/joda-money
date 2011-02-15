@@ -842,7 +842,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     }
 
     /**
-     * Returns a copy of this monetary value with the {@code BigDecimal} amount added.
+     * Returns a copy of this monetary value with the amount added.
      * <p>
      * This adds the specified amount to this monetary amount, returning a new object.
      * <p>
@@ -865,7 +865,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     }
 
     /**
-     * Returns a copy of this monetary value with the {@code double} amount added.
+     * Returns a copy of this monetary value with the amount added.
      * <p>
      * This adds the specified amount to this monetary amount, returning a new object.
      * <p>
@@ -1054,7 +1054,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     }
 
     /**
-     * Returns a copy of this monetary value with the {@code BigDecimal} amount subtracted.
+     * Returns a copy of this monetary value with the amount subtracted.
      * <p>
      * This subtracts the specified amount from this monetary amount, returning a new object.
      * <p>
@@ -1077,7 +1077,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     }
 
     /**
-     * Returns a copy of this monetary value with the {@code double} amount subtracted.
+     * Returns a copy of this monetary value with the amount subtracted.
      * <p>
      * This subtracts the specified amount from this monetary amount, returning a new object.
      * <p>
@@ -1541,15 +1541,6 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     public BigMoney toBigMoney() {
         return this;
     }
-
-//    /**
-//     * Converts this money to an instance of {@code FixedMoney} with the same scale.
-//     * 
-//     * @return the money instance, never null
-//     */
-//    public FixedMoney toFixedMoney() {
-//        return FixedMoney.from(this);
-//    }
 
     /**
      * Converts this money to an instance of {@code Money} without rounding.

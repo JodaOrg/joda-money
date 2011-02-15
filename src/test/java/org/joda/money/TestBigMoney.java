@@ -104,6 +104,7 @@ public class TestBigMoney {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_factory_of_Currency_subClass1() {
         class BadDecimal extends BigDecimal {
+            private static final long serialVersionUID = 1L;
             BadDecimal() {
                 super(432);
             }
@@ -122,11 +123,13 @@ public class TestBigMoney {
 
     public void test_factory_of_Currency_subClass2() {
         class BadInteger extends BigInteger {
+            private static final long serialVersionUID = 1L;
             public BadInteger() {
                 super("123");
             }
         }
         class BadDecimal extends BigDecimal {
+            private static final long serialVersionUID = 1L;
             BadDecimal() {
                 super(432);
             }
@@ -2259,7 +2262,7 @@ public class TestBigMoney {
     }
 
     @Test(expectedExceptions = ClassCastException.class)
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void test_compareTo_wrongType() {
         Comparable a = GBP_2_34;
         a.compareTo("NotRightType");
