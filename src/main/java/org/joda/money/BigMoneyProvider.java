@@ -27,7 +27,7 @@ package org.joda.money;
  * To minimise the risk of the value of the provider changing while processing,
  * any method that takes a {@code BigMoneyProvider} as a parameter should convert
  * it to a {@code BigMoney} immediately and use that directly from then on.
- * The method {@link BigMoney#from(BigMoneyProvider)} performs the conversion
+ * The method {@link BigMoney#of(BigMoneyProvider)} performs the conversion
  * safely with null checks and is recommended for this purpose.
  * <p>
  * BigMoneyProvider is an interface and makes no guarantees about the
@@ -38,7 +38,7 @@ public interface BigMoneyProvider {
     /**
      * Returns a {@code BigMoney} instance equivalent to the value of this object.
      * <p>
-     * It is recommended that {@link BigMoney#from(BigMoneyProvider)} is used in
+     * It is recommended that {@link BigMoney#of(BigMoneyProvider)} is used in
      * preference to calling this method directly. It is also recommended that the
      * converted {@code BigMoney} is cached in a local variable instead of
      * performing the conversion multiple times.

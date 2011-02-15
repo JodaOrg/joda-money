@@ -15,8 +15,6 @@
  */
 package org.joda.money;
 
-import java.io.InvalidObjectException;
-import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -140,7 +138,9 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the {@code CurrencyUnit} instance matching the specified currency.
+     * Obtains an instance of {@code CurrencyUnit} matching the specified JDK currency.
+     * <p>
+     * This converts the JDK currency instance to a currency unit using the code.
      *
      * @param currency  the currency, not null
      * @return the singleton instance, never null
@@ -151,7 +151,9 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Gets the {@code CurrencyUnit} instance for the specified currency code.
+     * Obtains an instance of {@code CurrencyUnit} for the specified ISO-4217 three letter currency code.
+     * <p>
+     * A currency is uniquely identified by ISO-4217 three letter code.
      *
      * @param currencyCode  the currency code, not null
      * @return the singleton instance, never null
@@ -167,9 +169,9 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Gets the {@code CurrencyUnit} instance for the specified ISO-4217
-     * numeric currency code formatted as a string.
+     * Obtains an instance of {@code CurrencyUnit} for the specified ISO-4217 numeric currency code.
      * <p>
+     * The numeric code is an alternative to the three letter code.
      * This method is lenient and does not require the string to be left padded with zeroes.
      *
      * @param numericCurrencyCode  the currency code, not null
@@ -194,8 +196,9 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Gets the {@code CurrencyUnit} instance for the specified ISO-4217
-     * numeric currency code.
+     * Obtains an instance of {@code CurrencyUnit} for the specified ISO-4217 numeric currency code.
+     * <p>
+     * The numeric code is an alternative to the three letter code.
      *
      * @param numericCurrencyCode  the numeric currency code, not null
      * @return the singleton instance, never null
@@ -210,7 +213,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Gets the {@code CurrencyUnit} instance for the specified locale.
+     * Obtains an instance of {@code CurrencyUnit} for the specified locale.
      * <p>
      * Only the country is used from the locale.
      *
@@ -228,7 +231,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Gets the {@code CurrencyUnit} instance for the specified country code.
+     * Obtains an instance of {@code CurrencyUnit} for the specified country code.
      * <p>
      * Country codes should generally be in upper case.
      * This method is case sensitive.
@@ -248,7 +251,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the {@code CurrencyUnit} instance for the specified currency code.
+     * Obtains an instance of {@code CurrencyUnit} for the specified currency code.
      * <p>
      * This method exists to match the API of {@link Currency}.
      *
@@ -261,7 +264,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Gets the {@code CurrencyUnit} instance for the specified locale.
+     * Obtains an instance of {@code CurrencyUnit} for the specified locale.
      * <p>
      * This method exists to match the API of {@link Currency}.
      *
@@ -281,7 +284,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @param numericCurrencyCode  the numeric currency code, -1 if none
      * @param decimalPlaces  the decimal places, not null
      */
-    private CurrencyUnit(String code, short numericCurrencyCode, short decimalPlaces) {
+    CurrencyUnit(String code, short numericCurrencyCode, short decimalPlaces) {
         assert code != null : "Joda-Money bug: Currency code must not be null";
         iCode = code;
         iNumericCode = numericCurrencyCode;
@@ -289,37 +292,41 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Resolves singletons, validating that the incoming currency has the same definition
-     * as the local currency.
+     * Uses a serialization delegate.
      * 
-     * @return the singleton instance, never null
+     * @return the replacing object, never null
      */
-    private Object readResolve() throws ObjectStreamException {
-        CurrencyUnit singletonCurrency = CurrencyUnit.of(iCode);
-        if (iNumericCode != singletonCurrency.iNumericCode) {
-            throw new InvalidObjectException("Deserialization found a mismatch in the numeric code for currency " + iCode);
-        }
-        if (iDecimalPlaces != singletonCurrency.iDecimalPlaces) {
-            throw new InvalidObjectException("Deserialization found a mismatch in the decimal places for currency " + iCode);
-        }
-        return singletonCurrency;
+    private Object writeReplace() {
+        return new Ser(Ser.CURRENCY_UNIT, this);
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the three-letter ISO-4217 currency code.
+     * Gets the ISO-4217 three letter currency code.
      * <p>
-     * This method matches the API of {@link Currency}.
+     * Each currency is uniquely identified by a three-letter code.
      * 
-     * @return the currency code, never null
+     * @return the three letter ISO-4217 currency code, never null
      */
-    public String getCurrencyCode() {
+    public String getCode() {
         return iCode;
     }
 
     /**
-     * Gets the numeric ISO-4217 currency code as a three digit string.
+     * Gets the ISO-4217 numeric currency code.
      * <p>
+     * The numeric code is an alternative to the standard three letter code.
+     * 
+     * @return the numeric currency code
+     */
+    public int getNumericCode() {
+        return iNumericCode;
+    }
+
+    /**
+     * Gets the ISO-4217 numeric currency code as a three digit string.
+     * <p>
+     * This formats the numeric code as a three digit string prefixed by zeroes if necessary.
      * If there is no valid code, then an empty string is returned.
      * 
      * @return the three digit numeric currency code, empty is no code, never null
@@ -339,18 +346,13 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Gets the numeric ISO-4217 currency code.
-     * 
-     * @return the numeric currency code
-     */
-    public int getNumericCode() {
-        return iNumericCode;
-    }
-
-    /**
      * Gets the number of decimal places typically used by this currency.
      * <p>
-     * This method returns 0 for pseudo-currencies.
+     * Different currencies have different numbers of decimal places by default.
+     * For example, 'GBP' has 2 decimal places, but 'JPY' has zero.
+     * Pseudo-currencies will return zero.
+     * <p>
+     * See also {@link #getDefaultFractionDigits()}.
      * 
      * @return the decimal places, from 0 to 3
      */
@@ -367,13 +369,27 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         return iDecimalPlaces < 0;
     }
 
+    //-----------------------------------------------------------------------
     /**
-     * Gets the default number of fractional digits for the currency.
-     * <p>
-     * This method matches the return value of the similarly named JDK method
-     * where pseudo-currencies return -1.
+     * Gets the ISO-4217 three-letter currency code.
      * <p>
      * This method matches the API of {@link Currency}.
+     * 
+     * @return the currency code, never null
+     */
+    public String getCurrencyCode() {
+        return iCode;
+    }
+
+    /**
+     * Gets the number of fractional digits typically used by this currency.
+     * <p>
+     * Different currencies have different numbers of fractional digits by default.
+     * For example, 'GBP' has 2 fractional digits, but 'JPY' has zero.
+     * Pseudo-currencies are indicated by -1.
+     * <p>
+     * This method matches the API of {@link Currency}.
+     * The alternative method {@link #getDecimalPlaces()} may be more useful.
      * 
      * @return the fractional digits, from 0 to 3, or -1 for pseudo-currencies
      */
@@ -387,6 +403,8 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * <p>
      * If this currency doesn't have a JDK equivalent, then the currency code
      * is returned.
+     * <p>
+     * This method matches the API of {@link Currency}.
      * 
      * @return the JDK currency instance, never null
      */
@@ -403,6 +421,8 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * <p>
      * If this currency doesn't have a JDK equivalent, then the currency code
      * is returned.
+     * <p>
+     * This method matches the API of {@link Currency}.
      * 
      * @param locale  the locale to get the symbol for, not null
      * @return the JDK currency instance, never null
@@ -419,6 +439,8 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     //-----------------------------------------------------------------------
     /**
      * Gets the JDK currency instance equivalent to this currency.
+     * <p>
+     * This attempts to convert a {@code CurrencyUnit} to a JDK {@code Currency}.
      * 
      * @return the JDK currency instance, never null
      * @throws IllegalArgumentException if no matching currency exists in the JDK

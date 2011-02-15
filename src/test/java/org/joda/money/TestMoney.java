@@ -274,14 +274,14 @@ public class TestMoney {
     // from(BigMoneyProvider)
     //-----------------------------------------------------------------------
     public void test_factory_from_BigMoneyProvider() {
-        Money test = Money.from(BigMoney.parse("GBP 104.23"));
+        Money test = Money.of(BigMoney.parse("GBP 104.23"));
         assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmountMinorInt(), 10423);
         assertEquals(test.getAmount().scale(), 2);
     }
 
     public void test_factory_from_BigMoneyProvider_fixScale() {
-        Money test = Money.from(BigMoney.parse("GBP 104.2"));
+        Money test = Money.of(BigMoney.parse("GBP 104.2"));
         assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmountMinorInt(), 10420);
         assertEquals(test.getAmount().scale(), 2);
@@ -289,19 +289,19 @@ public class TestMoney {
 
     @Test(expectedExceptions = ArithmeticException.class)
     public void test_factory_from_BigMoneyProvider_invalidCurrencyScale() {
-        Money.from(BigMoney.parse("GBP 104.235"));
+        Money.of(BigMoney.parse("GBP 104.235"));
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_factory_from_BigMoneyProvider_nullBigMoneyProvider() {
-        Money.from((BigMoneyProvider) null);
+        Money.of((BigMoneyProvider) null);
     }
 
     //-----------------------------------------------------------------------
     // from(BigMoneyProvider,RoundingMode)
     //-----------------------------------------------------------------------
     public void test_factory_from_BigMoneyProvider_RoundingMode() {
-        Money test = Money.from(BigMoney.parse("GBP 104.235"), RoundingMode.HALF_EVEN);
+        Money test = Money.of(BigMoney.parse("GBP 104.235"), RoundingMode.HALF_EVEN);
         assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmountMinorInt(), 10424);
         assertEquals(test.getAmount().scale(), 2);
@@ -309,12 +309,12 @@ public class TestMoney {
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_factory_from_BigMoneyProvider_RoundingMode_nullBigMoneyProvider() {
-        Money.from((BigMoneyProvider) null, RoundingMode.DOWN);
+        Money.of((BigMoneyProvider) null, RoundingMode.DOWN);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_factory_from_BigMoneyProvider_RoundingMode_nullRoundingMode() {
-        Money.from(BigMoney.parse("GBP 104.235"), (RoundingMode) null);
+        Money.of(BigMoney.parse("GBP 104.235"), (RoundingMode) null);
     }
 
     //-----------------------------------------------------------------------

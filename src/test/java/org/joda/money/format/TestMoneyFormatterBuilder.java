@@ -18,6 +18,7 @@ package org.joda.money.format;
 import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
+import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 import org.joda.money.BigMoney;
@@ -43,6 +44,10 @@ public class TestMoneyFormatterBuilder {
     private static final Locale cCachedLocale = Locale.getDefault();
     private static final Locale TEST_GB_LOCALE = new Locale("en", "GB", "TEST");
     private static final Locale TEST_FR_LOCALE = new Locale("fr", "FR", "TEST");
+    private static final DecimalFormatSymbols FR_SYMBOLS = new DecimalFormatSymbols(Locale.FRANCE);
+    private static final char FR_DECIMAL = FR_SYMBOLS.getMonetaryDecimalSeparator();
+    private static final char FR_GROUP = FR_SYMBOLS.getGroupingSeparator();
+
     private MoneyFormatterBuilder iBuilder;
 
     @BeforeMethod
@@ -156,10 +161,74 @@ public class TestMoneyFormatterBuilder {
         assertEquals(test.toString(), "${amount}");
     }
 
+    public void test_appendAmount_GBP_1234_56789_France() {
+        iBuilder.appendAmount();
+        MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
+        assertEquals(test.print(GBP_1234_56789), "1,234.567,89");
+        assertEquals(test.toString(), "${amount}");
+    }
+
     public void test_appendAmount_JPY_2345() {
         iBuilder.appendAmount();
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals(test.print(JPY_2345), "2,345");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_appendAmountLocalized_GBP_2_34() {
+        iBuilder.appendAmountLocalized();
+        MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
+        assertEquals(test.print(GBP_2_34), "2" + FR_DECIMAL + "34");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    public void test_appendAmountLocalized_GBP_23_45() {
+        iBuilder.appendAmountLocalized();
+        MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
+        assertEquals(test.print(GBP_23_45), "23" + FR_DECIMAL + "45");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    public void test_appendAmountLocalized_GBP_234_56() {
+        iBuilder.appendAmountLocalized();
+        MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
+        assertEquals(test.print(GBP_234_56), "234" + FR_DECIMAL + "56");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    public void test_appendAmountLocalized_GBP_2345_67() {
+        iBuilder.appendAmountLocalized();
+        MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
+        assertEquals(test.print(GBP_2345_67), "2" + FR_GROUP + "345" + FR_DECIMAL + "67");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    public void test_appendAmountLocalized_GBP_1234567_89() {
+        iBuilder.appendAmountLocalized();
+        MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
+        assertEquals(test.print(GBP_1234567_89), "1" + FR_GROUP + "234" + FR_GROUP + "567" + FR_DECIMAL + "89");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    public void test_appendAmountLocalized_GBP_1234_56789() {
+        iBuilder.appendAmountLocalized();
+        MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
+        assertEquals(test.print(GBP_1234_56789), "1" + FR_GROUP + "234" + FR_DECIMAL + "567" + FR_GROUP + "89");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    public void test_appendAmountLocalized_GBP_1234_56789_US() {
+        iBuilder.appendAmountLocalized();
+        MoneyFormatter test = iBuilder.toFormatter(Locale.US);
+        assertEquals(test.print(GBP_1234_56789), "1,234.567,89");
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    public void test_appendAmountLocalized_JPY_2345() {
+        iBuilder.appendAmountLocalized();
+        MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
+        assertEquals(test.print(JPY_2345), "2" + FR_GROUP + "345");
         assertEquals(test.toString(), "${amount}");
     }
 

@@ -244,7 +244,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @param moneyProvider  the money to convert, not null
      * @return the new instance, never null
      */
-    public static BigMoney from(BigMoneyProvider moneyProvider) {
+    public static BigMoney of(BigMoneyProvider moneyProvider) {
         MoneyUtils.checkNotNull(moneyProvider, "BigMoneyProvider must not be null");
         BigMoney money = moneyProvider.toBigMoney();
         MoneyUtils.checkNotNull(money, "BigMoneyProvider must not return null");
@@ -269,10 +269,10 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (monies.length == 0) {
             throw new IllegalArgumentException("Money array must not be empty");
         }
-        BigMoney total = from(monies[0]);
+        BigMoney total = of(monies[0]);
         MoneyUtils.checkNotNull(total, "Money arary must not contain null entries");
         for (int i = 1; i < monies.length; i++) {
-            total = total.plus(from(monies[i]));
+            total = total.plus(of(monies[i]));
         }
         return total;
     }
@@ -295,7 +295,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (it.hasNext() == false) {
             throw new IllegalArgumentException("Money iterator must not be empty");
         }
-        BigMoney total = from(it.next());
+        BigMoney total = of(it.next());
         MoneyUtils.checkNotNull(total, "Money iterator must not contain null entries");
         while (it.hasNext()) {
             total = total.plus(it.next());
@@ -789,7 +789,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @throws CurrencyMismatchException if the currencies differ
      */
     private BigMoney checkCurrencyEqual(BigMoneyProvider moneyProvider) {
-        BigMoney money = from(moneyProvider);
+        BigMoney money = of(moneyProvider);
         if (isSameCurrency(money) == false) {
             throw new CurrencyMismatchException(getCurrencyUnit(), money.getCurrencyUnit());
         }
@@ -1559,7 +1559,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @throws ArithmeticException if the rounding fails
      */
     public Money toMoney() {
-        return Money.from(this);
+        return Money.of(this);
     }
 
     /**
@@ -1570,7 +1570,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @throws ArithmeticException if the rounding fails
      */
     public Money toMoney(RoundingMode roundingMode) {
-        return Money.from(this, roundingMode);
+        return Money.of(this, roundingMode);
     }
 
     //-----------------------------------------------------------------------
@@ -1581,7 +1581,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @return true if they have the same currency
      */
     public boolean isSameCurrency(BigMoneyProvider money) {
-        return (iCurrency.equals(from(money).getCurrencyUnit()));
+        return (iCurrency.equals(of(money).getCurrencyUnit()));
     }
 
     //-----------------------------------------------------------------------
@@ -1594,7 +1594,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @throws CurrencyMismatchException if the currencies differ
      */
     public int compareTo(BigMoneyProvider other) {
-        BigMoney otherMoney = from(other);
+        BigMoney otherMoney = of(other);
         if (iCurrency.equals(otherMoney.iCurrency) == false) {
             throw new CurrencyMismatchException(getCurrencyUnit(), otherMoney.getCurrencyUnit());
         }

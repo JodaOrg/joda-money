@@ -50,13 +50,27 @@ public final class MoneyFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
-     * Appends the amount to the builder using a localized format.
+     * Appends the amount to the builder using a standard format.
      * <p>
+     * The format used is {@link MoneyAmountStyle#ASCII_DECIMAL_POINT_GROUP3_COMMA}.
      * The amount is the value itself, such as '12.34'.
      * 
      * @return this, for chaining, never null
      */
     public MoneyFormatterBuilder appendAmount() {
+        AmountPrinterParser pp = new AmountPrinterParser(MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA);
+        return appendInternal(pp, pp);
+    }
+
+    /**
+     * Appends the amount to the builder using a grouped localized format.
+     * <p>
+     * The format used is {@link MoneyAmountStyle#LOCALIZED_GROUPING}.
+     * The amount is the value itself, such as '12.34'.
+     * 
+     * @return this, for chaining, never null
+     */
+    public MoneyFormatterBuilder appendAmountLocalized() {
         AmountPrinterParser pp = new AmountPrinterParser(MoneyAmountStyle.LOCALIZED_GROUPING);
         return appendInternal(pp, pp);
     }

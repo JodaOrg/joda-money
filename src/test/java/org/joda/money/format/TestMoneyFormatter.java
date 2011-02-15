@@ -63,7 +63,7 @@ public class TestMoneyFormatter {
             })
             .toFormatter();
         iParseTest = new MoneyFormatterBuilder()
-            .appendAmount()
+            .appendAmountLocalized()
             .appendLiteral(" ")
             .appendCurrencyCode()
             .toFormatter();
@@ -142,22 +142,22 @@ public class TestMoneyFormatter {
 
     @Test(expectedExceptions = MoneyFormatException.class)
     public void test_print_AppendableBigMoneyProvider_IOException() {
-        Appendable appendable = new Appendable() {
-            public Appendable append(CharSequence csq, int start, int end) throws IOException {
-                throw new IOException();
-            }
-            public Appendable append(char c) throws IOException {
-                throw new IOException();
-            }
-            public Appendable append(CharSequence csq) throws IOException {
-                throw new IOException();
-            }
-        };
+        Appendable appendable = new IOAppendable();
         try {
             iPrintTest.print(appendable, MONEY_GBP_12_34);
         } catch (MoneyFormatException ex) {
             assertEquals(ex.getCause().getClass(), IOException.class);
             throw ex;
+        }
+    }
+
+    @Test(expectedExceptions = IOException.class)
+    public void test_print_AppendableBigMoneyProvider_IOException_rethrown() throws IOException {
+        Appendable appendable = new IOAppendable();
+        try {
+            iPrintTest.print(appendable, MONEY_GBP_12_34);
+        } catch (MoneyFormatException ex) {
+            ex.rethrowIOException();
         }
     }
 
@@ -187,17 +187,7 @@ public class TestMoneyFormatter {
 
     @Test(expectedExceptions = IOException.class)
     public void test_printIO_AppendableBigMoneyProvider_IOException() throws IOException {
-        Appendable appendable = new Appendable() {
-            public Appendable append(CharSequence csq, int start, int end) throws IOException {
-                throw new IOException();
-            }
-            public Appendable append(char c) throws IOException {
-                throw new IOException();
-            }
-            public Appendable append(CharSequence csq) throws IOException {
-                throw new IOException();
-            }
-        };
+        Appendable appendable = new IOAppendable();
         iPrintTest.printIO(appendable, MONEY_GBP_12_34);
     }
 
@@ -339,7 +329,7 @@ public class TestMoneyFormatter {
 
     public void test_parse_CharSequenceInt_continueAfterDoubleDecimal() {
         MoneyFormatter f = new MoneyFormatterBuilder()
-            .appendAmount().appendLiteral(".").appendCurrencyCode().toFormatter();
+            .appendAmountLocalized().appendLiteral(".").appendCurrencyCode().toFormatter();
         MoneyParseContext test = f.parse("12..GBP", 0);
         assertEquals(test.getAmount(), BigDecimal.valueOf(12));
         assertEquals(test.getCurrency(), CurrencyUnit.of("GBP"));
@@ -354,7 +344,7 @@ public class TestMoneyFormatter {
 
     public void test_parse_CharSequenceInt_continueAfterSingleComma() {
         MoneyFormatter f = new MoneyFormatterBuilder()
-            .appendAmount().appendLiteral(",").appendCurrencyCode().toFormatter();
+            .appendAmountLocalized().appendLiteral(",").appendCurrencyCode().toFormatter();
         MoneyParseContext test = f.parse("12,GBP", 0);
         assertEquals(test.getAmount(), BigDecimal.valueOf(12));
         assertEquals(test.getCurrency(), CurrencyUnit.of("GBP"));
@@ -369,7 +359,7 @@ public class TestMoneyFormatter {
 
     public void test_parse_CharSequenceInt_continueAfterDoubleComma() {
         MoneyFormatter f = new MoneyFormatterBuilder()
-            .appendAmount().appendLiteral(",,").appendCurrencyCode().toFormatter();
+            .appendAmountLocalized().appendLiteral(",,").appendCurrencyCode().toFormatter();
         MoneyParseContext test = f.parse("12,,GBP", 0);
         assertEquals(test.getAmount(), BigDecimal.valueOf(12));
         assertEquals(test.getCurrency(), CurrencyUnit.of("GBP"));
@@ -397,6 +387,19 @@ public class TestMoneyFormatter {
     //-----------------------------------------------------------------------
     public void test_toString() {
         assertEquals(iPrintTest.toString(), "${code}' hello'");
+    }
+
+    //-----------------------------------------------------------------------
+    private static final class IOAppendable implements Appendable {
+        public Appendable append(CharSequence csq, int start, int end) throws IOException {
+            throw new IOException();
+        }
+        public Appendable append(char c) throws IOException {
+            throw new IOException();
+        }
+        public Appendable append(CharSequence csq) throws IOException {
+            throw new IOException();
+        }
     }
 
 }

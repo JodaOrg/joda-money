@@ -228,44 +228,44 @@ public class TestFixedMoney {
     // from(BigMoneyProvider)
     //-----------------------------------------------------------------------
     public void test_factory_from_BigMoneyProvider() {
-        FixedMoney test = FixedMoney.from(BigMoney.parse("GBP 104.235"));
+        FixedMoney test = FixedMoney.of(BigMoney.parse("GBP 104.235"));
         assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmount(), BigDecimal.valueOf(104235, 3));
     }
 
     public void test_factory_from_BigMoneyProvider_fixScale() {
-        FixedMoney test = FixedMoney.from(BigMoney.of(GBP, BigDecimal.valueOf(12, -1)));
+        FixedMoney test = FixedMoney.of(BigMoney.of(GBP, BigDecimal.valueOf(12, -1)));
         assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmount(), BigDecimal.valueOf(120, 0));
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_factory_from_BigMoneyProvider_nullBigMoneyProvider() {
-        FixedMoney.from((BigMoneyProvider) null);
+        FixedMoney.of((BigMoneyProvider) null);
     }
 
     //-----------------------------------------------------------------------
     // from(BigMoneyProvider,int,RoundingMode)
     //-----------------------------------------------------------------------
     public void test_factory_from_BigMoneyProvider_int_RoundingMode() {
-        FixedMoney test = FixedMoney.from(BigMoney.parse("GBP 104.235"), 2, RoundingMode.HALF_EVEN);
+        FixedMoney test = FixedMoney.of(BigMoney.parse("GBP 104.235"), 2, RoundingMode.HALF_EVEN);
         assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmount(), BigDecimal.valueOf(10424, 2));
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_factory_from_BigMoneyProvider_int_RoundingMode_nullBigMoneyProvider() {
-        FixedMoney.from((BigMoneyProvider) null, 2, RoundingMode.DOWN);
+        FixedMoney.of((BigMoneyProvider) null, 2, RoundingMode.DOWN);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_factory_from_BigMoneyProvider_int_RoundingMode_negativeScale() {
-        FixedMoney.from(BigMoney.parse("GBP 104.235"), -1, RoundingMode.DOWN);
+        FixedMoney.of(BigMoney.parse("GBP 104.235"), -1, RoundingMode.DOWN);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_factory_from_BigMoneyProvider_int_RoundingMode_nullRoundingMode() {
-        FixedMoney.from(BigMoney.parse("GBP 104.235"), 2, (RoundingMode) null);
+        FixedMoney.of(BigMoney.parse("GBP 104.235"), 2, (RoundingMode) null);
     }
 
     //-----------------------------------------------------------------------

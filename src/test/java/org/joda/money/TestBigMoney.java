@@ -322,7 +322,7 @@ public class TestBigMoney {
     // from(BigMoneyProvider)
     //-----------------------------------------------------------------------
     public void test_factory_from_BigMoneyProvider() {
-        BigMoney test = BigMoney.from(BigMoney.parse("GBP 104.23"));
+        BigMoney test = BigMoney.of(BigMoney.parse("GBP 104.23"));
         assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmountMinorInt(), 10423);
         assertEquals(test.getScale(), 2);
@@ -330,12 +330,12 @@ public class TestBigMoney {
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_factory_from_BigMoneyProvider_nullBigMoneyProvider() {
-        BigMoney.from((BigMoneyProvider) null);
+        BigMoney.of((BigMoneyProvider) null);
     }
 
     @Test(expectedExceptions = NullPointerException.class)
     public void test_factory_from_BigMoneyProvider_badProvider() {
-        BigMoney.from(BAD_PROVIDER);
+        BigMoney.of(BAD_PROVIDER);
     }
 
     //-----------------------------------------------------------------------

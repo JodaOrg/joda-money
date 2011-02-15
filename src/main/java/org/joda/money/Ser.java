@@ -18,6 +18,7 @@ package org.joda.money;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.InvalidClassException;
+import java.io.InvalidObjectException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.StreamCorruptedException;
@@ -86,6 +87,8 @@ final class Ser implements Externalizable {
             case CURRENCY_UNIT: {
                 CurrencyUnit obj = (CurrencyUnit) iObject;
                 out.writeUTF(obj.getCurrencyCode());
+                out.writeShort(obj.getNumericCode());
+                out.writeShort(obj.getDefaultFractionDigits());
                 return;
             }
         }
@@ -114,7 +117,15 @@ final class Ser implements Externalizable {
                 return;
             }
             case CURRENCY_UNIT: {
-                iObject = CurrencyUnit.of(in.readUTF());
+                String code = in.readUTF();
+                CurrencyUnit singletonCurrency = CurrencyUnit.of(code);
+                if (singletonCurrency.getNumericCode() != in.readShort()) {
+                    throw new InvalidObjectException("Deserialization found a mismatch in the numeric code for currency " + code);
+                }
+                if (singletonCurrency.getDefaultFractionDigits() != in.readShort()) {
+                    throw new InvalidObjectException("Deserialization found a mismatch in the decimal places for currency " + code);
+                }
+                iObject = singletonCurrency;
                 return;
             }
         }

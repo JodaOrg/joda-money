@@ -370,10 +370,7 @@ public class TestCurrencyUnit {
     }
 
     public void test_serialization_invalidDecimalPlaces() throws Exception {
-        @SuppressWarnings("unchecked")
-        Constructor<CurrencyUnit> con = (Constructor<CurrencyUnit>) CurrencyUnit.class.getDeclaredConstructors()[0];
-        con.setAccessible(true);
-        CurrencyUnit cu = con.newInstance("GBP", (short) 826, (short) 1);
+        CurrencyUnit cu = new CurrencyUnit("GBP", (short) 826, (short) 1);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ObjectOutputStream oos = new ObjectOutputStream(baos);
         oos.writeObject(cu);

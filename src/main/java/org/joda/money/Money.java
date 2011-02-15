@@ -204,8 +204,8 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the new instance, never null
      * @throws ArithmeticException if the scale exceeds the currency scale
      */
-    public static Money from(BigMoneyProvider moneyProvider) {
-        return Money.from(moneyProvider, RoundingMode.UNNECESSARY);
+    public static Money of(BigMoneyProvider moneyProvider) {
+        return Money.of(moneyProvider, RoundingMode.UNNECESSARY);
     }
 
     /**
@@ -220,10 +220,10 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the new instance, never null
      * @throws ArithmeticException if the rounding fails
      */
-    public static Money from(BigMoneyProvider moneyProvider, RoundingMode roundingMode) {
+    public static Money of(BigMoneyProvider moneyProvider, RoundingMode roundingMode) {
         MoneyUtils.checkNotNull(moneyProvider, "BigMoneyProvider must not be null");
         MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
-        return new Money(BigMoney.from(moneyProvider).withCurrencyScale(roundingMode));
+        return new Money(BigMoney.of(moneyProvider).withCurrencyScale(roundingMode));
     }
 
     //-----------------------------------------------------------------------
@@ -329,7 +329,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the amount is too large
      */
     public static Money parse(String moneyStr) {
-        return Money.from(BigMoney.parse(moneyStr));
+        return Money.of(BigMoney.parse(moneyStr));
     }
 
     //-----------------------------------------------------------------------

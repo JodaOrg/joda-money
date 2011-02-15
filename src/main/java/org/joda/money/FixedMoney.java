@@ -196,8 +196,8 @@ public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyPr
      * @param moneyProvider  the money to convert, not null
      * @return the new instance, never null
      */
-    public static FixedMoney from(BigMoneyProvider moneyProvider) {
-        BigMoney money = BigMoney.from(moneyProvider);
+    public static FixedMoney of(BigMoneyProvider moneyProvider) {
+        BigMoney money = BigMoney.of(moneyProvider);
         if (money.getScale() < 0) {
             money = money.withScale(0);
         }
@@ -218,11 +218,11 @@ public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyPr
      * @throws IllegalArgumentException if the scale is negative
      * @throws ArithmeticException if the rounding fails
      */
-    public static FixedMoney from(BigMoneyProvider moneyProvider, int scale, RoundingMode roundingMode) {
+    public static FixedMoney of(BigMoneyProvider moneyProvider, int scale, RoundingMode roundingMode) {
         MoneyUtils.checkNotNull(moneyProvider, "BigMoneyProvider must not be null");
         checkScale(scale);
         MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
-        return new FixedMoney(BigMoney.from(moneyProvider).withScale(scale, roundingMode));
+        return new FixedMoney(BigMoney.of(moneyProvider).withScale(scale, roundingMode));
     }
 
     //-----------------------------------------------------------------------
@@ -1064,7 +1064,7 @@ public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyPr
      * @throws ArithmeticException if the rounding fails
      */
     public Money toMoney() {
-        return Money.from(this);
+        return Money.of(this);
     }
 
     /**
@@ -1075,7 +1075,7 @@ public final class FixedMoney implements BigMoneyProvider, Comparable<BigMoneyPr
      * @throws ArithmeticException if the rounding fails
      */
     public Money toMoney(RoundingMode roundingMode) {
-        return Money.from(this, roundingMode);
+        return Money.of(this, roundingMode);
     }
 
     //-----------------------------------------------------------------------
