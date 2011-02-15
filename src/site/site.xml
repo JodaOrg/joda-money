@@ -3,12 +3,12 @@
   <publishDate position="navigation-bottom" format="yyyy-MM-dd"/>
   <bannerLeft>
     <name>Joda.org</name>
-    <src>http://joda-money.sourceforge.net/images/joda.png</src>
+    <!--src>images/joda.png</src-->
     <href>http://joda.sourceforge.net/</href>
   </bannerLeft>
   <bannerRight>
     <name>Joda Money</name>
-    <src>http://joda-money.sourceforge.net/images/jodamoney.png</src>
+    <!--src>images/jodamoney.png</src-->
     <href>http://joda-money.sourceforge.net/</href>
   </bannerRight>
 
@@ -26,7 +26,7 @@
     <menu name="Development">
       <item name="Sourceforge" href="http://sourceforge.net/projects/joda-money/"/>
       <item name="Test results" href="surefire-report.html"/>
-      <!--item name="Test coverage" href="/cobertura/index.html"/-->
+      <item name="Test coverage" href="/cobertura/index.html"/>
       <item name="Mailing lists" href="mail-lists.html"/>
       <item name="Tasks" href="tasks.html"/>
       <item name="Subversion" href="http://joda-money.svn.sourceforge.net/viewvc/joda-money/JodaMoney/trunk/"/>
