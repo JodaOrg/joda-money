@@ -340,6 +340,13 @@ public class TestMoneyFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+    public void test_append_MoneyFormatter() {
+        MoneyFormatter f1 = new MoneyFormatterBuilder().appendAmount().toFormatter();
+        MoneyFormatter f2 = new MoneyFormatterBuilder().appendCurrencyCode().appendLiteral(" ").append(f1).toFormatter();
+        assertEquals(f2.print(GBP_2345_67), "GBP 2,345.67");
+    }
+
+    //-----------------------------------------------------------------------
     public void test_toFormatter_defaultLocale() {
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals(test.getLocale(), TEST_GB_LOCALE);

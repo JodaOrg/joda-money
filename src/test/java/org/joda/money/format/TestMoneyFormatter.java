@@ -289,6 +289,9 @@ public class TestMoneyFormatter {
             new Object[] {"12. GBP", BigDecimal.valueOf(12), MONEY_GBP_12_34.getCurrencyUnit(), 7, -1, false, true, true},
             new Object[] {"12,34 GBP", BigDecimal.valueOf(1234), MONEY_GBP_12_34.getCurrencyUnit(), 9, -1, false, true, true},
             
+            new Object[] {"-12.34 GBP", BigDecimal.valueOf(-1234, 2), CurrencyUnit.GBP, 10, -1, false, true, true},
+            new Object[] {"+12.34 GBP", BigDecimal.valueOf(1234, 2), CurrencyUnit.GBP, 10, -1, false, true, true},
+            
             new Object[] {",12.34 GBP", null, null, 0, 0, true, false, false},
             new Object[] {"12..34 GBP", BigDecimal.valueOf(12), null, 3, 3, true, false, false},
             new Object[] {"12,,34 GBP", BigDecimal.valueOf(12), null, 2, 2, true, false, false},
@@ -380,6 +383,44 @@ public class TestMoneyFormatter {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_parse_CharSequenceInt_nullCharSequence() {
         iParseTest.parse((CharSequence) null, 0);
+    }
+
+    @Test(expectedExceptions = IndexOutOfBoundsException.class)
+    public void test_parse_CharSequenceInt_startIndexTooSmall() {
+        iParseTest.parse("", -1);
+    }
+
+    @Test(expectedExceptions = IndexOutOfBoundsException.class)
+    public void test_parse_CharSequenceInt_startIndexTooBig() {
+        iParseTest.parse("", 1);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_printParse_zeroChar() {
+        MoneyAmountStyle style = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withZeroCharacter('A');
+        MoneyFormatter f = new MoneyFormatterBuilder().appendCurrencyCode().appendLiteral(" ").appendAmount(style).toFormatter();
+        assertEquals(f.print(MONEY_GBP_12_34), "GBP BC.DE");
+        assertEquals(f.parseMoney("GBP BC.DE"), MONEY_GBP_12_34);
+    }
+
+    @Test(expectedExceptions = MoneyFormatException.class)
+    public void test_parseMoney_notFullyParsed() {
+        iParseTest.parseMoney("GBP hello notfullyparsed");
+    }
+
+    @Test(expectedExceptions = MoneyFormatException.class)
+    public void test_parseMoney_noAmount() {
+        iParseTest.parseMoney("GBP hello");
+    }
+
+    @Test(expectedExceptions = MoneyFormatException.class)
+    public void test_parseBigMoney_notFullyParsed() {
+        iParseTest.parseBigMoney("GBP hello notfullyparsed");
+    }
+
+    @Test(expectedExceptions = MoneyFormatException.class)
+    public void test_parseBigMoney_noAmount() {
+        iParseTest.parseBigMoney("GBP hello");
     }
 
     //-----------------------------------------------------------------------
