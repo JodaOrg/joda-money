@@ -438,6 +438,35 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         return iCode.compareTo(other.iCode);
     }
 
+    /**
+     * Checks if this currency equals another currency.
+     * <p>
+     * The comparison checks the 3 letter currency code.
+     * 
+     * @param obj  the other currency, null returns false
+     * @return true if equal
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof CurrencyUnit) {
+            return iCode.equals(((CurrencyUnit) obj).iCode);
+        }
+        return false;
+    }
+
+    /**
+     * Returns a suitable hash code for the currency.
+     * 
+     * @return the hash code
+     */
+    @Override
+    public int hashCode() {
+        return iCode.hashCode();
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the currency code as a string.
