@@ -22,6 +22,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 import org.joda.money.BigMoney;
+import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -69,53 +70,251 @@ public class TestMoneyFormatterBuilder {
         assertEquals(test.toString(), "");
     }
 
-    public void test_appendCurrencyCode() {
+    //-----------------------------------------------------------------------
+    public void test_appendCurrencyCode_print() {
         iBuilder.appendCurrencyCode();
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals(test.print(GBP_2_34), "GBP");
         assertEquals(test.toString(), "${code}");
     }
 
-    public void test_appendCurrencyNumeric3Code() {
+    public void test_appendCurrencyCode_parse_ok() {
+        iBuilder.appendCurrencyCode();
+        MoneyFormatter test = iBuilder.toFormatter();
+        MoneyParseContext  parsed = test.parse("GBP", 0);
+        assertEquals(parsed.isError(), false);
+        assertEquals(parsed.getIndex(), 3);
+        assertEquals(parsed.getErrorIndex(), -1);
+        assertEquals(parsed.getAmount(), null);
+        assertEquals(parsed.getCurrency(), CurrencyUnit.GBP);
+    }
+
+    public void test_appendCurrencyCode_parse_tooShort() {
+        iBuilder.appendCurrencyCode();
+        MoneyFormatter test = iBuilder.toFormatter();
+        MoneyParseContext  parsed = test.parse("GB", 0);
+        assertEquals(parsed.isError(), true);
+        assertEquals(parsed.getIndex(), 0);
+        assertEquals(parsed.getErrorIndex(), 0);
+        assertEquals(parsed.getAmount(), null);
+        assertEquals(parsed.getCurrency(), null);
+    }
+
+    public void test_appendCurrencyCode_parse_empty() {
+        iBuilder.appendCurrencyCode();
+        MoneyFormatter test = iBuilder.toFormatter();
+        MoneyParseContext  parsed = test.parse("", 0);
+        assertEquals(parsed.isError(), true);
+        assertEquals(parsed.getIndex(), 0);
+        assertEquals(parsed.getErrorIndex(), 0);
+        assertEquals(parsed.getAmount(), null);
+        assertEquals(parsed.getCurrency(), null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_appendCurrencyNumeric3Code_print() {
         iBuilder.appendCurrencyNumeric3Code();
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals(test.print(GBP_2_34), "826");
         assertEquals(test.toString(), "${numeric3Code}");
     }
 
-    public void test_appendCurrencyNumericCode() {
+    public void test_appendCurrencyNumeric3Code_parse_ok() {
+        iBuilder.appendCurrencyNumeric3Code();
+        MoneyFormatter test = iBuilder.toFormatter();
+        MoneyParseContext  parsed = test.parse("826A", 0);
+        assertEquals(parsed.isError(), false);
+        assertEquals(parsed.getIndex(), 3);
+        assertEquals(parsed.getErrorIndex(), -1);
+        assertEquals(parsed.getAmount(), null);
+        assertEquals(parsed.getCurrency(), CurrencyUnit.GBP);
+    }
+
+    public void test_appendCurrencyNumeric3Code_parse_tooShort() {
+        iBuilder.appendCurrencyNumeric3Code();
+        MoneyFormatter test = iBuilder.toFormatter();
+        MoneyParseContext  parsed = test.parse("82", 0);
+        assertEquals(parsed.isError(), true);
+        assertEquals(parsed.getIndex(), 0);
+        assertEquals(parsed.getErrorIndex(), 0);
+        assertEquals(parsed.getAmount(), null);
+        assertEquals(parsed.getCurrency(), null);
+    }
+
+    public void test_appendCurrencyNumeric3Code_parse_badCurrency() {
+        iBuilder.appendCurrencyNumeric3Code();
+        MoneyFormatter test = iBuilder.toFormatter();
+        MoneyParseContext  parsed = test.parse("991A", 0);
+        assertEquals(parsed.isError(), true);
+        assertEquals(parsed.getIndex(), 0);
+        assertEquals(parsed.getErrorIndex(), 0);
+        assertEquals(parsed.getAmount(), null);
+        assertEquals(parsed.getCurrency(), null);
+    }
+
+    public void test_appendCurrencyNumeric3Code_parse_empty() {
+        iBuilder.appendCurrencyNumeric3Code();
+        MoneyFormatter test = iBuilder.toFormatter();
+        MoneyParseContext  parsed = test.parse("", 0);
+        assertEquals(parsed.isError(), true);
+        assertEquals(parsed.getIndex(), 0);
+        assertEquals(parsed.getErrorIndex(), 0);
+        assertEquals(parsed.getAmount(), null);
+        assertEquals(parsed.getCurrency(), null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_appendCurrencyNumericCode_print() {
         iBuilder.appendCurrencyNumericCode();
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals(test.print(GBP_2_34), "826");
         assertEquals(test.toString(), "${numericCode}");
     }
 
-    public void test_appendCurrencySymbolLocalized() {
+    public void test_appendCurrencyNumericCode_parse_ok() {
+        iBuilder.appendCurrencyNumericCode();
+        MoneyFormatter test = iBuilder.toFormatter();
+        MoneyParseContext  parsed = test.parse("826A", 0);
+        assertEquals(parsed.isError(), false);
+        assertEquals(parsed.getIndex(), 3);
+        assertEquals(parsed.getErrorIndex(), -1);
+        assertEquals(parsed.getAmount(), null);
+        assertEquals(parsed.getCurrency(), CurrencyUnit.GBP);
+    }
+
+    public void test_appendCurrencyNumericCode_parse_ok_padded() {
+        iBuilder.appendCurrencyNumericCode();
+        MoneyFormatter test = iBuilder.toFormatter();
+        MoneyParseContext  parsed = test.parse("008A", 0);
+        assertEquals(parsed.isError(), false);
+        assertEquals(parsed.getIndex(), 3);
+        assertEquals(parsed.getErrorIndex(), -1);
+        assertEquals(parsed.getAmount(), null);
+        assertEquals(parsed.getCurrency().getCode(), "ALL");
+    }
+
+    public void test_appendCurrencyNumericCode_parse_ok_notPadded1() {
+        iBuilder.appendCurrencyNumericCode();
+        MoneyFormatter test = iBuilder.toFormatter();
+        MoneyParseContext  parsed = test.parse("8A", 0);
+        assertEquals(parsed.isError(), false);
+        assertEquals(parsed.getIndex(), 1);
+        assertEquals(parsed.getErrorIndex(), -1);
+        assertEquals(parsed.getAmount(), null);
+        assertEquals(parsed.getCurrency().getCode(), "ALL");
+    }
+
+    public void test_appendCurrencyNumericCode_parse_ok_notPadded2() {
+        iBuilder.appendCurrencyNumericCode();
+        MoneyFormatter test = iBuilder.toFormatter();
+        MoneyParseContext  parsed = test.parse("51 ", 0);
+        assertEquals(parsed.isError(), false);
+        assertEquals(parsed.getIndex(), 2);
+        assertEquals(parsed.getErrorIndex(), -1);
+        assertEquals(parsed.getAmount(), null);
+        assertEquals(parsed.getCurrency().getCode(), "AMD");
+    }
+
+    public void test_appendCurrencyNumericCode_parse_tooShort() {
+        iBuilder.appendCurrencyNumericCode();
+        MoneyFormatter test = iBuilder.toFormatter();
+        MoneyParseContext  parsed = test.parse("", 0);
+        assertEquals(parsed.isError(), true);
+        assertEquals(parsed.getIndex(), 0);
+        assertEquals(parsed.getErrorIndex(), 0);
+        assertEquals(parsed.getAmount(), null);
+        assertEquals(parsed.getCurrency(), null);
+    }
+
+    public void test_appendCurrencyNumericCode_parse_badCurrency() {
+        iBuilder.appendCurrencyNumericCode();
+        MoneyFormatter test = iBuilder.toFormatter();
+        MoneyParseContext  parsed = test.parse("991A", 0);
+        assertEquals(parsed.isError(), true);
+        assertEquals(parsed.getIndex(), 0);
+        assertEquals(parsed.getErrorIndex(), 0);
+        assertEquals(parsed.getAmount(), null);
+        assertEquals(parsed.getCurrency(), null);
+    }
+
+    public void test_appendCurrencyNumericCode_parse_empty() {
+        iBuilder.appendCurrencyNumericCode();
+        MoneyFormatter test = iBuilder.toFormatter();
+        MoneyParseContext  parsed = test.parse("", 0);
+        assertEquals(parsed.isError(), true);
+        assertEquals(parsed.getIndex(), 0);
+        assertEquals(parsed.getErrorIndex(), 0);
+        assertEquals(parsed.getAmount(), null);
+        assertEquals(parsed.getCurrency(), null);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_appendCurrencySymbolLocalized_print() {
         iBuilder.appendCurrencySymbolLocalized();
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals(test.print(GBP_2_34), "\u00a3");
         assertEquals(test.toString(), "${symbolLocalized}");
     }
 
-    public void test_appendLiteral() {
+    public void test_appendCurrencySymbolLocalized_parse() {
+        iBuilder.appendCurrencySymbolLocalized();
+        MoneyFormatter test = iBuilder.toFormatter();
+        assertEquals(test.isParser(), false);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_appendLiteral_print() {
         iBuilder.appendLiteral("Hello");
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals(test.print(GBP_2_34), "Hello");
         assertEquals(test.toString(), "'Hello'");
     }
 
-    public void test_appendLiteral_empty() {
+    public void test_appendLiteral_print_empty() {
         iBuilder.appendLiteral("");
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals(test.print(GBP_2_34), "");
         assertEquals(test.toString(), "");
     }
 
-    public void test_appendLiteral_null() {
+    public void test_appendLiteral_print_null() {
         iBuilder.appendLiteral((CharSequence) null);
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals(test.print(GBP_2_34), "");
         assertEquals(test.toString(), "");
+    }
+
+    public void test_appendLiteral_parse_ok() {
+        iBuilder.appendLiteral("Hello");
+        MoneyFormatter test = iBuilder.toFormatter();
+        MoneyParseContext  parsed = test.parse("HelloWorld", 0);
+        assertEquals(parsed.isError(), false);
+        assertEquals(parsed.getIndex(), 5);
+        assertEquals(parsed.getErrorIndex(), -1);
+        assertEquals(parsed.getAmount(), null);
+        assertEquals(parsed.getCurrency(), null);
+    }
+
+    public void test_appendLiteral_parse_tooShort() {
+        iBuilder.appendLiteral("Hello");
+        MoneyFormatter test = iBuilder.toFormatter();
+        MoneyParseContext  parsed = test.parse("Hell", 0);
+        assertEquals(parsed.isError(), true);
+        assertEquals(parsed.getIndex(), 0);
+        assertEquals(parsed.getErrorIndex(), 0);
+        assertEquals(parsed.getAmount(), null);
+        assertEquals(parsed.getCurrency(), null);
+    }
+
+    public void test_appendLiteral_parse_noMatch() {
+        iBuilder.appendLiteral("Hello");
+        MoneyFormatter test = iBuilder.toFormatter();
+        MoneyParseContext  parsed = test.parse("Helol", 0);
+        assertEquals(parsed.isError(), true);
+        assertEquals(parsed.getIndex(), 0);
+        assertEquals(parsed.getErrorIndex(), 0);
+        assertEquals(parsed.getAmount(), null);
+        assertEquals(parsed.getCurrency(), null);
     }
 
     //-----------------------------------------------------------------------

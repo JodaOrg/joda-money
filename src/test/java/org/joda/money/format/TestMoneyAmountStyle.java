@@ -17,6 +17,7 @@ package org.joda.money.format;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
+import static org.testng.Assert.assertTrue;
 
 import java.util.Locale;
 
@@ -431,6 +432,12 @@ public class TestMoneyAmountStyle {
         assertSame(test, base);
     }
 
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_withGroupingSize_negative() {
+        MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING;
+        base.withGroupingSize(-1);
+    }
+
     //-----------------------------------------------------------------------
     public void test_withForcedDecimalPoint() {
         MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING;
@@ -599,6 +606,12 @@ public class TestMoneyAmountStyle {
         MoneyAmountStyle b = MoneyAmountStyle.LOCALIZED_GROUPING.withForcedDecimalPoint(true);
         assertEquals(a.equals(b), false);
         assertEquals(b.equals(a), false);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_toString() {
+        MoneyAmountStyle test = MoneyAmountStyle.LOCALIZED_GROUPING;
+        assertTrue(test.toString().startsWith("MoneyAmountStyle"));
     }
 
 }

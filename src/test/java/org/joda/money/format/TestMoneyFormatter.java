@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
+import java.text.ParsePosition;
 import java.util.Locale;
 
 import org.joda.money.BigMoney;
@@ -151,16 +152,6 @@ public class TestMoneyFormatter {
         }
     }
 
-    @Test(expectedExceptions = IOException.class)
-    public void test_print_AppendableBigMoneyProvider_IOException_rethrown() throws IOException {
-        Appendable appendable = new IOAppendable();
-        try {
-            iPrintTest.print(appendable, MONEY_GBP_12_34);
-        } catch (MoneyFormatException ex) {
-            ex.rethrowIOException();
-        }
-    }
-
     @Test(expectedExceptions = UnsupportedOperationException.class)
     public void test_print_AppendableBigMoneyProvider_cannotPrint() {
         iCannotPrint.print(new StringBuilder(), MONEY_GBP_12_34);
@@ -227,7 +218,23 @@ public class TestMoneyFormatter {
 
     @Test(expectedExceptions = MoneyFormatException.class)
     public void test_parseBigMoney_CharSequence_incomplete() {
+        iParseTest.parseBigMoney("12.34 GBP ");
+    }
+
+    @Test(expectedExceptions = MoneyFormatException.class)
+    public void test_parseBigMoney_CharSequence_incompleteLongText() {
+        iParseTest.parseBigMoney("12.34 GBP ABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABAB");
+    }
+
+    @Test(expectedExceptions = MoneyFormatException.class)
+    public void test_parseBigMoney_CharSequence_incompleteEmptyParser() {
         iCannotPrint.parseBigMoney("12.34 GBP");
+    }
+
+    @Test(expectedExceptions = MoneyFormatException.class)
+    public void test_parseBigMoney_CharSequence_missingCurrency() {
+        MoneyFormatter f = new MoneyFormatterBuilder().appendAmount().toFormatter();
+        f.parseBigMoney("12.34");
     }
 
     @Test(expectedExceptions = UnsupportedOperationException.class)
@@ -292,6 +299,7 @@ public class TestMoneyFormatter {
             new Object[] {"-12.34 GBP", BigDecimal.valueOf(-1234, 2), CurrencyUnit.GBP, 10, -1, false, true, true},
             new Object[] {"+12.34 GBP", BigDecimal.valueOf(1234, 2), CurrencyUnit.GBP, 10, -1, false, true, true},
             
+            new Object[] {"12.34 GB", BigDecimal.valueOf(1234, 2), null, 6, 6, true, false, false},
             new Object[] {",12.34 GBP", null, null, 0, 0, true, false, false},
             new Object[] {"12..34 GBP", BigDecimal.valueOf(12), null, 3, 3, true, false, false},
             new Object[] {"12,,34 GBP", BigDecimal.valueOf(12), null, 2, 2, true, false, false},
@@ -314,6 +322,9 @@ public class TestMoneyFormatter {
         assertEquals(test.isError(), error);
         assertEquals(test.isFullyParsed(), fullyParsed);
         assertEquals(test.isComplete(), complete);
+        ParsePosition pp = new ParsePosition(index);
+        pp.setErrorIndex(errorIndex);
+        assertEquals(test.toParsePosition(), pp);
     }
 
     public void test_parse_CharSequenceInt_incomplete() {
@@ -423,11 +434,36 @@ public class TestMoneyFormatter {
         iParseTest.parseBigMoney("GBP hello");
     }
 
+    @Test(expectedExceptions = MoneyFormatException.class)
+    public void test_parse_notFullyParsed() {
+        MoneyParseContext context = iParseTest.parse("GBP hello notfullyparsed", 1);
+        context.toBigMoney();
+    }
+
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
     public void test_toString() {
         assertEquals(iPrintTest.toString(), "${code}' hello'");
+    }
+
+    public void test_toString_differentPrinterParser() {
+        MoneyPrinter printer = new MoneyPrinter() {
+            public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
+            }
+            public String toString() {
+                return "A";
+            }
+        };
+        MoneyParser parser = new MoneyParser() {
+            public void parse(MoneyParseContext context) {
+            }
+            public String toString() {
+                return "B";
+            }
+        };
+        MoneyFormatter f = new MoneyFormatterBuilder().append(printer, parser).toFormatter();
+        assertEquals(f.toString(), "A:B");
     }
 
     //-----------------------------------------------------------------------

@@ -138,7 +138,7 @@ public final class MoneyFormatterBuilder {
      * @return this, for chaining, never null
      */
     public MoneyFormatterBuilder appendCurrencySymbolLocalized() {
-        return appendInternal(Singletons.LOCALIZED_SYMBOL, null);
+        return appendInternal(SingletonPrinters.LOCALIZED_SYMBOL, null);
     }
 
     /**
@@ -361,13 +361,14 @@ public final class MoneyFormatterBuilder {
                 int endPos = context.getIndex() + 3;
                 if (endPos > context.getTextLength()) {
                     context.setError();
-                }
-                String code = context.getTextSubstring(context.getIndex(), endPos);
-                try {
-                    context.setCurrency(CurrencyUnit.ofNumericCode(code));
-                    context.setIndex(endPos);
-                } catch (IllegalCurrencyException ex) {
-                    context.setError();
+                } else {
+                    String code = context.getTextSubstring(context.getIndex(), endPos);
+                    try {
+                        context.setCurrency(CurrencyUnit.ofNumericCode(code));
+                        context.setIndex(endPos);
+                    } catch (IllegalCurrencyException ex) {
+                        context.setError();
+                    }
                 }
             }
         },
@@ -394,16 +395,6 @@ public final class MoneyFormatterBuilder {
                     context.setError();
                 }
             }
-        },
-        LOCALIZED_SYMBOL("${symbolLocalized}") {
-            /** {@inheritDoc} */
-            public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
-                appendable.append(money.getCurrencyUnit().getSymbol(context.getLocale()));
-            }
-            /** {@inheritDoc} */
-            public void parse(MoneyParseContext context) {
-                throw new UnsupportedOperationException("Unable to parse symbol");
-            }
         };
         private final String iToString;
         /** {@inheritDoc} */
@@ -414,6 +405,23 @@ public final class MoneyFormatterBuilder {
         @Override
         public String toString() {
             return iToString;
+        }
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Handles the singleton outputs.
+     */
+    private static enum SingletonPrinters implements MoneyPrinter {
+        LOCALIZED_SYMBOL;
+        /** {@inheritDoc} */
+        public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
+            appendable.append(money.getCurrencyUnit().getSymbol(context.getLocale()));
+        }
+        /** {@inheritDoc} */
+        @Override
+        public String toString() {
+            return "${symbolLocalized}";
         }
     }
 

@@ -140,7 +140,7 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
             context.setAmount(new BigDecimal(buf, 0, bufPos));
             context.setIndex(pos);
         } catch (NumberFormatException ex) {
-            throw new MoneyFormatException("Invalid amount", ex);
+            context.setError();
         }
     }
 
