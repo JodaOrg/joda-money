@@ -78,7 +78,8 @@ is the current development release intended for feedback rather than production 
 (The code is fully tested, but there may yet be bugs and the API may yet change).
 </p>
 <p>
-There are no dependencies beyond JDK 1.5.
+There are no runtime dependencies beyond JDK 1.5.<br />
+(Joda-Money has a compile-time dependency on Joda-Convert, but this is not required at runtime)
 </p>
 </section>
 

@@ -21,6 +21,9 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Iterator;
 
+import org.joda.convert.FromString;
+import org.joda.convert.ToString;
+
 /**
  * An amount of money with the standard decimal places defined by the currency.
  * <p>
@@ -327,6 +330,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws IllegalArgumentException if the string is malformed
      * @throws ArithmeticException if the amount is too large
      */
+    @FromString
     public static Money parse(String moneyStr) {
         return Money.of(BigMoney.parse(moneyStr));
     }
@@ -1303,6 +1307,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the string representation of this monetary value, never null
      */
     @Override
+    @ToString
     public String toString() {
         return iMoney.toString();
     }

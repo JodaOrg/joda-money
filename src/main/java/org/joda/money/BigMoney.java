@@ -23,6 +23,9 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 
+import org.joda.convert.FromString;
+import org.joda.convert.ToString;
+
 /**
  * An amount of money with unrestricted decimal place precision.
  * <p>
@@ -354,6 +357,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @throws IllegalArgumentException if the string is malformed
      * @throws ArithmeticException if the amount is too large
      */
+    @FromString
     public static BigMoney parse(String moneyStr) {
         MoneyUtils.checkNotNull(moneyStr, "Money must not be null");
         if (moneyStr.length() < 5 || moneyStr.charAt(3) != ' ') {
@@ -1679,6 +1683,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @return the string representation of this monetary value, never null
      */
     @Override
+    @ToString
     public String toString() {
         return new StringBuilder()
             .append(iCurrency.getCode())

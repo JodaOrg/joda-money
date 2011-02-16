@@ -24,6 +24,9 @@ import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.joda.convert.FromString;
+import org.joda.convert.ToString;
+
 /**
  * A unit of currency.
  * <p>
@@ -190,6 +193,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @return the singleton instance, never null
      * @throws IllegalCurrencyException if the currency is unknown
      */
+    @FromString
     public static CurrencyUnit of(String currencyCode) {
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
         CurrencyUnit currency = cCurrenciesByCode.get(currencyCode);
@@ -526,6 +530,8 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * 
      * @return the currency code, never null
      */
+    @Override
+    @ToString
     public String toString() {
         return iCode;
     }
