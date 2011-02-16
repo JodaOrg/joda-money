@@ -32,6 +32,11 @@ import org.joda.convert.ToString;
  * <p>
  * This class represents a unit of currency such as the British Pound, Euro
  * or US Dollar.
+ * <p>
+ * The set of loaded currencies is provided by an instance of {@link CurrencyUnitDataProvider}.
+ * The provider used is determined by the system property {@code org.joda.money.CurrencyUnitDataProvider}
+ * which should be the fully qualified class name of the provider. The default provider loads the first
+ * resource named {@code /org/joda/money/MoneyData.csv} on the classpath.
  *
  * @author Stephen Colebourne
  */
@@ -54,12 +59,17 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      */
     private static final ConcurrentMap<String, CurrencyUnit> cCurrenciesByCountry = new ConcurrentHashMap<String, CurrencyUnit>();
     static {
+        // load one data provider by system property
         try {
-            String clsName = System.getProperty(
-                    "org.joda.money.CurrencyUnitDataProvider", "org.joda.money.CurrencyUnitDataProvider$DefaultProvider");
-            Class<? extends CurrencyUnitDataProvider> cls =
-                    CurrencyUnit.class.getClassLoader().loadClass(clsName).asSubclass(CurrencyUnitDataProvider.class);
-            cls.newInstance().registerCurrencies();
+            try {
+                String clsName = System.getProperty(
+                        "org.joda.money.CurrencyUnitDataProvider", "org.joda.money.DefaultCurrencyUnitDataProvider");
+                Class<? extends CurrencyUnitDataProvider> cls =
+                        CurrencyUnit.class.getClassLoader().loadClass(clsName).asSubclass(CurrencyUnitDataProvider.class);
+                cls.newInstance().registerCurrencies();
+            } catch (SecurityException ex) {
+                new DefaultCurrencyUnitDataProvider().registerCurrencies();
+            }
         } catch (RuntimeException ex) {
             throw ex;
         } catch (Exception ex) {
