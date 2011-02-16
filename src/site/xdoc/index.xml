@@ -38,7 +38,7 @@ As a flavour of Joda-Money, here's some example code:
   boolean bigAmount = money.isGreaterThan(dailyWage);
   
   <span class="comment">// convert to GBP using a supplied rate</span>
-  BigDecimal conversionRate = ...;  // obtained from code outside Joda-Money
+  BigDecimal conversionRate = ...;  <span class="comment">// obtained from code outside Joda-Money</span>
   Money moneyGBP = money.convertTo(CurrencyUnit.GBP, conversionRate);
   
   <span class="comment">// use a BigMoney for more complex calculations where scale matters</span>
