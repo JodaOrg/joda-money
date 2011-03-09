@@ -25,7 +25,7 @@ import org.joda.money.CurrencyUnit;
 /**
  * Context used when parsing money.
  * <p>
- * MoneyParseContext is mutable and not thread-safe.
+ * This class is mutable and intended for use by a single thread.
  * A new instance is created for each parse.
  */
 public final class MoneyParseContext {
@@ -33,11 +33,11 @@ public final class MoneyParseContext {
     /**
      * The locale to parse using.
      */
-    private final Locale iLocale;
+    private Locale iLocale;
     /**
      * The text to parse.
      */
-    private final CharSequence iText;
+    private CharSequence iText;
     /**
      * The text index.
      */
@@ -72,10 +72,20 @@ public final class MoneyParseContext {
     /**
      * Gets the locale.
      * 
-     * @return the locale, never null
+     * @return the locale, not null
      */
     public Locale getLocale() {
         return iLocale;
+    }
+
+    /**
+     * Sets the locale.
+     * 
+     * @param locale  the locale, not null
+     */
+    public void setLocale(Locale locale) {
+        MoneyFormatter.checkNotNull(locale, "Locale must not be null");
+        iLocale = locale;
     }
 
     /**
@@ -85,6 +95,16 @@ public final class MoneyParseContext {
      */
     public CharSequence getText() {
         return iText;
+    }
+
+    /**
+     * Sets the text.
+     * 
+     * @param text  the text being parsed, not null
+     */
+    public void setText(CharSequence text) {
+        MoneyFormatter.checkNotNull(text, "Text must not be null");
+        iText = text;
     }
 
     /**

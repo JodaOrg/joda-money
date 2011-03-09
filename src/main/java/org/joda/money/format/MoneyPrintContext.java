@@ -20,7 +20,7 @@ import java.util.Locale;
 /**
  * Context used when printing money.
  * <p>
- * MoneyPrintContext is immutable and thread-safe however future versions might not be.
+ * This class is mutable and intended for use by a single thread.
  * A new instance is created for each parse.
  */
 public final class MoneyPrintContext {
@@ -28,7 +28,7 @@ public final class MoneyPrintContext {
     /**
      * The locale to print using.
      */
-    private final Locale iLocale;
+    private Locale iLocale;
 
     /**
      * Constructor.
@@ -39,6 +39,7 @@ public final class MoneyPrintContext {
         this.iLocale = locale;
     }
 
+    //-----------------------------------------------------------------------
     /**
      * Gets the locale.
      * 
@@ -46,6 +47,16 @@ public final class MoneyPrintContext {
      */
     public Locale getLocale() {
         return iLocale;
+    }
+
+    /**
+     * Sets the locale.
+     * 
+     * @param locale  the locale, not null
+     */
+    public void setLocale(Locale locale) {
+        MoneyFormatter.checkNotNull(locale, "Locale must not be null");
+        iLocale = locale;
     }
 
 }
