@@ -17,6 +17,8 @@ package org.joda.money;
 
 /**
  * Utilities for working with monetary values that handle null.
+ * <p>
+ * This utility class contains thread-safe static methods.
  *
  * @author Stephen Colebourne
  */

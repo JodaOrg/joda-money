@@ -38,7 +38,7 @@ import org.joda.convert.ToString;
  * The {@code BigMoney} class is not restricted to the standard decimal places
  * and can represent an amount to any precision that a {@code BigDecimal} can represent.
  * <p>
- * BigMoney is immutable and thread-safe.
+ * This class is immutable and thread-safe.
  */
 public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProvider>, Serializable {
 

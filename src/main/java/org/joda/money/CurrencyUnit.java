@@ -37,6 +37,8 @@ import org.joda.convert.ToString;
  * The provider used is determined by the system property {@code org.joda.money.CurrencyUnitDataProvider}
  * which should be the fully qualified class name of the provider. The default provider loads the first
  * resource named {@code /org/joda/money/MoneyData.csv} on the classpath.
+ * <p>
+ * This class is immutable and thread-safe.
  *
  * @author Stephen Colebourne
  */

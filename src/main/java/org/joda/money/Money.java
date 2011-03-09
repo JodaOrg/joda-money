@@ -39,7 +39,7 @@ import org.joda.convert.ToString;
  * The major units are dollars. The minor units are cents, 100 to the dollar.
  * This class does not allow calculations on fractions of a cent.
  * <p>
- * Money is immutable and thread-safe.
+ * This class is immutable and thread-safe.
  */
 public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvider>, Serializable {
 

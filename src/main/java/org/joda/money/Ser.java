@@ -27,6 +27,8 @@ import java.math.BigInteger;
 
 /**
  * A package scoped class used to manage serialization efficiently.
+ * <p>
+ * This class is mutable and intended for use by a single thread.
  */
 final class Ser implements Externalizable {
 

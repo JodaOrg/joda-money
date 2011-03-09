@@ -20,6 +20,8 @@ package org.joda.money;
  * <p>
  * For example, this exception would be thrown when trying to add a monetary
  * value in one currency to a monetary value in a different currency.
+ * <p>
+ * This exception makes no guarantees about immutability or thread-safety.
  *
  * @author Stephen Colebourne
  */

@@ -30,8 +30,8 @@ package org.joda.money;
  * The method {@link BigMoney#of(BigMoneyProvider)} performs the conversion
  * safely with null checks and is recommended for this purpose.
  * <p>
- * BigMoneyProvider is an interface and makes no guarantees about the
- * immutability or thread-safety of its implementations.
+ * This interface makes no guarantees about the immutability or
+ * thread-safety of implementations.
  */
 public interface BigMoneyProvider {
 

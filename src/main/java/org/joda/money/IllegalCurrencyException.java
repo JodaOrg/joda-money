@@ -20,6 +20,8 @@ package org.joda.money;
  * <p>
  * For example, this exception would be thrown when trying to obtain a
  * currency using an unrecognised currency code or locale.
+ * <p>
+ * This exception makes no guarantees about immutability or thread-safety.
  *
  * @author Stephen Colebourne
  */
