@@ -46,7 +46,7 @@ import java.util.concurrent.ConcurrentMap;
  *  formatter to determine the style
  * </ul>
  * <p>
- * MoneyAmountStyle is immutable and thread-safe.
+ * This class is immutable and thread-safe.
  */
 public final class MoneyAmountStyle implements Serializable {
 

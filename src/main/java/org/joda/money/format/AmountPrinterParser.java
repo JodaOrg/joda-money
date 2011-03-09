@@ -24,7 +24,7 @@ import org.joda.money.BigMoney;
 /**
  * Prints and parses the amount part of the money.
  * <p>
- * AmountPrinterParser is immutable and thread-safe.
+ * This class is immutable and thread-safe.
  */
 final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializable {
 

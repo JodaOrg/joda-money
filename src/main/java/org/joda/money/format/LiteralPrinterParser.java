@@ -23,7 +23,7 @@ import org.joda.money.BigMoney;
 /**
  * Prints and parses a literal.
  * <p>
- * LiteralPrinterParser is immutable and thread-safe.
+ * This class is immutable and thread-safe.
  */
 final class LiteralPrinterParser implements MoneyPrinter, MoneyParser, Serializable {
 

@@ -19,6 +19,8 @@ import java.io.IOException;
 
 /**
  * Exception thrown during monetary formatting.
+ * <p>
+ * This exception makes no guarantees about immutability or thread-safety.
  *
  * @author Stephen Colebourne
  */

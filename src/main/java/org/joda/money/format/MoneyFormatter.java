@@ -30,7 +30,7 @@ import org.joda.money.Money;
  * Instances of {@code MoneyFormatter} can be created by
  * {@code MoneyFormatterBuilder}.
  * <p>
- * MoneyFormatter is immutable and thread-safe.
+ * This class is immutable and thread-safe.
  */
 public final class MoneyFormatter implements Serializable {
 

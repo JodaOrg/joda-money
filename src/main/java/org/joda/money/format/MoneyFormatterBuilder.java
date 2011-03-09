@@ -27,7 +27,8 @@ import org.joda.money.IllegalCurrencyException;
 /**
  * Provides the ability to build a formatter for monetary values.
  * <p>
- * MoneyFormatter is a mutable builder - a new instance should be created for each use.
+ * This class is mutable and intended for use by a single thread.
+ * A new instance should be created for each use.
  * The formatters produced by the builder are immutable and thread-safe.
  */
 public final class MoneyFormatterBuilder {

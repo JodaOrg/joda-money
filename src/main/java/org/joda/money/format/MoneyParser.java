@@ -21,20 +21,11 @@ package org.joda.money.format;
  * The parser is expected to start parsing at the specified text position
  * and match against whatever it represents.
  * The parsed result must be stored in the context.
+ * The context also provides the current parse position which must be updated.
  * <p>
- * The parse position will be updated during the parse. Parsing will start at
- * the specified index and the return value specifies the new parse position
- * for the next parser. If an error occurs, the returned index will be negative
- * and will have the error position encoded using the complement operator.
- * <p>
- * MoneyParser is an interface and must be implemented with care to ensure
- * other classes operate correctly.
+ * This interface must be implemented with care to ensure other classes operate correctly.
  * All instantiable implementations must be thread-safe, and should generally
  * be final and immutable.
- * <p>
- * The context is not a thread-safe object and a new instance will be created
- * for each parse that occurs. The context must not be stored in an instance
- * variable or shared with any other threads.
  */
 public interface MoneyParser {
 
@@ -47,6 +38,10 @@ public interface MoneyParser {
      * Implementations should avoid throwing exceptions and use the error index
      * in the context instead to record the problem.
      * The context can be assumed to not be in error on entry to this method.
+     * <p>
+     * The context is not a thread-safe object and a new instance will be created
+     * for each parse. The context must not be stored in an instance variable
+     * or shared with any other threads.
      * 
      * @param context  the context to use and parse into, not null
      */

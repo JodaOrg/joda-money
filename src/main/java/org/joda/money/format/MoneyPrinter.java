@@ -26,8 +26,7 @@ import org.joda.money.BigMoney;
  * Typically, a complete print is constructed from a number of smaller printers
  * that have been combined using {@link MoneyFormatterBuilder}.
  * <p>
- * MoneyPrinter is an interface and must be implemented with care to ensure
- * other classes operate correctly.
+ * This interface must be implemented with care to ensure other classes operate correctly.
  * All instantiable implementations must be thread-safe, and should generally
  * be final and immutable.
  */
@@ -38,6 +37,10 @@ public interface MoneyPrinter {
      * <p>
      * The implementation determines what to append, which may be some or all
      * of the data held in the {@code BigMoney}.
+     * <p>
+     * The context is not a thread-safe object and a new instance will be created
+     * for each print. The context must not be stored in an instance variable
+     * or shared with any other threads.
      * 
      * @param context  the context being used, not null
      * @param appendable  the appendable to add to, not null
