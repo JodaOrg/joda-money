@@ -46,9 +46,9 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:svn:http://joda-money.svn.sourceforge.net/svnroot/joda-money/JodaMoney/trunk/</connection>
-    <developerConnection>scm:svn:https://joda-money.svn.sourceforge.net/svnroot/joda-money/JodaMoney/trunk/</developerConnection>
-    <url>http://joda-money.svn.sourceforge.net/viewvc/joda-money/JodaMoney/trunk/</url>
+    <connection>scm:git:git@github.com:JodaOrg/joda-money.git</connection>
+    <developerConnection>scm:git:git@github.com:JodaOrg/joda-money.git</developerConnection>
+    <url>https://github.com/JodaOrg/joda-money</url>
   </scm>
   <organization>
     <name>Joda.org</name>
