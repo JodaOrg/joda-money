@@ -22,9 +22,6 @@
       <subscribe>http://lists.sourceforge.net/lists/listinfo/joda-money-interest</subscribe>
       <unsubscribe>http://lists.sourceforge.net/lists/listinfo/joda-money-interest</unsubscribe>
       <archive>http://sourceforge.net/mailarchive/forum.php?forum_name=joda-money-interest</archive>
-      <!--otherArchives>
-        <otherArchive>http://n2.nabble.com/Joda-Interest-f219941.html</otherArchive>
-      </otherArchives-->
     </mailingList>
   </mailingLists>
   <developers>
