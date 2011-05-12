@@ -294,7 +294,7 @@
     <site>
       <id>sf-web-joda-money</id>
       <name>Sourceforge Site</name>
-      <url>scpexe://shell.sourceforge.net/home/groups/j/jo/joda-money/htdocs</url>
+      <url>scpexe://shell.sourceforge.net/home/project-web/joda-money/htdocs</url>
     </site>
     <downloadUrl>http://oss.sonatype.org/content/repositories/joda-releases</downloadUrl>
   </distributionManagement>
