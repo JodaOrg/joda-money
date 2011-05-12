@@ -24,12 +24,13 @@
     </menu>
 
     <menu name="Development">
+      <item name="GitHub (Source code)" href="https://github.com/JodaOrg/joda-money"/>
       <item name="Sourceforge" href="http://sourceforge.net/projects/joda-money/"/>
       <item name="Test results" href="surefire-report.html"/>
       <item name="Test coverage" href="/cobertura/index.html"/>
       <item name="Mailing lists" href="mail-lists.html"/>
       <item name="Tasks" href="tasks.html"/>
-      <item name="Subversion" href="http://joda-money.svn.sourceforge.net/viewvc/joda-money/JodaMoney/trunk/"/>
+      <!--item name="Subversion" href="http://joda-money.svn.sourceforge.net/viewvc/joda-money/JodaMoney/trunk/"/-->
       <item name="Javadoc (Latest)" href="apidocs/index.html"/>
     </menu>
 
