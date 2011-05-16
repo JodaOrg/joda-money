@@ -63,8 +63,9 @@ Various documentation is available:
 <ul>
 <li>The javadoc for the <a href="apidocs/index.html">current release</a></li>
 <li>The <a href="userguide.html">user guide</a></li>
-<!--li>A <a href="faq.html">FAQ</a> list</li-->
-<li>The <a href="http://joda-money.svn.sourceforge.net/viewvc/joda-money/JodaMoney/trunk/">Subversion repository</a></li>
+<li>A <a href="faq.html">FAQ</a> list</li>
+<!--li>Information on <a href="installation.html">downloading and installing</a> Joda-Primitives</li-->
+<li>The <a href="https://github.com/JodaOrg/joda-money">GitHub</a> source repository</li>
 </ul>
 </p>
 </section>
