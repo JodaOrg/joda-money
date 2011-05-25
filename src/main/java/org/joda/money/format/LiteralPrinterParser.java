@@ -31,36 +31,34 @@ final class LiteralPrinterParser implements MoneyPrinter, MoneyParser, Serializa
     private static final long serialVersionUID = 1L;
 
     /** Literal. */
-    private final String iLiteral;
+    private final String literal;
 
     /**
      * Constructor.
      * @param literal  the literal text, not null
      */
     LiteralPrinterParser(String literal) {
-        iLiteral = literal;
+        this.literal = literal;
     }
 
-    /** {@inheritDoc} */
+    //-----------------------------------------------------------------------
     public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
-        appendable.append(iLiteral);
+        appendable.append(literal);
     }
 
-    /** {@inheritDoc} */
     public void parse(MoneyParseContext context) {
-        int endPos = context.getIndex() + iLiteral.length();
+        int endPos = context.getIndex() + literal.length();
         if (endPos <= context.getTextLength() &&
-                context.getTextSubstring(context.getIndex(), endPos).equals(iLiteral)) {
+                context.getTextSubstring(context.getIndex(), endPos).equals(literal)) {
             context.setIndex(endPos);
         } else {
             context.setError();
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
-        return "'" + iLiteral + "'";
+        return "'" + literal + "'";
     }
 
 }

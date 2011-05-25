@@ -28,7 +28,7 @@ public final class MoneyPrintContext {
     /**
      * The locale to print using.
      */
-    private Locale iLocale;
+    private Locale locale;
 
     /**
      * Constructor.
@@ -36,7 +36,7 @@ public final class MoneyPrintContext {
      * @param locale  the locale, not null
      */
     MoneyPrintContext(Locale locale) {
-        this.iLocale = locale;
+        this.locale = locale;
     }
 
     //-----------------------------------------------------------------------
@@ -46,7 +46,7 @@ public final class MoneyPrintContext {
      * @return the locale, never null
      */
     public Locale getLocale() {
-        return iLocale;
+        return locale;
     }
 
     /**
@@ -56,7 +56,7 @@ public final class MoneyPrintContext {
      */
     public void setLocale(Locale locale) {
         MoneyFormatter.checkNotNull(locale, "Locale must not be null");
-        iLocale = locale;
+        this.locale = locale;
     }
 
 }

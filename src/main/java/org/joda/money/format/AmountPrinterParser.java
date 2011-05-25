@@ -32,21 +32,21 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
     private static final long serialVersionUID = 1L;
 
     /** The style to use. */
-    private final MoneyAmountStyle iStyle;
+    private final MoneyAmountStyle style;
 
     /**
      * Constructor.
      * @param style  the style, not null
      */
     AmountPrinterParser(MoneyAmountStyle style) {
-        iStyle = style;
+        this.style = style;
     }
 
-    /** {@inheritDoc} */
+    //-----------------------------------------------------------------------
     public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
-        MoneyAmountStyle style = iStyle.localize(context.getLocale());
+        MoneyAmountStyle activeStyle = style.localize(context.getLocale());
         String str = money.getAmount().toPlainString();
-        char zeroChar = style.getZeroCharacter();
+        char zeroChar = activeStyle.getZeroCharacter();
         if (zeroChar != '0') {
             int diff = zeroChar - '0';
             StringBuilder zeroConvert = new StringBuilder(str);
@@ -59,9 +59,9 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
             str = zeroConvert.toString();
         }
         int decPoint = str.indexOf('.');
-        if (style.isGrouping()) {
-            int groupingSize = style.getGroupingSize();
-            char groupingChar = style.getGroupingCharacter();
+        if (activeStyle.isGrouping()) {
+            int groupingSize = activeStyle.getGroupingSize();
+            char groupingChar = activeStyle.getGroupingCharacter();
             int pre = (decPoint < 0 ? str.length() : decPoint);
             int post = (decPoint < 0 ? 0 : str.length() - decPoint - 1);
             for (int i = 0; pre > 0; i++, pre--) {
@@ -70,8 +70,8 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
                     appendable.append(groupingChar);
                 }
             }
-            if (decPoint >= 0 || style.isForcedDecimalPoint()) {
-                appendable.append(style.getDecimalPointCharacter());
+            if (decPoint >= 0 || activeStyle.isForcedDecimalPoint()) {
+                appendable.append(activeStyle.getDecimalPointCharacter());
             }
             decPoint++;
             for (int i = 0; i < post; i++) {
@@ -83,20 +83,19 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
         } else {
             if (decPoint < 0) {
                 appendable.append(str);
-                if (style.isForcedDecimalPoint()) {
-                    appendable.append(style.getDecimalPointCharacter());
+                if (activeStyle.isForcedDecimalPoint()) {
+                    appendable.append(activeStyle.getDecimalPointCharacter());
                 }
             } else {
                 appendable.append(str.subSequence(0, decPoint))
-                    .append(style.getDecimalPointCharacter()).append(str.substring(decPoint + 1));
+                    .append(activeStyle.getDecimalPointCharacter()).append(str.substring(decPoint + 1));
             }
         }
     }
 
-    /** {@inheritDoc} */
     public void parse(MoneyParseContext context) {
         final int len = context.getTextLength();
-        final MoneyAmountStyle style = iStyle.localize(context.getLocale());
+        final MoneyAmountStyle activeStyle = style.localize(context.getLocale());
         char[] buf = new char[len - context.getIndex()];
         int bufPos = 0;
         boolean dpSeen = false;
@@ -104,13 +103,13 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
         int pos = context.getIndex();
         if (pos < len) {
             char ch = context.getText().charAt(pos++);
-            if (ch == style.getNegativeSignCharacter()) {
+            if (ch == activeStyle.getNegativeSignCharacter()) {
                 buf[bufPos++] = '-';
-            } else if (ch == style.getPositiveSignCharacter()) {
+            } else if (ch == activeStyle.getPositiveSignCharacter()) {
                 buf[bufPos++] = '+';
-            } else if (ch >= style.getZeroCharacter() && ch < style.getZeroCharacter() + 10) {
-                buf[bufPos++] = (char) ('0' + ch - style.getZeroCharacter());
-            } else if (ch == style.getDecimalPointCharacter()) {
+            } else if (ch >= activeStyle.getZeroCharacter() && ch < activeStyle.getZeroCharacter() + 10) {
+                buf[bufPos++] = (char) ('0' + ch - activeStyle.getZeroCharacter());
+            } else if (ch == activeStyle.getDecimalPointCharacter()) {
                 buf[bufPos++] = '.';
                 dpSeen = true;
             } else {
@@ -118,16 +117,16 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
                 return;
             }
         }
-        for (; pos < len; pos++) {
+        for ( ; pos < len; pos++) {
             char ch = context.getText().charAt(pos);
-            if (ch >= style.getZeroCharacter() && ch < style.getZeroCharacter() + 10) {
-                buf[bufPos++] = (char) ('0' + ch - style.getZeroCharacter());
+            if (ch >= activeStyle.getZeroCharacter() && ch < activeStyle.getZeroCharacter() + 10) {
+                buf[bufPos++] = (char) ('0' + ch - activeStyle.getZeroCharacter());
                 lastWasGroup = false;
-            } else if (ch == style.getDecimalPointCharacter() && dpSeen == false) {
+            } else if (ch == activeStyle.getDecimalPointCharacter() && dpSeen == false) {
                 buf[bufPos++] = '.';
                 dpSeen = true;
                 lastWasGroup = false;
-            } else if (ch == style.getGroupingCharacter() && lastWasGroup == false) {
+            } else if (ch == activeStyle.getGroupingCharacter() && lastWasGroup == false) {
                 lastWasGroup = true;
             } else {
                 break;
@@ -144,7 +143,6 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
         return "${amount}";

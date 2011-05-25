@@ -42,15 +42,15 @@ public final class MoneyFormatter implements Serializable {
     /**
      * The locale to use.
      */
-    private final Locale iLocale;
+    private final Locale locale;
     /**
      * The printers.
      */
-    private final MoneyPrinter[] iPrinters;
+    private final MoneyPrinter[] printers;
     /**
      * The parsers.
      */
-    private final MoneyParser[] iParsers;
+    private final MoneyParser[] parsers;
 
     //-----------------------------------------------------------------------
     /**
@@ -82,9 +82,9 @@ public final class MoneyFormatter implements Serializable {
         assert printers != null;
         assert parsers != null;
         assert printers.length == parsers.length;
-        iLocale = locale;
-        iPrinters = printers;
-        iParsers = parsers;
+        this.locale = locale;
+        this.printers = printers;
+        this.parsers = parsers;
     }
 
     //-----------------------------------------------------------------------
@@ -94,8 +94,8 @@ public final class MoneyFormatter implements Serializable {
      * @param builder  the builder to append to not null
      */
     void appendTo(MoneyFormatterBuilder builder) {
-        for (int i = 0; i < iPrinters.length; i++) {
-            builder.append(iPrinters[i], iParsers[i]);
+        for (int i = 0; i < printers.length; i++) {
+            builder.append(printers[i], parsers[i]);
         }
     }
 
@@ -106,7 +106,7 @@ public final class MoneyFormatter implements Serializable {
      * @return the locale, never null
      */
     public Locale getLocale() {
-        return iLocale;
+        return locale;
     }
 
     /**
@@ -120,7 +120,7 @@ public final class MoneyFormatter implements Serializable {
      */
     public MoneyFormatter withLocale(Locale locale) {
         checkNotNull(locale, "Locale must not be null");
-        return new MoneyFormatter(locale, iPrinters, iParsers);
+        return new MoneyFormatter(locale, printers, parsers);
     }
 
     //-----------------------------------------------------------------------
@@ -133,7 +133,7 @@ public final class MoneyFormatter implements Serializable {
      * @return true if the formatter can print
      */
     public boolean isPrinter() {
-        return Arrays.asList(iPrinters).contains(null) == false;
+        return Arrays.asList(printers).contains(null) == false;
     }
 
     /**
@@ -145,7 +145,7 @@ public final class MoneyFormatter implements Serializable {
      * @return true if the formatter can parse
      */
     public boolean isParser() {
-        return Arrays.asList(iParsers).contains(null) == false;
+        return Arrays.asList(parsers).contains(null) == false;
     }
 
     //-----------------------------------------------------------------------
@@ -205,8 +205,8 @@ public final class MoneyFormatter implements Serializable {
         }
         
         BigMoney money = BigMoney.of(moneyProvider);
-        MoneyPrintContext context = new MoneyPrintContext(iLocale);
-        for (MoneyPrinter printer : iPrinters) {
+        MoneyPrintContext context = new MoneyPrintContext(locale);
+        for (MoneyPrinter printer : printers) {
             printer.print(context, appendable, money);
         }
     }
@@ -280,8 +280,8 @@ public final class MoneyFormatter implements Serializable {
         if (isParser() == false) {
             throw new UnsupportedOperationException("MoneyFomatter has not been configured to be able to parse");
         }
-        MoneyParseContext context = new MoneyParseContext(iLocale, text, startIndex);
-        for (MoneyParser parser : iParsers) {
+        MoneyParseContext context = new MoneyParseContext(locale, text, startIndex);
+        for (MoneyParser parser : parsers) {
             parser.parse(context);
             if (context.isError()) {
                 break;
@@ -300,13 +300,13 @@ public final class MoneyFormatter implements Serializable {
     public String toString() {
         StringBuilder buf1 = new StringBuilder();
         if (isPrinter()) {
-            for (MoneyPrinter printer : iPrinters) {
+            for (MoneyPrinter printer : printers) {
                 buf1.append(printer.toString());
             }
         }
         StringBuilder buf2 = new StringBuilder();
         if (isParser()) {
-            for (MoneyParser parser : iParsers) {
+            for (MoneyParser parser : parsers) {
                 buf2.append(parser.toString());
             }
         }

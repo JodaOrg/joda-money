@@ -53,7 +53,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     /**
      * The money, not null.
      */
-    private final BigMoney iMoney;
+    private final BigMoney money;
 
     //-----------------------------------------------------------------------
     /**
@@ -370,7 +370,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     Money(BigMoney money) {
         assert money != null : "Joda-Money bug: BigMoney must not be null";
         assert money.isCurrencyScale() : "Joda-Money bug: Only currency scale is valid for Money";
-        iMoney = money;
+        this.money = money;
     }
 
     /**
@@ -402,7 +402,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the new instance, never null
      */
     private Money with(BigMoney newInstance) {
-        if (iMoney.equals(newInstance)) {
+        if (money.equals(newInstance)) {
             return this;
         }
         return new Money(newInstance);
@@ -415,7 +415,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the currency, never null
      */
     public CurrencyUnit getCurrencyUnit() {
-        return iMoney.getCurrencyUnit();
+        return money.getCurrencyUnit();
     }
 
     //-----------------------------------------------------------------------
@@ -452,7 +452,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the rounding fails
      */
     public Money withCurrencyUnit(CurrencyUnit currency, RoundingMode roundingMode) {
-        return with(iMoney.withCurrencyUnit(currency).withCurrencyScale(roundingMode));
+        return with(money.withCurrencyUnit(currency).withCurrencyScale(roundingMode));
     }
 
     //-----------------------------------------------------------------------
@@ -469,7 +469,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the scale in use, typically 2 but could be 0, 1 and 3
      */
     public int getScale() {
-        return iMoney.getScale();
+        return money.getScale();
     }
 
     //-----------------------------------------------------------------------
@@ -482,7 +482,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the amount, never null
      */
     public BigDecimal getAmount() {
-        return iMoney.getAmount();
+        return money.getAmount();
     }
 
     /**
@@ -499,7 +499,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the major units part of the amount, never null
      */
     public BigDecimal getAmountMajor() {
-        return iMoney.getAmountMajor();
+        return money.getAmountMajor();
     }
 
     /**
@@ -513,7 +513,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the amount is too large for a {@code long}
      */
     public long getAmountMajorLong() {
-        return iMoney.getAmountMajorLong();
+        return money.getAmountMajorLong();
     }
 
     /**
@@ -527,7 +527,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the amount is too large for an {@code int}
      */
     public int getAmountMajorInt() {
-        return iMoney.getAmountMajorInt();
+        return money.getAmountMajorInt();
     }
 
     /**
@@ -544,7 +544,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the minor units part of the amount, never null
      */
     public BigDecimal getAmountMinor() {
-        return iMoney.getAmountMinor();
+        return money.getAmountMinor();
     }
 
     /**
@@ -558,7 +558,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the amount is too large for a {@code long}
      */
     public long getAmountMinorLong() {
-        return iMoney.getAmountMinorLong();
+        return money.getAmountMinorLong();
     }
 
     /**
@@ -572,7 +572,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the amount is too large for an {@code int}
      */
     public int getAmountMinorInt() {
-        return iMoney.getAmountMinorInt();
+        return money.getAmountMinorInt();
     }
 
     /**
@@ -588,7 +588,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the minor part of the amount, negative if the amount is negative
      */
     public int getMinorPart() {
-        return iMoney.getMinorPart();
+        return money.getMinorPart();
     }
 
     //-----------------------------------------------------------------------
@@ -598,7 +598,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return true if the amount is zero
      */
     public boolean isZero() {
-        return iMoney.isZero();
+        return money.isZero();
     }
 
     /**
@@ -607,7 +607,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return true if the amount is greater than zero
      */
     public boolean isPositive() {
-        return iMoney.isPositive();
+        return money.isPositive();
     }
 
     /**
@@ -616,7 +616,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return true if the amount is zero or greater
      */
     public boolean isPositiveOrZero() {
-        return iMoney.isPositiveOrZero();
+        return money.isPositiveOrZero();
     }
 
     /**
@@ -625,7 +625,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return true if the amount is less than zero
      */
     public boolean isNegative() {
-        return iMoney.isNegative();
+        return money.isNegative();
     }
 
     /**
@@ -634,7 +634,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return true if the amount is zero or less
      */
     public boolean isNegativeOrZero() {
-        return iMoney.isNegativeOrZero();
+        return money.isNegativeOrZero();
     }
 
     //-----------------------------------------------------------------------
@@ -669,7 +669,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the new instance with the input amount set, never null
      */
     public Money withAmount(BigDecimal amount, RoundingMode roundingMode) {
-        return with(iMoney.withAmount(amount).withCurrencyScale(roundingMode));
+        return with(money.withAmount(amount).withCurrencyScale(roundingMode));
     }
 
     /**
@@ -717,7 +717,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the new instance with the input amount set, never null
      */
     public Money withAmount(double amount, RoundingMode roundingMode) {
-        return with(iMoney.withAmount(amount).withCurrencyScale(roundingMode));
+        return with(money.withAmount(amount).withCurrencyScale(roundingMode));
     }
 
     //-----------------------------------------------------------------------
@@ -734,7 +734,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws CurrencyMismatchException if the currencies differ
      */
     public Money plus(Iterable<Money> moniesToAdd) {
-        return with(iMoney.plus(moniesToAdd));
+        return with(money.plus(moniesToAdd));
     }
 
     //-----------------------------------------------------------------------
@@ -754,7 +754,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws CurrencyMismatchException if the currencies differ
      */
     public Money plus(Money moneyToAdd) {
-        return with(iMoney.plus(moneyToAdd));
+        return with(money.plus(moneyToAdd));
     }
 
     /**
@@ -787,7 +787,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the new instance with the input amount added, never null
      */
     public Money plus(BigDecimal amountToAdd, RoundingMode roundingMode) {
-        return with(iMoney.plusRetainScale(amountToAdd, roundingMode));
+        return with(money.plusRetainScale(amountToAdd, roundingMode));
     }
 
     /**
@@ -832,7 +832,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the new instance with the input amount added, never null
      */
     public Money plus(double amountToAdd, RoundingMode roundingMode) {
-        return with(iMoney.plusRetainScale(amountToAdd, roundingMode));
+        return with(money.plusRetainScale(amountToAdd, roundingMode));
     }
 
     /**
@@ -847,7 +847,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the new instance with the input amount added, never null
      */
     public Money plusMajor(long amountToAdd) {
-        return with(iMoney.plusMajor(amountToAdd));
+        return with(money.plusMajor(amountToAdd));
     }
 
     /**
@@ -862,7 +862,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the new instance with the input amount added, never null
      */
     public Money plusMinor(long amountToAdd) {
-        return with(iMoney.plusMinor(amountToAdd));
+        return with(money.plusMinor(amountToAdd));
     }
 
     //-----------------------------------------------------------------------
@@ -879,7 +879,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws CurrencyMismatchException if the currencies differ
      */
     public Money minus(Iterable<Money> moniesToSubtract) {
-        return with(iMoney.minus(moniesToSubtract));
+        return with(money.minus(moniesToSubtract));
     }
 
     //-----------------------------------------------------------------------
@@ -899,7 +899,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws CurrencyMismatchException if the currencies differ
      */
     public Money minus(Money moneyToSubtract) {
-        return with(iMoney.minus(moneyToSubtract));
+        return with(money.minus(moneyToSubtract));
     }
 
     /**
@@ -932,7 +932,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the new instance with the input amount subtracted, never null
      */
     public Money minus(BigDecimal amountToSubtract, RoundingMode roundingMode) {
-        return with(iMoney.minusRetainScale(amountToSubtract, roundingMode));
+        return with(money.minusRetainScale(amountToSubtract, roundingMode));
     }
 
     /**
@@ -977,7 +977,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the new instance with the input amount subtracted, never null
      */
     public Money minus(double amountToSubtract, RoundingMode roundingMode) {
-        return with(iMoney.minusRetainScale(amountToSubtract, roundingMode));
+        return with(money.minusRetainScale(amountToSubtract, roundingMode));
     }
 
     /**
@@ -992,7 +992,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the new instance with the input amount subtracted, never null
      */
     public Money minusMajor(long amountToSubtract) {
-        return with(iMoney.minusMajor(amountToSubtract));
+        return with(money.minusMajor(amountToSubtract));
     }
 
     /**
@@ -1007,7 +1007,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the new instance with the input amount subtracted, never null
      */
     public Money minusMinor(long amountToSubtract) {
-        return with(iMoney.minusMinor(amountToSubtract));
+        return with(money.minusMinor(amountToSubtract));
     }
 
     //-----------------------------------------------------------------------
@@ -1025,7 +1025,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the rounding fails
      */
     public Money multipliedBy(BigDecimal valueToMultiplyBy, RoundingMode roundingMode) {
-        return with(iMoney.multiplyRetainScale(valueToMultiplyBy, roundingMode));
+        return with(money.multiplyRetainScale(valueToMultiplyBy, roundingMode));
     }
 
     /**
@@ -1048,7 +1048,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the rounding fails
      */
     public Money multipliedBy(double valueToMultiplyBy, RoundingMode roundingMode) {
-        return with(iMoney.multiplyRetainScale(valueToMultiplyBy, roundingMode));
+        return with(money.multiplyRetainScale(valueToMultiplyBy, roundingMode));
     }
 
     /**
@@ -1062,7 +1062,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the new multiplied instance, never null
      */
     public Money multipliedBy(long valueToMultiplyBy) {
-        return with(iMoney.multipliedBy(valueToMultiplyBy));
+        return with(money.multipliedBy(valueToMultiplyBy));
     }
 
     //-----------------------------------------------------------------------
@@ -1081,7 +1081,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the rounding fails
      */
     public Money dividedBy(BigDecimal valueToDivideBy, RoundingMode roundingMode) {
-        return with(iMoney.dividedBy(valueToDivideBy, roundingMode));
+        return with(money.dividedBy(valueToDivideBy, roundingMode));
     }
 
     /**
@@ -1105,7 +1105,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the rounding fails
      */
     public Money dividedBy(double valueToDivideBy, RoundingMode roundingMode) {
-        return with(iMoney.dividedBy(valueToDivideBy, roundingMode));
+        return with(money.dividedBy(valueToDivideBy, roundingMode));
     }
 
     /**
@@ -1122,7 +1122,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the rounding fails
      */
     public Money dividedBy(long valueToDivideBy, RoundingMode roundingMode) {
-        return with(iMoney.dividedBy(valueToDivideBy, roundingMode));
+        return with(money.dividedBy(valueToDivideBy, roundingMode));
     }
 
     //-----------------------------------------------------------------------
@@ -1134,7 +1134,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the new instance with the amount negated, never null
      */
     public Money negated() {
-        return with(iMoney.negated());
+        return with(money.negated());
     }
 
     /**
@@ -1171,7 +1171,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the rounding fails
      */
     public Money rounded(int scale, RoundingMode roundingMode) {
-        return with(iMoney.rounded(scale, roundingMode));
+        return with(money.rounded(scale, roundingMode));
     }
 
     //-----------------------------------------------------------------------
@@ -1191,7 +1191,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws ArithmeticException if the rounding fails
      */
     public Money convertedTo(CurrencyUnit currency, BigDecimal conversionMultipler, RoundingMode roundingMode) {
-        return with(iMoney.convertedTo(currency, conversionMultipler).withCurrencyScale(roundingMode));
+        return with(money.convertedTo(currency, conversionMultipler).withCurrencyScale(roundingMode));
     }
 
     //-----------------------------------------------------------------------
@@ -1202,18 +1202,18 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @return the money instance, never null
      */
     public BigMoney toBigMoney() {
-        return iMoney;
+        return money;
     }
 
     //-----------------------------------------------------------------------
     /**
      * Checks if this instance and the specified instance have the same currency.
      * 
-     * @param money  the money to check, not null
+     * @param other  the money to check, not null
      * @return true if they have the same currency
      */
-    public boolean isSameCurrency(BigMoneyProvider money) {
-        return iMoney.isSameCurrency(money);
+    public boolean isSameCurrency(BigMoneyProvider other) {
+        return money.isSameCurrency(other);
     }
 
     //-----------------------------------------------------------------------
@@ -1229,7 +1229,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws CurrencyMismatchException if the currencies differ
      */
     public int compareTo(BigMoneyProvider other) {
-        return iMoney.compareTo(other);
+        return money.compareTo(other);
     }
 
     /**
@@ -1245,7 +1245,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @see #equals(Object)
      */
     public boolean isEqual(BigMoneyProvider other) {
-        return iMoney.isEqual(other);
+        return money.isEqual(other);
     }
 
     /**
@@ -1260,7 +1260,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws CurrencyMismatchException if the currencies differ
      */
     public boolean isGreaterThan(BigMoneyProvider other) {
-        return iMoney.isGreaterThan(other);
+        return money.isGreaterThan(other);
     }
 
     /**
@@ -1275,7 +1275,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * @throws CurrencyMismatchException if the currencies differ
      */
     public boolean isLessThan(BigMoneyProvider other) {
-        return iMoney.isLessThan(other);
+        return money.isLessThan(other);
     }
 
     //-----------------------------------------------------------------------
@@ -1294,7 +1294,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
         }
         if (other instanceof Money) {
             Money otherMoney = (Money) other;
-            return iMoney.equals(otherMoney.iMoney);
+            return money.equals(otherMoney.money);
         }
         return false;
     }
@@ -1306,7 +1306,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      */
     @Override
     public int hashCode() {
-        return iMoney.hashCode() + 3;
+        return money.hashCode() + 3;
     }
 
     //-----------------------------------------------------------------------
@@ -1321,7 +1321,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     @Override
     @ToString
     public String toString() {
-        return iMoney.toString();
+        return money.toString();
     }
 
 }

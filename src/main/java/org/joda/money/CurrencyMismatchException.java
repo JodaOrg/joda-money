@@ -31,9 +31,9 @@ public class CurrencyMismatchException extends IllegalArgumentException {
     private static final long serialVersionUID = 1L;
 
     /** First currency. */
-    private final CurrencyUnit iFirstCurrency;
+    private final CurrencyUnit firstCurrency;
     /** Second currency. */
-    private final CurrencyUnit iSecondCurrency;
+    private final CurrencyUnit secondCurrency;
 
     /**
      * Constructor.
@@ -44,8 +44,8 @@ public class CurrencyMismatchException extends IllegalArgumentException {
         super("Currencies differ: " +
                 (firstCurrency != null ? firstCurrency.getCode() : "null") + '/' +
                 (secondCurrency != null ? secondCurrency.getCode() : "null"));
-        iFirstCurrency = firstCurrency;
-        iSecondCurrency = secondCurrency;
+        this.firstCurrency = firstCurrency;
+        this.secondCurrency = secondCurrency;
     }
 
     //-----------------------------------------------------------------------
@@ -55,7 +55,7 @@ public class CurrencyMismatchException extends IllegalArgumentException {
      * @return the currency at fault, may be null
      */
     public CurrencyUnit getFirstCurrency() {
-        return iFirstCurrency;
+        return firstCurrency;
     }
 
     /**
@@ -64,7 +64,7 @@ public class CurrencyMismatchException extends IllegalArgumentException {
      * @return the currency at fault, may be null
      */
     public CurrencyUnit getSecondCurrency() {
-        return iSecondCurrency;
+        return secondCurrency;
     }
 
 }

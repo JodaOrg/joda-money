@@ -40,9 +40,9 @@ final class Ser implements Externalizable {
     static final byte CURRENCY_UNIT = 'C';  // not in use yet
 
     /** The type. */
-    private byte iType;
+    private byte type;
     /** The data object. */
-    private Object iObject;
+    private Object object;
 
     /**
      * Constructor for serialization.
@@ -57,8 +57,8 @@ final class Ser implements Externalizable {
      * @param object  the object
      */
     Ser(byte type, Object object) {
-        iType = type;
-        iObject = object;
+        this.type = type;
+        this.object = object;
     }
 
     //-----------------------------------------------------------------------
@@ -70,20 +70,20 @@ final class Ser implements Externalizable {
      * @throws IOException if an error occurs
      */
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeByte(iType);
-        switch (iType) {
+        out.writeByte(type);
+        switch (type) {
             case BIG_MONEY: {
-                BigMoney obj = (BigMoney) iObject;
+                BigMoney obj = (BigMoney) object;
                 writeBigMoney(out, obj);
                 return;
             }
             case MONEY: {
-                Money obj = (Money) iObject;
+                Money obj = (Money) object;
                 writeBigMoney(out, obj.toBigMoney());
                 return;
             }
             case CURRENCY_UNIT: {
-                CurrencyUnit obj = (CurrencyUnit) iObject;
+                CurrencyUnit obj = (CurrencyUnit) object;
                 writeCurrency(out, obj);
                 return;
             }
@@ -112,18 +112,18 @@ final class Ser implements Externalizable {
      * @throws IOException if an error occurs
      */
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
-        iType = in.readByte();
-        switch (iType) {
+        type = in.readByte();
+        switch (type) {
             case BIG_MONEY: {
-                iObject = readBigMoney(in);
+                object = readBigMoney(in);
                 return;
             }
             case MONEY: {
-                iObject = new Money(readBigMoney(in));
+                object = new Money(readBigMoney(in));
                 return;
             }
             case CURRENCY_UNIT: {
-                iObject = readCurrency(in);
+                object = readCurrency(in);
                 return;
             }
         }
@@ -157,7 +157,7 @@ final class Ser implements Externalizable {
      * @return the read object, should never be null
      */
     private Object readResolve() {
-        return iObject;
+        return object;
     }
 
 }

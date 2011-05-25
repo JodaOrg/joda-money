@@ -116,35 +116,35 @@ public final class MoneyAmountStyle implements Serializable {
     /**
      * The character defining zero, and thus the numbers zero to nine.
      */
-    private final int iZeroCharacter;
+    private final int zeroCharacter;
     /**
      * The character representing the positive sign.
      */
-    private final int iPositiveCharacter;
+    private final int positiveCharacter;
     /**
      * The prefix string when the amount is negative.
      */
-    private final int iNegativeCharacter;
+    private final int negativeCharacter;
     /**
      * The character used for the decimal point.
      */
-    private final int iDecimalPointCharacter;
+    private final int decimalPointCharacter;
     /**
      * The character used for grouping.
      */
-    private final int iGroupingCharacter;
+    private final int groupingCharacter;
     /**
      * The size of each group.
      */
-    private final int iGroupingSize;
+    private final int groupingSize;
     /**
      * Whether to group or not.
      */
-    private final boolean iGrouping;
+    private final boolean grouping;
     /**
      * Whether to always require the decimal point to be visible.
      */
-    private final boolean iForceDecimalPoint;
+    private final boolean forceDecimalPoint;
 
     //-----------------------------------------------------------------------
     /**
@@ -178,14 +178,14 @@ public final class MoneyAmountStyle implements Serializable {
                 int positiveCharacter, int negativeCharacter,
                 int decimalPointCharacter, int groupingCharacter,
                 int groupingSize, boolean group, boolean forceDecimalPoint) {
-        iZeroCharacter = zeroCharacter;
-        iPositiveCharacter = positiveCharacter;
-        iNegativeCharacter = negativeCharacter;
-        iDecimalPointCharacter = decimalPointCharacter;
-        iGroupingCharacter = groupingCharacter;
-        iGroupingSize = groupingSize;
-        iGrouping = group;
-        iForceDecimalPoint = forceDecimalPoint;
+        this.zeroCharacter = zeroCharacter;
+        this.positiveCharacter = positiveCharacter;
+        this.negativeCharacter = negativeCharacter;
+        this.decimalPointCharacter = decimalPointCharacter;
+        this.groupingCharacter = groupingCharacter;
+        this.groupingSize = groupingSize;
+        this.grouping = group;
+        this.forceDecimalPoint = forceDecimalPoint;
     }
 
     //-----------------------------------------------------------------------
@@ -207,27 +207,27 @@ public final class MoneyAmountStyle implements Serializable {
         MoneyFormatter.checkNotNull(locale, "Locale must not be null");
         MoneyAmountStyle result = this;
         MoneyAmountStyle protoStyle = null;
-        if (iZeroCharacter < 0) {
+        if (zeroCharacter < 0) {
             protoStyle = getLocalizedStyle(locale);
             result = result.withZeroCharacter(protoStyle.getZeroCharacter());
         }
-        if (iPositiveCharacter < 0) {
+        if (positiveCharacter < 0) {
             protoStyle = getLocalizedStyle(locale);
             result = result.withPositiveSignCharacter(protoStyle.getPositiveSignCharacter());
         }
-        if (iNegativeCharacter < 0) {
+        if (negativeCharacter < 0) {
             protoStyle = getLocalizedStyle(locale);
             result = result.withNegativeSignCharacter(protoStyle.getNegativeSignCharacter());
         }
-        if (iDecimalPointCharacter < 0) {
+        if (decimalPointCharacter < 0) {
             protoStyle = (protoStyle == null ? getLocalizedStyle(locale) : protoStyle);
             result = result.withDecimalPointCharacter(protoStyle.getDecimalPointCharacter());
         }
-        if (iGroupingCharacter < 0) {
+        if (groupingCharacter < 0) {
             protoStyle = (protoStyle == null ? getLocalizedStyle(locale) : protoStyle);
             result = result.withGroupingCharacter(protoStyle.getGroupingCharacter());
         }
-        if (iGroupingSize < 0) {
+        if (groupingSize < 0) {
             protoStyle = (protoStyle == null ? getLocalizedStyle(locale) : protoStyle);
             result = result.withGroupingSize(protoStyle.getGroupingSize());
         }
@@ -280,7 +280,7 @@ public final class MoneyAmountStyle implements Serializable {
      * @return the zero character, null if to be determined by locale
      */
     public Character getZeroCharacter() {
-        return iZeroCharacter < 0 ? null : (char) iZeroCharacter;
+        return zeroCharacter < 0 ? null : (char) zeroCharacter;
     }
 
     /**
@@ -298,14 +298,14 @@ public final class MoneyAmountStyle implements Serializable {
      */
     public MoneyAmountStyle withZeroCharacter(Character zeroCharacter) {
         int zeroVal = (zeroCharacter == null ? -1 : zeroCharacter);
-        if (zeroVal == iZeroCharacter) {
+        if (zeroVal == this.zeroCharacter) {
             return this;
         }
         return new MoneyAmountStyle(
                 zeroVal,
-                iPositiveCharacter, iNegativeCharacter,
-                iDecimalPointCharacter, iGroupingCharacter,
-                iGroupingSize, iGrouping, iForceDecimalPoint);
+                positiveCharacter, negativeCharacter,
+                decimalPointCharacter, groupingCharacter,
+                groupingSize, grouping, forceDecimalPoint);
     }
 
     //-----------------------------------------------------------------------
@@ -317,7 +317,7 @@ public final class MoneyAmountStyle implements Serializable {
      * @return the format for positive amounts, null if to be determined by locale
      */
     public Character getPositiveSignCharacter() {
-        return iPositiveCharacter < 0 ? null : (char) iPositiveCharacter;
+        return positiveCharacter < 0 ? null : (char) positiveCharacter;
     }
 
     /**
@@ -330,14 +330,14 @@ public final class MoneyAmountStyle implements Serializable {
      */
     public MoneyAmountStyle withPositiveSignCharacter(Character positiveCharacter) {
         int positiveVal = (positiveCharacter == null ? -1 : positiveCharacter);
-        if (positiveVal == iPositiveCharacter) {
+        if (positiveVal == this.positiveCharacter) {
             return this;
         }
         return new MoneyAmountStyle(
-                iZeroCharacter,
-                positiveVal, iNegativeCharacter,
-                iDecimalPointCharacter, iGroupingCharacter,
-                iGroupingSize, iGrouping, iForceDecimalPoint);
+                zeroCharacter,
+                positiveVal, negativeCharacter,
+                decimalPointCharacter, groupingCharacter,
+                groupingSize, grouping, forceDecimalPoint);
     }
 
     //-----------------------------------------------------------------------
@@ -349,7 +349,7 @@ public final class MoneyAmountStyle implements Serializable {
      * @return the format for negative amounts, null if to be determined by locale
      */
     public Character getNegativeSignCharacter() {
-        return iNegativeCharacter < 0 ? null : (char) iNegativeCharacter;
+        return negativeCharacter < 0 ? null : (char) negativeCharacter;
     }
 
     /**
@@ -362,14 +362,14 @@ public final class MoneyAmountStyle implements Serializable {
      */
     public MoneyAmountStyle withNegativeSignCharacter(Character negativeCharacter) {
         int negativeVal = (negativeCharacter == null ? -1 : negativeCharacter);
-        if (negativeVal == iNegativeCharacter) {
+        if (negativeVal == this.negativeCharacter) {
             return this;
         }
         return new MoneyAmountStyle(
-                iZeroCharacter,
-                iPositiveCharacter, negativeVal,
-                iDecimalPointCharacter, iGroupingCharacter,
-                iGroupingSize, iGrouping, iForceDecimalPoint);
+                zeroCharacter,
+                positiveCharacter, negativeVal,
+                decimalPointCharacter, groupingCharacter,
+                groupingSize, grouping, forceDecimalPoint);
     }
 
     //-----------------------------------------------------------------------
@@ -379,7 +379,7 @@ public final class MoneyAmountStyle implements Serializable {
      * @return the decimal point character, null if to be determined by locale
      */
     public Character getDecimalPointCharacter() {
-        return iDecimalPointCharacter < 0 ? null : (char) iDecimalPointCharacter;
+        return decimalPointCharacter < 0 ? null : (char) decimalPointCharacter;
     }
 
     /**
@@ -392,14 +392,14 @@ public final class MoneyAmountStyle implements Serializable {
      */
     public MoneyAmountStyle withDecimalPointCharacter(Character decimalPointCharacter) {
         int dpVal = (decimalPointCharacter == null ? -1 : decimalPointCharacter);
-        if (dpVal == iDecimalPointCharacter) {
+        if (dpVal == this.decimalPointCharacter) {
             return this;
         }
         return new MoneyAmountStyle(
-                iZeroCharacter,
-                iPositiveCharacter, iNegativeCharacter,
-                dpVal, iGroupingCharacter,
-                iGroupingSize, iGrouping, iForceDecimalPoint);
+                zeroCharacter,
+                positiveCharacter, negativeCharacter,
+                dpVal, groupingCharacter,
+                groupingSize, grouping, forceDecimalPoint);
     }
 
     //-----------------------------------------------------------------------
@@ -409,7 +409,7 @@ public final class MoneyAmountStyle implements Serializable {
      * @return the grouping character, null if to be determined by locale
      */
     public Character getGroupingCharacter() {
-        return iGroupingCharacter < 0 ? null : (char) iGroupingCharacter;
+        return groupingCharacter < 0 ? null : (char) groupingCharacter;
     }
 
     /**
@@ -422,14 +422,14 @@ public final class MoneyAmountStyle implements Serializable {
      */
     public MoneyAmountStyle withGroupingCharacter(Character groupingCharacter) {
         int groupingVal = (groupingCharacter == null ? -1 : groupingCharacter);
-        if (groupingVal == iGroupingCharacter) {
+        if (groupingVal == this.groupingCharacter) {
             return this;
         }
         return new MoneyAmountStyle(
-                iZeroCharacter,
-                iPositiveCharacter, iNegativeCharacter,
-                iDecimalPointCharacter, groupingVal,
-                iGroupingSize, iGrouping, iForceDecimalPoint);
+                zeroCharacter,
+                positiveCharacter, negativeCharacter,
+                decimalPointCharacter, groupingVal,
+                groupingSize, grouping, forceDecimalPoint);
     }
 
     //-----------------------------------------------------------------------
@@ -439,7 +439,7 @@ public final class MoneyAmountStyle implements Serializable {
      * @return the size of each group, null if to be determined by locale
      */
     public Integer getGroupingSize() {
-        return iGroupingSize < 0 ? null : iGroupingSize;
+        return groupingSize < 0 ? null : groupingSize;
     }
 
     /**
@@ -452,17 +452,17 @@ public final class MoneyAmountStyle implements Serializable {
      */
     public MoneyAmountStyle withGroupingSize(Integer groupingSize) {
         int sizeVal = (groupingSize == null ? -1 : groupingSize);
-        if (groupingSize != null && sizeVal <= 0 ) {
+        if (groupingSize != null && sizeVal <= 0) {
             throw new IllegalArgumentException("Grouping size must be greater than zero");
         }
-        if (sizeVal == iGroupingSize) {
+        if (sizeVal == this.groupingSize) {
             return this;
         }
         return new MoneyAmountStyle(
-                iZeroCharacter,
-                iPositiveCharacter, iNegativeCharacter,
-                iDecimalPointCharacter, iGroupingCharacter,
-                sizeVal, iGrouping, iForceDecimalPoint);
+                zeroCharacter,
+                positiveCharacter, negativeCharacter,
+                decimalPointCharacter, groupingCharacter,
+                sizeVal, grouping, forceDecimalPoint);
     }
 
     //-----------------------------------------------------------------------
@@ -472,7 +472,7 @@ public final class MoneyAmountStyle implements Serializable {
      * @return whether to use the grouping separator
      */
     public boolean isGrouping() {
-        return iGrouping;
+        return grouping;
     }
 
     /**
@@ -482,14 +482,14 @@ public final class MoneyAmountStyle implements Serializable {
      * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle withGrouping(boolean grouping) {
-        if (grouping == iGrouping) {
+        if (this.grouping == grouping) {
             return this;
         }
         return new MoneyAmountStyle(
-                iZeroCharacter,
-                iPositiveCharacter, iNegativeCharacter,
-                iDecimalPointCharacter, iGroupingCharacter,
-                iGroupingSize, grouping, iForceDecimalPoint);
+                zeroCharacter,
+                positiveCharacter, negativeCharacter,
+                decimalPointCharacter, groupingCharacter,
+                groupingSize, grouping, forceDecimalPoint);
     }
 
     //-----------------------------------------------------------------------
@@ -499,7 +499,7 @@ public final class MoneyAmountStyle implements Serializable {
      * @return whether to force the decimal point on output
      */
     public boolean isForcedDecimalPoint() {
-        return iForceDecimalPoint;
+        return forceDecimalPoint;
     }
 
     /**
@@ -509,14 +509,14 @@ public final class MoneyAmountStyle implements Serializable {
      * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle withForcedDecimalPoint(boolean forceDecimalPoint) {
-        if (forceDecimalPoint == iForceDecimalPoint) {
+        if (this.forceDecimalPoint == forceDecimalPoint) {
             return this;
         }
         return new MoneyAmountStyle(
-                iZeroCharacter,
-                iPositiveCharacter, iNegativeCharacter,
-                iDecimalPointCharacter, iGroupingCharacter,
-                iGroupingSize, iGrouping, forceDecimalPoint);
+                zeroCharacter,
+                positiveCharacter, negativeCharacter,
+                decimalPointCharacter, groupingCharacter,
+                groupingSize, grouping, forceDecimalPoint);
     }
 
     //-----------------------------------------------------------------------
@@ -535,14 +535,14 @@ public final class MoneyAmountStyle implements Serializable {
             return false;
         }
         MoneyAmountStyle otherStyle = (MoneyAmountStyle) other;
-        return (iZeroCharacter == otherStyle.iZeroCharacter) &&
-                (iPositiveCharacter == otherStyle.iPositiveCharacter) &&
-                (iNegativeCharacter == otherStyle.iNegativeCharacter) &&
-                (iDecimalPointCharacter == otherStyle.iDecimalPointCharacter) &&
-                (iGroupingCharacter == otherStyle.iGroupingCharacter) &&
-                (iGroupingSize == otherStyle.iGroupingSize) &&
-                (iGrouping == otherStyle.iGrouping) &&
-                (iForceDecimalPoint == otherStyle.iForceDecimalPoint);
+        return (zeroCharacter == otherStyle.zeroCharacter) &&
+                (positiveCharacter == otherStyle.positiveCharacter) &&
+                (negativeCharacter == otherStyle.negativeCharacter) &&
+                (decimalPointCharacter == otherStyle.decimalPointCharacter) &&
+                (groupingCharacter == otherStyle.groupingCharacter) &&
+                (groupingSize == otherStyle.groupingSize) &&
+                (grouping == otherStyle.grouping) &&
+                (forceDecimalPoint == otherStyle.forceDecimalPoint);
     }
 
     /**
@@ -553,14 +553,14 @@ public final class MoneyAmountStyle implements Serializable {
     @Override
     public int hashCode() {
         int hash = 13;
-        hash += iZeroCharacter * 17;
-        hash += iPositiveCharacter * 17;
-        hash += iNegativeCharacter * 17;
-        hash += iDecimalPointCharacter * 17;
-        hash += iGroupingCharacter * 17;
-        hash += iGroupingSize * 17;
-        hash += (iGrouping ? 1 : 0);
-        hash += (iForceDecimalPoint ? 2 : 4);
+        hash += zeroCharacter * 17;
+        hash += positiveCharacter * 17;
+        hash += negativeCharacter * 17;
+        hash += decimalPointCharacter * 17;
+        hash += groupingCharacter * 17;
+        hash += groupingSize * 17;
+        hash += (grouping ? 1 : 0);
+        hash += (forceDecimalPoint ? 2 : 4);
         return hash;
     }
 

@@ -36,11 +36,11 @@ public final class MoneyFormatterBuilder {
     /**
      * The printers.
      */
-    private final List<MoneyPrinter> iPrinters = new ArrayList<MoneyPrinter>();
+    private final List<MoneyPrinter> printers = new ArrayList<MoneyPrinter>();
     /**
      * The parsers.
      */
-    private final List<MoneyParser> iParsers = new ArrayList<MoneyParser>();
+    private final List<MoneyParser> parsers = new ArrayList<MoneyParser>();
 
     //-----------------------------------------------------------------------
     /**
@@ -200,8 +200,8 @@ public final class MoneyFormatterBuilder {
      * @return this for chaining, never null
      */
     private MoneyFormatterBuilder appendInternal(MoneyPrinter printer, MoneyParser parser) {
-        iPrinters.add(printer);
-        iParsers.add(parser);
+        printers.add(printer);
+        parsers.add(parser);
         return this;
     }
 
@@ -238,9 +238,9 @@ public final class MoneyFormatterBuilder {
     @SuppressWarnings("cast")
     public MoneyFormatter toFormatter(Locale locale) {
         MoneyFormatter.checkNotNull(locale, "Locale must not be null");
-        MoneyPrinter[] printers = (MoneyPrinter[]) iPrinters.toArray(new MoneyPrinter[iPrinters.size()]);
-        MoneyParser[] parsers = (MoneyParser[]) iParsers.toArray(new MoneyParser[iParsers.size()]);
-        return new MoneyFormatter(locale, printers, parsers);
+        MoneyPrinter[] printersCopy = (MoneyPrinter[]) printers.toArray(new MoneyPrinter[printers.size()]);
+        MoneyParser[] parsersCopy = (MoneyParser[]) parsers.toArray(new MoneyParser[parsers.size()]);
+        return new MoneyFormatter(locale, printersCopy, parsersCopy);
     }
 
 //    /**
@@ -333,11 +333,9 @@ public final class MoneyFormatterBuilder {
      */
     private static enum Singletons implements MoneyPrinter, MoneyParser {
         CODE("${code}") {
-            /** {@inheritDoc} */
             public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
                 appendable.append(money.getCurrencyUnit().getCode());
             }
-            /** {@inheritDoc} */
             public void parse(MoneyParseContext context) {
                 int endPos = context.getIndex() + 3;
                 if (endPos > context.getTextLength()) {
@@ -354,7 +352,6 @@ public final class MoneyFormatterBuilder {
             }
         },
         NUMERIC_3_CODE("${numeric3Code}") {
-            /** {@inheritDoc} */
             public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
                 appendable.append(money.getCurrencyUnit().getNumeric3Code());
             }
@@ -374,14 +371,12 @@ public final class MoneyFormatterBuilder {
             }
         },
         NUMERIC_CODE("${numericCode}") {
-            /** {@inheritDoc} */
             public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
                 appendable.append(Integer.toString(money.getCurrencyUnit().getNumericCode()));
             }
-            /** {@inheritDoc} */
             public void parse(MoneyParseContext context) {
                 int count = 0;
-                for (; count < 3 && context.getIndex() + count < context.getTextLength(); count++) {
+                for ( ; count < 3 && context.getIndex() + count < context.getTextLength(); count++) {
                     char ch = context.getText().charAt(context.getIndex() + count);
                     if (ch < '0' || ch > '9') {
                         break;
@@ -397,15 +392,13 @@ public final class MoneyFormatterBuilder {
                 }
             }
         };
-        private final String iToString;
-        /** {@inheritDoc} */
+        private final String toString;
         private Singletons(String toString) {
-            iToString = toString;
+            this.toString = toString;
         }
-        /** {@inheritDoc} */
         @Override
         public String toString() {
-            return iToString;
+            return toString;
         }
     }
 
@@ -415,11 +408,9 @@ public final class MoneyFormatterBuilder {
      */
     private static enum SingletonPrinters implements MoneyPrinter {
         LOCALIZED_SYMBOL;
-        /** {@inheritDoc} */
         public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
             appendable.append(money.getCurrencyUnit().getSymbol(context.getLocale()));
         }
-        /** {@inheritDoc} */
         @Override
         public String toString() {
             return "${symbolLocalized}";

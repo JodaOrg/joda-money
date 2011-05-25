@@ -56,11 +56,11 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     /**
      * The currency, not null.
      */
-    private final CurrencyUnit iCurrency;
+    private final CurrencyUnit currency;
     /**
      * The amount, not null.
      */
-    private final BigDecimal iAmount;
+    private final BigDecimal amount;
 
     //-----------------------------------------------------------------------
     /**
@@ -79,7 +79,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         MoneyUtils.checkNotNull(amount, "Amount must not be null");
         if (amount.getClass() != BigDecimal.class) {
             BigInteger value = amount.unscaledValue();
-            if (value == null ) {
+            if (value == null) {
                 throw new IllegalArgumentException("Illegal BigDecimal subclass");
             }
             if (value.getClass() != BigInteger.class) {
@@ -408,8 +408,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     BigMoney(CurrencyUnit currency, BigDecimal amount) {
         assert currency != null : "Joda-Money bug: Currency must not be null";
         assert amount != null : "Joda-Money bug: Amount must not be null";
-        iCurrency = currency;
-        iAmount = amount;
+        this.currency = currency;
+        this.amount = amount;
     }
 
     /**
@@ -441,10 +441,10 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @return the new instance, never null
      */
     private BigMoney with(BigDecimal newAmount) {
-        if (newAmount == iAmount) {
+        if (newAmount == amount) {
             return this;
         }
-        return new BigMoney(iCurrency, newAmount);
+        return new BigMoney(currency, newAmount);
     }
 
     //-----------------------------------------------------------------------
@@ -454,7 +454,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @return the currency, never null
      */
     public CurrencyUnit getCurrencyUnit() {
-        return iCurrency;
+        return currency;
     }
 
     //-----------------------------------------------------------------------
@@ -471,10 +471,10 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      */
     public BigMoney withCurrencyUnit(CurrencyUnit currency) {
         MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
-        if (iCurrency == currency) {
+        if (this.currency == currency) {
             return this;
         }
-        return new BigMoney(currency, iAmount);
+        return new BigMoney(currency, amount);
     }
 
     //-----------------------------------------------------------------------
@@ -492,7 +492,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @see #withScale
      */
     public int getScale() {
-        return iAmount.scale();
+        return amount.scale();
     }
 
     /**
@@ -504,7 +504,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @return true if the scale equals the current default scale
      */
     public boolean isCurrencyScale() {
-        return iAmount.scale() == iCurrency.getDecimalPlaces();
+        return amount.scale() == currency.getDecimalPlaces();
     }
 
     //-----------------------------------------------------------------------
@@ -544,10 +544,10 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      */
     public BigMoney withScale(int scale, RoundingMode roundingMode) {
         MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
-        if (scale == iAmount.scale()) {
+        if (scale == amount.scale()) {
             return this;
         }
-        return BigMoney.of(iCurrency, iAmount.setScale(scale, roundingMode));
+        return BigMoney.of(currency, amount.setScale(scale, roundingMode));
     }
 
     //-----------------------------------------------------------------------
@@ -566,7 +566,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @throws ArithmeticException if the rounding fails
      */
     public BigMoney withCurrencyScale() {
-        return withScale(iCurrency.getDecimalPlaces(), RoundingMode.UNNECESSARY);
+        return withScale(currency.getDecimalPlaces(), RoundingMode.UNNECESSARY);
     }
 
     /**
@@ -583,7 +583,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @throws ArithmeticException if the rounding fails
      */
     public BigMoney withCurrencyScale(RoundingMode roundingMode) {
-        return withScale(iCurrency.getDecimalPlaces(), roundingMode);
+        return withScale(currency.getDecimalPlaces(), roundingMode);
     }
 
     //-----------------------------------------------------------------------
@@ -596,7 +596,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @return the amount, never null
      */
     public BigDecimal getAmount() {
-        return iAmount;
+        return amount;
     }
 
     /**
@@ -613,7 +613,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @return the major units part of the amount, never null
      */
     public BigDecimal getAmountMajor() {
-        return iAmount.setScale(0, RoundingMode.DOWN);
+        return amount.setScale(0, RoundingMode.DOWN);
     }
 
     /**
@@ -659,7 +659,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      */
     public BigDecimal getAmountMinor() {
         int cdp = getCurrencyUnit().getDecimalPlaces();
-        return iAmount.setScale(cdp, RoundingMode.DOWN).movePointRight(cdp);
+        return amount.setScale(cdp, RoundingMode.DOWN).movePointRight(cdp);
     }
 
     /**
@@ -704,7 +704,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      */
     public int getMinorPart() {
         int cdp = getCurrencyUnit().getDecimalPlaces();
-        return iAmount.setScale(cdp, RoundingMode.DOWN)
+        return amount.setScale(cdp, RoundingMode.DOWN)
                     .remainder(BigDecimal.ONE)
                     .movePointRight(cdp).intValueExact();
     }
@@ -716,7 +716,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @return true if the amount is zero
      */
     public boolean isZero() {
-        return iAmount.compareTo(BigDecimal.ZERO) == 0;
+        return amount.compareTo(BigDecimal.ZERO) == 0;
     }
 
     /**
@@ -725,7 +725,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @return true if the amount is greater than zero
      */
     public boolean isPositive() {
-        return iAmount.compareTo(BigDecimal.ZERO) > 0;
+        return amount.compareTo(BigDecimal.ZERO) > 0;
     }
 
     /**
@@ -734,7 +734,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @return true if the amount is zero or greater
      */
     public boolean isPositiveOrZero() {
-        return iAmount.compareTo(BigDecimal.ZERO) >= 0;
+        return amount.compareTo(BigDecimal.ZERO) >= 0;
     }
 
     /**
@@ -743,7 +743,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @return true if the amount is less than zero
      */
     public boolean isNegative() {
-        return iAmount.compareTo(BigDecimal.ZERO) < 0;
+        return amount.compareTo(BigDecimal.ZERO) < 0;
     }
 
     /**
@@ -752,7 +752,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @return true if the amount is zero or less
      */
     public boolean isNegativeOrZero() {
-        return iAmount.compareTo(BigDecimal.ZERO) <= 0;
+        return amount.compareTo(BigDecimal.ZERO) <= 0;
     }
 
     //-----------------------------------------------------------------------
@@ -769,10 +769,10 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      */
     public BigMoney withAmount(BigDecimal amount) {
         MoneyUtils.checkNotNull(amount, "Amount must not be null");
-        if (iAmount.equals(amount)) {
+        if (this.amount.equals(amount)) {
             return this;
         }
-        return BigMoney.of(iCurrency, amount);
+        return BigMoney.of(currency, amount);
     }
 
     /**
@@ -827,10 +827,10 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @throws CurrencyMismatchException if the currencies differ
      */
     public BigMoney plus(Iterable<? extends BigMoneyProvider> moniesToAdd) {
-        BigDecimal total = iAmount;
+        BigDecimal total = amount;
         for (BigMoneyProvider moneyProvider : moniesToAdd) {
             BigMoney money = checkCurrencyEqual(moneyProvider);
-            total = total.add(money.iAmount);
+            total = total.add(money.amount);
         }
         return with(total);
     }
@@ -876,8 +876,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (amountToAdd.compareTo(BigDecimal.ZERO) == 0) {
             return this;
         }
-        BigDecimal amount = iAmount.add(amountToAdd);
-        return BigMoney.of(iCurrency, amount);
+        BigDecimal newAmount = amount.add(amountToAdd);
+        return BigMoney.of(currency, newAmount);
     }
 
     /**
@@ -904,8 +904,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (amountToAdd == 0) {
             return this;
         }
-        BigDecimal amount = iAmount.add(BigDecimal.valueOf(amountToAdd));
-        return BigMoney.of(iCurrency, amount);
+        BigDecimal newAmount = amount.add(BigDecimal.valueOf(amountToAdd));
+        return BigMoney.of(currency, newAmount);
     }
 
     /**
@@ -927,8 +927,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (amountToAdd == 0) {
             return this;
         }
-        BigDecimal amount = iAmount.add(BigDecimal.valueOf(amountToAdd));
-        return BigMoney.of(iCurrency, amount);
+        BigDecimal newAmount = amount.add(BigDecimal.valueOf(amountToAdd));
+        return BigMoney.of(currency, newAmount);
     }
 
     /**
@@ -950,8 +950,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (amountToAdd == 0) {
             return this;
         }
-        BigDecimal amount = iAmount.add(BigDecimal.valueOf(amountToAdd, iCurrency.getDecimalPlaces()));
-        return BigMoney.of(iCurrency, amount);
+        BigDecimal newAmount = amount.add(BigDecimal.valueOf(amountToAdd, currency.getDecimalPlaces()));
+        return BigMoney.of(currency, newAmount);
     }
 
     //-----------------------------------------------------------------------
@@ -991,9 +991,9 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (amountToAdd.compareTo(BigDecimal.ZERO) == 0) {
             return this;
         }
-        BigDecimal amount = iAmount.add(amountToAdd);
-        amount = amount.setScale(getScale(), roundingMode);
-        return BigMoney.of(iCurrency, amount);
+        BigDecimal newAmount = amount.add(amountToAdd);
+        newAmount = newAmount.setScale(getScale(), roundingMode);
+        return BigMoney.of(currency, newAmount);
     }
 
     /**
@@ -1019,9 +1019,9 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (amountToAdd == 0) {
             return this;
         }
-        BigDecimal amount = iAmount.add(BigDecimal.valueOf(amountToAdd));
-        amount = amount.setScale(getScale(), roundingMode);
-        return BigMoney.of(iCurrency, amount);
+        BigDecimal newAmount = amount.add(BigDecimal.valueOf(amountToAdd));
+        newAmount = newAmount.setScale(getScale(), roundingMode);
+        return BigMoney.of(currency, newAmount);
     }
 
     //-----------------------------------------------------------------------
@@ -1039,10 +1039,10 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @throws CurrencyMismatchException if the currencies differ
      */
     public BigMoney minus(Iterable<? extends BigMoneyProvider> moniesToSubtract) {
-        BigDecimal total = iAmount;
+        BigDecimal total = amount;
         for (BigMoneyProvider moneyProvider : moniesToSubtract) {
             BigMoney money = checkCurrencyEqual(moneyProvider);
-            total = total.subtract(money.iAmount);
+            total = total.subtract(money.amount);
         }
         return with(total);
     }
@@ -1088,8 +1088,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (amountToSubtract.compareTo(BigDecimal.ZERO) == 0) {
             return this;
         }
-        BigDecimal amount = iAmount.subtract(amountToSubtract);
-        return BigMoney.of(iCurrency, amount);
+        BigDecimal newAmount = amount.subtract(amountToSubtract);
+        return BigMoney.of(currency, newAmount);
     }
 
     /**
@@ -1116,8 +1116,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (amountToSubtract == 0) {
             return this;
         }
-        BigDecimal amount = iAmount.subtract(BigDecimal.valueOf(amountToSubtract));
-        return BigMoney.of(iCurrency, amount);
+        BigDecimal newAmount = amount.subtract(BigDecimal.valueOf(amountToSubtract));
+        return BigMoney.of(currency, newAmount);
     }
 
     /**
@@ -1139,8 +1139,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (amountToSubtract == 0) {
             return this;
         }
-        BigDecimal amount = iAmount.subtract(BigDecimal.valueOf(amountToSubtract));
-        return BigMoney.of(iCurrency, amount);
+        BigDecimal newAmount = amount.subtract(BigDecimal.valueOf(amountToSubtract));
+        return BigMoney.of(currency, newAmount);
     }
 
     /**
@@ -1162,8 +1162,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (amountToSubtract == 0) {
             return this;
         }
-        BigDecimal amount = iAmount.subtract(BigDecimal.valueOf(amountToSubtract, iCurrency.getDecimalPlaces()));
-        return BigMoney.of(iCurrency, amount);
+        BigDecimal newAmount = amount.subtract(BigDecimal.valueOf(amountToSubtract, currency.getDecimalPlaces()));
+        return BigMoney.of(currency, newAmount);
     }
 
     //-----------------------------------------------------------------------
@@ -1203,9 +1203,9 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (amountToSubtract.compareTo(BigDecimal.ZERO) == 0) {
             return this;
         }
-        BigDecimal amount = iAmount.subtract(amountToSubtract);
-        amount = amount.setScale(getScale(), roundingMode);
-        return BigMoney.of(iCurrency, amount);
+        BigDecimal newAmount = amount.subtract(amountToSubtract);
+        newAmount = newAmount.setScale(getScale(), roundingMode);
+        return BigMoney.of(currency, newAmount);
     }
 
     /**
@@ -1231,9 +1231,9 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (amountToSubtract == 0) {
             return this;
         }
-        BigDecimal amount = iAmount.subtract(BigDecimal.valueOf(amountToSubtract));
-        amount = amount.setScale(getScale(), roundingMode);
-        return BigMoney.of(iCurrency, amount);
+        BigDecimal newAmount = amount.subtract(BigDecimal.valueOf(amountToSubtract));
+        newAmount = newAmount.setScale(getScale(), roundingMode);
+        return BigMoney.of(currency, newAmount);
     }
 
     //-----------------------------------------------------------------------
@@ -1254,8 +1254,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (valueToMultiplyBy.compareTo(BigDecimal.ONE) == 0) {
             return this;
         }
-        BigDecimal amount = iAmount.multiply(valueToMultiplyBy);
-        return BigMoney.of(iCurrency, amount);
+        BigDecimal newAmount = amount.multiply(valueToMultiplyBy);
+        return BigMoney.of(currency, newAmount);
     }
 
     /**
@@ -1280,8 +1280,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (valueToMultiplyBy == 1) {
             return this;
         }
-        BigDecimal amount = iAmount.multiply(BigDecimal.valueOf(valueToMultiplyBy));
-        return BigMoney.of(iCurrency, amount);
+        BigDecimal newAmount = amount.multiply(BigDecimal.valueOf(valueToMultiplyBy));
+        return BigMoney.of(currency, newAmount);
     }
 
     /**
@@ -1300,8 +1300,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (valueToMultiplyBy == 1) {
             return this;
         }
-        BigDecimal amount = iAmount.multiply(BigDecimal.valueOf(valueToMultiplyBy));
-        return BigMoney.of(iCurrency, amount);
+        BigDecimal newAmount = amount.multiply(BigDecimal.valueOf(valueToMultiplyBy));
+        return BigMoney.of(currency, newAmount);
     }
 
     //-----------------------------------------------------------------------
@@ -1326,9 +1326,9 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (valueToMultiplyBy.compareTo(BigDecimal.ONE) == 0) {
             return this;
         }
-        BigDecimal amount = iAmount.multiply(valueToMultiplyBy);
-        amount = amount.setScale(getScale(), roundingMode);
-        return BigMoney.of(iCurrency, amount);
+        BigDecimal newAmount = amount.multiply(valueToMultiplyBy);
+        newAmount = newAmount.setScale(getScale(), roundingMode);
+        return BigMoney.of(currency, newAmount);
     }
 
     /**
@@ -1379,8 +1379,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (valueToDivideBy.compareTo(BigDecimal.ONE) == 0) {
             return this;
         }
-        BigDecimal amount = iAmount.divide(valueToDivideBy, roundingMode);
-        return BigMoney.of(iCurrency, amount);
+        BigDecimal newAmount = amount.divide(valueToDivideBy, roundingMode);
+        return BigMoney.of(currency, newAmount);
     }
 
     /**
@@ -1410,8 +1410,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (valueToDivideBy == 1) {
             return this;
         }
-        BigDecimal amount = iAmount.divide(BigDecimal.valueOf(valueToDivideBy), roundingMode);
-        return BigMoney.of(iCurrency, amount);
+        BigDecimal newAmount = amount.divide(BigDecimal.valueOf(valueToDivideBy), roundingMode);
+        return BigMoney.of(currency, newAmount);
     }
 
     /**
@@ -1433,8 +1433,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (valueToDivideBy == 1) {
             return this;
         }
-        BigDecimal amount = iAmount.divide(BigDecimal.valueOf(valueToDivideBy), roundingMode);
-        return BigMoney.of(iCurrency, amount);
+        BigDecimal newAmount = amount.divide(BigDecimal.valueOf(valueToDivideBy), roundingMode);
+        return BigMoney.of(currency, newAmount);
     }
 
     //-----------------------------------------------------------------------
@@ -1449,7 +1449,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (isZero()) {
             return this;
         }
-        return BigMoney.of(iCurrency, iAmount.negate());
+        return BigMoney.of(currency, amount.negate());
     }
 
     /**
@@ -1490,9 +1490,9 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (scale >= getScale()) {
             return this;
         }
-        int currentScale = iAmount.scale();
-        BigDecimal amount = iAmount.setScale(scale, roundingMode).setScale(currentScale);
-        return BigMoney.of(iCurrency, amount);
+        int currentScale = amount.scale();
+        BigDecimal newAmount = amount.setScale(scale, roundingMode).setScale(currentScale);
+        return BigMoney.of(currency, newAmount);
     }
 
     //-----------------------------------------------------------------------
@@ -1515,14 +1515,14 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     public BigMoney convertedTo(CurrencyUnit currency, BigDecimal conversionMultipler) {
         MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
         MoneyUtils.checkNotNull(conversionMultipler, "Multiplier must not be null");
-        if (currency == iCurrency) {
+        if (this.currency == currency) {
             throw new IllegalArgumentException("Cannot convert to the same currency");
         }
         if (conversionMultipler.compareTo(BigDecimal.ZERO) < 0) {
             throw new IllegalArgumentException("Cannot convert using a negative conversion multiplier");
         }
-        BigDecimal amount = iAmount.multiply(conversionMultipler);
-        return BigMoney.of(currency, amount);
+        BigDecimal newAmount = amount.multiply(conversionMultipler);
+        return BigMoney.of(currency, newAmount);
     }
 
     /**
@@ -1588,7 +1588,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @return true if they have the same currency
      */
     public boolean isSameCurrency(BigMoneyProvider money) {
-        return (iCurrency.equals(of(money).getCurrencyUnit()));
+        return (currency.equals(of(money).getCurrencyUnit()));
     }
 
     //-----------------------------------------------------------------------
@@ -1602,10 +1602,10 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      */
     public int compareTo(BigMoneyProvider other) {
         BigMoney otherMoney = of(other);
-        if (iCurrency.equals(otherMoney.iCurrency) == false) {
+        if (currency.equals(otherMoney.currency) == false) {
             throw new CurrencyMismatchException(getCurrencyUnit(), otherMoney.getCurrencyUnit());
         }
-        return iAmount.compareTo(otherMoney.iAmount);
+        return amount.compareTo(otherMoney.amount);
     }
 
     /**
@@ -1669,8 +1669,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         }
         if (other instanceof BigMoney) {
             BigMoney otherMoney = (BigMoney) other;
-            return iCurrency.equals(otherMoney.getCurrencyUnit()) &&
-                    iAmount.equals(otherMoney.iAmount);
+            return currency.equals(otherMoney.getCurrencyUnit()) &&
+                    amount.equals(otherMoney.amount);
         }
         return false;
     }
@@ -1682,7 +1682,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      */
     @Override
     public int hashCode() {
-        return iCurrency.hashCode() ^ iAmount.hashCode();
+        return currency.hashCode() ^ amount.hashCode();
     }
 
     //-----------------------------------------------------------------------
@@ -1698,9 +1698,9 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     @ToString
     public String toString() {
         return new StringBuilder()
-            .append(iCurrency.getCode())
+            .append(currency.getCode())
             .append(' ')
-            .append(iAmount.toPlainString())
+            .append(amount.toPlainString())
             .toString();
     }
 

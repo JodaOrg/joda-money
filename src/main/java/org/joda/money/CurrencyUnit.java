@@ -53,15 +53,15 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     /**
      * Map of registered currencies by text code.
      */
-    private static final ConcurrentMap<String, CurrencyUnit> cCurrenciesByCode = new ConcurrentHashMap<String, CurrencyUnit>();
+    private static final ConcurrentMap<String, CurrencyUnit> currenciesByCode = new ConcurrentHashMap<String, CurrencyUnit>();
     /**
      * Map of registered currencies by numeric code.
      */
-    private static final ConcurrentMap<Integer, CurrencyUnit> cCurrenciesByNumericCode = new ConcurrentHashMap<Integer, CurrencyUnit>();
+    private static final ConcurrentMap<Integer, CurrencyUnit> currenciesByNumericCode = new ConcurrentHashMap<Integer, CurrencyUnit>();
     /**
      * Map of registered currencies by country.
      */
-    private static final ConcurrentMap<String, CurrencyUnit> cCurrenciesByCountry = new ConcurrentHashMap<String, CurrencyUnit>();
+    private static final ConcurrentMap<String, CurrencyUnit> currenciesByCountry = new ConcurrentHashMap<String, CurrencyUnit>();
     static {
         // load one data provider by system property
         try {
@@ -114,15 +114,15 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     /**
      * The currency code, not null.
      */
-    private final String iCode;
+    private final String code;
     /**
      * The numeric currency code.
      */
-    private final short iNumericCode;
+    private final short numericCode;
     /**
      * The number of decimal places.
      */
-    private final short iDecimalPlaces;
+    private final short decimalPlaces;
 
     //-----------------------------------------------------------------------
     /**
@@ -151,22 +151,22 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         MoneyUtils.checkNotNull(countryCodes, "Country codes must not be null");
         
         CurrencyUnit currency = new CurrencyUnit(currencyCode, (short) numericCurrencyCode, (short) decimalPlaces);
-        if (cCurrenciesByCode.containsKey(currencyCode) || cCurrenciesByNumericCode.containsKey(numericCurrencyCode)) {
+        if (currenciesByCode.containsKey(currencyCode) || currenciesByNumericCode.containsKey(numericCurrencyCode)) {
             throw new IllegalArgumentException("Currency already registered: " + currencyCode);
         }
         for (String countryCode : countryCodes) {
-            if (cCurrenciesByCountry.containsKey(countryCode)) {
+            if (currenciesByCountry.containsKey(countryCode)) {
                 throw new IllegalArgumentException("Currency already registered for country: " + countryCode);
             }
         }
-        cCurrenciesByCode.putIfAbsent(currencyCode, currency);
+        currenciesByCode.putIfAbsent(currencyCode, currency);
         if (numericCurrencyCode >= 0) {
-            cCurrenciesByNumericCode.putIfAbsent(numericCurrencyCode, currency);
+            currenciesByNumericCode.putIfAbsent(numericCurrencyCode, currency);
         }
         for (String countryCode : countryCodes) {
-            cCurrenciesByCountry.put(countryCode, currency);
+            currenciesByCountry.put(countryCode, currency);
         }
-        return cCurrenciesByCode.get(currencyCode);
+        return currenciesByCode.get(currencyCode);
     }
 
     /**
@@ -179,7 +179,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @return the sorted, independent, list of all registered currencies, never null
      */
     public static List<CurrencyUnit> registeredCurrencies() {
-        ArrayList<CurrencyUnit> list = new ArrayList<CurrencyUnit>(cCurrenciesByCode.values());
+        ArrayList<CurrencyUnit> list = new ArrayList<CurrencyUnit>(currenciesByCode.values());
         Collections.sort(list);
         return list;
     }
@@ -210,7 +210,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     @FromString
     public static CurrencyUnit of(String currencyCode) {
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        CurrencyUnit currency = cCurrenciesByCode.get(currencyCode);
+        CurrencyUnit currency = currenciesByCode.get(currencyCode);
         if (currency == null) {
             throw new IllegalCurrencyException("Unknown currency '" + currencyCode + '\'');
         }
@@ -254,7 +254,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @throws IllegalCurrencyException if the currency is unknown
      */
     public static CurrencyUnit ofNumericCode(int numericCurrencyCode) {
-        CurrencyUnit currency = cCurrenciesByNumericCode.get(numericCurrencyCode);
+        CurrencyUnit currency = currenciesByNumericCode.get(numericCurrencyCode);
         if (currency == null) {
             throw new IllegalCurrencyException("Unknown currency '" + numericCurrencyCode + '\'');
         }
@@ -272,7 +272,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      */
     public static CurrencyUnit of(Locale locale) {
         MoneyUtils.checkNotNull(locale, "Locale must not be null");
-        CurrencyUnit currency = cCurrenciesByCountry.get(locale.getCountry());
+        CurrencyUnit currency = currenciesByCountry.get(locale.getCountry());
         if (currency == null) {
             throw new IllegalCurrencyException("Unknown currency for locale '" + locale + '\'');
         }
@@ -291,7 +291,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      */
     public static CurrencyUnit ofCountry(String countryCode) {
         MoneyUtils.checkNotNull(countryCode, "Country code must not be null");
-        CurrencyUnit currency = cCurrenciesByCountry.get(countryCode);
+        CurrencyUnit currency = currenciesByCountry.get(countryCode);
         if (currency == null) {
             throw new IllegalCurrencyException("Unknown currency for country '" + countryCode + '\'');
         }
@@ -335,9 +335,9 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      */
     CurrencyUnit(String code, short numericCurrencyCode, short decimalPlaces) {
         assert code != null : "Joda-Money bug: Currency code must not be null";
-        iCode = code;
-        iNumericCode = numericCurrencyCode;
-        iDecimalPlaces = decimalPlaces;
+        this.code = code;
+        this.numericCode = numericCurrencyCode;
+        this.decimalPlaces = decimalPlaces;
     }
 
     /**
@@ -368,7 +368,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @return the three letter ISO-4217 currency code, never null
      */
     public String getCode() {
-        return iCode;
+        return code;
     }
 
     /**
@@ -379,7 +379,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @return the numeric currency code
      */
     public int getNumericCode() {
-        return iNumericCode;
+        return numericCode;
     }
 
     /**
@@ -391,10 +391,10 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @return the three digit numeric currency code, empty is no code, never null
      */
     public String getNumeric3Code() {
-        if (iNumericCode < 0) {
+        if (numericCode < 0) {
             return "";
         }
-        String str = Integer.toString(iNumericCode);
+        String str = Integer.toString(numericCode);
         if (str.length() == 1) {
             return "00" + str;
         }
@@ -416,7 +416,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @return the decimal places, from 0 to 3
      */
     public int getDecimalPlaces() {
-        return iDecimalPlaces < 0 ? 0 : iDecimalPlaces;
+        return decimalPlaces < 0 ? 0 : decimalPlaces;
     }
 
     /**
@@ -425,7 +425,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @return true if this is a pseudo-currency
      */
     public boolean isPseudoCurrency() {
-        return iDecimalPlaces < 0;
+        return decimalPlaces < 0;
     }
 
     //-----------------------------------------------------------------------
@@ -437,7 +437,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @return the currency code, never null
      */
     public String getCurrencyCode() {
-        return iCode;
+        return code;
     }
 
     /**
@@ -453,7 +453,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @return the fractional digits, from 0 to 3, or -1 for pseudo-currencies
      */
     public int getDefaultFractionDigits() {
-        return iDecimalPlaces;
+        return decimalPlaces;
     }
 
     //-----------------------------------------------------------------------
@@ -469,9 +469,9 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      */
     public String getSymbol() {
         try {
-            return Currency.getInstance(iCode).getSymbol();
+            return Currency.getInstance(code).getSymbol();
         } catch (IllegalArgumentException ex) {
-            return iCode;
+            return code;
         }
     }
 
@@ -489,9 +489,9 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     public String getSymbol(Locale locale) {
         MoneyUtils.checkNotNull(locale, "Locale must not be null");
         try {
-            return Currency.getInstance(iCode).getSymbol(locale);
+            return Currency.getInstance(code).getSymbol(locale);
         } catch (IllegalArgumentException ex) {
-            return iCode;
+            return code;
         }
     }
 
@@ -505,7 +505,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @throws IllegalArgumentException if no matching currency exists in the JDK
      */
     public Currency toCurrency() {
-        return Currency.getInstance(iCode);
+        return Currency.getInstance(code);
     }
 
     //-----------------------------------------------------------------------
@@ -516,7 +516,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @return negative if earlier alphabetically, 0 if equal, positive if greater alphabetically
      */
     public int compareTo(CurrencyUnit other) {
-        return iCode.compareTo(other.iCode);
+        return code.compareTo(other.code);
     }
 
     /**
@@ -533,7 +533,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
             return true;
         }
         if (obj instanceof CurrencyUnit) {
-            return iCode.equals(((CurrencyUnit) obj).iCode);
+            return code.equals(((CurrencyUnit) obj).code);
         }
         return false;
     }
@@ -545,7 +545,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      */
     @Override
     public int hashCode() {
-        return iCode.hashCode();
+        return code.hashCode();
     }
 
     //-----------------------------------------------------------------------
@@ -557,7 +557,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     @Override
     @ToString
     public String toString() {
-        return iCode;
+        return code;
     }
 
 }

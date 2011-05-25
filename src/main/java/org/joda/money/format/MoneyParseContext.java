@@ -33,27 +33,27 @@ public final class MoneyParseContext {
     /**
      * The locale to parse using.
      */
-    private Locale iLocale;
+    private Locale locale;
     /**
      * The text to parse.
      */
-    private CharSequence iText;
+    private CharSequence text;
     /**
      * The text index.
      */
-    private int iTextIndex;
+    private int textIndex;
     /**
      * The text error index.
      */
-    private int iTextErrorIndex = -1;
+    private int textErrorIndex = -1;
     /**
      * The parsed currency.
      */
-    private CurrencyUnit iCurrency;
+    private CurrencyUnit currency;
     /**
      * The parsed amount.
      */
-    private BigDecimal iAmount;
+    private BigDecimal amount;
 
     /**
      * Constructor.
@@ -63,9 +63,9 @@ public final class MoneyParseContext {
      * @param index  the current text index
      */
     MoneyParseContext(Locale locale, CharSequence text, int index) {
-        iLocale = locale;
-        iText = text;
-        iTextIndex = index;
+        this.locale = locale;
+        this.text = text;
+        this.textIndex = index;
     }
 
     //-----------------------------------------------------------------------
@@ -75,7 +75,7 @@ public final class MoneyParseContext {
      * @return the locale, not null
      */
     public Locale getLocale() {
-        return iLocale;
+        return locale;
     }
 
     /**
@@ -85,7 +85,7 @@ public final class MoneyParseContext {
      */
     public void setLocale(Locale locale) {
         MoneyFormatter.checkNotNull(locale, "Locale must not be null");
-        iLocale = locale;
+        this.locale = locale;
     }
 
     /**
@@ -94,7 +94,7 @@ public final class MoneyParseContext {
      * @return the text being parsed, never null
      */
     public CharSequence getText() {
-        return iText;
+        return text;
     }
 
     /**
@@ -104,7 +104,7 @@ public final class MoneyParseContext {
      */
     public void setText(CharSequence text) {
         MoneyFormatter.checkNotNull(text, "Text must not be null");
-        iText = text;
+        this.text = text;
     }
 
     /**
@@ -113,7 +113,7 @@ public final class MoneyParseContext {
      * @return the length of the text being parsed
      */
     public int getTextLength() {
-        return iText.length();
+        return text.length();
     }
 
     /**
@@ -124,7 +124,7 @@ public final class MoneyParseContext {
      * @return the substring, not null
      */
     public String getTextSubstring(int start, int end) {
-        return iText.subSequence(start, end).toString();
+        return text.subSequence(start, end).toString();
     }
 
     //-----------------------------------------------------------------------
@@ -134,7 +134,7 @@ public final class MoneyParseContext {
      * @return the current parse position index
      */
     public int getIndex() {
-        return iTextIndex;
+        return textIndex;
     }
 
     /**
@@ -143,7 +143,7 @@ public final class MoneyParseContext {
      * @param index  the current parse position index
      */
     public void setIndex(int index) {
-        iTextIndex = index;
+        this.textIndex = index;
     }
 
     //-----------------------------------------------------------------------
@@ -153,7 +153,7 @@ public final class MoneyParseContext {
      * @return the error index, negative if no error
      */
     public int getErrorIndex() {
-        return iTextErrorIndex;
+        return textErrorIndex;
     }
 
     /**
@@ -162,14 +162,14 @@ public final class MoneyParseContext {
      * @param index  the error index
      */
     public void setErrorIndex(int index) {
-        iTextErrorIndex = index;
+        this.textErrorIndex = index;
     }
 
     /**
      * Sets the error index from the current index.
      */
     public void setError() {
-        iTextErrorIndex = iTextIndex;
+        this.textErrorIndex = textIndex;
     }
 
     //-----------------------------------------------------------------------
@@ -179,7 +179,7 @@ public final class MoneyParseContext {
      * @return the parsed currency, null if not parsed yet
      */
     public CurrencyUnit getCurrency() {
-        return iCurrency;
+        return currency;
     }
 
     /**
@@ -188,7 +188,7 @@ public final class MoneyParseContext {
      * @param currency  the parsed currency, may be null
      */
     public void setCurrency(CurrencyUnit currency) {
-        this.iCurrency = currency;
+        this.currency = currency;
     }
 
     //-----------------------------------------------------------------------
@@ -198,7 +198,7 @@ public final class MoneyParseContext {
      * @return the parsed amount, null if not parsed yet
      */
     public BigDecimal getAmount() {
-        return iAmount;
+        return amount;
     }
 
     /**
@@ -207,7 +207,7 @@ public final class MoneyParseContext {
      * @param amount  the parsed amount, may be null
      */
     public void setAmount(BigDecimal amount) {
-        this.iAmount = amount;
+        this.amount = amount;
     }
 
     //-----------------------------------------------------------------------
@@ -217,7 +217,7 @@ public final class MoneyParseContext {
      * @return whether a parse error has occurred
      */
     public boolean isError() {
-        return iTextErrorIndex >= 0;
+        return textErrorIndex >= 0;
     }
 
     /**
@@ -226,7 +226,7 @@ public final class MoneyParseContext {
      * @return true if fully parsed
      */
     public boolean isFullyParsed() {
-        return iTextIndex == getTextLength();
+        return textIndex == getTextLength();
     }
 
     /**
@@ -236,7 +236,7 @@ public final class MoneyParseContext {
      * @return true if able to create a monetary value
      */
     public boolean isComplete() {
-        return iCurrency != null && iAmount != null;
+        return currency != null && amount != null;
     }
 
     //-----------------------------------------------------------------------
@@ -246,8 +246,8 @@ public final class MoneyParseContext {
      * @return the parse position, never null
      */
     public ParsePosition toParsePosition() {
-        ParsePosition pp = new ParsePosition(iTextIndex);
-        pp.setErrorIndex(iTextErrorIndex);
+        ParsePosition pp = new ParsePosition(textIndex);
+        pp.setErrorIndex(textErrorIndex);
         return pp;
     }
 
@@ -258,13 +258,13 @@ public final class MoneyParseContext {
      * @throws MoneyFormatException if either the currency or amount is missing
      */
     public BigMoney toBigMoney() {
-        if (iCurrency == null) {
+        if (currency == null) {
             throw new MoneyFormatException("Cannot convert to BigMoney as no currency found");
         }
-        if (iAmount == null) {
+        if (amount == null) {
             throw new MoneyFormatException("Cannot convert to BigMoney as no amount found");
         }
-        return BigMoney.of(iCurrency, iAmount);
+        return BigMoney.of(currency, amount);
     }
 
 }
