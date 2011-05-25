@@ -15,6 +15,8 @@
  */
 package org.joda.money;
 
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -336,6 +338,16 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         iCode = code;
         iNumericCode = numericCurrencyCode;
         iDecimalPlaces = decimalPlaces;
+    }
+
+    /**
+     * Block malicious data streams.
+     * 
+     * @param ois  the input stream, not null
+     * @throws InvalidObjectException
+     */
+    private void readObject(ObjectInputStream ois) throws InvalidObjectException {
+        throw new InvalidObjectException("Serialization delegate required");
     }
 
     /**

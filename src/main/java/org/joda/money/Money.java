@@ -15,6 +15,8 @@
  */
 package org.joda.money;
 
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -369,6 +371,16 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
         assert money != null : "Joda-Money bug: BigMoney must not be null";
         assert money.isCurrencyScale() : "Joda-Money bug: Only currency scale is valid for Money";
         iMoney = money;
+    }
+
+    /**
+     * Block malicious data streams.
+     * 
+     * @param ois  the input stream, not null
+     * @throws InvalidObjectException
+     */
+    private void readObject(ObjectInputStream ois) throws InvalidObjectException {
+        throw new InvalidObjectException("Serialization delegate required");
     }
 
     /**

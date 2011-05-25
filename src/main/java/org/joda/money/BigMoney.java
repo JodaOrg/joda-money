@@ -15,6 +15,8 @@
  */
 package org.joda.money;
 
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -408,6 +410,16 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         assert amount != null : "Joda-Money bug: Amount must not be null";
         iCurrency = currency;
         iAmount = amount;
+    }
+
+    /**
+     * Block malicious data streams.
+     * 
+     * @param ois  the input stream, not null
+     * @throws InvalidObjectException
+     */
+    private void readObject(ObjectInputStream ois) throws InvalidObjectException {
+        throw new InvalidObjectException("Serialization delegate required");
     }
 
     /**
