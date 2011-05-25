@@ -20,5 +20,8 @@ http://www.javapractices.com/topic/TopicAction.do?Id=13
 Grails Currency Plugin - Class based on float
 http://github.com/ricardojmendez/grails-currencies/blob/master/grails-app/domain/Money.groovy
 
+OpenGamma CurrencyAmount - Class based on double (its an estimate)
+https://github.com/OpenGamma/OG-Platform/blob/master/projects/OG-Util/src/com/opengamma/util/money/CurrencyAmount.java
+
 Design document
 http://www.objectivelogic.com/resources/Java%20and%20Monetary%20Data/Java%20and%20Monetary%20Data.pdf 
