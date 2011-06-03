@@ -99,7 +99,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      */
     public static final CurrencyUnit GBP = of("GBP");
     /**
-     * The currency 'EUR' - Swiss Franc.
+     * The currency 'CHF' - Swiss Franc.
      */
     public static final CurrencyUnit CHF = of("CHF");
     /**
