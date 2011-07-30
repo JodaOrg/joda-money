@@ -1,6 +1,6 @@
 Package: org.joda.money
 Extension-Name: joda-money
-Specification-Title: Joda Money
+Specification-Title: Joda-Money
 Specification-Vendor: Joda.org
 Specification-Version: 0.6
 Implementation-Vendor: Joda.org
