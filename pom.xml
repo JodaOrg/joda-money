@@ -8,7 +8,7 @@
   <artifactId>joda-money</artifactId>
   <packaging>jar</packaging>
   <name>Joda money</name>
-  <version>0.6-SNAPSHOT</version>
+  <version>0.6</version>
   <description>Money repesentation and formatting</description>
   <url>http://joda-money.sourceforge.net</url>
   <issueManagement>

@@ -18,7 +18,7 @@ Joda-Money does not provide, nor is it intended to provide, monetary algorithms 
 This is because the requirements for these algorithms vary widely between domains.
 This library is intended to act as the base layer, providing classes that should be in the JDK.
 </p>
-<!--p>
+<p>
 As a flavour of Joda-Money, here's some example code:
 <source>
   <span class="comment">// create a monetary value</span>
@@ -44,14 +44,14 @@ As a flavour of Joda-Money, here's some example code:
   <span class="comment">// use a BigMoney for more complex calculations where scale matters</span>
   <a href="apidocs/org/joda/money/BigMoney.html">BigMoney</a> moneyCalc = money.toBigMoney();
 </source>
-</p-->
+</p>
 <p>
 Users are reminded that this software, like all open source software, is <a href="license.html">provided</a>
 on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND.
 </p>
 <p>
-Version 0.5 was released on 2008-11-17 -
-<a href="https://sourceforge.net/projects/joda-money/files/joda-money/0.5/">Download now</a><br />
+Version 0.6 was released on 2011-08-01 -
+<a href="https://sourceforge.net/projects/joda-money/files/joda-money/0.6/">Download now</a><br />
 Joda Money is licensed under the business-friendly <a href="license.html">Apache 2.0 licence</a>.
 </p>
 </section>
@@ -63,8 +63,8 @@ Various documentation is available:
 <ul>
 <li>The javadoc for the <a href="apidocs/index.html">current release</a></li>
 <li>The <a href="userguide.html">user guide</a></li>
-<li>A <a href="faq.html">FAQ</a> list</li>
-<!--li>Information on <a href="installation.html">downloading and installing</a> Joda-Primitives</li-->
+<!--li>A <a href="faq.html">FAQ</a> list</li-->
+<!--li>Information on <a href="installation.html">downloading and installing</a> Joda-Money</li-->
 <li>The <a href="https://github.com/JodaOrg/joda-money">GitHub</a> source repository</li>
 </ul>
 </p>
@@ -74,13 +74,15 @@ Various documentation is available:
 <section name="Releases">
 <p>
 There are no full releases yet!
-<a href="https://sourceforge.net/projects/joda-money/files/joda-money/0.5/">Release 0.5</a>
-is the current development release intended for feedback rather than production use.
-(The code is fully tested, but there may yet be bugs and the API may yet change).
+<a href="https://sourceforge.net/projects/joda-money/files/joda-money/0.6/">Release 0.6</a>
+is the current development release intended for feedback.
+The code is fully tested, but there may yet be bugs and the API may yet change.
+There should be no great reason why it cannot be used in production if you can cope with future API change.
 </p>
 <p>
 There are no runtime dependencies beyond JDK 1.5.<br />
-(Joda-Money has a compile-time dependency on Joda-Convert, but this is not required at runtime)
+Joda-Money does have a <i>compile-time</i> dependency on Joda-Convert, but this is not required at runtime
+thanks to the magic of annotations.
 </p>
 </section>
 
@@ -93,6 +95,9 @@ Support on bugs, library usage or enhancement requests is available on a best ef
 <li>the joda-money-interest <a href="mail-lists.html">mailing list</a>. Due to spam, you must be subscribed to post to the mailing list.</li>
 <li>the joda-money sourceforge <a href="http://sourceforge.net/projects/joda-money/forums/forum/996056">forum</a>.</li>
 </ul>
+<p>
+To suggest enhancements or contribute, please <a href="https://github.com/JodaOrg/joda-money">fork the source code</a> on GitHub.
+</p>
 <p>
 <br />
 </p>

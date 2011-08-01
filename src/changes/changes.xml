@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.6" date="Not released" description="Major updates">
+    <release version="0.6" date="2011-08-01" description="Major updates">
       <action dev="scolebourne" type="add">
         Major updates and changes.
       </action>              
