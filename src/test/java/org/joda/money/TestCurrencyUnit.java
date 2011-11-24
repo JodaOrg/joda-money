@@ -83,7 +83,7 @@ public class TestCurrencyUnit {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_registeredCurrency_invalidDP_big() {
-        CurrencyUnit.registerCurrency("TST", 991, 4, Arrays.asList("TS"));
+        CurrencyUnit.registerCurrency("TST", 991, 10, Arrays.asList("TS"));
     }
 
     @Test(expectedExceptions = NullPointerException.class)
