@@ -8,7 +8,18 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.6" date="2011-08-01" description="Major updates">
+    <release version="0.7" date="2011-11-24" description="Version 0.7">
+      <action dev="scolebourne" type="update">
+        Relax checking for decimal places
+      </action>              
+      <action dev="scolebourne" type="fix">
+        Move Estonia to the Euro
+      </action>              
+      <action dev="scolebourne" type="add">
+        Add old Russian currency
+      </action>              
+    </release>
+    <release version="0.6" date="2011-08-01" description="Version 0.6">
       <action dev="scolebourne" type="add">
         Major updates and changes.
       </action>              

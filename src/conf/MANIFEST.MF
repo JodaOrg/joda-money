@@ -2,17 +2,17 @@ Package: org.joda.money
 Extension-Name: joda-money
 Specification-Title: Joda-Money
 Specification-Vendor: Joda.org
-Specification-Version: 0.6
+Specification-Version: 0.7
 Implementation-Vendor: Joda.org
 Implementation-Title: org.joda.money
-Implementation-Version: 0.6
+Implementation-Version: 0.7
 Implementation-Vendor-Id: org.joda
 Bundle-ManifestVersion: 2
 Bundle-Vendor: Joda.org
 Bundle-Name: Joda-Money
 Bundle-SymbolicName: org.joda.money
-Bundle-Version: 0.6
-Export-Package: org.joda.money;version=0.6,
- org.joda.money.format;version=0.6,
+Bundle-Version: 0.7
+Export-Package: org.joda.money;version=0.7,
+ org.joda.money.format;version=0.7,
 Bundle-License: Apache 2.0
 Bundle-DocURL: http://joda-money.sourceforge.net/
