@@ -18,14 +18,12 @@ package org.joda.money.format;
 import java.io.IOException;
 import java.io.Serializable;
 
-import org.joda.money.BigMoney;
-
 /**
  * Prints and parses a literal.
  * <p>
  * This class is immutable and thread-safe.
  */
-final class LiteralPrinterParser implements MoneyPrinter, MoneyParser, Serializable {
+final class LiteralPrinterParser implements Serializable {
 
     /** Serialization version. */
     private static final long serialVersionUID = 1L;
@@ -42,12 +40,12 @@ final class LiteralPrinterParser implements MoneyPrinter, MoneyParser, Serializa
     }
 
     //-----------------------------------------------------------------------
-    public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
-        appendable.append(literal);
+    public void print(PrintContext context, Appendable appendable) throws IOException {
+    	appendable.append(literal);
     }
-
-    public void parse(MoneyParseContext context) {
-        int endPos = context.getIndex() + literal.length();
+    
+    public void parse(ParseContext context) {
+    	int endPos = context.getIndex() + literal.length();
         if (endPos <= context.getTextLength() &&
                 context.getTextSubstring(context.getIndex(), endPos).equals(literal)) {
             context.setIndex(endPos);
@@ -55,7 +53,7 @@ final class LiteralPrinterParser implements MoneyPrinter, MoneyParser, Serializa
             context.setError();
         }
     }
-
+    
     @Override
     public String toString() {
         return "'" + literal + "'";

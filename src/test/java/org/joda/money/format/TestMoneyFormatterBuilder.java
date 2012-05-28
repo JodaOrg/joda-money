@@ -552,7 +552,7 @@ public class TestMoneyFormatterBuilder {
     }
 
     public void test_toFormatter_Locale() {
-        MoneyFormatter test = iBuilder.toFormatter(TEST_FR_LOCALE);
+    	MoneyFormatter test = iBuilder.toFormatter(TEST_FR_LOCALE);
         assertEquals(test.getLocale(), TEST_FR_LOCALE);
     }
 

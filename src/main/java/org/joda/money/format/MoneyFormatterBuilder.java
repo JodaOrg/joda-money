@@ -155,7 +155,7 @@ public final class MoneyFormatterBuilder {
         if (literal == null || literal.length() == 0) {
             return this;
         }
-        LiteralPrinterParser pp = new LiteralPrinterParser(literal.toString());
+        MoneyLiteralPrinterParserAdapter pp = new MoneyLiteralPrinterParserAdapter(new LiteralPrinterParser(literal.toString()));
         return appendInternal(pp, pp);
     }
 

@@ -48,7 +48,7 @@ import java.util.concurrent.ConcurrentMap;
  * <p>
  * This class is immutable and thread-safe.
  */
-public final class MoneyAmountStyle implements Serializable {
+public final class MoneyAmountStyle implements NumberStyle, Serializable {
 
     /**
      * A style that uses ASCII digits/negative sign, the decimal point

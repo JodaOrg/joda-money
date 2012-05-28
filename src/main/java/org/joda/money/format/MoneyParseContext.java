@@ -16,7 +16,6 @@
 package org.joda.money.format;
 
 import java.math.BigDecimal;
-import java.text.ParsePosition;
 import java.util.Locale;
 
 import org.joda.money.BigMoney;
@@ -28,24 +27,8 @@ import org.joda.money.CurrencyUnit;
  * This class is mutable and intended for use by a single thread.
  * A new instance is created for each parse.
  */
-public final class MoneyParseContext {
+public final class MoneyParseContext extends ParseContext {
 
-    /**
-     * The locale to parse using.
-     */
-    private Locale locale;
-    /**
-     * The text to parse.
-     */
-    private CharSequence text;
-    /**
-     * The text index.
-     */
-    private int textIndex;
-    /**
-     * The text error index.
-     */
-    private int textErrorIndex = -1;
     /**
      * The parsed currency.
      */
@@ -63,113 +46,7 @@ public final class MoneyParseContext {
      * @param index  the current text index
      */
     MoneyParseContext(Locale locale, CharSequence text, int index) {
-        this.locale = locale;
-        this.text = text;
-        this.textIndex = index;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the locale.
-     * 
-     * @return the locale, not null
-     */
-    public Locale getLocale() {
-        return locale;
-    }
-
-    /**
-     * Sets the locale.
-     * 
-     * @param locale  the locale, not null
-     */
-    public void setLocale(Locale locale) {
-        MoneyFormatter.checkNotNull(locale, "Locale must not be null");
-        this.locale = locale;
-    }
-
-    /**
-     * Gets the text being parsed.
-     * 
-     * @return the text being parsed, never null
-     */
-    public CharSequence getText() {
-        return text;
-    }
-
-    /**
-     * Sets the text.
-     * 
-     * @param text  the text being parsed, not null
-     */
-    public void setText(CharSequence text) {
-        MoneyFormatter.checkNotNull(text, "Text must not be null");
-        this.text = text;
-    }
-
-    /**
-     * Gets the length of the text being parsed.
-     * 
-     * @return the length of the text being parsed
-     */
-    public int getTextLength() {
-        return text.length();
-    }
-
-    /**
-     * Gets a substring of the text being parsed.
-     * 
-     * @param start  the start index
-     * @param end  the end index
-     * @return the substring, not null
-     */
-    public String getTextSubstring(int start, int end) {
-        return text.subSequence(start, end).toString();
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the current parse position index.
-     * 
-     * @return the current parse position index
-     */
-    public int getIndex() {
-        return textIndex;
-    }
-
-    /**
-     * Sets the current parse position index.
-     * 
-     * @param index  the current parse position index
-     */
-    public void setIndex(int index) {
-        this.textIndex = index;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the error index.
-     * 
-     * @return the error index, negative if no error
-     */
-    public int getErrorIndex() {
-        return textErrorIndex;
-    }
-
-    /**
-     * Sets the error index.
-     * 
-     * @param index  the error index
-     */
-    public void setErrorIndex(int index) {
-        this.textErrorIndex = index;
-    }
-
-    /**
-     * Sets the error index from the current index.
-     */
-    public void setError() {
-        this.textErrorIndex = textIndex;
+    	super(locale, text, index);
     }
 
     //-----------------------------------------------------------------------
@@ -210,25 +87,6 @@ public final class MoneyParseContext {
         this.amount = amount;
     }
 
-    //-----------------------------------------------------------------------
-    /**
-     * Checks if the parse has found an error.
-     * 
-     * @return whether a parse error has occurred
-     */
-    public boolean isError() {
-        return textErrorIndex >= 0;
-    }
-
-    /**
-     * Checks if the text has been fully parsed such that there is no more text to parse.
-     * 
-     * @return true if fully parsed
-     */
-    public boolean isFullyParsed() {
-        return textIndex == getTextLength();
-    }
-
     /**
      * Checks if the context contains a currency and amount suitable for creating
      * a monetary value.
@@ -237,18 +95,6 @@ public final class MoneyParseContext {
      */
     public boolean isComplete() {
         return currency != null && amount != null;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Converts the indexes to a parse position.
-     * 
-     * @return the parse position, never null
-     */
-    public ParsePosition toParsePosition() {
-        ParsePosition pp = new ParsePosition(textIndex);
-        pp.setErrorIndex(textErrorIndex);
-        return pp;
     }
 
     /**

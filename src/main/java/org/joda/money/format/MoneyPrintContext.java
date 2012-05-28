@@ -23,12 +23,7 @@ import java.util.Locale;
  * This class is mutable and intended for use by a single thread.
  * A new instance is created for each parse.
  */
-public final class MoneyPrintContext {
-
-    /**
-     * The locale to print using.
-     */
-    private Locale locale;
+public final class MoneyPrintContext extends PrintContext {
 
     /**
      * Constructor.
@@ -36,27 +31,7 @@ public final class MoneyPrintContext {
      * @param locale  the locale, not null
      */
     MoneyPrintContext(Locale locale) {
-        this.locale = locale;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the locale.
-     * 
-     * @return the locale, never null
-     */
-    public Locale getLocale() {
-        return locale;
-    }
-
-    /**
-     * Sets the locale.
-     * 
-     * @param locale  the locale, not null
-     */
-    public void setLocale(Locale locale) {
-        MoneyFormatter.checkNotNull(locale, "Locale must not be null");
-        this.locale = locale;
+        super(locale);
     }
 
 }
