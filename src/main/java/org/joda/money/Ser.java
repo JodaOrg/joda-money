@@ -37,7 +37,9 @@ final class Ser implements Externalizable {
     /** Type for Money. */
     static final byte MONEY = 'M';
     /** Type for CurrencyUnit. */
-    static final byte CURRENCY_UNIT = 'C';  // not in use yet
+    static final byte CURRENCY_UNIT = 'C'; // not in use yet
+    /** Type for ExchangeRate. */
+    static final byte EXCHANGE_RATE = 'E';
 
     /** The type. */
     private byte type;
@@ -87,6 +89,11 @@ final class Ser implements Externalizable {
                 writeCurrency(out, obj);
                 return;
             }
+            case EXCHANGE_RATE: {
+                ExchangeRate obj = (ExchangeRate) object;
+                writeExchangeRate(out, obj);
+                return;
+            }
         }
         throw new InvalidClassException("Joda-Money bug: Serialization broken");
     }
@@ -105,8 +112,18 @@ final class Ser implements Externalizable {
         out.writeShort(obj.getDefaultFractionDigits());
     }
 
+    private void writeExchangeRate(ObjectOutput out, ExchangeRate obj) throws IOException {
+        writeCurrency(out, obj.getSource());
+        writeCurrency(out, obj.getTarget());
+        // write BigDecimal representing the conversion rate
+        byte[] bytes = obj.getRate().unscaledValue().toByteArray();
+        out.writeInt(bytes.length);
+        out.write(bytes);
+        out.writeInt(obj.getRate().scale());
+    }
+
     /**
-     * Outputs the data.
+     * Reads the data in from the stream.
      *
      * @param in  the input stream
      * @throws IOException if an error occurs
@@ -124,6 +141,10 @@ final class Ser implements Externalizable {
             }
             case CURRENCY_UNIT: {
                 object = readCurrency(in);
+                return;
+            }
+            case EXCHANGE_RATE: {
+                object = readExchangeRate(in);
                 return;
             }
         }
@@ -149,6 +170,21 @@ final class Ser implements Externalizable {
             throw new InvalidObjectException("Deserialization found a mismatch in the decimal places for currency " + code);
         }
         return singletonCurrency;
+    }
+
+    private ExchangeRate readExchangeRate(ObjectInput in) throws IOException {
+        CurrencyUnit source = readCurrency(in);
+        CurrencyUnit target = readCurrency(in);
+        byte[] bytes = new byte[in.readInt()];
+        in.readFully(bytes);
+        BigDecimal rate = new BigDecimal(new BigInteger(bytes), in.readInt());
+        try {
+            return new ExchangeRate(rate, source, target);
+        } catch (RuntimeException e) {
+            throw new InvalidObjectException(
+                    "Deserialization was not possible, the serialized form of the object may have been tampered with, cause: "
+                            + e.getMessage());
+        }
     }
 
     /**
