@@ -13,6 +13,6 @@ Bundle-Name: Joda-Money
 Bundle-SymbolicName: org.joda.money
 Bundle-Version: 0.7
 Export-Package: org.joda.money;version=0.7,
- org.joda.money.format;version=0.7,
+ org.joda.money.format;version=0.7
 Bundle-License: Apache 2.0
 Bundle-DocURL: http://joda-money.sourceforge.net/
