@@ -12,8 +12,8 @@
   <description>Money repesentation and formatting</description>
   <url>http://joda-money.sourceforge.net</url>
   <issueManagement>
-  	<system>Sourceforge</system>
-    <url>https://sourceforge.net/tracker/?group_id=274452&amp;atid=1166262</url>
+  	<system>GitHub</system>
+    <url>https://github.com/JodaOrg/joda-money/issues</url>
   </issueManagement>
   <inceptionYear>2009</inceptionYear>
   <mailingLists>
@@ -90,7 +90,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.5</version>
+        <version>2.12</version>
         <configuration>
           <includes>
             <include>**/Test*.java</include>
@@ -100,7 +100,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>2.3.1</version>
+        <version>2.4</version>
         <configuration>
           <archive>
             <manifestFile>src/conf/MANIFEST.MF</manifestFile>
@@ -110,7 +110,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.7</version>
+        <version>2.8.1</version>
         <configuration>
           <linksource>true</linksource>
           <links>
@@ -145,7 +145,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>2.1.1</version>
+        <version>2.3</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -155,6 +155,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
+        <version>2.3</version>
         <configuration>
           <descriptors>
             <descriptor>src/main/assembly/dist.xml</descriptor>
@@ -222,7 +223,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
-        <version>2.7</version>
+        <version>2.8.1</version>
         <configuration>
           <linksource>true</linksource>
           <links>
@@ -234,7 +235,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>2.5</version>
+        <version>2.12</version>
         <configuration>
            <showSuccess>true</showSuccess>
         </configuration>
@@ -242,7 +243,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-changes-plugin</artifactId>
-        <version>2.3</version>
+        <version>2.6</version>
         <reportSets>
           <reportSet>
             <reports>
