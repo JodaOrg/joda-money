@@ -42,6 +42,10 @@
     </menu>
 
     <menu ref="reports"/>
+
+    <menu name="Website">
+      <item name="Privacy" href="privacy.html"/>
+    </menu>
   </body>
 
   <poweredBy>
