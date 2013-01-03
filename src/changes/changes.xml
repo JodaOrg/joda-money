@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.7" date="2011-11-24" description="Version 0.7">
+    <release version="0.7" date="2013-01-03" description="Version 0.7">
       <action dev="scolebourne" type="fix">
         Fix printing of grouped negative numbers [10]
       </action>              
