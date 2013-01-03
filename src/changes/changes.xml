@@ -10,16 +10,19 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.7" date="2011-11-24" description="Version 0.7">
       <action dev="scolebourne" type="fix">
-        Change LBP currency to 2dp
+        Fix printing of grouped negative numbers [10]
+      </action>              
+      <action dev="scolebourne" type="fix">
+        Change LBP currency to 2dp [7]
       </action>              
       <action dev="scolebourne" type="update">
         Relax checking for decimal places
       </action>              
       <action dev="scolebourne" type="fix">
-        Move Estonia to the Euro
+        Move Estonia to the Euro [2]
       </action>              
       <action dev="scolebourne" type="add">
-        Add old Russian currency
+        Add old Russian currency [1]
       </action>              
     </release>
     <release version="0.6" date="2011-08-01" description="Version 0.6">
