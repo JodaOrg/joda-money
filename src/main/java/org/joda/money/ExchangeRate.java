@@ -38,8 +38,6 @@ import org.joda.convert.ToString;
  * A default implementation can be acquired using {@link #operations(int, RoundingMode)}.
  * <p>
  * This class is immutable and thread-safe.
- * 
- * @author tpasierb
  */
 public final class ExchangeRate implements Serializable {
 

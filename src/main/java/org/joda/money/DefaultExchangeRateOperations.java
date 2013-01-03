@@ -23,8 +23,6 @@ import java.util.Set;
 /**
  * A default implementation of {@code ExchangeRateOperations} operating on an externally
  * provided {@link ExchangeRate}.
- * 
- * @author tpasierb
  */
 class DefaultExchangeRateOperations implements ExchangeRateOperations {
 

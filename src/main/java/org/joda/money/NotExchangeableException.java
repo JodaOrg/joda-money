@@ -19,8 +19,6 @@ package org.joda.money;
  * Indicates that conversion cannot be performed.
  * <p>
  * This exception makes no guarantees about immutability or thread-safety.
- * 
- * @author tpasierb
  */
 public class NotExchangeableException extends IllegalArgumentException {
 

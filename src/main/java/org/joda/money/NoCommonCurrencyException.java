@@ -19,8 +19,6 @@ package org.joda.money;
  * Indicates that operation requiring a common currency cannot be performed.
  * <p>
  * This exception makes no guarantees about immutability or thread-safety.
- * 
- * @author tpasierb
  */
 public class NoCommonCurrencyException extends IllegalArgumentException {
 

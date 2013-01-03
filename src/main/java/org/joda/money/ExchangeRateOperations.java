@@ -22,8 +22,6 @@ package org.joda.money;
  * Some operations change the underlying rate, while others just perform operations using it.
  * The reasoning for this kind of object is to wrap the settings, such as scale and rounding,
  * allowing several operations with the same settings.
- * 
- * @author tpasierb
  */
 public interface ExchangeRateOperations {
 
