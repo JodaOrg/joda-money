@@ -10,6 +10,9 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.7" date="2011-11-24" description="Version 0.7">
       <action dev="scolebourne" type="fix">
+        Add exchange rate handling
+      </action>              
+      <action dev="scolebourne" type="fix">
         Change LBP currency to 2dp
       </action>              
       <action dev="scolebourne" type="update">
