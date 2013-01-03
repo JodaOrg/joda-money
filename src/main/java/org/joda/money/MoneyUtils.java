@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009-2011 Stephen Colebourne
+ *  Copyright 2009-2013 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -19,8 +19,6 @@ package org.joda.money;
  * Utilities for working with monetary values that handle null.
  * <p>
  * This utility class contains thread-safe static methods.
- *
- * @author Stephen Colebourne
  */
 public final class MoneyUtils {
 

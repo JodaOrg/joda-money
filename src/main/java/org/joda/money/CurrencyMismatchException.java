@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009-2011 Stephen Colebourne
+ *  Copyright 2009-2013 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,8 +22,6 @@ package org.joda.money;
  * value in one currency to a monetary value in a different currency.
  * <p>
  * This exception makes no guarantees about immutability or thread-safety.
- *
- * @author Stephen Colebourne
  */
 public class CurrencyMismatchException extends IllegalArgumentException {
 

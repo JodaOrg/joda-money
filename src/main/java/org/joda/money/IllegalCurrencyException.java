@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009-2011 Stephen Colebourne
+ *  Copyright 2009-2013 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -22,8 +22,6 @@ package org.joda.money;
  * currency using an unrecognised currency code or locale.
  * <p>
  * This exception makes no guarantees about immutability or thread-safety.
- *
- * @author Stephen Colebourne
  */
 public class IllegalCurrencyException extends IllegalArgumentException {
 

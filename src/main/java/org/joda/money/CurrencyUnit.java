@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009-2011 Stephen Colebourne
+ *  Copyright 2009-2013 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -41,8 +41,6 @@ import org.joda.convert.ToString;
  * resource named {@code /org/joda/money/MoneyData.csv} on the classpath.
  * <p>
  * This class is immutable and thread-safe.
- *
- * @author Stephen Colebourne
  */
 public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializable {
 
