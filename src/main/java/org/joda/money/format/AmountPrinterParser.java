@@ -20,6 +20,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 
 import org.joda.money.BigMoney;
+import org.joda.money.MoneyUtils;
 
 /**
  * Prints and parses the amount part of the money.
@@ -45,6 +46,10 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
     //-----------------------------------------------------------------------
     public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
         MoneyAmountStyle activeStyle = style.localize(context.getLocale());
+        if (MoneyUtils.isNegative(money)) {
+            money = money.negated();
+            appendable.append(activeStyle.getNegativeSignCharacter());
+        }
         String str = money.getAmount().toPlainString();
         char zeroChar = activeStyle.getZeroCharacter();
         if (zeroChar != '0') {
