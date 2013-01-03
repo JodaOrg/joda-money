@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009-2011 Stephen Colebourne
+ *  Copyright 2009-2013 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -113,8 +113,8 @@ final class Ser implements Externalizable {
     }
 
     private void writeExchangeRate(ObjectOutput out, ExchangeRate obj) throws IOException {
-        writeCurrency(out, obj.getSource());
-        writeCurrency(out, obj.getTarget());
+        writeCurrency(out, obj.getCounter());
+        writeCurrency(out, obj.getBase());
         // write BigDecimal representing the conversion rate
         byte[] bytes = obj.getRate().unscaledValue().toByteArray();
         out.writeInt(bytes.length);
@@ -179,7 +179,7 @@ final class Ser implements Externalizable {
         in.readFully(bytes);
         BigDecimal rate = new BigDecimal(new BigInteger(bytes), in.readInt());
         try {
-            return new ExchangeRate(rate, source, target);
+            return new ExchangeRate(target, source, rate);
         } catch (RuntimeException e) {
             throw new InvalidObjectException(
                     "Deserialization was not possible, the serialized form of the object may have been tampered with, cause: "

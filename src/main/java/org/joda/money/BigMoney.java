@@ -1,5 +1,5 @@
 /*
- *  Copyright 2009-2011 Stephen Colebourne
+ *  Copyright 2009-2013 Stephen Colebourne
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 package org.joda.money;
 
 import java.io.InvalidObjectException;
-import java.io.ObjectInputStream;
+import java.io.ObjectStreamException;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -415,10 +415,10 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     /**
      * Block malicious data streams.
      * 
-     * @param ois  the input stream, not null
+     * @return never
      * @throws InvalidObjectException
      */
-    private void readObject(ObjectInputStream ois) throws InvalidObjectException {
+    private Object readResolve() throws ObjectStreamException {
         throw new InvalidObjectException("Serialization delegate required");
     }
 
