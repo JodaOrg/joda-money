@@ -8,6 +8,9 @@ https://jmoney.svn.sourceforge.net/svnroot/jmoney/trunk/net.sf.jmoney/src/net/sf
 TimeAndMoney - Money class with currency scale (BigDecimal + JDK Currency)
 http://timeandmoney.svn.sourceforge.net/viewvc/timeandmoney/timeandmoney/trunk/src/main/java/com/domainlanguage/money/Money.java?revision=340&view=markup
 
+Money from Tom Gibara - Small library with good approach to calculation
+http://www.tomgibara.com/projects/money/
+
 JCash - BigDecimal directly
 http://jcash.cvs.sourceforge.net/viewvc/jcash/jcash/src/jcash/
 
