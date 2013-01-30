@@ -16,18 +16,8 @@
 package org.joda.money;
 
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.InvalidObjectException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Currency;
 import java.util.List;
-import java.util.Locale;
 
 import org.testng.annotations.Test;
 
