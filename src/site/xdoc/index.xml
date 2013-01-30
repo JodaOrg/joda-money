@@ -85,7 +85,7 @@ Joda-Money does have a <i>compile-time</i> dependency on Joda-Convert, but this 
 thanks to the magic of annotations.
 </p>
 <p>
-Available in <a href="http://search.maven.org/#artifactdetails|org.joda|joda-money|0.7|jar">Maven Central</a>.
+Available in the <a href="http://search.maven.org/#artifactdetails|org.joda|joda-money|0.7|jar">Maven Central</a>.
 </p>
 </section>
 
@@ -94,12 +94,9 @@ Available in <a href="http://search.maven.org/#artifactdetails|org.joda|joda-mon
 <p>
 Support on bugs, library usage or enhancement requests is available on a best efforts basis via:
 </p>
-<ul>
-<li>the joda-money-interest <a href="mail-lists.html">mailing list</a>. Due to spam, you must be subscribed to post to the mailing list.</li>
-<li>the joda-money GitHub <a href="https://github.com/JodaOrg/joda-money/issues">issues</a>.</li>
-</ul>
 <p>
 To suggest enhancements or contribute, please <a href="https://github.com/JodaOrg/joda-money">fork the source code</a> on GitHub.
+Alternatively, use GitHub <a href="https://github.com/JodaOrg/joda-money/issues">issues</a>.
 </p>
 <p>
 <br />

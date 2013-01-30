@@ -30,7 +30,6 @@
       <item name="Test coverage" href="/cobertura/index.html"/>
       <item name="Bugs/Issues" href="https://github.com/JodaOrg/joda-money/issues"/>
       <item name="Mailing lists" href="mail-lists.html"/>
-      <item name="Javadoc (Latest)" href="apidocs/index.html"/>
     </menu>
 
     <menu name="Joda">

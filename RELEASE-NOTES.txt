@@ -4,14 +4,19 @@ Joda-Money
 Joda-Money is a monetary library that fills the gap in the JDK
 by providing a Money class and associated formatting.
 
-This is release 0.7 of Joda-Money (Alpha).
+This is release 0.7 of Joda-Money.
 
-The release depends on Java 5.
-Joda-Money has a compile-time dependency on Joda-Convert, but this is not required at runtime.
+The release runs on Java SE 5 or later.
+
+See http://joda-money.sourceforge.net/changes-report.html for changes
+
+Joda-Money is licensed under the business-friendly Apache License Version 2.
+This is the same license as all of Apache, plus other open source projects such as Spring.
 
 
 Feedback
 --------
-All feedback is welcomed at joda-money-interest@lists.sourceforge.net.
+Feedback is best received using GitHub issues and Pull Requests.
+https://github.com/JodaOrg/joda-money/
 
 The Joda team
