@@ -51,10 +51,10 @@ The formatting code is a good example of this.
 <section name="Currency information">
 <p>
 Joda-Money includes its own currency class as the implementation in the JDK is too restrictive.
-The data for the Joda-Money class is provided by a single configuration file.
+The data for the Joda-Money class is provided by two configuration files.
 </p>
 <p>
-The file <code>MoneyData.csv</code> holds a list of all the valid currencies.
+The file <code>org/joda/money/MoneyData.csv</code> holds a basic list of valid currencies.
 The columns are as follows:
 <ul>
 <li><a href="http://en.wikipedia.org/wiki/ISO_4217">ISO-4217</a> currency code - three letters, mandatory</li>
@@ -67,6 +67,12 @@ adjacent to one another and without separators</li>
 <p>
 The library will load the first version of this file it finds in the classpath based on the
 class loader that Joda-Money is loaded in.
+</p>
+<p>
+The file <code>org/joda/money/MoneyDataExtension.csv</code> holds any user extensions to the currency list.
+It has the same file format as above.
+This file is optional and not supplied by default.
+Again, the first instance of the file on the classpath will be loaded.
 </p>
 </section>
 

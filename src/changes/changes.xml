@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.7" date="2013-01-30" description="Version 0.7.1">
+      <action dev="timmolter" type="add">
+        Allow a second currency data file to enhance those in the base file [9,13]
+      </action>              
+    </release>
     <release version="0.7" date="2013-01-03" description="Version 0.7">
       <action dev="scolebourne" type="fix">
         Fix printing of grouped negative numbers [10]
