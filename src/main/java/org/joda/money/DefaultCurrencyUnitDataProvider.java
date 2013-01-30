@@ -1,6 +1,5 @@
 /*
  *  Copyright 2009-2013 Stephen Colebourne
- *  Copyright (c) 2013 Tim Molter
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
  *  you may not use this file except in compliance with the License.
@@ -43,8 +42,8 @@ class DefaultCurrencyUnitDataProvider extends CurrencyUnitDataProvider {
      */ 
     @Override
     protected void registerCurrencies() throws Exception {
-      loadCurrenciesaFromFile("/org/joda/money/MoneyData.csv", true);
-      loadCurrenciesaFromFile("/org/joda/money/MoneyDataExtension.csv", false); 
+      loadCurrenciesFromFile("/org/joda/money/MoneyData.csv", true);
+      loadCurrenciesFromFile("/org/joda/money/MoneyDataExtension.csv", false); 
     }
     
     /**
@@ -54,7 +53,7 @@ class DefaultCurrencyUnitDataProvider extends CurrencyUnitDataProvider {
      * @param isNecessary whether or not the file is necessary
      * @throws Exception if a necessary file isn't found
      */
-    private void  loadCurrenciesaFromFile(String fileName, boolean isNecessary)  throws Exception {
+    private void  loadCurrenciesFromFile(String fileName, boolean isNecessary)  throws Exception {
       InputStream in = getClass().getResourceAsStream(fileName);
       if (in == null && isNecessary) {
           throw new FileNotFoundException("Data file " + fileName + " not found");
