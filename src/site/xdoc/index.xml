@@ -80,7 +80,7 @@ The code is fully tested, but there may yet be bugs and the API may yet change.
 There should be no great reason why it cannot be used in production if you can cope with future API change.
 </p>
 <p>
-There are no runtime dependencies beyond JDK 1.5.<br />
+There are no runtime dependencies beyond JDK 1.6.<br />
 Joda-Money does have a <i>compile-time</i> dependency on Joda-Convert, but this is not required at runtime
 thanks to the magic of annotations.
 </p>

@@ -8,7 +8,10 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.7" date="2013-01-30" description="Version 0.7.1">
+    <release version="0.8" date="2013-01-30" description="Version 0.8">
+      <action dev="scolebourne" type="update" >
+        Change to requiring JDK 1.6.
+      </action>
       <action dev="timmolter" type="add">
         Allow a second currency data file to enhance those in the base file [9,13]
       </action>              
