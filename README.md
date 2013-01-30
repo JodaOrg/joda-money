@@ -35,7 +35,7 @@ As a flavour of Joda-Money, here's some example code:
   BigMoney moneyCalc = money.toBigMoney();
 ```
 
-Users are reminded that this software, like all open source software, is <a href="license.html">provided</a>
+Users are reminded that this software, like all open source software, is provided
 on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND.
 
 Joda-Money is licensed under the business-friendly [Apache 2.0 licence](https://github.com/JodaOrg/joda-money/blob/master/LICENSE.txt).
@@ -55,7 +55,7 @@ The code is fully tested, but there may yet be bugs and the API may yet change.
 There should be no great reason why it cannot be used in production if you can cope with future API change.
 It depends on JDK 1.5 or later.
 
-Joda-Money does have a <i>compile-time</i> dependency on Joda-Convert, but this is not required at runtime
+Joda-Money does have a *compile-time* dependency on Joda-Convert, but this is not required at runtime
 thanks to the magic of annotations.
 
 Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-money|0.7|jar)
