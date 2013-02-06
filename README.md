@@ -1,4 +1,3 @@
-
 Joda-Money
 ------------
 
@@ -11,28 +10,28 @@ This library is intended to act as the base layer, providing classes that should
 As a flavour of Joda-Money, here's some example code:
 
 ```java
-  // create a monetary value
-  Money money = Money.parse("USD 23.87");
-  
-  // add another amount with safe double conversion
-  CurrencyUnit usd = CurrencyUnit.of("USD");
-  money = money.plus(Money.of(usd, 12.43d));
-  
-  // subtracts an amount in dollars
-  money = money.minusMajor(2);
-  
-  // multiplies by 3.5 with rounding
-  money = money.multipliedBy(3.5d, RoundingMode.DOWN);
-  
-  // compare two amounts
-  boolean bigAmount = money.isGreaterThan(dailyWage);
-  
-  // convert to GBP using a supplied rate
-  BigDecimal conversionRate = ...;  // obtained from code outside Joda-Money
-  Money moneyGBP = money.convertTo(CurrencyUnit.GBP, conversionRate);
-  
-  // use a BigMoney for more complex calculations where scale matters
-  BigMoney moneyCalc = money.toBigMoney();
+// create a monetary value
+Money money = Money.parse("USD 23.87");
+
+// add another amount with safe double conversion
+CurrencyUnit usd = CurrencyUnit.of("USD");
+money = money.plus(Money.of(usd, 12.43d));
+
+// subtracts an amount in dollars
+money = money.minusMajor(2);
+
+// multiplies by 3.5 with rounding
+money = money.multipliedBy(3.5d, RoundingMode.DOWN);
+
+// compare two amounts
+boolean bigAmount = money.isGreaterThan(dailyWage);
+
+// convert to GBP using a supplied rate
+BigDecimal conversionRate = ...;  // obtained from code outside Joda-Money
+Money moneyGBP = money.convertTo(CurrencyUnit.GBP, conversionRate);
+
+// use a BigMoney for more complex calculations where scale matters
+BigMoney moneyCalc = money.toBigMoney();
 ```
 
 Users are reminded that this software, like all open source software, is provided
