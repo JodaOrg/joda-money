@@ -6,7 +6,7 @@ by providing a Money class and associated formatting.
 
 This is release 0.8 of Joda-Money.
 
-The release runs on Java SE 5 or later.
+The release runs on JDK 6 or later.
 
 See http://joda-money.sourceforge.net/changes-report.html for changes
 
