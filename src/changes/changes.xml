@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.8.1" date="" description="Version 0.8.1">
+      <action dev="scolebourne" type="add">
+        Allow registration of currencies by application code [17]
+      </action>              
+    </release>
     <release version="0.8" date="2013-01-30" description="Version 0.8">
       <action dev="scolebourne" type="update" >
         Change to requiring JDK 1.6.

@@ -127,8 +127,11 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * Registers a currency allowing it to be used.
      * <p>
      * This class only permits known currencies to be returned.
-     * To achieve this, all currencies have to be registered in advance, at
-     * application startup.
+     * To achieve this, all currencies have to be registered in advance.
+     * <p>
+     * Since this method is public, it is possible to add currencies in
+     * application code. It is recommended to do this only at startup, however
+     * it is safe to do so later as the internal implementation is thread-safe.
      *
      * @param currencyCode  the currency code, not null
      * @param numericCurrencyCode  the numeric currency code, -1 if none
@@ -136,8 +139,10 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      *  normally has, from 0 to 9 (normally 0, 2 or 3), or -1 for a pseudo-currency
      * @param countryCodes  the country codes to register the currency under, not null
      * @return the new instance, never null
+     * @throws IllegalArgumentException if the code is already registered, or the
+     *  specified data is invalid
      */
-    static synchronized CurrencyUnit registerCurrency(
+    public static synchronized CurrencyUnit registerCurrency(
             String currencyCode, int numericCurrencyCode, int decimalPlaces, List<String> countryCodes) {
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
         if (numericCurrencyCode < -1 || numericCurrencyCode > 999) {
@@ -190,6 +195,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      *
      * @param currency  the currency, not null
      * @return the singleton instance, never null
+     * @throws IllegalCurrencyException if the currency is unknown
      */
     public static CurrencyUnit of(Currency currency) {
         MoneyUtils.checkNotNull(currency, "Currency must not be null");
