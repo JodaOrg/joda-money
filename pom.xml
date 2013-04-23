@@ -39,6 +39,11 @@
     <contributor>
       <name>Tim Molter</name>
      </contributor>
+    <contributor>
+      <name>Gabriel Bauman</name>
+      <email>gabe@codehaus.org</email>
+      <url>http://gabrielbauman.com</url>
+    </contributor>
   </contributors>
   <licenses>
     <license>
