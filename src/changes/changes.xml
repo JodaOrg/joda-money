@@ -11,7 +11,10 @@
     <release version="0.8.1" date="" description="Version 0.8.1">
       <action dev="scolebourne" type="add">
         Allow registration of currencies by application code [17]
-      </action>              
+      </action>
+      <action dev="gabrielbauman" type="add">
+        Allow config file to support same range of values accepted by code [18/19/21]
+      </action>
     </release>
     <release version="0.8" date="2013-01-30" description="Version 0.8">
       <action dev="scolebourne" type="update" >

@@ -38,11 +38,10 @@
   <contributors>
     <contributor>
       <name>Tim Molter</name>
-     </contributor>
+    </contributor>
     <contributor>
       <name>Gabriel Bauman</name>
-      <email>gabe@codehaus.org</email>
-      <url>http://gabrielbauman.com</url>
+      <url>https://github.com/gabrielbauman</url>
     </contributor>
   </contributors>
   <licenses>
