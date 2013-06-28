@@ -23,7 +23,7 @@ package org.joda.money;
 public final class MoneyUtils {
 
     /**
-     * Validates that the object specified is not null
+     * Validates that the object specified is not null.
      *
      * @param object  the object to check, not null
      * @throws NullPointerException if the input value is null
@@ -47,6 +47,7 @@ public final class MoneyUtils {
      * <p>
      * This method accepts any implementation of {@code BigMoneyProvider}.
      * 
+     * @param moneyProvider  the money to check, null returns zero
      * @return true if the money is null or zero
      */
     public static boolean isZero(BigMoneyProvider moneyProvider) {
@@ -58,6 +59,7 @@ public final class MoneyUtils {
      * <p>
      * This method accepts any implementation of {@code BigMoneyProvider}.
      * 
+     * @param moneyProvider  the money to check, null returns false
      * @return true if the money is non-null and positive
      */
     public static boolean isPositive(BigMoneyProvider moneyProvider) {
@@ -69,6 +71,7 @@ public final class MoneyUtils {
      * <p>
      * This method accepts any implementation of {@code BigMoneyProvider}.
      * 
+     * @param moneyProvider  the money to check, null returns true
      * @return true if the money is null, zero or positive
      */
     public static boolean isPositiveOrZero(BigMoneyProvider moneyProvider) {
@@ -80,6 +83,7 @@ public final class MoneyUtils {
      * <p>
      * This method accepts any implementation of {@code BigMoneyProvider}.
      * 
+     * @param moneyProvider  the money to check, null returns false
      * @return true if the money is non-null and negative
      */
     public static boolean isNegative(BigMoneyProvider moneyProvider) {
@@ -91,6 +95,7 @@ public final class MoneyUtils {
      * <p>
      * This method accepts any implementation of {@code BigMoneyProvider}.
      * 
+     * @param moneyProvider  the money to check, null returns true
      * @return true if the money is null, zero or negative
      */
     public static boolean isNegativeOrZero(BigMoneyProvider moneyProvider) {

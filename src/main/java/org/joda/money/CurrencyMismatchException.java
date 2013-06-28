@@ -37,6 +37,7 @@ public class CurrencyMismatchException extends IllegalArgumentException {
      * Constructor.
      * 
      * @param firstCurrency  the first currency, may be null
+     * @param secondCurrency  the second currency, not null
      */
     public CurrencyMismatchException(CurrencyUnit firstCurrency, CurrencyUnit secondCurrency) {
         super("Currencies differ: " +

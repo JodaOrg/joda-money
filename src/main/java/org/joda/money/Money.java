@@ -784,6 +784,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * This instance is immutable and unaffected by this method.
      * 
      * @param amountToAdd  the monetary value to add, not null
+     * @param roundingMode  the rounding mode to use, not null
      * @return the new instance with the input amount added, never null
      */
     public Money plus(BigDecimal amountToAdd, RoundingMode roundingMode) {
@@ -829,6 +830,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * This instance is immutable and unaffected by this method.
      * 
      * @param amountToAdd  the monetary value to add, not null
+     * @param roundingMode  the rounding mode to use, not null
      * @return the new instance with the input amount added, never null
      */
     public Money plus(double amountToAdd, RoundingMode roundingMode) {
@@ -929,6 +931,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * This instance is immutable and unaffected by this method.
      * 
      * @param amountToSubtract  the monetary value to subtract, not null
+     * @param roundingMode  the rounding mode to use, not null
      * @return the new instance with the input amount subtracted, never null
      */
     public Money minus(BigDecimal amountToSubtract, RoundingMode roundingMode) {
@@ -974,6 +977,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * This instance is immutable and unaffected by this method.
      * 
      * @param amountToSubtract  the monetary value to subtract, not null
+     * @param roundingMode  the rounding mode to use, not null
      * @return the new instance with the input amount subtracted, never null
      */
     public Money minus(double amountToSubtract, RoundingMode roundingMode) {
@@ -1117,6 +1121,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * This instance is immutable and unaffected by this method.
      * 
      * @param valueToDivideBy  the scalar value to divide by, not null
+     * @param roundingMode  the rounding mode to use, not null
      * @return the new divided instance, never null
      * @throws ArithmeticException if dividing by zero
      * @throws ArithmeticException if the rounding fails
@@ -1285,6 +1290,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * The comparison takes into account the scale.
      * The compared values must be in the same currency.
      * 
+     * @param other  the other object to compare to, not null
      * @return true if this instance equals the other instance
      */
     @Override
