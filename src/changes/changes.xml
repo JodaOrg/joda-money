@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.9" date="" description="Version 0.9">
+    <release version="0.9" date="2013-06-28" description="Version 0.9">
       <action dev="scolebourne" type="add">
         New option for grouping only before the decimal point [16]
       </action>

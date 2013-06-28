@@ -9,7 +9,7 @@
   <artifactId>joda-money</artifactId>
   <packaging>jar</packaging>
   <name>Joda money</name>
-  <version>0.9-SNAPSHOT</version>
+  <version>0.9</version>
   <description>Money repesentation and formatting</description>
   <url>http://joda-money.sourceforge.net</url>
 
@@ -278,6 +278,13 @@
         </plugin>
       </plugins>
     </pluginManagement>
+    <extensions>
+      <extension>
+        <groupId>org.apache.maven.wagon</groupId>
+        <artifactId>wagon-ssh-external</artifactId>
+        <version>2.4</version>
+      </extension>
+    </extensions>
   </build>
 
   <!-- ==================================================================== -->

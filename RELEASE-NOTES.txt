@@ -4,7 +4,7 @@ Joda-Money
 Joda-Money is a monetary library that fills the gap in the JDK
 by providing a Money class and associated formatting.
 
-This is release 0.8.1 of Joda-Money.
+This is release 0.9 of Joda-Money.
 
 The release runs on JDK 6 or later.
 
