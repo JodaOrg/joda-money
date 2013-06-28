@@ -9,6 +9,9 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.8.1" date="" description="Version 0.8.1">
+      <action dev="scolebourne" type="update" >
+        Change to use m2e Maven Eclipse.
+      </action>
       <action dev="scolebourne" type="add">
         Allow registration of currencies by application code [17]
       </action>
