@@ -21,8 +21,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Currency;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map.Entry;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -144,6 +147,36 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      */
     public static synchronized CurrencyUnit registerCurrency(
             String currencyCode, int numericCurrencyCode, int decimalPlaces, List<String> countryCodes) {
+        return registerCurrency(currencyCode, numericCurrencyCode, decimalPlaces, countryCodes, false);
+    }
+
+    /**
+     * Registers a currency allowing it to be used, allowing replacement.
+     * <p>
+     * This class only permits known currencies to be returned.
+     * To achieve this, all currencies have to be registered in advance.
+     * <p>
+     * Since this method is public, it is possible to add currencies in
+     * application code. It is recommended to do this only at startup, however
+     * it is safe to do so later as the internal implementation is thread-safe.
+     * <p>
+     * This method uses a flag to determine whether the registered currency
+     * must be new, or can replace an existing currency.
+     *
+     * @param currencyCode  the currency code, not null
+     * @param numericCurrencyCode  the numeric currency code, -1 if none
+     * @param decimalPlaces  the number of decimal places that the currency
+     *  normally has, from 0 to 9 (normally 0, 2 or 3), or -1 for a pseudo-currency
+     * @param countryCodes  the country codes to register the currency under,
+     *  use of ISO-3166 is recommended, not null
+     * @param force  true to register forcefully, replacing any existing matching currency,
+     *  false to validate that there is no existing matching currency
+     * @return the new instance, never null
+     * @throws IllegalArgumentException if the code is already registered and {@code force} is false;
+     *  or if the specified data is invalid
+     */
+    public static synchronized CurrencyUnit registerCurrency(
+                    String currencyCode, int numericCurrencyCode, int decimalPlaces, List<String> countryCodes, boolean force) {
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
         if (numericCurrencyCode < -1 || numericCurrencyCode > 999) {
             throw new IllegalArgumentException("Invalid numeric code");
@@ -154,12 +187,20 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         MoneyUtils.checkNotNull(countryCodes, "Country codes must not be null");
         
         CurrencyUnit currency = new CurrencyUnit(currencyCode, (short) numericCurrencyCode, (short) decimalPlaces);
-        if (currenciesByCode.containsKey(currencyCode) || currenciesByNumericCode.containsKey(numericCurrencyCode)) {
-            throw new IllegalArgumentException("Currency already registered: " + currencyCode);
-        }
-        for (String countryCode : countryCodes) {
-            if (currenciesByCountry.containsKey(countryCode)) {
-                throw new IllegalArgumentException("Currency already registered for country: " + countryCode);
+        if (force) {
+            currenciesByCode.remove(currencyCode);
+            currenciesByNumericCode.remove(numericCurrencyCode);
+            for (String countryCode : countryCodes) {
+                currenciesByCountry.remove(countryCode);
+            }
+        } else {
+            if (currenciesByCode.containsKey(currencyCode) || currenciesByNumericCode.containsKey(numericCurrencyCode)) {
+                throw new IllegalArgumentException("Currency already registered: " + currencyCode);
+            }
+            for (String countryCode : countryCodes) {
+                if (currenciesByCountry.containsKey(countryCode)) {
+                    throw new IllegalArgumentException("Currency already registered for country: " + countryCode);
+                }
             }
         }
         currenciesByCode.putIfAbsent(currencyCode, currency);
@@ -284,12 +325,12 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Obtains an instance of {@code CurrencyUnit} for the specified country code.
+     * Obtains an instance of {@code CurrencyUnit} for the specified ISO-3166 country code.
      * <p>
      * Country codes should generally be in upper case.
      * This method is case sensitive.
      *
-     * @param countryCode  the country code, not null
+     * @param countryCode  the country code, typically ISO-3166, not null
      * @return the singleton instance, never null
      * @throws IllegalCurrencyException if the currency is unknown
      */
@@ -408,6 +449,26 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         return str;
     }
 
+    /**
+     * Gets the country codes applicable to this currency.
+     * <p>
+     * A currency is typically valid in one or more countries.
+     * The codes are typically defined by ISO-3166.
+     * An empty set indicates that no the currency is not associated with a country code.
+     * 
+     * @return the country codes, may be empty, not null
+     */
+    public Set<String> getCountryCodes() {
+        Set<String> countryCodes = new HashSet<String>();
+        for (Entry<String, CurrencyUnit> entry : currenciesByCountry.entrySet()) {
+            if (this.equals(entry.getValue())) {
+                countryCodes.add(entry.getKey());
+            }
+        }
+        return countryCodes;
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Gets the number of decimal places typically used by this currency.
      * <p>

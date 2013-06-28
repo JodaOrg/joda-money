@@ -42,7 +42,7 @@ public abstract class CurrencyUnitDataProvider {
      * @param countryCodes  the country codes to register the currency under, not null
      */
     protected final void registerCurrency(String currencyCode, int numericCurrencyCode, int decimalPlaces, List<String> countryCodes) {
-        CurrencyUnit.registerCurrency(currencyCode, numericCurrencyCode, decimalPlaces, countryCodes);
+        CurrencyUnit.registerCurrency(currencyCode, numericCurrencyCode, decimalPlaces, countryCodes, true);
     }
 
 }

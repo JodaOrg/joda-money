@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.Currency;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import org.testng.annotations.Test;
 
@@ -488,6 +489,19 @@ public class TestCurrencyUnit {
     public void test_getNumericCode_GBP() {
         CurrencyUnit test = CurrencyUnit.of("GBP");
         assertEquals(test.getNumericCode(), 826);
+    }
+
+    //-----------------------------------------------------------------------
+    // getCurrencyCodes()
+    //-----------------------------------------------------------------------
+    public void test_getCurrencyCodes_GBP() {
+        Set<String> test = CurrencyUnit.of("GBP").getCountryCodes();
+        assertEquals(test.contains("GB"), true);
+        assertEquals(test.contains("IM"), true);
+        assertEquals(test.contains("JE"), true);
+        assertEquals(test.contains("GG"), true);
+        assertEquals(test.contains("GS"), true);
+        assertEquals(test.contains("IO"), true);
     }
 
     //-----------------------------------------------------------------------

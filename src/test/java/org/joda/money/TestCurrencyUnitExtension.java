@@ -27,7 +27,6 @@ import org.testng.annotations.Test;
 @Test
 public class TestCurrencyUnitExtension {
 
-  
   public void test_CurrencyFromMoneyData() {
     List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
     boolean found = false;
@@ -53,15 +52,22 @@ public class TestCurrencyUnitExtension {
     }
 
     public void test_CurrencyMissing() {
-      List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
-      boolean found = false;
-      for (CurrencyUnit currencyUnit : curList) {
-          if (currencyUnit.getCode().equals("NMC")) {
-              found = true;
-              break;
-          }
-      }
-      assertEquals(found, false);
-  }
+        List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
+        boolean found = false;
+        for (CurrencyUnit currencyUnit : curList) {
+            if (currencyUnit.getCode().equals("NMC")) {
+                found = true;
+                break;
+            }
+        }
+        assertEquals(found, false);
+    }
+
+    public void test_CurrencyEURChanged() {
+        CurrencyUnit currency = CurrencyUnit.ofCountry("HU");
+        assertEquals(currency, CurrencyUnit.EUR);
+        assertEquals(CurrencyUnit.EUR.getCountryCodes().contains("HU"), true);
+        assertEquals(CurrencyUnit.of("HUF").getCountryCodes().isEmpty(), true);
+    }
 
 }

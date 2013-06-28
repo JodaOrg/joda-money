@@ -31,6 +31,7 @@ import java.util.regex.Pattern;
  * Firstly it reads the mandatory resource named {@code /org/joda/money/MoneyData.csv}.
  * Then it reads the optional resource named {@code /org/joda/money/MoneyDataExtension.csv}.
  * Both will be read as the first found on the classpath.
+ * The second file may replace entries in the first file.
  */
 class DefaultCurrencyUnitDataProvider extends CurrencyUnitDataProvider {
 
