@@ -63,8 +63,19 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
             }
             str = zeroConvert.toString();
         }
-        int decPoint = str.indexOf('.');
-        if (activeStyle.isGrouping()) {
+        final int decPoint = str.indexOf('.');
+        final int afterDecPoint = decPoint + 1;;
+        if (activeStyle.getGroupingStyle() == GroupingStyle.NONE) {
+            if (decPoint < 0) {
+                appendable.append(str);
+                if (activeStyle.isForcedDecimalPoint()) {
+                    appendable.append(activeStyle.getDecimalPointCharacter());
+                }
+            } else {
+                appendable.append(str.subSequence(0, decPoint))
+                    .append(activeStyle.getDecimalPointCharacter()).append(str.substring(afterDecPoint));
+            }
+        } else {
             int groupingSize = activeStyle.getGroupingSize();
             char groupingChar = activeStyle.getGroupingCharacter();
             int pre = (decPoint < 0 ? str.length() : decPoint);
@@ -78,22 +89,15 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
             if (decPoint >= 0 || activeStyle.isForcedDecimalPoint()) {
                 appendable.append(activeStyle.getDecimalPointCharacter());
             }
-            decPoint++;
-            for (int i = 0; i < post; i++) {
-                appendable.append(str.charAt(i + decPoint));
-                if (i % groupingSize == 2) {
-                    appendable.append(groupingChar);
-                }
-            }
-        } else {
-            if (decPoint < 0) {
-                appendable.append(str);
-                if (activeStyle.isForcedDecimalPoint()) {
-                    appendable.append(activeStyle.getDecimalPointCharacter());
-                }
+            if (activeStyle.getGroupingStyle() == GroupingStyle.BEFORE_DECIMAL_POINT) {
+                appendable.append(str.substring(afterDecPoint));
             } else {
-                appendable.append(str.subSequence(0, decPoint))
-                    .append(activeStyle.getDecimalPointCharacter()).append(str.substring(decPoint + 1));
+                for (int i = 0; i < post; i++) {
+                    appendable.append(str.charAt(i + afterDecPoint));
+                    if (i % groupingSize == 2) {
+                        appendable.append(groupingChar);
+                    }
+                }
             }
         }
     }

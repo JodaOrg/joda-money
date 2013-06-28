@@ -10,6 +10,9 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.9" date="" description="Version 0.9">
       <action dev="scolebourne" type="add">
+        New option for grouping only before the decimal point [16]
+      </action>
+      <action dev="scolebourne" type="add">
         Allow registration of currencies to override existing [24]
       </action>
       <action dev="scolebourne" type="add">
