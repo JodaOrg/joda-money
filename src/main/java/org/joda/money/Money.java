@@ -324,8 +324,8 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * The amount must match the regular expression {@code [+-]?[0-9]*[.]?[0-9]*}.
      * This matches the output from {@link #toString()}.
      * <p>
-     * For example, {@code of("USD 25")} creates the instance {@code USD 25.00}
-     * while {@code of("USD 25.95")} creates the instance {@code USD 25.95}.
+     * For example, {@code parse("USD 25")} creates the instance {@code USD 25.00}
+     * while {@code parse("USD 25.95")} creates the instance {@code USD 25.95}.
      *
      * @param moneyStr  the money string to parse, not null
      * @return the parsed instance, never null
