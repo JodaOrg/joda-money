@@ -319,7 +319,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
     /**
      * Parses an instance of {@code Money} from a string.
      * <p>
-     * The string format is '<currencyCode> <amount>'.
+     * The string format is '$currencyCode $amount'.
      * The currency code must be a valid three letter currency.
      * The amount must match the regular expression {@code [+-]?[0-9]*[.]?[0-9]*}.
      * This matches the output from {@link #toString()}.
