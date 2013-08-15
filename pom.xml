@@ -11,7 +11,7 @@
   <name>Joda-Money</name>
   <version>0.9.1-SNAPSHOT</version>
   <description>Money repesentation and formatting</description>
-  <url>http://jodaorg.github.io/joda-money/</url>
+  <url>http://www.joda.org/joda-money/</url>
 
   <!-- ==================================================================== -->
   <issueManagement>
@@ -182,7 +182,7 @@
           </execution>
         </executions>
         <configuration>
-          <message>Create website for v${project.version}</message>
+          <message>Create website for ${project.artifactId} v${project.version}</message>
           <path>joda-money</path>
           <merge>true</merge>
           <server>github</server>

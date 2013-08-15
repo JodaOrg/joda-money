@@ -6,7 +6,7 @@ by providing a Money class and associated formatting.
 
 The release runs on JDK 6 or later.
 
-See http://jodaorg.github.io/joda-money/changes-report.html for changes
+See http://www.joda.org/joda-money/changes-report.html for changes
 
 Joda-Money is licensed under the business-friendly Apache License Version 2.
 This is the same license as all of Apache, plus other open source projects such as Spring.

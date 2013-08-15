@@ -43,10 +43,10 @@ Joda-Money is licensed under the business-friendly [Apache 2.0 licence](https://
 ### Documentation
 Various documentation is available:
 
-* The [home page](http://jodaorg.github.io/joda-money/)
-* The helpful [user guide](http://jodaorg.github.io/joda-money/userguide.html)
-* The [Javadoc](http://jodaorg.github.io/joda-money/apidocs/index.html)
-* The change notes for the [releases](http://jodaorg.github.io/joda-money/changes-report.html)
+* The [home page](http://www.joda.org/joda-money/)
+* The helpful [user guide](http://www.joda.org/joda-money/userguide.html)
+* The [Javadoc](http://www.joda.org/joda-money/apidocs/index.html)
+* The change notes for the [releases](http://www.joda.org/joda-money/changes-report.html)
 
 
 ### Releases

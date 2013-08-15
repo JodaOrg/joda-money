@@ -3,11 +3,11 @@
   <publishDate position="navigation-bottom" format="yyyy-MM-dd"/>
   <bannerLeft>
     <name>Joda.org</name>
-    <href>http://jodaorg.github.io/</href>
+    <href>http://www.joda.org/</href>
   </bannerLeft>
   <bannerRight>
     <name>Joda Money</name>
-    <href>http://jodaorg.github.io/joda-money/</href>
+    <href>http://www.joda.org/joda-money/</href>
   </bannerRight>
 
   <body>
@@ -30,10 +30,10 @@
     </menu>
 
     <menu name="Joda">
-      <item name="Joda home" href="http://jodaorg.github.io"/>
+      <item name="Joda home" href="http://www.joda.org"/>
       <item name="Beans" href="http://joda-beans.sourceforge.net/index.html"/>
-      <item name="Convert" href="http://jodaorg.github.io/joda-convert/"/>
-      <item name="Primitives" href="http://jodaorg.github.io/joda-primitives/"/>
+      <item name="Convert" href="http://www.joda.org/joda-convert/"/>
+      <item name="Primitives" href="http://www.joda.org/joda-primitives/"/>
       <item name="Time" href="http://joda-time.sourceforge.net/index.html"/>
     </menu>
 
@@ -48,6 +48,6 @@
     <logo name="Maven" href="http://maven.apache.org/"
           img="http://maven.apache.org/images/logos/maven-feather.png"/>
     <logo name="GitHub" href="https://github.com/JodaOrg/joda-money"
-          img="http://jodaorg.github.io/images/github.png"/>
+          img="http://www.joda.org/images/github.png"/>
   </poweredBy>
 </project>
