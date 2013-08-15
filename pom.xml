@@ -529,6 +529,7 @@
     <maven.compiler.verbose>true</maven.compiler.verbose>
     <!-- Properties for maven-javadoc-plugin -->
     <author>false</author>
+    <notimestamp>true</notimestamp>
     <!-- Properties for maven-checkstyle-plugin -->
     <checkstyle.config.location>${project.basedir}/src/main/checkstyle/checkstyle.xml</checkstyle.config.location>
     <!-- Other properties -->
