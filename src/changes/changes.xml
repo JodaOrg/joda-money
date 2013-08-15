@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.9.1" date="xxxx-xx-xx" description="v0.9.1">
+      <action dev="scolebourne" type="add" >
+        Home page at GitHub.
+      </action>
+    </release>
     <release version="0.9" date="2013-06-28" description="Version 0.9">
       <action dev="scolebourne" type="add">
         New option for grouping only before the decimal point [16]

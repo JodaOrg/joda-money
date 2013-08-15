@@ -8,10 +8,10 @@
   <groupId>org.joda</groupId>
   <artifactId>joda-money</artifactId>
   <packaging>jar</packaging>
-  <name>Joda money</name>
+  <name>Joda-Money</name>
   <version>0.9.1-SNAPSHOT</version>
   <description>Money repesentation and formatting</description>
-  <url>http://joda-money.sourceforge.net</url>
+  <url>http://jodaorg.github.io/joda-money/</url>
 
   <!-- ==================================================================== -->
   <issueManagement>
@@ -60,7 +60,7 @@
     </license>
   </licenses>
   <scm>
-    <connection>scm:git:git@github.com:JodaOrg/joda-money.git</connection>
+    <connection>scm:git:https://github.com/JodaOrg/joda-money.git</connection>
     <developerConnection>scm:git:git@github.com:JodaOrg/joda-money.git</developerConnection>
     <url>https://github.com/JodaOrg/joda-money</url>
   </scm>
@@ -160,6 +160,36 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <configuration>
+          <skipDeploy>true</skipDeploy>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>com.github.github</groupId>
+        <artifactId>site-maven-plugin</artifactId>
+        <version>0.8</version>
+        <executions>
+          <execution>
+            <id>github-site</id>
+            <goals>
+              <goal>site</goal>
+            </goals>
+            <phase>site-deploy</phase>
+          </execution>
+        </executions>
+        <configuration>
+          <message>Create website for v${project.version}</message>
+          <path>joda-money</path>
+          <merge>true</merge>
+          <server>github</server>
+          <repositoryOwner>JodaOrg</repositoryOwner>
+          <repositoryName>jodaorg.github.io</repositoryName>
+          <branch>refs/heads/master</branch>
+        </configuration>
       </plugin>
     </plugins>
     <!-- Manage plugin versions -->
@@ -278,13 +308,6 @@
         </plugin>
       </plugins>
     </pluginManagement>
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.wagon</groupId>
-        <artifactId>wagon-ssh-external</artifactId>
-        <version>2.4</version>
-      </extension>
-    </extensions>
   </build>
 
   <!-- ==================================================================== -->
@@ -327,7 +350,6 @@
         <reportSets>
           <reportSet>
             <reports>
-              <report>index</report>
               <report>dependencies</report>
               <report>dependency-info</report>
               <report>issue-tracking</report>
@@ -356,13 +378,6 @@
             </reports>
           </reportSet>
         </reportSets>
-        <configuration>
-          <linksource>true</linksource>
-          <links>
-            <link>http://download.oracle.com/javase/6/docs/api/</link>
-          </links>
-          <encoding>UTF-8</encoding>
-        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -428,11 +443,6 @@
       <url>http://oss.sonatype.org/content/repositories/joda-snapshots</url>
       <layout>default</layout>
     </snapshotRepository>
-    <site>
-      <id>sf-web-joda-money</id>
-      <name>Sourceforge Site</name>
-      <url>scpexe://shell.sourceforge.net/home/project-web/joda-money/htdocs</url>
-    </site>
     <downloadUrl>http://oss.sonatype.org/content/repositories/joda-releases</downloadUrl>
   </distributionManagement>
 
