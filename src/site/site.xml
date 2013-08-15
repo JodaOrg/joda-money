@@ -6,7 +6,7 @@
     <href>http://www.joda.org/</href>
   </bannerLeft>
   <bannerRight>
-    <name>Joda Money</name>
+    <name>Joda-Money</name>
     <href>http://www.joda.org/joda-money/</href>
   </bannerRight>
 
@@ -31,10 +31,10 @@
 
     <menu name="Joda">
       <item name="Joda home" href="http://www.joda.org"/>
-      <item name="Beans" href="http://joda-beans.sourceforge.net/index.html"/>
+      <item name="Beans" href="http://www.joda.org/joda-beans/"/>
       <item name="Convert" href="http://www.joda.org/joda-convert/"/>
       <item name="Primitives" href="http://www.joda.org/joda-primitives/"/>
-      <item name="Time" href="http://joda-time.sourceforge.net/index.html"/>
+      <item name="Time" href="http://www.joda.org/joda-time/"/>
     </menu>
 
     <menu ref="reports"/>

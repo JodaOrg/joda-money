@@ -37,7 +37,7 @@ BigMoney moneyCalc = money.toBigMoney();
 Users are reminded that this software, like all open source software, is provided
 on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND.
 
-Joda-Money is licensed under the business-friendly [Apache 2.0 licence](https://github.com/JodaOrg/joda-money/blob/master/LICENSE.txt).
+Joda-Money is licensed under the business-friendly [Apache 2.0 licence](http://www.joda.org/joda-money/license.html).
 
 
 ### Documentation
