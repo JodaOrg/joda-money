@@ -1,5 +1,5 @@
 Joda-Money
-------------
+----------
 
 Joda-Money provides a library of classes to store amounts of money.
 
@@ -43,9 +43,10 @@ Joda-Money is licensed under the business-friendly [Apache 2.0 licence](https://
 ### Documentation
 Various documentation is available:
 
-* The helpful [user guide](http://joda-money.sourceforge.net/userguide.html)
-* The javadoc for the [current release](http://joda-money.sourceforge.net/apidocs/index.html)
-* The change notes for the [releases](http://joda-money.sourceforge.net/changes-report.html)
+* The [home page](http://jodaorg.github.io/joda-money/)
+* The helpful [user guide](http://jodaorg.github.io/joda-money/userguide.html)
+* The [Javadoc](http://jodaorg.github.io/joda-money/apidocs/index.html)
+* The change notes for the [releases](http://jodaorg.github.io/joda-money/changes-report.html)
 
 
 ### Releases
@@ -67,4 +68,3 @@ Please use GitHub issues and Pull Requests for support.
 ### History
 Issue tracking and active development is at GitHub.
 Historically, the project was at [Sourceforge](https://sourceforge.net/projects/joda-money/).
-The [home page](http://joda-money.sourceforge.net/) is still at Sourceforge.

@@ -62,9 +62,7 @@ Joda Money is licensed under the business-friendly <a href="license.html">Apache
 Various documentation is available:
 <ul>
 <li>The helpful <a href="userguide.html">user guide</a></li>
-<li>The javadoc for the <a href="apidocs/index.html">current release</a></li>
-<!--li>A <a href="faq.html">FAQ</a> list</li-->
-<!--li>Information on <a href="installation.html">downloading and installing</a> Joda-Money</li-->
+<li>The <a href="apidocs/index.html">Javadoc</a></li>
 <li>The <a href="https://github.com/JodaOrg/joda-money">GitHub</a> source repository</li>
 </ul>
 </p>
@@ -85,14 +83,14 @@ Joda-Money does have a <i>compile-time</i> dependency on Joda-Convert, but this 
 thanks to the magic of annotations.
 </p>
 <p>
-Available in the <a href="http://search.maven.org/#artifactdetails|org.joda|joda-money|0.9|jar">Maven Central</a>.
+Available in <a href="http://search.maven.org/#artifactdetails|org.joda|joda-money|0.9|jar">Maven Central</a>.
 </p>
 </section>
 
 
 <section name="Support">
 <p>
-Support on bugs, library usage or enhancement requests is available on a best efforts basis via:
+Support on bugs, library usage or enhancement requests is available on a best efforts basis.
 </p>
 <p>
 To suggest enhancements or contribute, please <a href="https://github.com/JodaOrg/joda-money">fork the source code</a> on GitHub.
