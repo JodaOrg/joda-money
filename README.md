@@ -50,7 +50,7 @@ Various documentation is available:
 
 
 ### Releases
-[Release 0.9](http://sourceforge.net/projects/joda-money/files/joda-money/0.9/) is the current latest release.
+[Release 0.9](http://www.joda.org/joda-money/download.html) is the current latest release.
 The code is fully tested, but there may yet be bugs and the API may yet change.
 There should be no great reason why it cannot be used in production if you can cope with future API change.
 It depends on JDK 1.6 or later.

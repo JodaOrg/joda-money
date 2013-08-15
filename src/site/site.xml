@@ -18,7 +18,7 @@
       <item name="Javadoc" href="apidocs/index.html"/>
       <item name="License" href="licensecover.html"/>
       <item name="Release notes" href="changes-report.html"/>
-      <item name="Download" href="http://sourceforge.net/projects/joda-money/files/joda-money/0.9/"/>
+      <item name="Download" href="download.html"/>
     </menu>
 
     <menu name="Development">
