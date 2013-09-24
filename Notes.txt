@@ -1,4 +1,3 @@
-
 JScience - MoneyAmount, based on Javaloution classes
 http://jscience.org/api/org/jscience/economics/money/MoneyAmount.html
 
@@ -25,6 +24,9 @@ http://github.com/ricardojmendez/grails-currencies/blob/master/grails-app/domain
 
 OpenGamma CurrencyAmount - Class based on double (its an estimate)
 https://github.com/OpenGamma/OG-Platform/blob/master/projects/OG-Util/src/com/opengamma/util/money/CurrencyAmount.java
+
+Roguewave - BigDecimal or Double, mutable, extends to currency conversion
+http://www.roguewave.com/portals/0/products/legacy-hpp/docs/mnyapi/Package-com.roguewave.money.currency.v1-0.html
 
 Design document
 http://www.objectivelogic.com/resources/Java%20and%20Monetary%20Data/Java%20and%20Monetary%20Data.pdf 
