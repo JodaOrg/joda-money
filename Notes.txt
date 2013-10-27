@@ -23,7 +23,7 @@ Grails Currency Plugin - Class based on float
 http://github.com/ricardojmendez/grails-currencies/blob/master/grails-app/domain/Money.groovy
 
 OpenGamma CurrencyAmount - Class based on double (its an estimate)
-https://github.com/OpenGamma/OG-Platform/blob/master/projects/OG-Util/src/com/opengamma/util/money/CurrencyAmount.java
+https://github.com/OpenGamma/OG-Platform/blob/master/projects/OG-Util/src/main/java/com/opengamma/util/money/CurrencyAmount.java
 
 Roguewave - BigDecimal or Double, mutable, extends to currency conversion
 http://www.roguewave.com/portals/0/products/legacy-hpp/docs/mnyapi/Package-com.roguewave.money.currency.v1-0.html
