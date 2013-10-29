@@ -19,7 +19,7 @@ http://eurobudget.cvs.sourceforge.net/viewvc/eurobudget/eurobudget/src/com/pjsof
 Java practices - Class based on BigDecimal
 http://www.javapractices.com/topic/TopicAction.do?Id=13
 
-Grails Currency Plugin - Class based on float
+Grails Currency Plugin - Class based on BigDecimal
 http://github.com/ricardojmendez/grails-currencies/blob/master/grails-app/domain/Money.groovy
 
 OpenGamma CurrencyAmount - Class based on double (its an estimate)
