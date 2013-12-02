@@ -513,7 +513,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * truncating the amount if necessary.
      * <p>
      * The returned instance will have this currency and the new scaled amount.
-     * For example, scaling 'USD 43.271' to a scale of 1 will yield 'USD 43.2'.
+     * For example, scaling 'USD 43.2' to a scale of 2 will yield 'USD 43.20'.
      * No rounding is performed on the amount, so it must have a
      * scale less than or equal to the new scale.
      * <p>

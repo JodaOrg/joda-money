@@ -9,6 +9,10 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.9.1" date="xxxx-xx-xx" description="v0.9.1">
+      <action dev="scolebourne" type="fix" >
+        Fix Javadoc of BigMoney.withScale.
+        Fixes #31.
+      </action>
       <action dev="scolebourne" type="add" >
         Ensure validation of string currency code.
         Fixes #31.
