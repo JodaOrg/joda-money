@@ -68,6 +68,21 @@ public class TestCurrencyUnit {
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_registeredCurrency_invalidStringCode_empty() {
+        CurrencyUnit.registerCurrency("", 991, 2, Arrays.asList("TS"));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_registeredCurrency_invalidStringCode_number() {
+        CurrencyUnit.registerCurrency("123", 991, 2, Arrays.asList("TS"));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_registeredCurrency_invalidStringCode_dash() {
+        CurrencyUnit.registerCurrency("A-", 991, 2, Arrays.asList("TS"));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_registeredCurrency_invalidNumericCode_small() {
         CurrencyUnit.registerCurrency("TST", -2, 2, Arrays.asList("TS"));
     }

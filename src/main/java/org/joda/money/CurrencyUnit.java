@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.regex.Pattern;
 
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
@@ -51,6 +52,10 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * The serialisation version.
      */
     private static final long serialVersionUID = 327835287287L;
+    /**
+     * The currency code pattern.
+     */
+    private static final Pattern CODE = Pattern.compile("[A-Za-z]+");
     /**
      * Map of registered currencies by text code.
      */
@@ -163,7 +168,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * This method uses a flag to determine whether the registered currency
      * must be new, or can replace an existing currency.
      *
-     * @param currencyCode  the currency code, not null
+     * @param currencyCode  the currency code, upper/lower case letters only, not empty, not null
      * @param numericCurrencyCode  the numeric currency code, -1 if none
      * @param decimalPlaces  the number of decimal places that the currency
      *  normally has, from 0 to 9 (normally 0, 2 or 3), or -1 for a pseudo-currency
@@ -178,6 +183,9 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     public static synchronized CurrencyUnit registerCurrency(
                     String currencyCode, int numericCurrencyCode, int decimalPlaces, List<String> countryCodes, boolean force) {
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
+        if (CODE.matcher(currencyCode).matches() == false) {
+            throw new IllegalArgumentException("Invalid string code");
+        }
         if (numericCurrencyCode < -1 || numericCurrencyCode > 999) {
             throw new IllegalArgumentException("Invalid numeric code");
         }
