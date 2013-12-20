@@ -275,7 +275,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
             throw new IllegalArgumentException("Money array must not be empty");
         }
         BigMoney total = of(monies[0]);
-        MoneyUtils.checkNotNull(total, "Money arary must not contain null entries");
+        MoneyUtils.checkNotNull(total, "Money array must not contain null entries");
         for (int i = 1; i < monies.length; i++) {
             total = total.plus(of(monies[i]));
         }
