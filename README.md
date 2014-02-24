@@ -13,7 +13,7 @@ As a flavour of Joda-Money, here's some example code:
 // create a monetary value
 Money money = Money.parse("USD 23.87");
 
-// add another amount with safe double conversion, RoundingMode.HALF_EVEN
+// add another amount with safe double conversion
 CurrencyUnit usd = CurrencyUnit.of("USD");
 money = money.plus(Money.of(usd, 12.43d));
 
