@@ -13,7 +13,7 @@ As a flavour of Joda-Money, here's some example code:
 // create a monetary value
 Money money = Money.parse("USD 23.87");
 
-// add another amount with safe double conversion
+// add another amount with safe double conversion, RoundingMode.HALF_EVEN
 CurrencyUnit usd = CurrencyUnit.of("USD");
 money = money.plus(Money.of(usd, 12.43d));
 
@@ -28,7 +28,7 @@ boolean bigAmount = money.isGreaterThan(dailyWage);
 
 // convert to GBP using a supplied rate
 BigDecimal conversionRate = ...;  // obtained from code outside Joda-Money
-Money moneyGBP = money.convertTo(CurrencyUnit.GBP, conversionRate);
+Money moneyGBP = money.convertTo(CurrencyUnit.GBP, conversionRate, RoundingMode.HALF_EVEN);
 
 // use a BigMoney for more complex calculations where scale matters
 BigMoney moneyCalc = money.toBigMoney();
