@@ -383,7 +383,6 @@
               <report>dependency-info</report>
               <report>issue-tracking</report>
               <report>license</report>
-              <report>mailing-list</report>
               <report>project-team</report>
               <report>scm</report>
               <report>summary</report>
