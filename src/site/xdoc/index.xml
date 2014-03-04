@@ -52,7 +52,7 @@ on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND.
 <p>
 Version 0.9 was released on 2013-06-28 -
 <a href="download.html">Download now</a><br />
-Joda Money is licensed under the business-friendly <a href="license.html">Apache 2.0 licence</a>.
+Joda Money is licensed under the business-friendly <a href="licensecover.html">Apache 2.0 licence</a>.
 </p>
 </section>
 
@@ -63,6 +63,7 @@ Various documentation is available:
 <ul>
 <li>The helpful <a href="userguide.html">user guide</a></li>
 <li>The <a href="apidocs/index.html">Javadoc</a></li>
+<li>The change notes for the <a href="changes-report.html">releases</a></li>
 <li>The <a href="https://github.com/JodaOrg/joda-money">GitHub</a> source repository</li>
 </ul>
 </p>
@@ -72,8 +73,7 @@ Various documentation is available:
 <section name="Releases">
 <p>
 There are no full releases yet!
-<a href="download.html">Release 0.9</a>
-is the current development release intended for feedback.
+Release 0.9 is the current development release intended for feedback.
 The code is fully tested, but there may yet be bugs and the API may yet change.
 There should be no great reason why it cannot be used in production if you can cope with future API change.
 </p>

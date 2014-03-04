@@ -9,29 +9,29 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.9.1" date="xxxx-xx-xx" description="v0.9.1">
-      <action dev="scolebourne" type="fix" >
+      <action dev="jodastephen" type="fix" >
         Fix Javadoc of BigMoney.withScale.
         Fixes #31.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Ensure validation of string currency code.
         Fixes #31.
       </action>
-      <action dev="scolebourne" type="add" >
+      <action dev="jodastephen" type="add" >
         Home page at GitHub.
       </action>
     </release>
     <release version="0.9" date="2013-06-28" description="Version 0.9">
-      <action dev="scolebourne" type="add">
+      <action dev="jodastephen" type="add">
         New option for grouping only before the decimal point [16]
       </action>
-      <action dev="scolebourne" type="add">
+      <action dev="jodastephen" type="add">
         Allow registration of currencies to override existing [24]
       </action>
-      <action dev="scolebourne" type="add">
+      <action dev="jodastephen" type="add">
         Allow registration of currencies by application code [17]
       </action>
-      <action dev="scolebourne" type="update" >
+      <action dev="jodastephen" type="update" >
         Change to use m2e Maven Eclipse.
       </action>
       <action dev="gabrielbauman" type="add">
@@ -39,7 +39,7 @@
       </action>
     </release>
     <release version="0.8" date="2013-01-30" description="Version 0.8">
-      <action dev="scolebourne" type="update" >
+      <action dev="jodastephen" type="update" >
         Change to requiring JDK 1.6.
       </action>
       <action dev="timmolter" type="add">
@@ -47,29 +47,29 @@
       </action>              
     </release>
     <release version="0.7" date="2013-01-03" description="Version 0.7">
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Fix printing of grouped negative numbers [10]
       </action>              
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Change LBP currency to 2dp [7]
       </action>              
-      <action dev="scolebourne" type="update">
+      <action dev="jodastephen" type="update">
         Relax checking for decimal places
       </action>              
-      <action dev="scolebourne" type="fix">
+      <action dev="jodastephen" type="fix">
         Move Estonia to the Euro [2]
       </action>              
-      <action dev="scolebourne" type="add">
+      <action dev="jodastephen" type="add">
         Add old Russian currency [1]
       </action>              
     </release>
     <release version="0.6" date="2011-08-01" description="Version 0.6">
-      <action dev="scolebourne" type="add">
+      <action dev="jodastephen" type="add">
         Major updates and changes.
       </action>              
     </release>
     <release version="0.5" date="2009-11-16" description="Initial version">
-      <action dev="scolebourne" type="add">
+      <action dev="jodastephen" type="add">
         Initial version.
       </action>              
     </release>

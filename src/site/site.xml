@@ -26,12 +26,12 @@
       <item name="Bugs/Issues" href="https://github.com/JodaOrg/joda-money/issues"/>
       <item name="Test results" href="surefire-report.html"/>
       <item name="Test coverage" href="/cobertura/index.html"/>
-      <item name="Sourceforge" href="http://sourceforge.net/projects/joda-money/"/>
     </menu>
 
     <menu name="Joda">
       <item name="Joda home" href="http://www.joda.org"/>
       <item name="Beans" href="http://www.joda.org/joda-beans/"/>
+      <item name="Collect" href="http://www.joda.org/joda-collect/"/>
       <item name="Convert" href="http://www.joda.org/joda-convert/"/>
       <item name="Primitives" href="http://www.joda.org/joda-primitives/"/>
       <item name="Time" href="http://www.joda.org/joda-time/"/>
