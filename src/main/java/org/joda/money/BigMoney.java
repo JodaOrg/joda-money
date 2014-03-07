@@ -346,7 +346,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     /**
      * Parses an instance of {@code BigMoney} from a string.
      * <p>
-     * The string format is '<currencyCode> <amount>'.
+     * The string format is '$currencyCode $amount' where there may be
+     * zero to many spaces between the two parts.
      * The currency code must be a valid three letter currency.
      * The amount must match the regular expression {@code [+-]?[0-9]*[.]?[0-9]*}.
      * This matches the output from {@link #toString()}.
@@ -362,11 +363,15 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     @FromString
     public static BigMoney parse(String moneyStr) {
         MoneyUtils.checkNotNull(moneyStr, "Money must not be null");
-        if (moneyStr.length() < 5 || moneyStr.charAt(3) != ' ') {
+        if (moneyStr.length() < 4) {
             throw new IllegalArgumentException("Money '" + moneyStr + "' cannot be parsed");
         }
         String currStr = moneyStr.substring(0, 3);
-        String amountStr = moneyStr.substring(4);
+        int amountStart = 3;
+        while (amountStart < moneyStr.length() && moneyStr.charAt(amountStart) == ' ') {
+            amountStart++;
+        }
+        String amountStr = moneyStr.substring(amountStart);
         if (PARSE_REGEX.matcher(amountStr).matches() == false) {
             throw new IllegalArgumentException("Money amount '" + moneyStr + "' cannot be parsed");
         }

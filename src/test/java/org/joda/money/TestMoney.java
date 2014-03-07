@@ -32,6 +32,7 @@ import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Collections;
 
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -609,40 +610,39 @@ public class TestMoney {
     //-----------------------------------------------------------------------
     // parse(String)
     //-----------------------------------------------------------------------
-    public void test_factory_parse_String_positive() {
-        Money test = Money.parse("GBP 2.43");
-        assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmountMinorInt(), 243);
+    @DataProvider(name = "parse")
+    Object[][] data_parse() {
+        return new Object[][] {
+            {"GBP 2.43", GBP, 243},
+            {"GBP +12.57", GBP, 1257},
+            {"GBP -5.87", GBP, -587},
+            {"GBP 0.99", GBP, 99},
+            {"GBP .99", GBP, 99},
+            {"GBP +.99", GBP, 99},
+            {"GBP +0.99", GBP, 99},
+            {"GBP -.99", GBP, -99},
+            {"GBP -0.99", GBP, -99},
+            {"GBP 0", GBP, 0},
+            {"GBP 2", GBP, 200},
+            {"GBP 123.", GBP, 12300},
+            {"GBP3", GBP, 300},
+            {"GBP3.10", GBP, 310},
+            {"GBP  3.10", GBP, 310},
+            {"GBP   3.10", GBP, 310},
+            {"GBP                           3.10", GBP, 310},
+        };
     }
 
-    public void test_factory_parse_String_negative() {
-        Money test = Money.parse("GBP -5.87");
-        assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmountMinorInt(), -587);
-    }
-
-    public void test_factory_parse_String_fixScale_0() {
-        Money test = Money.parse("GBP 0");
-        assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmountMinorInt(), 0);
-        assertEquals(test.getAmount().scale(), 2);
-    }
-
-    public void test_factory_parse_String_fixScale_2() {
-        Money test = Money.parse("GBP 2");
-        assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmountMinorInt(), 200);
-        assertEquals(test.getAmount().scale(), 2);
+    @Test(dataProvider = "parse")
+    public void test_factory_parse(String str, CurrencyUnit currency, int amount) {
+        Money test = Money.parse(str);
+        assertEquals(test.getCurrencyUnit(), currency);
+        assertEquals(test.getAmountMinorInt(), amount);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_factory_parse_String_tooShort() {
         Money.parse("GBP ");
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void test_factory_parse_String_noSpace() {
-        Money.parse("GBP2.34");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)

@@ -9,13 +9,17 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.9.1" date="xxxx-xx-xx" description="v0.9.1">
-      <action dev="jodastephen" type="fix" >
-        Fix Javadoc of BigMoney.withScale.
-        Fixes #31.
+      <action dev="jodastephen" type="update" >
+        Allow zero to many spaces when using standard parse method.
+        Fixes #35.
       </action>
       <action dev="jodastephen" type="fix" >
         Ensure validation of string currency code.
         Fixes #31, #36.
+      </action>
+      <action dev="jodastephen" type="fix" >
+        Fix Javadoc of BigMoney.withScale.
+        Fixes #31.
       </action>
       <action dev="jodastephen" type="add" >
         Home page at GitHub.
