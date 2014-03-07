@@ -13,9 +13,9 @@
         Fix Javadoc of BigMoney.withScale.
         Fixes #31.
       </action>
-      <action dev="jodastephen" type="add" >
+      <action dev="jodastephen" type="fix" >
         Ensure validation of string currency code.
-        Fixes #31.
+        Fixes #31, #36.
       </action>
       <action dev="jodastephen" type="add" >
         Home page at GitHub.

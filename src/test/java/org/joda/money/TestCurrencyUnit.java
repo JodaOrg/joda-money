@@ -73,6 +73,26 @@ public class TestCurrencyUnit {
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_registeredCurrency_invalidStringCode_1letter() {
+        CurrencyUnit.registerCurrency("A", 991, 2, Arrays.asList("TS"));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_registeredCurrency_invalidStringCode_2letters() {
+        CurrencyUnit.registerCurrency("AB", 991, 2, Arrays.asList("TS"));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_registeredCurrency_invalidStringCode_4letters() {
+        CurrencyUnit.registerCurrency("ABCD", 991, 2, Arrays.asList("TS"));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void test_registeredCurrency_invalidStringCode_lowerCase() {
+        CurrencyUnit.registerCurrency("xxA", 991, 2, Arrays.asList("xx"));
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_registeredCurrency_invalidStringCode_number() {
         CurrencyUnit.registerCurrency("123", 991, 2, Arrays.asList("TS"));
     }
@@ -214,7 +234,12 @@ public class TestCurrencyUnit {
     }
 
     @Test(expectedExceptions = IllegalCurrencyException.class)
-    public void test_factory_of_String_tooLong() {
+    public void test_factory_of_String_tooShort_unknown() {
+        CurrencyUnit.of("AB");
+    }
+
+    @Test(expectedExceptions = IllegalCurrencyException.class)
+    public void test_factory_of_String_tooLong_unknown() {
         CurrencyUnit.of("ABCD");
     }
 

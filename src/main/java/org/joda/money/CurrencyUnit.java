@@ -55,7 +55,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     /**
      * The currency code pattern.
      */
-    private static final Pattern CODE = Pattern.compile("[A-Za-z]+");
+    private static final Pattern CODE = Pattern.compile("[A-Z][A-Z][A-Z]");
     /**
      * Map of registered currencies by text code.
      */
@@ -140,9 +140,12 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * Since this method is public, it is possible to add currencies in
      * application code. It is recommended to do this only at startup, however
      * it is safe to do so later as the internal implementation is thread-safe.
+     * <p>
+     * The currency code must be three upper-case ASCII letters, based on ISO-4217.
+     * The numeric code must be from 0 to 999, or -1 if not applicable.
      *
-     * @param currencyCode  the currency code, not null
-     * @param numericCurrencyCode  the numeric currency code, -1 if none
+     * @param currencyCode  the three-letter upper-case currency code, not null
+     * @param numericCurrencyCode  the numeric currency code, from 0 to 999, -1 if none
      * @param decimalPlaces  the number of decimal places that the currency
      *  normally has, from 0 to 9 (normally 0, 2 or 3), or -1 for a pseudo-currency
      * @param countryCodes  the country codes to register the currency under, not null
@@ -167,9 +170,12 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * <p>
      * This method uses a flag to determine whether the registered currency
      * must be new, or can replace an existing currency.
+     * <p>
+     * The currency code must be three upper-case ASCII letters, based on ISO-4217.
+     * The numeric code must be from 0 to 999, or -1 if not applicable.
      *
-     * @param currencyCode  the currency code, upper/lower case letters only, not empty, not null
-     * @param numericCurrencyCode  the numeric currency code, -1 if none
+     * @param currencyCode  the three-letter upper-case currency code, not null
+     * @param numericCurrencyCode  the numeric currency code, from 0 to 999, -1 if none
      * @param decimalPlaces  the number of decimal places that the currency
      *  normally has, from 0 to 9 (normally 0, 2 or 3), or -1 for a pseudo-currency
      * @param countryCodes  the country codes to register the currency under,
@@ -183,8 +189,11 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     public static synchronized CurrencyUnit registerCurrency(
                     String currencyCode, int numericCurrencyCode, int decimalPlaces, List<String> countryCodes, boolean force) {
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
+        if (currencyCode.length() != 3) {
+            throw new IllegalArgumentException("Invalid string code, must be length 3");
+        }
         if (CODE.matcher(currencyCode).matches() == false) {
-            throw new IllegalArgumentException("Invalid string code");
+            throw new IllegalArgumentException("Invalid string code, must be ASCII upper-case letters");
         }
         if (numericCurrencyCode < -1 || numericCurrencyCode > 999) {
             throw new IllegalArgumentException("Invalid numeric code");
@@ -252,11 +261,12 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Obtains an instance of {@code CurrencyUnit} for the specified ISO-4217 three letter currency code.
+     * Obtains an instance of {@code CurrencyUnit} for the specified three letter currency code.
      * <p>
-     * A currency is uniquely identified by ISO-4217 three letter code.
+     * A currency is uniquely identified by a three letter code, based on ISO-4217.
+     * Valid currency codes are three upper-case ASCII letters.
      *
-     * @param currencyCode  the currency code, not null
+     * @param currencyCode  the three-letter currency code, not null
      * @return the singleton instance, never null
      * @throws IllegalCurrencyException if the currency is unknown
      */
@@ -353,11 +363,11 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code CurrencyUnit} for the specified currency code.
+     * Obtains an instance of {@code CurrencyUnit} for the specified three-letter currency code.
      * <p>
      * This method exists to match the API of {@link Currency}.
      *
-     * @param currencyCode  the currency code, not null
+     * @param currencyCode  the three-letter currency code, not null
      * @return the singleton instance, never null
      * @throws IllegalCurrencyException if the currency is unknown
      */
@@ -382,8 +392,8 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     /**
      * Constructor, creating a new currency instance.
      * 
-     * @param code  the currency code, not null
-     * @param numericCurrencyCode  the numeric currency code, -1 if none
+     * @param code  the three-letter currency code, not null
+     * @param numericCurrencyCode  the numeric currency code, from 0 to 999, -1 if none
      * @param decimalPlaces  the decimal places, not null
      */
     CurrencyUnit(String code, short numericCurrencyCode, short decimalPlaces) {
@@ -414,11 +424,11 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
 
     //-----------------------------------------------------------------------
     /**
-     * Gets the ISO-4217 three letter currency code.
+     * Gets the ISO-4217 three-letter currency code.
      * <p>
-     * Each currency is uniquely identified by a three-letter code.
+     * Each currency is uniquely identified by a three-letter upper-case code, based on ISO-4217.
      * 
-     * @return the three letter ISO-4217 currency code, never null
+     * @return the three-letter upper-case currency code, never null
      */
     public String getCode() {
         return code;
@@ -427,9 +437,9 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     /**
      * Gets the ISO-4217 numeric currency code.
      * <p>
-     * The numeric code is an alternative to the standard three letter code.
+     * The numeric code is an alternative to the standard string-based code.
      * 
-     * @return the numeric currency code
+     * @return the numeric currency code, -1 if no numeric code
      */
     public int getNumericCode() {
         return numericCode;
