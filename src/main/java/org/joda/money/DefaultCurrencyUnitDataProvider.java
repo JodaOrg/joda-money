@@ -17,6 +17,7 @@ package org.joda.money;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -57,29 +58,48 @@ class DefaultCurrencyUnitDataProvider extends CurrencyUnitDataProvider {
      * @throws Exception if a necessary file is not found
      */
     private void loadCurrenciesFromFile(String fileName, boolean isNecessary) throws Exception {
-        InputStream in = getClass().getResourceAsStream(fileName);
-        if (in == null && isNecessary) {
-            throw new FileNotFoundException("Data file " + fileName + " not found");
-        } else if (in == null && !isNecessary) {
-            return; // no extension file found, no problem. just return
-        }
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-        String line;
-        while ((line = reader.readLine()) != null) {
-            Matcher matcher = REGEX_LINE.matcher(line);
-            if (matcher.matches()) {
-                List<String> countryCodes = new ArrayList<String>();
-                String codeStr = matcher.group(4);
-                String currencyCode = matcher.group(1);
-                if (codeStr.length() % 2 == 1) {
-                    continue;  // invalid line
+        InputStream in = null;
+        Exception resultEx = null;
+        try {
+            in = getClass().getResourceAsStream(fileName);
+            if (in == null && isNecessary) {
+                throw new FileNotFoundException("Data file " + fileName + " not found");
+            } else if (in == null && !isNecessary) {
+                return; // no extension file found, no problem. just return
+            }
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                Matcher matcher = REGEX_LINE.matcher(line);
+                if (matcher.matches()) {
+                    List<String> countryCodes = new ArrayList<String>();
+                    String codeStr = matcher.group(4);
+                    String currencyCode = matcher.group(1);
+                    if (codeStr.length() % 2 == 1) {
+                        continue;  // invalid line
+                    }
+                    for (int i = 0; i < codeStr.length(); i += 2) {
+                        countryCodes.add(codeStr.substring(i, i + 2));
+                    }
+                    int numericCode = Integer.parseInt(matcher.group(2));
+                    int digits = Integer.parseInt(matcher.group(3));
+                    registerCurrency(currencyCode, numericCode, digits, countryCodes);
                 }
-                for (int i = 0; i < codeStr.length(); i += 2) {
-                    countryCodes.add(codeStr.substring(i, i + 2));
+            }
+        } catch (Exception ex) {
+            resultEx = ex;
+            throw ex;
+        } finally {
+            if (in != null) {
+                if (resultEx != null) {
+                    try {
+                        in.close();
+                    } catch (IOException ignored) {
+                        throw resultEx;
+                    }
+                } else {
+                    in.close();
                 }
-                int numericCode = Integer.parseInt(matcher.group(2));
-                int digits = Integer.parseInt(matcher.group(3));
-                registerCurrency(currencyCode, numericCode, digits, countryCodes);
             }
         }
     }

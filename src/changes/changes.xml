@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.9.2" date="" description="v0.9.2">
+      <action dev="jodastephen" type="fix" >
+        Close resources after loading.
+        Fixes #39.
+      </action>
+    </release>
     <release version="0.9.1" date="2014-03-07" description="v0.9.1">
       <action dev="jodastephen" type="update" >
         Allow zero to many spaces when using standard parse method.
