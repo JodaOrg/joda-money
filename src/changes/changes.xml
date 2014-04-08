@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.9.2" date="" description="v0.9.2">
       <action dev="jodastephen" type="fix" >
+        Change CNY to 2 decimal places.
+        Fixes #40.
+      </action>
+      <action dev="jodastephen" type="fix" >
         Close resources after loading.
         Fixes #39.
       </action>
