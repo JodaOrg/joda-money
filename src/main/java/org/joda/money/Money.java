@@ -70,6 +70,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      */
     public static Money of(CurrencyUnit currency, BigDecimal amount) {
         MoneyUtils.checkNotNull(currency, "Currency must not be null");
+        MoneyUtils.checkNotNull(amount, "Amount must not be null");
         if (amount.scale() > currency.getDecimalPlaces()) {
             throw new ArithmeticException("Scale of amount " + amount + " is greater than the scale of the currency " + currency);
         }
