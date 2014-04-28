@@ -64,7 +64,7 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
             str = zeroConvert.toString();
         }
         final int decPoint = str.indexOf('.');
-        final int afterDecPoint = decPoint + 1;;
+        final int afterDecPoint = decPoint + 1;
         if (activeStyle.getGroupingStyle() == GroupingStyle.NONE) {
             if (decPoint < 0) {
                 appendable.append(str);
@@ -82,7 +82,7 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
             int post = (decPoint < 0 ? 0 : str.length() - decPoint - 1);
             for (int i = 0; pre > 0; i++, pre--) {
                 appendable.append(str.charAt(i));
-                if (pre > 3 && pre % groupingSize == 1) {
+                if (pre > groupingSize && pre % groupingSize == 1) {
                     appendable.append(groupingChar);
                 }
             }
@@ -90,11 +90,13 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
                 appendable.append(activeStyle.getDecimalPointCharacter());
             }
             if (activeStyle.getGroupingStyle() == GroupingStyle.BEFORE_DECIMAL_POINT) {
-                appendable.append(str.substring(afterDecPoint));
+                if (decPoint >= 0) {
+                    appendable.append(str.substring(afterDecPoint));
+                }
             } else {
                 for (int i = 0; i < post; i++) {
                     appendable.append(str.charAt(i + afterDecPoint));
-                    if (i % groupingSize == 2) {
+                    if (i % groupingSize == (groupingSize - 1) && (i + 1) < post) {
                         appendable.append(groupingChar);
                     }
                 }

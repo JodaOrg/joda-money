@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.9.2" date="" description="v0.9.2">
       <action dev="jodastephen" type="fix" >
+        Fix bugs in formatting with MoneyAmountStyle.
+        Fixes #43.
+      </action>
+      <action dev="jodastephen" type="fix" >
         Change ZMK currency to ZMW.
         Fixes #41.
       </action>

@@ -18,6 +18,7 @@ package org.joda.money.format;
 import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
@@ -26,6 +27,7 @@ import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -34,6 +36,9 @@ import org.testng.annotations.Test;
 @Test
 public class TestMoneyFormatterBuilder {
 
+    private static final CurrencyUnit GBP = CurrencyUnit.GBP;
+    private static final CurrencyUnit JPY = CurrencyUnit.JPY;
+    private static final CurrencyUnit BHD = CurrencyUnit.of("BHD");
     private static final Money GBP_2_34 = Money.parse("GBP 2.34");
     private static final Money GBP_23_45 = Money.parse("GBP 23.45");
     private static final Money GBP_234_56 = Money.parse("GBP 234.56");
@@ -375,6 +380,13 @@ public class TestMoneyFormatterBuilder {
         assertEquals(test.toString(), "${amount}");
     }
 
+    public void test_appendAmount_3dp_BHD() {
+        iBuilder.appendAmount();
+        MoneyFormatter test = iBuilder.toFormatter();
+        Money money = Money.of(CurrencyUnit.getInstance("BHD"), 6345345.735d);
+        assertEquals(test.print(money), "6,345,345.735");
+    }
+
     //-----------------------------------------------------------------------
     public void test_appendAmountLocalized_GBP_2_34() {
         iBuilder.appendAmountLocalized();
@@ -445,67 +457,168 @@ public class TestMoneyFormatterBuilder {
         iBuilder.appendAmount((MoneyAmountStyle) null);
     }
 
-    public void test_appendAmount_MoneyAmountStyle_noGrouping_GBP_2_34() {
-        iBuilder.appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_NO_GROUPING);
-        MoneyFormatter test = iBuilder.toFormatter();
-        assertEquals(test.print(GBP_2_34), "2.34");
-        assertEquals(test.toString(), "${amount}");
+    @DataProvider(name = "appendAmount_MoneyAmountStyle")
+    Object[][] data_appendAmount_MoneyAmountStyle() {
+        MoneyAmountStyle noGrouping = MoneyAmountStyle.ASCII_DECIMAL_POINT_NO_GROUPING;
+        MoneyAmountStyle group3Comma = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA;
+        MoneyAmountStyle group3Space = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_SPACE;
+        MoneyAmountStyle group3BeforeDp = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withGroupingStyle(GroupingStyle.BEFORE_DECIMAL_POINT);
+        MoneyAmountStyle group3CommaForceDp = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withForcedDecimalPoint(true);
+        MoneyAmountStyle group2Dash = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withGroupingSize(2).withGroupingCharacter('-');
+        MoneyAmountStyle group4CommaAt = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA
+                        .withGroupingSize(4).withDecimalPointCharacter('@').withForcedDecimalPoint(true);
+        MoneyAmountStyle letters = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withZeroCharacter('A');
+        return new Object[][] {
+            {noGrouping, "2", "2"},
+            {noGrouping, "2123456", "2123456"},
+            {noGrouping, "2.34", "2.34"},
+            {noGrouping, "23.34", "23.34"},
+            {noGrouping, "234.34", "234.34"},
+            {noGrouping, "2345.34", "2345.34"},
+            {noGrouping, "23456.34", "23456.34"},
+            {noGrouping, "234567.34", "234567.34"},
+            {noGrouping, "2345678.34", "2345678.34"},
+            {noGrouping, "2.345", "2.345"},
+            {noGrouping, "2.3456", "2.3456"},
+            {noGrouping, "2.34567", "2.34567"},
+            {noGrouping, "2.345678", "2.345678"},
+            {noGrouping, "2.3456789", "2.3456789"},
+            
+            {group3Comma, "2", "2"},
+            {group3Comma, "2123456", "2,123,456"},
+            {group3Comma, "2.34", "2.34"},
+            {group3Comma, "23.34", "23.34"},
+            {group3Comma, "234.34", "234.34"},
+            {group3Comma, "2345.34", "2,345.34"},
+            {group3Comma, "23456.34", "23,456.34"},
+            {group3Comma, "234567.34", "234,567.34"},
+            {group3Comma, "2345678.34", "2,345,678.34"},
+            {group3Comma, "2.345", "2.345"},
+            {group3Comma, "2.3456", "2.345,6"},
+            {group3Comma, "2.34567", "2.345,67"},
+            {group3Comma, "2.345678", "2.345,678"},
+            {group3Comma, "2.3456789", "2.345,678,9"},
+            
+            {group3Space, "2", "2"},
+            {group3Space, "2123456", "2 123 456"},
+            {group3Space, "2.34", "2.34"},
+            {group3Space, "23.34", "23.34"},
+            {group3Space, "234.34", "234.34"},
+            {group3Space, "2345.34", "2 345.34"},
+            {group3Space, "23456.34", "23 456.34"},
+            {group3Space, "234567.34", "234 567.34"},
+            {group3Space, "2345678.34", "2 345 678.34"},
+            {group3Space, "2.345", "2.345"},
+            {group3Space, "2.3456", "2.345 6"},
+            {group3Space, "2.34567", "2.345 67"},
+            {group3Space, "2.345678", "2.345 678"},
+            {group3Space, "2.3456789", "2.345 678 9"},
+            
+            {group3BeforeDp, "2", "2"},
+            {group3BeforeDp, "2123456", "2,123,456"},
+            {group3BeforeDp, "2.34", "2.34"},
+            {group3BeforeDp, "23.34", "23.34"},
+            {group3BeforeDp, "234.34", "234.34"},
+            {group3BeforeDp, "2345.34", "2,345.34"},
+            {group3BeforeDp, "23456.34", "23,456.34"},
+            {group3BeforeDp, "234567.34", "234,567.34"},
+            {group3BeforeDp, "2345678.34", "2,345,678.34"},
+            {group3BeforeDp, "2.345", "2.345"},
+            {group3BeforeDp, "2.3456", "2.3456"},
+            {group3BeforeDp, "2.34567", "2.34567"},
+            {group3BeforeDp, "2.345678", "2.345678"},
+            {group3BeforeDp, "2.3456789", "2.3456789"},
+            
+            {group3CommaForceDp, "2", "2."},
+            {group3CommaForceDp, "2123456", "2,123,456."},
+            {group3CommaForceDp, "2.34", "2.34"},
+            {group3CommaForceDp, "23.34", "23.34"},
+            {group3CommaForceDp, "234.34", "234.34"},
+            {group3CommaForceDp, "2345.34", "2,345.34"},
+            {group3CommaForceDp, "23456.34", "23,456.34"},
+            {group3CommaForceDp, "234567.34", "234,567.34"},
+            {group3CommaForceDp, "2345678.34", "2,345,678.34"},
+            {group3CommaForceDp, "2.345", "2.345"},
+            {group3CommaForceDp, "2.3456", "2.345,6"},
+            {group3CommaForceDp, "2.34567", "2.345,67"},
+            {group3CommaForceDp, "2.345678", "2.345,678"},
+            {group3CommaForceDp, "2.3456789", "2.345,678,9"},
+            
+            {group2Dash, "2", "2"},
+            {group2Dash, "2123456", "2-12-34-56"},
+            {group2Dash, "2.34", "2.34"},
+            {group2Dash, "23.34", "23.34"},
+            {group2Dash, "234.34", "2-34.34"},
+            {group2Dash, "2345.34", "23-45.34"},
+            {group2Dash, "23456.34", "2-34-56.34"},
+            {group2Dash, "234567.34", "23-45-67.34"},
+            {group2Dash, "2345678.34", "2-34-56-78.34"},
+            {group2Dash, "2.345", "2.34-5"},
+            {group2Dash, "2.3456", "2.34-56"},
+            {group2Dash, "2.34567", "2.34-56-7"},
+            {group2Dash, "2.345678", "2.34-56-78"},
+            {group2Dash, "2.3456789", "2.34-56-78-9"},
+            
+            {group4CommaAt, "2", "2@"},
+            {group4CommaAt, "2123456", "212,3456@"},
+            {group4CommaAt, "2.34", "2@34"},
+            {group4CommaAt, "23.34", "23@34"},
+            {group4CommaAt, "234.34", "234@34"},
+            {group4CommaAt, "2345.34", "2345@34"},
+            {group4CommaAt, "23456.34", "2,3456@34"},
+            {group4CommaAt, "234567.34", "23,4567@34"},
+            {group4CommaAt, "2345678.34", "234,5678@34"},
+            {group4CommaAt, "2.345", "2@345"},
+            {group4CommaAt, "2.3456", "2@3456"},
+            {group4CommaAt, "2.34567", "2@3456,7"},
+            {group4CommaAt, "2.345678", "2@3456,78"},
+            {group4CommaAt, "2.3456789", "2@3456,789"},
+            
+            {letters, "2", "C"},
+            {letters, "2123456", "C,BCD,EFG"},
+            {letters, "2.34", "C.DE"},
+            {letters, "23.34", "CD.DE"},
+            {letters, "234.34", "CDE.DE"},
+            {letters, "2345.34", "C,DEF.DE"},
+            {letters, "23456.34", "CD,EFG.DE"},
+            {letters, "234567.34", "CDE,FGH.DE"},
+            {letters, "2345678.34", "C,DEF,GHI.DE"},
+            {letters, "2.345", "C.DEF"},
+            {letters, "2.3456", "C.DEF,G"},
+            {letters, "2.34567", "C.DEF,GH"},
+            {letters, "2.345678", "C.DEF,GHI"},
+            {letters, "2.3456789", "C.DEF,GHI,J"},
+        };
     }
 
-    public void test_appendAmount_MoneyAmountStyle_noGrouping_GBP_23_45() {
-        iBuilder.appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_NO_GROUPING);
+    @Test(dataProvider = "appendAmount_MoneyAmountStyle")
+    public void test_appendAmount_MoneyAmountStyle_GBP(
+            MoneyAmountStyle style, String amount, String expected) {
+        iBuilder.appendAmount(style);
         MoneyFormatter test = iBuilder.toFormatter();
-        assertEquals(test.print(GBP_23_45), "23.45");
-        assertEquals(test.toString(), "${amount}");
+        BigMoney money = BigMoney.of(GBP, new BigDecimal(amount));
+        assertEquals(test.print(money), expected);
+        assertEquals(test.parse(expected, 0).getAmount(), money.getAmount());
     }
 
-    public void test_appendAmount_MoneyAmountStyle_noGrouping_GBP_234_56() {
-        iBuilder.appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_NO_GROUPING);
+    @Test(dataProvider = "appendAmount_MoneyAmountStyle")
+    public void test_appendAmount_MoneyAmountStyle_JPY(
+            MoneyAmountStyle style, String amount, String expected) {
+        iBuilder.appendAmount(style);
         MoneyFormatter test = iBuilder.toFormatter();
-        assertEquals(test.print(GBP_234_56), "234.56");
-        assertEquals(test.toString(), "${amount}");
+        BigMoney money = BigMoney.of(JPY, new BigDecimal(amount));
+        assertEquals(test.print(money), expected);
+        assertEquals(test.parse(expected, 0).getAmount(), money.getAmount());
     }
 
-    public void test_appendAmount_MoneyAmountStyle_noGrouping_GBP_2345_67() {
-        iBuilder.appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_NO_GROUPING);
+    @Test(dataProvider = "appendAmount_MoneyAmountStyle")
+    public void test_appendAmount_MoneyAmountStyle_BHD(
+            MoneyAmountStyle style, String amount, String expected) {
+        iBuilder.appendAmount(style);
         MoneyFormatter test = iBuilder.toFormatter();
-        assertEquals(test.print(GBP_2345_67), "2345.67");
-        assertEquals(test.toString(), "${amount}");
-    }
-
-    public void test_appendAmount_MoneyAmountStyle_noGrouping_GBP_1234567_89() {
-        iBuilder.appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_NO_GROUPING);
-        MoneyFormatter test = iBuilder.toFormatter();
-        assertEquals(test.print(GBP_1234567_89), "1234567.89");
-        assertEquals(test.toString(), "${amount}");
-    }
-
-    public void test_appendAmount_MoneyAmountStyle_noGrouping_JPY_2345() {
-        iBuilder.appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_NO_GROUPING);
-        MoneyFormatter test = iBuilder.toFormatter();
-        assertEquals(test.print(JPY_2345), "2345");
-        assertEquals(test.toString(), "${amount}");
-    }
-
-    public void test_appendAmount_MoneyAmountStyle_groupingForceDecimal_JPY_2345() {
-        iBuilder.appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withForcedDecimalPoint(true));
-        MoneyFormatter test = iBuilder.toFormatter();
-        assertEquals(test.print(JPY_2345), "2,345.");
-        assertEquals(test.toString(), "${amount}");
-    }
-
-    public void test_appendAmount_MoneyAmountStyle_noGroupingForceDecimal_JPY_2345() {
-        iBuilder.appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_NO_GROUPING.withForcedDecimalPoint(true));
-        MoneyFormatter test = iBuilder.toFormatter();
-        assertEquals(test.print(JPY_2345), "2345.");
-        assertEquals(test.toString(), "${amount}");
-    }
-
-    public void test_appendAmount_MoneyAmountStyle_noGroupingZeroCharacter_GBP_2345_67() {
-        iBuilder.appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_NO_GROUPING.withZeroCharacter('A'));
-        MoneyFormatter test = iBuilder.toFormatter();
-        assertEquals(test.print(GBP_2345_67), "CDEF.GH");
-        assertEquals(test.toString(), "${amount}");
+        BigMoney money = BigMoney.of(BHD, new BigDecimal(amount));
+        assertEquals(test.print(money), expected);
+        assertEquals(test.parse(expected, 0).getAmount(), money.getAmount());
     }
 
     //-----------------------------------------------------------------------
