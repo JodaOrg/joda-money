@@ -2367,6 +2367,13 @@ public class TestBigMoney {
         assertEquals(a.equals(new Object()), false);
     }
 
+    public void test_equals_with_different_big_decimal_of_amount() {
+        BigMoney a = BigMoney.of(CurrencyUnit.GBP, new BigDecimal("100"));
+        BigMoney b = BigMoney.of(CurrencyUnit.GBP, new BigDecimal("1E+2"));
+
+        assertEquals(a, b);
+    }
+
     //-----------------------------------------------------------------------
     // toString()
     //-----------------------------------------------------------------------
