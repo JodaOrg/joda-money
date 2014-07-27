@@ -333,9 +333,11 @@ public final class MoneyFormatterBuilder {
      */
     private static enum Singletons implements MoneyPrinter, MoneyParser {
         CODE("${code}") {
+            @Override
             public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
                 appendable.append(money.getCurrencyUnit().getCode());
             }
+            @Override
             public void parse(MoneyParseContext context) {
                 int endPos = context.getIndex() + 3;
                 if (endPos > context.getTextLength()) {
@@ -352,9 +354,11 @@ public final class MoneyFormatterBuilder {
             }
         },
         NUMERIC_3_CODE("${numeric3Code}") {
+            @Override
             public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
                 appendable.append(money.getCurrencyUnit().getNumeric3Code());
             }
+            @Override
             public void parse(MoneyParseContext context) {
                 int endPos = context.getIndex() + 3;
                 if (endPos > context.getTextLength()) {
@@ -371,9 +375,11 @@ public final class MoneyFormatterBuilder {
             }
         },
         NUMERIC_CODE("${numericCode}") {
+            @Override
             public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
                 appendable.append(Integer.toString(money.getCurrencyUnit().getNumericCode()));
             }
+            @Override
             public void parse(MoneyParseContext context) {
                 int count = 0;
                 for ( ; count < 3 && context.getIndex() + count < context.getTextLength(); count++) {
@@ -408,6 +414,7 @@ public final class MoneyFormatterBuilder {
      */
     private static enum SingletonPrinters implements MoneyPrinter {
         LOCALIZED_SYMBOL;
+        @Override
         public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
             appendable.append(money.getCurrencyUnit().getSymbol(context.getLocale()));
         }

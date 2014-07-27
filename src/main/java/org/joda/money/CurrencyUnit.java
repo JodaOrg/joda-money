@@ -598,6 +598,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @param other  the other currency, not null
      * @return negative if earlier alphabetically, 0 if equal, positive if greater alphabetically
      */
+    @Override
     public int compareTo(CurrencyUnit other) {
         return code.compareTo(other.code);
     }

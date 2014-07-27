@@ -69,6 +69,7 @@ final class Ser implements Externalizable {
      * @param out  the output stream
      * @throws IOException if an error occurs
      */
+    @Override
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeByte(type);
         switch (type) {
@@ -111,6 +112,7 @@ final class Ser implements Externalizable {
      * @param in  the input stream
      * @throws IOException if an error occurs
      */
+    @Override
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         type = in.readByte();
         switch (type) {

@@ -1559,6 +1559,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * 
      * @return the money instance, never null
      */
+    @Override
     public BigMoney toBigMoney() {
         return this;
     }
@@ -1605,6 +1606,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @return -1 if this is less than , 0 if equal, 1 if greater than
      * @throws CurrencyMismatchException if the currencies differ
      */
+    @Override
     public int compareTo(BigMoneyProvider other) {
         BigMoney otherMoney = of(other);
         if (currency.equals(otherMoney.currency) == false) {

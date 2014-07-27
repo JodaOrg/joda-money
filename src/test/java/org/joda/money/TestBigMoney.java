@@ -74,6 +74,7 @@ public class TestBigMoney {
     private static final BigMoney USD_2_34 = BigMoney.parse("USD 2.34");
     private static final BigMoney USD_2_35 = BigMoney.parse("USD 2.35");
     private static final BigMoneyProvider BAD_PROVIDER = new BigMoneyProvider() {
+        @Override
         public BigMoney toBigMoney() {
             return null;  // shouldn't return null
         }
@@ -1165,6 +1166,7 @@ public class TestBigMoney {
 
     public void test_plus_Iterable_Mixed() {
         Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_2_33.toMoney(), new BigMoneyProvider() {
+            @Override
             public BigMoney toBigMoney() {
                 return GBP_1_23;
             }
@@ -1199,6 +1201,7 @@ public class TestBigMoney {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_plus_Iterable_badProvider() {
         Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(new BigMoneyProvider() {
+            @Override
             public BigMoney toBigMoney() {
                 return null;
             }
@@ -1251,6 +1254,7 @@ public class TestBigMoney {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_plus_BigMoneyProvider_badProvider() {
         GBP_M5_78.plus(new BigMoneyProvider() {
+            @Override
             public BigMoney toBigMoney() {
                 return null;
             }
@@ -1492,6 +1496,7 @@ public class TestBigMoney {
 
     public void test_minus_Iterable_Mixed() {
         Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_2_33.toMoney(), new BigMoneyProvider() {
+            @Override
             public BigMoney toBigMoney() {
                 return GBP_1_23;
             }
@@ -1526,6 +1531,7 @@ public class TestBigMoney {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_minus_Iterable_badProvider() {
         Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(new BigMoneyProvider() {
+            @Override
             public BigMoney toBigMoney() {
                 return null;
             }
@@ -1578,6 +1584,7 @@ public class TestBigMoney {
     @Test(expectedExceptions = NullPointerException.class)
     public void test_minus_BigMoneyProvider_badProvider() {
         GBP_M5_78.minus(new BigMoneyProvider() {
+            @Override
             public BigMoney toBigMoney() {
                 return null;
             }

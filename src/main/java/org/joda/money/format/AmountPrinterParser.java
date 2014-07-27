@@ -44,6 +44,7 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
     }
 
     //-----------------------------------------------------------------------
+    @Override
     public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
         MoneyAmountStyle activeStyle = style.localize(context.getLocale());
         if (MoneyUtils.isNegative(money)) {
@@ -104,6 +105,7 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
         }
     }
 
+    @Override
     public void parse(MoneyParseContext context) {
         final int len = context.getTextLength();
         final MoneyAmountStyle activeStyle = style.localize(context.getLocale());

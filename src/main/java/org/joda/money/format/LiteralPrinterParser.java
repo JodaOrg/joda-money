@@ -42,10 +42,12 @@ final class LiteralPrinterParser implements MoneyPrinter, MoneyParser, Serializa
     }
 
     //-----------------------------------------------------------------------
+    @Override
     public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
         appendable.append(literal);
     }
 
+    @Override
     public void parse(MoneyParseContext context) {
         int endPos = context.getIndex() + literal.length();
         if (endPos <= context.getTextLength() &&

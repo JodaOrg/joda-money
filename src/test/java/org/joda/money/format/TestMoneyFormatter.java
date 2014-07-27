@@ -59,6 +59,7 @@ public class TestMoneyFormatter {
             .toFormatter();
         iCannotPrint = new MoneyFormatterBuilder()
             .append(null, new MoneyParser() {
+                @Override
                 public void parse(MoneyParseContext context) {
                 }
             })
@@ -70,6 +71,7 @@ public class TestMoneyFormatter {
             .toFormatter();
         iCannotParse = new MoneyFormatterBuilder()
             .append(new MoneyPrinter() {
+                @Override
                 public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
                 }
             }, null)
@@ -449,15 +451,19 @@ public class TestMoneyFormatter {
 
     public void test_toString_differentPrinterParser() {
         MoneyPrinter printer = new MoneyPrinter() {
+            @Override
             public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
             }
+            @Override
             public String toString() {
                 return "A";
             }
         };
         MoneyParser parser = new MoneyParser() {
+            @Override
             public void parse(MoneyParseContext context) {
             }
+            @Override
             public String toString() {
                 return "B";
             }
@@ -468,12 +474,15 @@ public class TestMoneyFormatter {
 
     //-----------------------------------------------------------------------
     private static final class IOAppendable implements Appendable {
+        @Override
         public Appendable append(CharSequence csq, int start, int end) throws IOException {
             throw new IOException();
         }
+        @Override
         public Appendable append(char c) throws IOException {
             throw new IOException();
         }
+        @Override
         public Appendable append(CharSequence csq) throws IOException {
             throw new IOException();
         }

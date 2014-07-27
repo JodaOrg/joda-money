@@ -624,6 +624,7 @@ public class TestMoneyFormatterBuilder {
     //-----------------------------------------------------------------------
     public void test_append_MoneyPrinterMoneyParser_printer() {
         MoneyPrinter printer = new MoneyPrinter() {
+            @Override
             public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
                 appendable.append("HELLO");
             }
@@ -638,6 +639,7 @@ public class TestMoneyFormatterBuilder {
 
     public void test_append_MoneyPrinterMoneyParser_parser() {
         MoneyParser parser = new MoneyParser() {
+            @Override
             public void parse(MoneyParseContext context) {
                 context.setAmount(JPY_2345.getAmount());
                 context.setCurrency(JPY_2345.getCurrencyUnit());
