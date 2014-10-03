@@ -170,7 +170,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * expressed in terms of the minor unit.
      * For example, if constructing US Dollars, the input to this method represents cents.
      * Note that when a currency has zero decimal places, the major and minor units are the same.
-     * For example, {@code ofMajor(USD, 2595)} creates the instance {@code USD 25.95}.
+     * For example, {@code ofMinor(USD, 2595)} creates the instance {@code USD 25.95}.
      *
      * @param currency  the currency, not null
      * @param amountMinor  the amount of money in the minor division of the currency
