@@ -163,14 +163,42 @@ public class TestMoney {
         Money test = Money.of(GBP, 2.34d);
         assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmountMinorInt(), 234);
-        assertEquals(test.getAmount().scale(), 2);
+        assertEquals(test.getScale(), 2);
     }
 
     public void test_factory_of_Currency_double_correctScale() {
         Money test = Money.of(GBP, 2.3d);
         assertEquals(test.getCurrencyUnit(), GBP);
         assertEquals(test.getAmountMinorInt(), 230);
-        assertEquals(test.getAmount().scale(), 2);
+        assertEquals(test.getScale(), 2);
+    }
+
+    public void test_factory_of_Currency_double_trailingZero1() {
+        Money test = Money.of(GBP, 1.230d);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), BigDecimal.valueOf(123L, 2));
+        assertEquals(test.getScale(), 2);
+    }
+
+    public void test_factory_of_Currency_double_trailingZero2() {
+        Money test = Money.of(GBP, 1.20d);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), BigDecimal.valueOf(120L, 2));
+        assertEquals(test.getScale(), 2);
+    }
+
+    public void test_factory_of_Currency_double_medium() {
+        Money test = Money.of(GBP, 2000d);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), BigDecimal.valueOf(200000L, 2));
+        assertEquals(test.getScale(), 2);
+    }
+
+    public void test_factory_of_Currency_double_big() {
+        Money test = Money.of(GBP, 200000000d);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), BigDecimal.valueOf(20000000000L, 2));
+        assertEquals(test.getScale(), 2);
     }
 
     @Test(expectedExceptions = ArithmeticException.class)

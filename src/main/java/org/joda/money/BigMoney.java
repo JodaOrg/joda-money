@@ -67,7 +67,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * Obtains an instance of {@code BigMoney} from a {@code BigDecimal}.
      * <p>
      * This allows you to create an instance with a specific currency and amount.
-     * The scale of the money will be that of the BigDecimal.
+     * The scale of the money will be that of the {@code BigDecimal}, with
+     * a minimum scale of zero.
      *
      * @param currency  the currency, not null
      * @param amount  the amount of money, not null
@@ -100,7 +101,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * Any {@code double} literal in code will be converted to
      * exactly the same BigDecimal with the same scale.
      * For example, the literal '1.425d' will be converted to '1.425'.
-     * The scale of the money will be that of the BigDecimal produced.
+     * The scale of the money will be that of the BigDecimal produced, with trailing zeroes stripped,
+     * and with a minimum scale of zero.
      *
      * @param currency  the currency, not null
      * @param amount  the amount of money, not null
@@ -108,7 +110,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      */
     public static BigMoney of(CurrencyUnit currency, double amount) {
         MoneyUtils.checkNotNull(currency, "Currency must not be null");
-        return BigMoney.of(currency, BigDecimal.valueOf(amount));
+        return BigMoney.of(currency, BigDecimal.valueOf(amount).stripTrailingZeros());
     }
 
     //-----------------------------------------------------------------------
@@ -118,6 +120,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * This allows you to create an instance with a specific currency and amount.
      * No rounding is performed on the amount, so it must have a
      * scale less than or equal to the new scale.
+     * The result will have a minimum scale of zero.
      *
      * @param currency  the currency, not null
      * @param amount  the amount of money, not null
@@ -136,6 +139,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * This allows you to create an instance with a specific currency and amount.
      * If the amount has a scale in excess of the scale of the currency then the excess
      * fractional digits are rounded using the rounding mode.
+     * The result will have a minimum scale of zero.
      *
      * @param currency  the currency, not null
      * @param amount  the amount of money, not null
@@ -157,6 +161,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * <p>
      * This allows you to create an instance with a specific currency, amount and scale.
      * The amount is defined in terms of the specified scale.
+     * The result will have a minimum scale of zero.
      * <p>
      * For example, {@code ofScale(USD, 234, 2)} creates the instance {@code USD 2.34}.
      *
@@ -414,7 +419,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         assert currency != null : "Joda-Money bug: Currency must not be null";
         assert amount != null : "Joda-Money bug: Amount must not be null";
         this.currency = currency;
-        this.amount = amount;
+        this.amount = (amount.scale() < 0 ? amount.setScale(0) : amount);
     }
 
     /**
@@ -490,8 +495,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * Positive values represent the number of decimal places in use.
      * Negative numbers represent the opposite.
      * For example, a scale of 2 means that the money will have two decimal places
-     * such as 'USD 43.25'. Whereas, a scale of -3 means that only thousands can be
-     * represented, such as 'GBP 124000'.
+     * such as 'USD 43.25'. The scale of will not be negative.
      * 
      * @return the scale in use
      * @see #withScale
@@ -521,6 +525,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * For example, scaling 'USD 43.2' to a scale of 2 will yield 'USD 43.20'.
      * No rounding is performed on the amount, so it must have a
      * scale less than or equal to the new scale.
+     * A negative scale may be passed in, but the result will have a minimum scale of zero.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 
@@ -539,6 +544,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * The returned instance will have this currency and the new scaled amount.
      * For example, scaling 'USD 43.271' to a scale of 1 with HALF_EVEN rounding
      * will yield 'USD 43.3'.
+     * A negative scale may be passed in, but the result will have a minimum scale of zero.
      * <p>
      * This instance is immutable and unaffected by this method.
      * 

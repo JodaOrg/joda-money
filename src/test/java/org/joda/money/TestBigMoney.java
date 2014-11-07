@@ -163,6 +163,34 @@ public class TestBigMoney {
         assertEquals(test.getScale(), 3);
     }
 
+    public void test_factory_of_Currency_double_trailingZero1() {
+        BigMoney test = BigMoney.of(GBP, 1.230d);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), BigDecimal.valueOf(123L, 2));
+        assertEquals(test.getScale(), 2);
+    }
+
+    public void test_factory_of_Currency_double_trailingZero2() {
+        BigMoney test = BigMoney.of(GBP, 1.20d);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), BigDecimal.valueOf(12L, 1));
+        assertEquals(test.getScale(), 1);
+    }
+
+    public void test_factory_of_Currency_double_medium() {
+        BigMoney test = BigMoney.of(GBP, 2000d);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), BigDecimal.valueOf(2000L, 0));
+        assertEquals(test.getScale(), 0);
+    }
+
+    public void test_factory_of_Currency_double_big() {
+        BigMoney test = BigMoney.of(GBP, 200000000d);
+        assertEquals(test.getCurrencyUnit(), GBP);
+        assertEquals(test.getAmount(), BigDecimal.valueOf(200000000L, 0));
+        assertEquals(test.getScale(), 0);
+    }
+
     @Test(expectedExceptions = NullPointerException.class)
     public void test_factory_of_Currency_double_nullCurrency() {
         BigMoney.of((CurrencyUnit) null, 2.345d);
@@ -180,7 +208,7 @@ public class TestBigMoney {
     public void test_factory_ofScale_Currency_BigDecimal_negativeScale() {
         BigMoney test = BigMoney.ofScale(GBP, BigDecimal.valueOf(23400), -2);
         assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmount(), BigDecimal.valueOf(234, -2));
+        assertEquals(test.getAmount(), BigDecimal.valueOf(23400L, 0));
     }
 
     @Test(expectedExceptions = ArithmeticException.class)
@@ -216,7 +244,7 @@ public class TestBigMoney {
     public void test_factory_ofScale_Currency_BigDecimal_int_RoundingMode_negativeScale() {
         BigMoney test = BigMoney.ofScale(GBP, BigDecimal.valueOf(23400), -2, RoundingMode.DOWN);
         assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmount(), BigDecimal.valueOf(234, -2));
+        assertEquals(test.getAmount(), BigDecimal.valueOf(23400L, 0));
     }
 
     @Test(expectedExceptions = ArithmeticException.class)
@@ -251,7 +279,7 @@ public class TestBigMoney {
     public void test_factory_ofScale_Currency_long_int_negativeScale() {
         BigMoney test = BigMoney.ofScale(GBP, 234, -4);
         assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmount(), BigDecimal.valueOf(234, -4));
+        assertEquals(test.getAmount(), BigDecimal.valueOf(2340000, 0));
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -316,7 +344,7 @@ public class TestBigMoney {
     public void test_factory_zero_Currency_int_negativeScale() {
         BigMoney test = BigMoney.zero(GBP, -3);
         assertEquals(test.getCurrencyUnit(), GBP);
-        assertEquals(test.getAmount(), BigDecimal.valueOf(0, -3));
+        assertEquals(test.getAmount(), BigDecimal.valueOf(0, 0));
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -761,6 +789,43 @@ public class TestBigMoney {
         } catch (InvocationTargetException ex) {
             assertEquals(ex.getCause().getClass(), AssertionError.class);
         }
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_scaleNormalization1() {
+        BigMoney a = BigMoney.ofScale(GBP, 100, 0);
+        BigMoney b = BigMoney.ofScale(GBP, 1, -2);
+        assertEquals(a.toString(), "GBP 100");
+        assertEquals(b.toString(), "GBP 100");
+        assertEquals(a.equals(a), true);
+        assertEquals(b.equals(b), true);
+        assertEquals(a.equals(b), true);
+        assertEquals(b.equals(a), true);
+        assertEquals(a.hashCode() == b.hashCode(), true);
+    }
+
+    public void test_scaleNormalization2() {
+        BigMoney a = BigMoney.ofScale(GBP, 1, 1);
+        BigMoney b = BigMoney.ofScale(GBP, 10, 2);
+        assertEquals(a.toString(), "GBP 0.1");
+        assertEquals(b.toString(), "GBP 0.10");
+        assertEquals(a.equals(a), true);
+        assertEquals(b.equals(b), true);
+        assertEquals(a.equals(b), false);
+        assertEquals(b.equals(a), false);
+        assertEquals(a.hashCode() == b.hashCode(), false);
+    }
+
+    public void test_scaleNormalization3() {
+        BigMoney a = BigMoney.of(GBP, new BigDecimal("100"));
+        BigMoney b = BigMoney.of(GBP, new BigDecimal("1E+2"));
+        assertEquals(a.toString(), "GBP 100");
+        assertEquals(b.toString(), "GBP 100");
+        assertEquals(a.equals(a), true);
+        assertEquals(b.equals(b), true);
+        assertEquals(a.equals(b), true);
+        assertEquals(b.equals(a), true);
+        assertEquals(a.hashCode() == b.hashCode(), true);
     }
 
     //-----------------------------------------------------------------------
