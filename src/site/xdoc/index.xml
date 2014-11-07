@@ -50,7 +50,7 @@ Users are reminded that this software, like all open source software, is <a href
 on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND.
 </p>
 <p>
-Version 0.9.1 was released on 2014-03-07 -
+Version 0.10.0 was released on 2014-11-07 -
 <a href="download.html">Download now</a><br />
 Joda Money is licensed under the business-friendly <a href="licensecover.html">Apache 2.0 licence</a>.
 </p>
@@ -73,7 +73,7 @@ Various documentation is available:
 <section name="Releases">
 <p>
 There are no full releases yet!
-Release 0.9.1 is the current development release intended for feedback.
+Release 0.10.0 is the current development release intended for feedback.
 The code is fully tested, but there may yet be bugs and the API may yet change.
 There should be no great reason why it cannot be used in production if you can cope with future API change.
 </p>
@@ -83,7 +83,7 @@ Joda-Money does have a <i>compile-time</i> dependency on Joda-Convert, but this 
 thanks to the magic of annotations.
 </p>
 <p>
-Available in <a href="http://search.maven.org/#artifactdetails|org.joda|joda-money|0.9.1|jar">Maven Central</a>.
+Available in <a href="http://search.maven.org/#artifactdetails|org.joda|joda-money|0.10.0|jar">Maven Central</a>.
 </p>
 </section>
 
