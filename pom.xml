@@ -9,7 +9,7 @@
   <artifactId>joda-money</artifactId>
   <packaging>jar</packaging>
   <name>Joda-Money</name>
-  <version>0.10.0</version>
+  <version>0.10.1-SNAPSHOT</version>
   <description>Money representation and formatting</description>
   <url>http://www.joda.org/joda-money/</url>
 
