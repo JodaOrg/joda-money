@@ -621,6 +621,17 @@ public class TestMoneyFormatterBuilder {
         assertEquals(test.parse(expected, 0).getAmount(), money.getAmount());
     }
 
+    @Test
+    public void test_appendAmount_MoneyAmountStyle_JPY_issue49() {
+        Money money = Money.parse("JPY 12");
+        MoneyAmountStyle style = MoneyAmountStyle.LOCALIZED_GROUPING;
+        MoneyFormatter formatter = new MoneyFormatterBuilder()
+            .appendAmount(style)
+            .toFormatter()
+            .withLocale(Locale.JAPAN);
+        assertEquals(formatter.print(money), "12");
+    }
+
     //-----------------------------------------------------------------------
     public void test_append_MoneyPrinterMoneyParser_printer() {
         MoneyPrinter printer = new MoneyPrinter() {
