@@ -32,7 +32,8 @@ By contrast, the Japanese Yen has 0 decimal places, and thus any <code>Money</co
 currency will have 0 decimal places.
 </p>
 <p>
-Instances of <code>BigMoney</code> may have any scale that can be supported by <code>BigDecimal</code>.
+Instances of <code>BigMoney</code> may have a scale that is positive or zero.
+Negative scales are normalized to zero.
 </p>
 <p>
 Conversion between a <code>Money</code> and a <code>BigMoney</code> can be performed using the methods
