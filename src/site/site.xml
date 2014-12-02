@@ -1,23 +1,79 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <project name="Joda-Money">
-  <publishDate position="navigation-bottom" format="yyyy-MM-dd"/>
-  <bannerLeft>
-    <name>Joda.org</name>
-    <href>http://www.joda.org/</href>
-  </bannerLeft>
-  <bannerRight>
-    <name>Joda-Money</name>
-    <href>http://www.joda.org/joda-money/</href>
-  </bannerRight>
+  <publishDate position="bottom" format="yyyy-MM-dd"/>
+  <version position="bottom"/>
+  <googleAnalyticsAccountId>UA-1425975-4</googleAnalyticsAccountId>
+
+  <skin>
+    <groupId>lt.velykis.maven.skins</groupId>
+    <artifactId>reflow-maven-skin</artifactId>
+    <version>1.1.1</version>
+  </skin>
+
+  <custom>
+    <reflowSkin>
+      <smoothScroll>false</smoothScroll>
+      <highlightJs>true</highlightJs>
+      <highlightJsTheme>github</highlightJsTheme>
+      <imgLightbox>false</imgLightbox>
+      <theme>bootswatch-cosmo</theme>
+      <brand>
+        <name>Joda-Money</name>
+        <href>index.html</href>
+      </brand>
+      <topNav>Documentation|Releases|Development|Joda</topNav>
+      <bottomNav>
+        <column>Documentation</column>
+        <column>Releases</column>
+        <column>Development</column>
+        <column>Reports</column>
+      </bottomNav>
+      <bottomDescription><![CDATA[
+        Basic monetary types for Java
+      ]]></bottomDescription>
+      <toc>false</toc>
+      <breadcrumbs>false</breadcrumbs>
+      <markPageHeader>false</markPageHeader>
+      <pages>
+        <index>
+          <sections>
+            <columns>3</columns>
+            <columns>1</columns>
+            <body />
+            <sidebar />
+          </sections>
+          <shortTitle>Home</shortTitle>
+          <highlightJs>false</highlightJs>
+        </index>
+        <source-repository>
+          <highlightJs>false</highlightJs>
+        </source-repository>
+        <issue-tracking>
+          <highlightJs>false</highlightJs>
+        </issue-tracking>
+        <license>
+          <highlightJs>false</highlightJs>
+        </license>
+      </pages>
+    </reflowSkin>
+  </custom>
 
   <body>
-    <menu name="Joda Money">
-      <item name="Overview" href="index.html"/>
+    <head>
+      <link href="http://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet"/>
+      <link rel="author" href="https://plus.google.com/113137868744510231215"/>
+    </head>
+
+    <menu name="Documentation">
+      <item name="Home" href="index.html"/>
       <item name="User guide" href="userguide.html"/>
-      <!--item name="FAQ" href="faq.html"/-->
       <item name="Javadoc" href="apidocs/index.html"/>
-      <item name="License" href="licensecover.html"/>
+      <item name="License" href="license.html"/>
+    </menu>
+
+    <menu name="Releases">
       <item name="Release notes" href="changes-report.html"/>
+      <item name="Dependency info" href="dependency-info.html"/>
       <item name="Download" href="download.html"/>
     </menu>
 
@@ -29,25 +85,12 @@
     </menu>
 
     <menu name="Joda">
-      <item name="Joda home" href="http://www.joda.org"/>
+      <item name="Home" href="http://www.joda.org"/>
       <item name="Beans" href="http://www.joda.org/joda-beans/"/>
-      <item name="Collect" href="http://www.joda.org/joda-collect/"/>
       <item name="Convert" href="http://www.joda.org/joda-convert/"/>
-      <item name="Primitives" href="http://www.joda.org/joda-primitives/"/>
       <item name="Time" href="http://www.joda.org/joda-time/"/>
     </menu>
 
-    <menu ref="reports"/>
-
-    <menu name="Website">
-      <item name="Privacy" href="privacy.html"/>
-    </menu>
+    <menu name="Reports" ref="reports"/>
   </body>
-
-  <poweredBy>
-    <logo name="Maven" href="http://maven.apache.org/"
-          img="http://maven.apache.org/images/logos/maven-feather.png"/>
-    <logo name="GitHub" href="https://github.com/JodaOrg/joda-money"
-          img="http://www.joda.org/images/github.png"/>
-  </poweredBy>
 </project>
