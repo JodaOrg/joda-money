@@ -393,13 +393,13 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * Constructor, creating a new currency instance.
      * 
      * @param code  the three-letter currency code, not null
-     * @param numericCurrencyCode  the numeric currency code, from 0 to 999, -1 if none
+     * @param numericCode  the numeric currency code, from 0 to 999, -1 if none
      * @param decimalPlaces  the decimal places, not null
      */
-    CurrencyUnit(String code, short numericCurrencyCode, short decimalPlaces) {
+    CurrencyUnit(String code, short numericCode, short decimalPlaces) {
         assert code != null : "Joda-Money bug: Currency code must not be null";
         this.code = code;
-        this.numericCode = numericCurrencyCode;
+        this.numericCode = numericCode;
         this.decimalPlaces = decimalPlaces;
     }
 
