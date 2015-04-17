@@ -324,6 +324,7 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
      * zero to many spaces between the two parts.
      * The currency code must be a valid three letter currency.
      * The amount must match the regular expression {@code [+-]?[0-9]*[.]?[0-9]*}.
+     * The spaces and numbers must be ASCII characters.
      * This matches the output from {@link #toString()}.
      * <p>
      * For example, {@code parse("USD 25")} creates the instance {@code USD 25.00}
