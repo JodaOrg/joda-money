@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.11.0" date="SNAPSHOT" description="v0.11.0">
+      <action dev="ashish12" type="fix" >
+        Alter parameter names of CurrencyUnit constructor to better support tools that make use of the names.
+        Fixes #54.
+      </action>
+    </release>
     <release version="0.10.0" date="2014-11-07" description="v0.10.0">
       <action dev="jodastephen" type="fix" >
         Ensure that a negative scale is not visible in BigMoney.
