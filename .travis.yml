@@ -4,10 +4,12 @@
 #
 # For more information, see https://travis-ci.org
 
+sudo: false
+
 language: java
 
 jdk: 
+  - oraclejdk8
   - oraclejdk7
-  - openjdk7
   - openjdk6
 
