@@ -172,7 +172,7 @@ public final class MoneyFormatterBuilder {
      */
     public MoneyFormatterBuilder append(MoneyFormatter formatter) {
         MoneyFormatter.checkNotNull(formatter, "MoneyFormatter must not be null");
-        formatter.appendTo(this);
+        formatter.getPrinterParser().appendTo(this);
         return this;
     }
 

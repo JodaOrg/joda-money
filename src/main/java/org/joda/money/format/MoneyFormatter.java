@@ -17,7 +17,6 @@ package org.joda.money.format;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Locale;
 
 import org.joda.money.BigMoney;
@@ -44,13 +43,9 @@ public final class MoneyFormatter implements Serializable {
      */
     private final Locale locale;
     /**
-     * The printers.
+     * The printer/parser.
      */
-    private final MoneyPrinter[] printers;
-    /**
-     * The parsers.
-     */
-    private final MoneyParser[] parsers;
+    private final MultiPrinterParser printerParser;
 
     //-----------------------------------------------------------------------
     /**
@@ -74,29 +69,36 @@ public final class MoneyFormatter implements Serializable {
      * @param printers  the printers, not null
      * @param parsers  the parsers, not null
      */
-    MoneyFormatter(
-            Locale locale,
-            MoneyPrinter[] printers,
-            MoneyParser[] parsers) {
+    MoneyFormatter(Locale locale, MoneyPrinter[] printers, MoneyParser[] parsers) {
         assert locale != null;
         assert printers != null;
         assert parsers != null;
         assert printers.length == parsers.length;
         this.locale = locale;
-        this.printers = printers;
-        this.parsers = parsers;
+        this.printerParser = new MultiPrinterParser(printers, parsers);
+    }
+
+    /**
+     * Constructor, creating a new formatter.
+     * 
+     * @param locale  the locale to use, not null
+     * @param printerParser  the printer/parser, not null
+     */
+    private MoneyFormatter(Locale locale, MultiPrinterParser printerParser) {
+        assert locale != null;
+        assert printerParser != null;
+        this.locale = locale;
+        this.printerParser = printerParser;
     }
 
     //-----------------------------------------------------------------------
     /**
-     * Appends the printers and parsers from this formatter to the builder.
+     * Gets the printer/parser.
      * 
-     * @param builder  the builder to append to not null
+     * @return the printer/parser, never null
      */
-    void appendTo(MoneyFormatterBuilder builder) {
-        for (int i = 0; i < printers.length; i++) {
-            builder.append(printers[i], parsers[i]);
-        }
+    MultiPrinterParser getPrinterParser() {
+        return printerParser;
     }
 
     //-----------------------------------------------------------------------
@@ -120,7 +122,7 @@ public final class MoneyFormatter implements Serializable {
      */
     public MoneyFormatter withLocale(Locale locale) {
         checkNotNull(locale, "Locale must not be null");
-        return new MoneyFormatter(locale, printers, parsers);
+        return new MoneyFormatter(locale, printerParser);
     }
 
     //-----------------------------------------------------------------------
@@ -133,7 +135,7 @@ public final class MoneyFormatter implements Serializable {
      * @return true if the formatter can print
      */
     public boolean isPrinter() {
-        return Arrays.asList(printers).contains(null) == false;
+        return printerParser.isPrinter();
     }
 
     /**
@@ -145,7 +147,7 @@ public final class MoneyFormatter implements Serializable {
      * @return true if the formatter can parse
      */
     public boolean isParser() {
-        return Arrays.asList(parsers).contains(null) == false;
+        return printerParser.isParser();
     }
 
     //-----------------------------------------------------------------------
@@ -206,9 +208,7 @@ public final class MoneyFormatter implements Serializable {
         
         BigMoney money = BigMoney.of(moneyProvider);
         MoneyPrintContext context = new MoneyPrintContext(locale);
-        for (MoneyPrinter printer : printers) {
-            printer.print(context, appendable, money);
-        }
+        printerParser.print(context, appendable, money);
     }
 
     //-----------------------------------------------------------------------
@@ -281,12 +281,7 @@ public final class MoneyFormatter implements Serializable {
             throw new UnsupportedOperationException("MoneyFomatter has not been configured to be able to parse");
         }
         MoneyParseContext context = new MoneyParseContext(locale, text, startIndex);
-        for (MoneyParser parser : parsers) {
-            parser.parse(context);
-            if (context.isError()) {
-                break;
-            }
-        }
+        printerParser.parse(context);
         return context;
     }
 
@@ -298,29 +293,7 @@ public final class MoneyFormatter implements Serializable {
      */
     @Override
     public String toString() {
-        StringBuilder buf1 = new StringBuilder();
-        if (isPrinter()) {
-            for (MoneyPrinter printer : printers) {
-                buf1.append(printer.toString());
-            }
-        }
-        StringBuilder buf2 = new StringBuilder();
-        if (isParser()) {
-            for (MoneyParser parser : parsers) {
-                buf2.append(parser.toString());
-            }
-        }
-        String str1 = buf1.toString();
-        String str2 = buf2.toString();
-        if (isPrinter() && isParser() == false) {
-            return str1;
-        } else if (isParser() && isPrinter() == false) {
-            return str2;
-        } else if (str1.equals(str2)) {
-            return str1;
-        } else {
-            return str1 + ":" + str2;
-        }
+        return printerParser.toString();
     }
 
 }

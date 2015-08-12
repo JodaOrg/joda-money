@@ -718,7 +718,7 @@ public class TestBigMoney {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_factory_parse_String_tooShort() {
-        BigMoney.parse("GBP ");
+        BigMoney.parse("GBP");
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
