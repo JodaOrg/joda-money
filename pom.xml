@@ -576,7 +576,7 @@
     <!-- Plugin version numbers -->
     <maven-assembly-plugin.version>2.5.5</maven-assembly-plugin.version>
     <maven-changes-plugin.version>2.11</maven-changes-plugin.version>
-    <maven-checkstyle-plugin.version>2.16</maven-checkstyle-plugin.version>
+    <maven-checkstyle-plugin.version>2.11</maven-checkstyle-plugin.version><!-- later versions do not work on JDK6 -->
     <maven-clean-plugin.version>2.6.1</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.3</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
