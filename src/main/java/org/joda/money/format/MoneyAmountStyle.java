@@ -467,30 +467,6 @@ public final class MoneyAmountStyle implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Gets whether to use the grouping separator, typically for thousands.
-     * 
-     * @return whether to use the grouping separator
-     * @deprecated Use getGroupingStyle()
-     */
-    @Deprecated
-    public boolean isGrouping() {
-        return getGroupingStyle() == GroupingStyle.FULL;
-    }
-
-    /**
-     * Returns a copy of this style with the specified grouping setting.
-     * 
-     * @param grouping  true to use the grouping separator, false to not use it
-     * @return the new instance for chaining, never null
-     * @deprecated Use withGroupingStyle(GroupingStyle.FULL)
-     */
-    @Deprecated
-    public MoneyAmountStyle withGrouping(boolean grouping) {
-        return withGroupingStyle(grouping ? GroupingStyle.FULL : GroupingStyle.NONE);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Gets the style of grouping required.
      * 
      * @return the grouping style, not null

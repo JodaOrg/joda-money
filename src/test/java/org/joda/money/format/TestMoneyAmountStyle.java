@@ -452,24 +452,6 @@ public class TestMoneyAmountStyle {
     }
 
     //-----------------------------------------------------------------------
-    @SuppressWarnings("deprecation")
-    public void test_withGrouping() {
-        MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING;
-        assertEquals(base.isGrouping(), true);
-        MoneyAmountStyle test = base.withGrouping(false);
-        assertEquals(base.isGrouping(), true);
-        assertEquals(test.isGrouping(), false);
-    }
-
-    @SuppressWarnings("deprecation")
-    public void test_withGrouping_same() {
-        MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING;
-        assertEquals(base.isGrouping(), true);
-        MoneyAmountStyle test = base.withGrouping(true);
-        assertSame(test, base);
-    }
-
-    //-----------------------------------------------------------------------
     public void test_withGroupingStyle() {
         MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING;
         assertEquals(base.getGroupingStyle(), GroupingStyle.FULL);
