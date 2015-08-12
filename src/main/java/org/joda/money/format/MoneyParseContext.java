@@ -68,6 +68,25 @@ public final class MoneyParseContext {
         this.textIndex = index;
     }
 
+    /**
+     * Constructor.
+     * 
+     * @param locale  the locale, not null
+     * @param text  the text to parse, not null
+     * @param index  the current text index
+     * @param errorIndex  the error index
+     * @param currency  the currency
+     * @param amount  the parsed amount
+     */
+    MoneyParseContext(Locale locale, CharSequence text, int index, int errorIndex, CurrencyUnit currency, BigDecimal amount) {
+        this.locale = locale;
+        this.text = text;
+        this.textIndex = index;
+        this.textErrorIndex = errorIndex;
+        this.currency = currency;
+        this.amount = amount;
+    }
+
     //-----------------------------------------------------------------------
     /**
      * Gets the locale.
@@ -237,6 +256,30 @@ public final class MoneyParseContext {
      */
     public boolean isComplete() {
         return currency != null && amount != null;
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Creates a child context.
+     * 
+     * @return the child context, never null
+     */
+    MoneyParseContext createChild() {
+        return new MoneyParseContext(locale, text, textIndex, textErrorIndex, currency, amount);
+    }
+
+    /**
+     * Merges the child context back into this instance.
+     * 
+     * @param child  the child context, not null
+     */
+    void mergeChild(MoneyParseContext child) {
+        setLocale(child.getLocale());
+        setText(child.getText());
+        setIndex(child.getIndex());
+        setErrorIndex(child.getErrorIndex());
+        setCurrency(child.getCurrency());
+        setAmount(child.getAmount());
     }
 
     //-----------------------------------------------------------------------

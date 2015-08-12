@@ -662,6 +662,87 @@ public class TestMoneyFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+    public void test_appendSigned_PN() {
+        MoneyFormatter pos = new MoneyFormatterBuilder()
+                .appendCurrencyCode()
+                .appendLiteral(" ")
+                .appendAmount()
+                .toFormatter();
+        MoneyFormatter neg = new MoneyFormatterBuilder()
+                .appendLiteral("(")
+                .appendCurrencyCode()
+                .appendLiteral(" ")
+                .appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withAbsValue(true))
+                .appendLiteral(")")
+                .toFormatter();
+        MoneyFormatter f = new MoneyFormatterBuilder().appendSigned(pos, neg).toFormatter();
+        assertEquals(f.toString(),
+                    "PositiveZeroNegative(${code}' '${amount},${code}' '${amount},'('${code}' '${amount}')')");
+        assertEquals(f.print(GBP_234_56), "GBP 234.56");
+        assertEquals(f.print(Money.zero(GBP)), "GBP 0.00");
+        assertEquals(f.print(GBP_MINUS_234_56), "(GBP 234.56)");
+        assertEquals(f.parseMoney("GBP 234.56"), GBP_234_56);
+        assertEquals(f.parseMoney("GBP 0"), Money.zero(GBP));
+        assertEquals(f.parseMoney("(GBP 234.56)"), GBP_MINUS_234_56);
+        MoneyParseContext context = f.parse("X", 0);
+        assertEquals(context.getIndex(), 0);
+        assertEquals(context.getErrorIndex(), 0);
+    }
+
+    //-----------------------------------------------------------------------
+    public void test_appendSigned_PZN() {
+        MoneyFormatter pos = new MoneyFormatterBuilder()
+                .appendCurrencyCode()
+                .appendLiteral(" ")
+                .appendAmount()
+                .toFormatter();
+        MoneyFormatter zro = new MoneyFormatterBuilder()
+                .appendCurrencyCode()
+                .appendLiteral(" -")
+                .toFormatter();
+        MoneyFormatter neg = new MoneyFormatterBuilder()
+                .appendLiteral("(")
+                .appendCurrencyCode()
+                .appendLiteral(" ")
+                .appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withAbsValue(true))
+                .appendLiteral(")")
+                .toFormatter();
+        MoneyFormatter f = new MoneyFormatterBuilder().appendSigned(pos, zro, neg).toFormatter();
+        assertEquals(f.print(GBP_234_56), "GBP 234.56");
+        assertEquals(f.print(Money.zero(GBP)), "GBP -");
+        assertEquals(f.print(GBP_MINUS_234_56), "(GBP 234.56)");
+        assertEquals(f.parseMoney("GBP 234.56"), GBP_234_56);
+        assertEquals(f.parseMoney("GBP -234.56"), GBP_MINUS_234_56);
+        assertEquals(f.parseMoney("GBP -"), Money.zero(GBP));
+        assertEquals(f.parseMoney("(GBP 234.56)"), GBP_MINUS_234_56);
+        assertEquals(f.parseMoney("(GBP -234.56)"), GBP_MINUS_234_56);
+    }
+
+    public void test_appendSigned_PZN_edgeCases() {
+        MoneyFormatter pos = new MoneyFormatterBuilder()
+                .appendAmount()
+                .toFormatter();
+        MoneyFormatter zro = new MoneyFormatterBuilder()
+                .appendAmount()
+                .appendLiteral(" (zero)")
+                .toFormatter();
+        MoneyFormatter neg = new MoneyFormatterBuilder()
+                .appendLiteral("(")
+                .appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withAbsValue(true))
+                .appendLiteral(")")
+                .toFormatter();
+        MoneyFormatter f = new MoneyFormatterBuilder()
+                .appendCurrencyCode().appendLiteral(" ").appendSigned(pos, zro, neg).toFormatter();
+        assertEquals(f.print(GBP_234_56), "GBP 234.56");
+        assertEquals(f.print(BigMoney.zero(GBP).withScale(2)), "GBP 0.00 (zero)");
+        assertEquals(f.print(GBP_MINUS_234_56), "GBP (234.56)");
+        assertEquals(f.parseBigMoney("GBP 234.56"), GBP_234_56.toBigMoney());
+        assertEquals(f.parseBigMoney("GBP 0.00 (zero)"), BigMoney.zero(GBP).withScale(2));
+        assertEquals(f.parseBigMoney("GBP 1.23 (zero)"), BigMoney.zero(GBP));
+        assertEquals(f.parseBigMoney("GBP (234.56)"), GBP_MINUS_234_56.toBigMoney());
+    }
+
+    //-----------------------------------------------------------------------
     public void test_toFormatter_defaultLocale() {
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals(test.getLocale(), TEST_GB_LOCALE);

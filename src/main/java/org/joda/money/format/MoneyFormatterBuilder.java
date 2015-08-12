@@ -193,6 +193,65 @@ public final class MoneyFormatterBuilder {
 
     //-----------------------------------------------------------------------
     /**
+     * Appends the specified formatters, one used when the amount is positive,
+     * and one when the amount is negative.
+     * <p>
+     * When printing, the amount is queried and the appropriate formatter is used.
+     * <p>
+     * When parsing, each formatter is tried, with the longest successful match,
+     * or the first match if multiple are successful. If the negative parser is
+     * matched, the amount returned will be negative no matter what amount is parsed.
+     * <p>
+     * A typical use case for this would be to produce a format like
+     * '{@code ($123)}' for negative amounts and '{@code $123}' for positive amounts.
+     * <p>
+     * In order to use this method, it may be necessary to output an unsigned amount.
+     * This can be achieved using {@link #appendAmount(MoneyAmountStyle)} and
+     * {@link MoneyAmountStyle#withAbsValue(boolean)}.
+     * 
+     * @param whenPositiveOrZero  the formatter to use when the amount is positive or zero
+     * @param whenNegative  the formatter to use when the amount is negative
+     * @return this for chaining, never null
+     */
+    public MoneyFormatterBuilder appendSigned(
+            MoneyFormatter whenPositiveOrZero, MoneyFormatter whenNegative) {
+        return appendSigned(whenPositiveOrZero, whenPositiveOrZero, whenNegative);
+    }
+
+    /**
+     * Appends the specified formatters, one used when the amount is positive,
+     * one when the amount is zero and one when the amount is negative.
+     * <p>
+     * When printing, the amount is queried and the appropriate formatter is used.
+     * <p>
+     * When parsing, each formatter is tried, with the longest successful match,
+     * or the first match if multiple are successful. If the zero parser is matched,
+     * the amount returned will be zero no matter what amount is parsed. If the negative
+     * parser is matched, the amount returned will be negative no matter what amount is parsed.
+     * <p>
+     * A typical use case for this would be to produce a format like
+     * '{@code ($123)}' for negative amounts and '{@code $123}' for positive amounts.
+     * <p>
+     * In order to use this method, it may be necessary to output an unsigned amount.
+     * This can be achieved using {@link #appendAmount(MoneyAmountStyle)} and
+     * {@link MoneyAmountStyle#withAbsValue(boolean)}.
+     * 
+     * @param whenPositive  the formatter to use when the amount is positive
+     * @param whenZero  the formatter to use when the amount is zero
+     * @param whenNegative  the formatter to use when the amount is negative
+     * @return this for chaining, never null
+     */
+    public MoneyFormatterBuilder appendSigned(
+            MoneyFormatter whenPositive, MoneyFormatter whenZero, MoneyFormatter whenNegative) {
+        MoneyFormatter.checkNotNull(whenPositive, "MoneyFormatter whenPositive must not be null");
+        MoneyFormatter.checkNotNull(whenZero, "MoneyFormatter whenZero must not be null");
+        MoneyFormatter.checkNotNull(whenNegative, "MoneyFormatter whenNegative must not be null");
+        SignedPrinterParser pp = new SignedPrinterParser(whenPositive, whenZero, whenNegative);
+        return appendInternal(pp, pp);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
      * Appends the specified printer and parser to this builder.
      * <p>
      * Either the printer or parser must be non-null.

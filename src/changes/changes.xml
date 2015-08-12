@@ -9,6 +9,14 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="0.11.0" date="SNAPSHOT" description="v0.11.0">
+      <action dev="jodastephen" type="add" >
+        Add support for different signed formats.
+        Add appendSigned() to builder, allowing different formats for positive, zero and negative.
+      </action>
+      <action dev="jodastephen" type="add" >
+        Add support for absolute values.
+        Using MoneyAmountStyle, absolute (unsigned) amounts can be output.
+      </action>
       <action dev="jodastephen" type="update" >
         Remove deprecated methods.
       </action>
