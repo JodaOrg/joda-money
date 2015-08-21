@@ -513,6 +513,22 @@ public class TestMoneyAmountStyle {
     }
 
     //-----------------------------------------------------------------------
+    public void test_withAbsValue() {
+        MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING;
+        assertEquals(base.isAbsValue(), false);
+        MoneyAmountStyle test = base.withAbsValue(true);
+        assertEquals(base.isAbsValue(), false);
+        assertEquals(test.isAbsValue(), true);
+    }
+
+    public void test_withAbsValue_same() {
+        MoneyAmountStyle base = MoneyAmountStyle.LOCALIZED_GROUPING;
+        assertEquals(base.isAbsValue(), false);
+        MoneyAmountStyle test = base.withAbsValue(false);
+        assertSame(test, base);
+    }
+
+    //-----------------------------------------------------------------------
     // equals
     //-----------------------------------------------------------------------
     public void test_equals_same() {
@@ -654,6 +670,29 @@ public class TestMoneyAmountStyle {
     public void test_equals_notEqual_forcedDecimalPoint() {
         MoneyAmountStyle a = MoneyAmountStyle.LOCALIZED_GROUPING;
         MoneyAmountStyle b = MoneyAmountStyle.LOCALIZED_GROUPING.withForcedDecimalPoint(true);
+        assertEquals(a.equals(b), false);
+        assertEquals(b.equals(a), false);
+    }
+
+    public void test_equals_equal_absValue_false() {
+        MoneyAmountStyle a = MoneyAmountStyle.LOCALIZED_GROUPING.withAbsValue(true).withAbsValue(false);
+        MoneyAmountStyle b = MoneyAmountStyle.LOCALIZED_GROUPING.withAbsValue(true).withAbsValue(false);
+        assertEquals(a.equals(b), true);
+        assertEquals(b.equals(a), true);
+        assertEquals(a.hashCode(), b.hashCode());
+    }
+
+    public void test_equals_equal_absValue_true() {
+        MoneyAmountStyle a = MoneyAmountStyle.LOCALIZED_GROUPING.withAbsValue(true);
+        MoneyAmountStyle b = MoneyAmountStyle.LOCALIZED_GROUPING.withAbsValue(true);
+        assertEquals(a.equals(b), true);
+        assertEquals(b.equals(a), true);
+        assertEquals(a.hashCode(), b.hashCode());
+    }
+
+    public void test_equals_notEqual_absValue() {
+        MoneyAmountStyle a = MoneyAmountStyle.LOCALIZED_GROUPING;
+        MoneyAmountStyle b = MoneyAmountStyle.LOCALIZED_GROUPING.withAbsValue(true);
         assertEquals(a.equals(b), false);
         assertEquals(b.equals(a), false);
     }

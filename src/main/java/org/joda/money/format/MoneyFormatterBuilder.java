@@ -82,6 +82,8 @@ public final class MoneyFormatterBuilder {
      * The amount is the value itself, such as '12.34'.
      * <p>
      * The amount style allows the formatting of the number to be controlled in detail.
+     * This includes the characters for positive, negative, decimal, grouping and whether
+     * to output the absolute or signed amount.
      * See {@link MoneyAmountStyle} for more details.
      * 
      * @param style  the style to use, not null

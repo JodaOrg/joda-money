@@ -416,6 +416,7 @@ public class TestMoneyFormatterBuilder {
         MoneyAmountStyle group3Space = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_SPACE;
         MoneyAmountStyle group3BeforeDp = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withGroupingStyle(GroupingStyle.BEFORE_DECIMAL_POINT);
         MoneyAmountStyle group3CommaForceDp = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withForcedDecimalPoint(true);
+        MoneyAmountStyle group3CommaAbs = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withAbsValue(true);
         MoneyAmountStyle group2Dash = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withGroupingSize(2).withGroupingCharacter('-');
         MoneyAmountStyle group4CommaAt = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA
                         .withGroupingSize(4).withDecimalPointCharacter('@').withForcedDecimalPoint(true);
@@ -496,6 +497,23 @@ public class TestMoneyFormatterBuilder {
             {group3CommaForceDp, "2.345678", "2.345,678"},
             {group3CommaForceDp, "2.3456789", "2.345,678,9"},
             
+            {group3CommaAbs, "2", "2"},
+            {group3CommaAbs, "-2", "2"},
+            {group3CommaAbs, "2123456", "2,123,456"},
+            {group3CommaAbs, "-2123456", "2,123,456"},
+            {group3CommaAbs, "-2.34", "2.34"},
+            {group3CommaAbs, "-23.34", "23.34"},
+            {group3CommaAbs, "-234.34", "234.34"},
+            {group3CommaAbs, "-2345.34", "2,345.34"},
+            {group3CommaAbs, "-23456.34", "23,456.34"},
+            {group3CommaAbs, "-234567.34", "234,567.34"},
+            {group3CommaAbs, "-2345678.34", "2,345,678.34"},
+            {group3CommaAbs, "-2.345", "2.345"},
+            {group3CommaAbs, "-2.3456", "2.345,6"},
+            {group3CommaAbs, "-2.34567", "2.345,67"},
+            {group3CommaAbs, "-2.345678", "2.345,678"},
+            {group3CommaAbs, "-2.3456789", "2.345,678,9"},
+            
             {group2Dash, "2", "2"},
             {group2Dash, "2123456", "2-12-34-56"},
             {group2Dash, "2.34", "2.34"},
@@ -550,7 +568,11 @@ public class TestMoneyFormatterBuilder {
         MoneyFormatter test = iBuilder.toFormatter();
         BigMoney money = BigMoney.of(GBP, new BigDecimal(amount));
         assertEquals(test.print(money), expected);
-        assertEquals(test.parse(expected, 0).getAmount(), money.getAmount());
+        if (!style.isAbsValue()) {
+            assertEquals(test.parse(expected, 0).getAmount(), money.getAmount());
+        } else {
+            assertEquals(test.parse(expected, 0).getAmount(), money.getAmount().abs());
+        }
     }
 
     @Test(dataProvider = "appendAmount_MoneyAmountStyle")
@@ -560,7 +582,11 @@ public class TestMoneyFormatterBuilder {
         MoneyFormatter test = iBuilder.toFormatter();
         BigMoney money = BigMoney.of(JPY, new BigDecimal(amount));
         assertEquals(test.print(money), expected);
-        assertEquals(test.parse(expected, 0).getAmount(), money.getAmount());
+        if (!style.isAbsValue()) {
+            assertEquals(test.parse(expected, 0).getAmount(), money.getAmount());
+        } else {
+            assertEquals(test.parse(expected, 0).getAmount(), money.getAmount().abs());
+        }
     }
 
     @Test(dataProvider = "appendAmount_MoneyAmountStyle")
@@ -570,7 +596,11 @@ public class TestMoneyFormatterBuilder {
         MoneyFormatter test = iBuilder.toFormatter();
         BigMoney money = BigMoney.of(BHD, new BigDecimal(amount));
         assertEquals(test.print(money), expected);
-        assertEquals(test.parse(expected, 0).getAmount(), money.getAmount());
+        if (!style.isAbsValue()) {
+            assertEquals(test.parse(expected, 0).getAmount(), money.getAmount());
+        } else {
+            assertEquals(test.parse(expected, 0).getAmount(), money.getAmount().abs());
+        }
     }
 
     @Test
