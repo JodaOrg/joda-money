@@ -23,6 +23,7 @@ import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 import org.joda.money.BigMoney;
+import org.joda.money.BigMoneyProvider;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
 import org.testng.annotations.AfterMethod;
@@ -324,45 +325,24 @@ public class TestMoneyFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
-    public void test_appendAmount_GBP_2_34() {
-        iBuilder.appendAmount();
-        MoneyFormatter test = iBuilder.toFormatter();
-        assertEquals(test.print(GBP_2_34), "2.34");
-        assertEquals(test.toString(), "${amount}");
+    @DataProvider(name = "appendAmount")
+    Object[][] data_appendAmount() {
+        return new Object[][] {
+            {GBP_2_34, "2.34"},
+            {GBP_23_45, "23.45"},
+            {GBP_234_56, "234.56"},
+            {GBP_2345_67, "2,345.67"},
+            {GBP_1234567_89, "1,234,567.89"},
+            {GBP_1234_56789, "1,234.567,89"},
+            {GBP_MINUS_234_56, "-234.56"},
+        };
     }
 
-    public void test_appendAmount_GBP_23_45() {
+    @Test(dataProvider = "appendAmount")
+    public void test_appendAmount(BigMoneyProvider money, String expected) {
         iBuilder.appendAmount();
         MoneyFormatter test = iBuilder.toFormatter();
-        assertEquals(test.print(GBP_23_45), "23.45");
-        assertEquals(test.toString(), "${amount}");
-    }
-
-    public void test_appendAmount_GBP_234_56() {
-        iBuilder.appendAmount();
-        MoneyFormatter test = iBuilder.toFormatter();
-        assertEquals(test.print(GBP_234_56), "234.56");
-        assertEquals(test.toString(), "${amount}");
-    }
-
-    public void test_appendAmount_GBP_2345_67() {
-        iBuilder.appendAmount();
-        MoneyFormatter test = iBuilder.toFormatter();
-        assertEquals(test.print(GBP_2345_67), "2,345.67");
-        assertEquals(test.toString(), "${amount}");
-    }
-
-    public void test_appendAmount_GBP_1234567_89() {
-        iBuilder.appendAmount();
-        MoneyFormatter test = iBuilder.toFormatter();
-        assertEquals(test.print(GBP_1234567_89), "1,234,567.89");
-        assertEquals(test.toString(), "${amount}");
-    }
-
-    public void test_appendAmount_GBP_1234_56789() {
-        iBuilder.appendAmount();
-        MoneyFormatter test = iBuilder.toFormatter();
-        assertEquals(test.print(GBP_1234_56789), "1,234.567,89");
+        assertEquals(test.print(money), expected);
         assertEquals(test.toString(), "${amount}");
     }
 
@@ -388,52 +368,24 @@ public class TestMoneyFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
-    public void test_appendAmountLocalized_GBP_2_34() {
-        iBuilder.appendAmountLocalized();
-        MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
-        assertEquals(test.print(GBP_2_34), "2" + FR_DECIMAL + "34");
-        assertEquals(test.toString(), "${amount}");
+    @DataProvider(name = "appendAmountLocalized")
+    Object[][] data_appendAmountLocalized() {
+        return new Object[][] {
+            {GBP_2_34, "2" + FR_DECIMAL + "34"},
+            {GBP_23_45, "23" + FR_DECIMAL + "45"},
+            {GBP_234_56, "234" + FR_DECIMAL + "56"},
+            {GBP_2345_67, "2" + FR_GROUP + "345" + FR_DECIMAL + "67"},
+            {GBP_1234567_89, "1" + FR_GROUP + "234" + FR_GROUP + "567" + FR_DECIMAL + "89"},
+            {GBP_1234_56789, "1" + FR_GROUP + "234" + FR_DECIMAL + "567" + FR_GROUP + "89"},
+            {GBP_MINUS_234_56, "-234" + FR_DECIMAL + "56"},
+        };
     }
 
-    public void test_appendAmountLocalized_GBP_23_45() {
+    @Test(dataProvider = "appendAmountLocalized")
+    public void test_appendAmountLocalized(BigMoneyProvider money, String expected) {
         iBuilder.appendAmountLocalized();
         MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
-        assertEquals(test.print(GBP_23_45), "23" + FR_DECIMAL + "45");
-        assertEquals(test.toString(), "${amount}");
-    }
-
-    public void test_appendAmountLocalized_GBP_234_56() {
-        iBuilder.appendAmountLocalized();
-        MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
-        assertEquals(test.print(GBP_234_56), "234" + FR_DECIMAL + "56");
-        assertEquals(test.toString(), "${amount}");
-    }
-
-    public void test_appendAmountLocalized_GBP_MINUS_234_56() {
-        iBuilder.appendAmountLocalized();
-        MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
-        assertEquals(test.print(GBP_MINUS_234_56), "-234" + FR_DECIMAL + "56");
-        assertEquals(test.toString(), "${amount}");
-    }
-
-    public void test_appendAmountLocalized_GBP_2345_67() {
-        iBuilder.appendAmountLocalized();
-        MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
-        assertEquals(test.print(GBP_2345_67), "2" + FR_GROUP + "345" + FR_DECIMAL + "67");
-        assertEquals(test.toString(), "${amount}");
-    }
-
-    public void test_appendAmountLocalized_GBP_1234567_89() {
-        iBuilder.appendAmountLocalized();
-        MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
-        assertEquals(test.print(GBP_1234567_89), "1" + FR_GROUP + "234" + FR_GROUP + "567" + FR_DECIMAL + "89");
-        assertEquals(test.toString(), "${amount}");
-    }
-
-    public void test_appendAmountLocalized_GBP_1234_56789() {
-        iBuilder.appendAmountLocalized();
-        MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
-        assertEquals(test.print(GBP_1234_56789), "1" + FR_GROUP + "234" + FR_DECIMAL + "567" + FR_GROUP + "89");
+        assertEquals(test.print(money), expected);
         assertEquals(test.toString(), "${amount}");
     }
 
