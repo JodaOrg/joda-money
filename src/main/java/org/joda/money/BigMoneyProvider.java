@@ -18,10 +18,9 @@ package org.joda.money;
 /**
  * Provides a uniform interface to obtain a {@code BigMoney}.
  * <p>
- * When designing APIs, it is recommended to use {@code BigMoneyProvider}
- * in method signatures where possible to allow the widest possible use of the method.
- * Within Joda-Money, both {@code BigMoney} and {@code Money} implement
- * the provider interface.
+ * This interface provides an abstraction over {@link Money} and {@link BigMoney}.
+ * In general, applications should use the concrete types, not this interface.
+ * However, utilities and frameworks may choose to make use of this abstraction.
  * <p>
  * Implementations of {@code BigMoneyProvider} may be mutable.
  * To minimise the risk of the value of the provider changing while processing,

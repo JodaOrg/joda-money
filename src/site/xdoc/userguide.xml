@@ -43,7 +43,8 @@ handle the case where information must be lost.
 <p>
 Both classes implement the <code>BigMoneyProvider</code> interface.
 This allows many different classes, including user supplied classes, to interoperate with Joda-Money.
-A common pattern when writing flexible methods for handling money is to accept this interface.
+In application code, the best advice is to use the concrete types.
+However, utility and framework code will typically use the interface.
 The formatting code is a good example of this.
 </p>
 </section>
