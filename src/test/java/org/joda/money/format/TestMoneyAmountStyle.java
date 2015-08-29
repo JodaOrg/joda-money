@@ -61,6 +61,7 @@ public class TestMoneyAmountStyle {
         assertEquals(style.getGroupingCharacter(), (Character) ',');
         assertEquals(style.getGroupingStyle(), GroupingStyle.FULL);
         assertEquals(style.getGroupingSize(), (Integer) 3);
+        assertEquals(style.getExtendedGroupingSize(), (Integer) 0);
         assertEquals(style.isForcedDecimalPoint(), false);
     }
 
@@ -79,6 +80,7 @@ public class TestMoneyAmountStyle {
         assertEquals(style.getGroupingCharacter(), (Character) ' ');
         assertEquals(style.getGroupingStyle(), GroupingStyle.FULL);
         assertEquals(style.getGroupingSize(), (Integer) 3);
+        assertEquals(style.getExtendedGroupingSize(), (Integer) 0);
         assertEquals(style.isForcedDecimalPoint(), false);
     }
 
@@ -97,6 +99,7 @@ public class TestMoneyAmountStyle {
         assertEquals(style.getGroupingCharacter(), (Character) ',');
         assertEquals(style.getGroupingStyle(), GroupingStyle.NONE);
         assertEquals(style.getGroupingSize(), (Integer) 3);
+        assertEquals(style.getExtendedGroupingSize(), (Integer) 0);
         assertEquals(style.isForcedDecimalPoint(), false);
     }
 
@@ -115,6 +118,7 @@ public class TestMoneyAmountStyle {
         assertEquals(style.getGroupingCharacter(), (Character) '.');
         assertEquals(style.getGroupingStyle(), GroupingStyle.FULL);
         assertEquals(style.getGroupingSize(), (Integer) 3);
+        assertEquals(style.getExtendedGroupingSize(), (Integer) 0);
         assertEquals(style.isForcedDecimalPoint(), false);
     }
 
@@ -133,6 +137,7 @@ public class TestMoneyAmountStyle {
         assertEquals(style.getGroupingCharacter(), (Character) ' ');
         assertEquals(style.getGroupingStyle(), GroupingStyle.FULL);
         assertEquals(style.getGroupingSize(), (Integer) 3);
+        assertEquals(style.getExtendedGroupingSize(), (Integer) 0);
         assertEquals(style.isForcedDecimalPoint(), false);
     }
 
@@ -151,6 +156,7 @@ public class TestMoneyAmountStyle {
         assertEquals(style.getGroupingCharacter(), (Character) '.');
         assertEquals(style.getGroupingStyle(), GroupingStyle.NONE);
         assertEquals(style.getGroupingSize(), (Integer) 3);
+        assertEquals(style.getExtendedGroupingSize(), (Integer) 0);
         assertEquals(style.isForcedDecimalPoint(), false);
     }
 
@@ -169,6 +175,7 @@ public class TestMoneyAmountStyle {
         assertEquals(style.getGroupingCharacter(), null);
         assertEquals(style.getGroupingStyle(), GroupingStyle.FULL);
         assertEquals(style.getGroupingSize(), null);
+        assertEquals(style.getExtendedGroupingSize(), null);
         assertEquals(style.isForcedDecimalPoint(), false);
     }
 
@@ -187,6 +194,7 @@ public class TestMoneyAmountStyle {
         assertEquals(style.getGroupingCharacter(), null);
         assertEquals(style.getGroupingStyle(), GroupingStyle.NONE);
         assertEquals(style.getGroupingSize(), null);
+        assertEquals(style.getExtendedGroupingSize(), null);
         assertEquals(style.isForcedDecimalPoint(), false);
     }
 
@@ -214,6 +222,7 @@ public class TestMoneyAmountStyle {
         assertEquals(style.getGroupingCharacter(), (Character) ',');
         assertEquals(style.getGroupingStyle(), GroupingStyle.FULL);
         assertEquals(style.getGroupingSize(), (Integer) 3);
+        assertEquals(style.getExtendedGroupingSize(), (Integer) 0);
         assertEquals(style.isForcedDecimalPoint(), false);
     }
 
@@ -226,6 +235,7 @@ public class TestMoneyAmountStyle {
         assertEquals(style.getGroupingCharacter(), (Character) '.');
         assertEquals(style.getGroupingStyle(), GroupingStyle.FULL);
         assertEquals(style.getGroupingSize(), (Integer) 3);
+        assertEquals(style.getExtendedGroupingSize(), (Integer) 0);
         assertEquals(style.isForcedDecimalPoint(), false);
     }
 
@@ -241,6 +251,7 @@ public class TestMoneyAmountStyle {
         assertEquals(style.getGroupingCharacter(), (Character) ',');
         assertEquals(style.getGroupingStyle(), GroupingStyle.FULL);
         assertEquals(style.getGroupingSize(), (Integer) 3);
+        assertEquals(style.getExtendedGroupingSize(), (Integer) 0);
         assertEquals(style.isForcedDecimalPoint(), false);
     }
 
@@ -253,6 +264,7 @@ public class TestMoneyAmountStyle {
         assertEquals(style.getGroupingCharacter(), (Character) '.');
         assertEquals(style.getGroupingStyle(), GroupingStyle.FULL);
         assertEquals(style.getGroupingSize(), (Integer) 3);
+        assertEquals(style.getExtendedGroupingSize(), (Integer) 0);
         assertEquals(style.isForcedDecimalPoint(), false);
     }
 
@@ -266,6 +278,7 @@ public class TestMoneyAmountStyle {
         assertEquals(style.getGroupingCharacter(), (Character) '.');
         assertEquals(style.getGroupingStyle(), GroupingStyle.FULL);
         assertEquals(style.getGroupingSize(), (Integer) 3);
+        assertEquals(style.getExtendedGroupingSize(), (Integer) 0);
         assertEquals(style.isForcedDecimalPoint(), false);
     }
 
@@ -279,6 +292,7 @@ public class TestMoneyAmountStyle {
         assertEquals(style.getGroupingCharacter(), (Character) '.');
         assertEquals(style.getGroupingStyle(), GroupingStyle.FULL);
         assertEquals(style.getGroupingSize(), (Integer) 3);
+        assertEquals(style.getExtendedGroupingSize(), (Integer) 0);
         assertEquals(style.isForcedDecimalPoint(), false);
     }
 
@@ -292,6 +306,7 @@ public class TestMoneyAmountStyle {
         assertEquals(style.getGroupingCharacter(), (Character) '.');
         assertEquals(style.getGroupingStyle(), GroupingStyle.FULL);
         assertEquals(style.getGroupingSize(), (Integer) 3);
+        assertEquals(style.getExtendedGroupingSize(), (Integer) 0);
         assertEquals(style.isForcedDecimalPoint(), false);
     }
 
@@ -305,6 +320,7 @@ public class TestMoneyAmountStyle {
         assertEquals(style.getGroupingCharacter(), (Character) '.');
         assertEquals(style.getGroupingStyle(), GroupingStyle.FULL);
         assertEquals(style.getGroupingSize(), (Integer) 3);
+        assertEquals(style.getExtendedGroupingSize(), (Integer) 0);
         assertEquals(style.isForcedDecimalPoint(), false);
     }
 
@@ -318,6 +334,7 @@ public class TestMoneyAmountStyle {
         assertEquals(style.getGroupingCharacter(), (Character) '_');
         assertEquals(style.getGroupingStyle(), GroupingStyle.FULL);
         assertEquals(style.getGroupingSize(), (Integer) 3);
+        assertEquals(style.getExtendedGroupingSize(), (Integer) 0);
         assertEquals(style.isForcedDecimalPoint(), false);
     }
 
@@ -331,6 +348,7 @@ public class TestMoneyAmountStyle {
         assertEquals(style.getGroupingCharacter(), (Character) '.');
         assertEquals(style.getGroupingStyle(), GroupingStyle.FULL);
         assertEquals(style.getGroupingSize(), (Integer) 3);
+        assertEquals(style.getExtendedGroupingSize(), (Integer) 0);
         assertEquals(style.isForcedDecimalPoint(), false);
     }
 

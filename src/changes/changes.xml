@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.11.0" date="SNAPSHOT" description="v0.11.0">
       <action dev="jodastephen" type="add" >
+        Add support for Indian number formatting (Lakh/Crore).
+        MoneyAmountStyle extended grouping size provides enough power to output this.
+      </action>
+      <action dev="jodastephen" type="add" >
         Add support for different signed formats.
         Add appendSigned() to builder, allowing different formats for positive, zero and negative.
       </action>

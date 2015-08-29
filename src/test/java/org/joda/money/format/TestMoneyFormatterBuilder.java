@@ -47,6 +47,7 @@ public class TestMoneyFormatterBuilder {
     private static final Money GBP_2345_67 = Money.parse("GBP 2345.67");
     private static final Money GBP_1234567_89 = Money.parse("GBP 1234567.89");
     private static final BigMoney GBP_1234_56789 = BigMoney.parse("GBP 1234.56789");
+    private static final BigMoney GBP_1234567891234_1234567891 = BigMoney.parse("GBP 1234567891234.1234567891");
     private static final Money JPY_2345 = Money.parse("JPY 2345");
 
     private static final Locale cCachedLocale = Locale.getDefault();
@@ -334,6 +335,7 @@ public class TestMoneyFormatterBuilder {
             {GBP_2345_67, "2,345.67"},
             {GBP_1234567_89, "1,234,567.89"},
             {GBP_1234_56789, "1,234.567,89"},
+            {GBP_1234567891234_1234567891, "1,234,567,891,234.123,456,789,1"},
             {GBP_MINUS_234_56, "-234.56"},
         };
     }
@@ -417,6 +419,7 @@ public class TestMoneyFormatterBuilder {
         MoneyAmountStyle group3BeforeDp = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withGroupingStyle(GroupingStyle.BEFORE_DECIMAL_POINT);
         MoneyAmountStyle group3CommaForceDp = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withForcedDecimalPoint(true);
         MoneyAmountStyle group3CommaAbs = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withAbsValue(true);
+        MoneyAmountStyle group1Dash = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withGroupingSize(1).withGroupingCharacter('-');
         MoneyAmountStyle group2Dash = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withGroupingSize(2).withGroupingCharacter('-');
         MoneyAmountStyle group4CommaAt = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA
                         .withGroupingSize(4).withDecimalPointCharacter('@').withForcedDecimalPoint(true);
@@ -513,6 +516,21 @@ public class TestMoneyFormatterBuilder {
             {group3CommaAbs, "-2.34567", "2.345,67"},
             {group3CommaAbs, "-2.345678", "2.345,678"},
             {group3CommaAbs, "-2.3456789", "2.345,678,9"},
+            
+            {group1Dash, "2", "2"},
+            {group1Dash, "2123456", "2-1-2-3-4-5-6"},
+            {group1Dash, "2.34", "2.3-4"},
+            {group1Dash, "23.34", "2-3.3-4"},
+            {group1Dash, "234.34", "2-3-4.3-4"},
+            {group1Dash, "2345.34", "2-3-4-5.3-4"},
+            {group1Dash, "23456.34", "2-3-4-5-6.3-4"},
+            {group1Dash, "234567.34", "2-3-4-5-6-7.3-4"},
+            {group1Dash, "2345678.34", "2-3-4-5-6-7-8.3-4"},
+            {group1Dash, "2.345", "2.3-4-5"},
+            {group1Dash, "2.3456", "2.3-4-5-6"},
+            {group1Dash, "2.34567", "2.3-4-5-6-7"},
+            {group1Dash, "2.345678", "2.3-4-5-6-7-8"},
+            {group1Dash, "2.3456789", "2.3-4-5-6-7-8-9"},
             
             {group2Dash, "2", "2"},
             {group2Dash, "2123456", "2-12-34-56"},
@@ -612,6 +630,44 @@ public class TestMoneyFormatterBuilder {
             .toFormatter()
             .withLocale(Locale.JAPAN);
         assertEquals(formatter.print(money), "12");
+    }
+
+    //-----------------------------------------------------------------------
+    @DataProvider(name = "appendAmountExtendedGrouping")
+    Object[][] data_appendAmountExtendedGrouping() {
+        return new Object[][] {
+            {GBP_2_34, "2.34"},
+            {GBP_23_45, "23.45"},
+            {GBP_234_56, "234.56"},
+            {GBP_2345_67, "2,345.67"},
+            {GBP_1234567_89, "12,34,567.89"},
+            {GBP_1234_56789, "1,234.567,89"},
+            {GBP_1234567891234_1234567891, "12,34,56,78,91,234.123,45,67,89,1"},
+            {GBP_MINUS_234_56, "-234.56"},
+        };
+    }
+
+    @Test(dataProvider = "appendAmountExtendedGrouping")
+    public void test_appendAmount_parseExtendedGroupingSize(BigMoneyProvider money, String expected) {
+        iBuilder.appendAmount();
+        MoneyFormatter test = new MoneyFormatterBuilder()
+            .appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withExtendedGroupingSize(2))
+        .toFormatter();
+        assertEquals(test.print(money), expected);
+        assertEquals(test.toString(), "${amount}");
+    }
+
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_appendAmount_parseExcessGrouping() {
+        BigMoney expected = BigMoney.parse("GBP 12123.4567");
+        MoneyFormatter f = new MoneyFormatterBuilder()
+            .appendCurrencyCode()
+            .appendLiteral(" ")
+            .appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA)
+            .toFormatter();
+        BigMoney money = f.parseBigMoney("GBP 12,1,2,3,.,45,6,7");
+        assertEquals(money, expected);
     }
 
     //-----------------------------------------------------------------------

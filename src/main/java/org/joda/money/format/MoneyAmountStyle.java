@@ -56,54 +56,54 @@ public final class MoneyAmountStyle implements Serializable {
      * Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle ASCII_DECIMAL_POINT_GROUP3_COMMA =
-        new MoneyAmountStyle('0', '+', '-', '.', GroupingStyle.FULL, ',', 3, false, false);
+        new MoneyAmountStyle('0', '+', '-', '.', GroupingStyle.FULL, ',', 3, 0, false, false);
     /**
      * A style that uses ASCII digits/negative sign, the decimal point
      * and groups large amounts in 3's using a space.
      * Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle ASCII_DECIMAL_POINT_GROUP3_SPACE =
-        new MoneyAmountStyle('0', '+', '-', '.', GroupingStyle.FULL, ' ', 3, false, false);
+        new MoneyAmountStyle('0', '+', '-', '.', GroupingStyle.FULL, ' ', 3, 0, false, false);
     /**
      * A style that uses ASCII digits/negative sign, the decimal point
      * and no grouping of large amounts.
      * Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle ASCII_DECIMAL_POINT_NO_GROUPING =
-        new MoneyAmountStyle('0', '+', '-', '.', GroupingStyle.NONE, ',', 3, false, false);
+        new MoneyAmountStyle('0', '+', '-', '.', GroupingStyle.NONE, ',', 3, 0, false, false);
     /**
      * A style that uses ASCII digits/negative sign, the decimal comma
      * and groups large amounts in 3's using a dot.
      * Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle ASCII_DECIMAL_COMMA_GROUP3_DOT =
-        new MoneyAmountStyle('0', '+', '-', ',', GroupingStyle.FULL, '.', 3, false, false);
+        new MoneyAmountStyle('0', '+', '-', ',', GroupingStyle.FULL, '.', 3, 0, false, false);
     /**
      * A style that uses ASCII digits/negative sign, the decimal comma
      * and groups large amounts in 3's using a space.
      * Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle ASCII_DECIMAL_COMMA_GROUP3_SPACE =
-        new MoneyAmountStyle('0', '+', '-', ',', GroupingStyle.FULL, ' ', 3, false, false);
+        new MoneyAmountStyle('0', '+', '-', ',', GroupingStyle.FULL, ' ', 3, 0, false, false);
     /**
      * A style that uses ASCII digits/negative sign, the decimal point
      * and no grouping of large amounts.
      * Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle ASCII_DECIMAL_COMMA_NO_GROUPING =
-        new MoneyAmountStyle('0', '+', '-', ',', GroupingStyle.NONE, '.', 3, false, false);
+        new MoneyAmountStyle('0', '+', '-', ',', GroupingStyle.NONE, '.', 3, 0, false, false);
     /**
      * A style that will be filled in with localized values using the locale of the formatter.
      * Grouping is enabled. Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle LOCALIZED_GROUPING =
-        new MoneyAmountStyle(-1, -1, -1, -1, GroupingStyle.FULL, -1, -1, false, false);
+        new MoneyAmountStyle(-1, -1, -1, -1, GroupingStyle.FULL, -1, -1, -1, false, false);
     /**
      * A style that will be filled in with localized values using the locale of the formatter.
      * Grouping is disabled. Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle LOCALIZED_NO_GROUPING =
-        new MoneyAmountStyle(-1, -1, -1, -1, GroupingStyle.NONE, -1, -1, false, false);
+        new MoneyAmountStyle(-1, -1, -1, -1, GroupingStyle.NONE, -1, -1, -1, false, false);
     /**
      * Cache of localized styles.
      */
@@ -141,6 +141,10 @@ public final class MoneyAmountStyle implements Serializable {
      * The size of each group.
      */
     private final int groupingSize;
+    /**
+     * The size of each group.
+     */
+    private final int extendedGroupingSize;
     /**
      * Whether to always require the decimal point to be visible.
      */
@@ -183,7 +187,7 @@ public final class MoneyAmountStyle implements Serializable {
                 int zeroCharacter,
                 int positiveCharacter, int negativeCharacter,
                 int decimalPointCharacter, GroupingStyle groupingStyle,
-                int groupingCharacter, int groupingSize,
+                int groupingCharacter, int groupingSize, int extendedGroupingSize,
                 boolean forceDecimalPoint, boolean absValue) {
         this.zeroCharacter = zeroCharacter;
         this.positiveCharacter = positiveCharacter;
@@ -192,6 +196,7 @@ public final class MoneyAmountStyle implements Serializable {
         this.groupingStyle = groupingStyle;
         this.groupingCharacter = groupingCharacter;
         this.groupingSize = groupingSize;
+        this.extendedGroupingSize = extendedGroupingSize;
         this.forceDecimalPoint = forceDecimalPoint;
         this.absValue = absValue;
     }
@@ -239,6 +244,10 @@ public final class MoneyAmountStyle implements Serializable {
             protoStyle = (protoStyle == null ? getLocalizedStyle(locale) : protoStyle);
             result = result.withGroupingSize(protoStyle.getGroupingSize());
         }
+        if (extendedGroupingSize < 0) {
+            protoStyle = (protoStyle == null ? getLocalizedStyle(locale) : protoStyle);
+            result = result.withExtendedGroupingSize(protoStyle.getExtendedGroupingSize());
+        }
         return result;
     }
 
@@ -271,7 +280,7 @@ public final class MoneyAmountStyle implements Serializable {
                     symbols.getZeroDigit(),
                     '+', symbols.getMinusSign(),
                     symbols.getMonetaryDecimalSeparator(),
-                    GroupingStyle.FULL, symbols.getGroupingSeparator(), size, false, false);
+                    GroupingStyle.FULL, symbols.getGroupingSeparator(), size, 0, false, false);
             LOCALIZED_CACHE.putIfAbsent(locale, protoStyle);
         }
         return protoStyle;
@@ -313,7 +322,7 @@ public final class MoneyAmountStyle implements Serializable {
                 zeroVal,
                 positiveCharacter, negativeCharacter,
                 decimalPointCharacter, groupingStyle,
-                groupingCharacter, groupingSize, forceDecimalPoint, absValue);
+                groupingCharacter, groupingSize, extendedGroupingSize, forceDecimalPoint, absValue);
     }
 
     //-----------------------------------------------------------------------
@@ -345,7 +354,7 @@ public final class MoneyAmountStyle implements Serializable {
                 zeroCharacter,
                 positiveVal, negativeCharacter,
                 decimalPointCharacter, groupingStyle,
-                groupingCharacter, groupingSize, forceDecimalPoint, absValue);
+                groupingCharacter, groupingSize, extendedGroupingSize, forceDecimalPoint, absValue);
     }
 
     //-----------------------------------------------------------------------
@@ -377,7 +386,7 @@ public final class MoneyAmountStyle implements Serializable {
                 zeroCharacter,
                 positiveCharacter, negativeVal,
                 decimalPointCharacter, groupingStyle,
-                groupingCharacter, groupingSize, forceDecimalPoint, absValue);
+                groupingCharacter, groupingSize, extendedGroupingSize, forceDecimalPoint, absValue);
     }
 
     //-----------------------------------------------------------------------
@@ -407,7 +416,7 @@ public final class MoneyAmountStyle implements Serializable {
                 zeroCharacter,
                 positiveCharacter, negativeCharacter,
                 dpVal, groupingStyle,
-                groupingCharacter, groupingSize, forceDecimalPoint, absValue);
+                groupingCharacter, groupingSize, extendedGroupingSize, forceDecimalPoint, absValue);
     }
 
     //-----------------------------------------------------------------------
@@ -437,7 +446,7 @@ public final class MoneyAmountStyle implements Serializable {
                 zeroCharacter,
                 positiveCharacter, negativeCharacter,
                 decimalPointCharacter, groupingStyle,
-                groupingVal, groupingSize, forceDecimalPoint, absValue);
+                groupingVal, groupingSize, extendedGroupingSize, forceDecimalPoint, absValue);
     }
 
     //-----------------------------------------------------------------------
@@ -470,7 +479,45 @@ public final class MoneyAmountStyle implements Serializable {
                 zeroCharacter,
                 positiveCharacter, negativeCharacter,
                 decimalPointCharacter, groupingStyle,
-                groupingCharacter, sizeVal, forceDecimalPoint, absValue);
+                groupingCharacter, sizeVal, extendedGroupingSize, forceDecimalPoint, absValue);
+    }
+
+    //-----------------------------------------------------------------------
+    /**
+     * Gets the size of each group, not typically used.
+     * <p>
+     * This is primarily used to enable the Indian Number System, where the group
+     * closest to the decimal point is of size 3 and other groups are of size 2.
+     * The extended grouping size is used for groups that are not next to the decimal point.
+     * The value zero is used to indicate that extended grouping is not needed.
+     * 
+     * @return the size of each group, null if to be determined by locale
+     */
+    public Integer getExtendedGroupingSize() {
+        return extendedGroupingSize < 0 ? null : extendedGroupingSize;
+    }
+
+    /**
+     * Returns a copy of this style with the specified extended grouping size.
+     * 
+     * @param extendedGroupingSize  the size of each group, such as 3 for thousands,
+     *          not zero or negative, null if to be determined by locale
+     * @return the new instance for chaining, never null
+     * @throws IllegalArgumentException if the grouping size is zero or less
+     */
+    public MoneyAmountStyle withExtendedGroupingSize(Integer extendedGroupingSize) {
+        int sizeVal = (extendedGroupingSize == null ? -1 : extendedGroupingSize);
+        if (extendedGroupingSize != null && sizeVal < 0) {
+            throw new IllegalArgumentException("Extended grouping size must not be negative");
+        }
+        if (sizeVal == this.extendedGroupingSize) {
+            return this;
+        }
+        return new MoneyAmountStyle(
+                zeroCharacter,
+                positiveCharacter, negativeCharacter,
+                decimalPointCharacter, groupingStyle,
+                groupingCharacter, groupingSize, sizeVal, forceDecimalPoint, absValue);
     }
 
     //-----------------------------------------------------------------------
@@ -498,7 +545,7 @@ public final class MoneyAmountStyle implements Serializable {
                 zeroCharacter,
                 positiveCharacter, negativeCharacter,
                 decimalPointCharacter, groupingStyle,
-                groupingCharacter, groupingSize, forceDecimalPoint, absValue);
+                groupingCharacter, groupingSize, extendedGroupingSize, forceDecimalPoint, absValue);
     }
 
     //-----------------------------------------------------------------------
@@ -525,7 +572,7 @@ public final class MoneyAmountStyle implements Serializable {
                 zeroCharacter,
                 positiveCharacter, negativeCharacter,
                 decimalPointCharacter, groupingStyle,
-                groupingCharacter, groupingSize, forceDecimalPoint, absValue);
+                groupingCharacter, groupingSize, extendedGroupingSize, forceDecimalPoint, absValue);
     }
 
     //-----------------------------------------------------------------------
@@ -560,7 +607,7 @@ public final class MoneyAmountStyle implements Serializable {
                 zeroCharacter,
                 positiveCharacter, negativeCharacter,
                 decimalPointCharacter, groupingStyle,
-                groupingCharacter, groupingSize, forceDecimalPoint, absValue);
+                groupingCharacter, groupingSize, extendedGroupingSize, forceDecimalPoint, absValue);
     }
 
     //-----------------------------------------------------------------------

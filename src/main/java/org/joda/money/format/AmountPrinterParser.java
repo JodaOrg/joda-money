@@ -79,14 +79,17 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
             }
         } else {
             int groupingSize = activeStyle.getGroupingSize();
+            int extendedGroupingSize = activeStyle.getExtendedGroupingSize();
+            extendedGroupingSize = extendedGroupingSize == 0 ? groupingSize : extendedGroupingSize;
             char groupingChar = activeStyle.getGroupingCharacter();
             int pre = (decPoint < 0 ? str.length() : decPoint);
             int post = (decPoint < 0 ? 0 : str.length() - decPoint - 1);
-            for (int i = 0; pre > 0; i++, pre--) {
-                appendable.append(str.charAt(i));
-                if (pre > groupingSize && pre % groupingSize == 1) {
+            appendable.append(str.charAt(0));
+            for (int i = 1; i < pre; i++) {
+                if (isPreGroupingPoint(pre - i, groupingSize, extendedGroupingSize)) {
                     appendable.append(groupingChar);
                 }
+                appendable.append(str.charAt(i));
             }
             if (decPoint >= 0 || activeStyle.isForcedDecimalPoint()) {
                 appendable.append(activeStyle.getDecimalPointCharacter());
@@ -98,12 +101,27 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
             } else {
                 for (int i = 0; i < post; i++) {
                     appendable.append(str.charAt(i + afterDecPoint));
-                    if (i % groupingSize == (groupingSize - 1) && (i + 1) < post) {
+                    if (isPostGroupingPoint(i, post, groupingSize, extendedGroupingSize)) {
                         appendable.append(groupingChar);
                     }
                 }
             }
         }
+    }
+
+    private boolean isPreGroupingPoint(int remaining, int groupingSize, int extendedGroupingSize) {
+        if (remaining >= groupingSize + extendedGroupingSize) {
+            return (remaining - groupingSize) % extendedGroupingSize == 0;
+        }
+        return remaining % groupingSize == 0;
+    }
+
+    private boolean isPostGroupingPoint(int i, int post, int groupingSize, int extendedGroupingSize) {
+        boolean atEnd = (i + 1) >= post;
+        if (i > groupingSize) {
+            return (i - groupingSize) % extendedGroupingSize == (extendedGroupingSize - 1) && !atEnd;
+        }
+        return i % groupingSize == (groupingSize - 1) && !atEnd;
     }
 
     @Override
@@ -113,7 +131,6 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
         char[] buf = new char[len - context.getIndex()];
         int bufPos = 0;
         boolean dpSeen = false;
-        boolean lastWasGroup = false;
         int pos = context.getIndex();
         if (pos < len) {
             char ch = context.getText().charAt(pos++);
@@ -131,6 +148,7 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
                 return;
             }
         }
+        boolean lastWasGroup = false;
         for ( ; pos < len; pos++) {
             char ch = context.getText().charAt(pos);
             if (ch >= activeStyle.getZeroCharacter() && ch < activeStyle.getZeroCharacter() + 10) {
