@@ -411,6 +411,15 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
 
     //-----------------------------------------------------------------------
     /**
+     * Private no-args constructor, for use as JPA Embeddable (for example).
+     */
+    @SuppressWarnings("unused")
+    private BigMoney() {
+        this.currency = null;
+        this.amount = null;
+    }
+
+    /**
      * Constructor, creating a new monetary instance.
      * 
      * @param currency  the currency to use, not null
