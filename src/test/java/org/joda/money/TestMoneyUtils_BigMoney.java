@@ -98,7 +98,7 @@ public class TestMoneyUtils_BigMoney {
     }
 
     //-----------------------------------------------------------------------
-    // max(Money,Money)
+    // max(BigMoney,BigMoney)
     //-----------------------------------------------------------------------
     public void test_max1() {
         assertSame(MoneyUtils.max(GBP_20, GBP_30), GBP_30);
@@ -106,14 +106,6 @@ public class TestMoneyUtils_BigMoney {
 
     public void test_max2() {
         assertSame(MoneyUtils.max(GBP_30, GBP_20), GBP_30);
-    }
-
-    public void test_max3() {
-        assertSame(MoneyUtils.max(GBP_30), GBP_30);
-    }
-
-    public void test_max4() {
-        assertSame(MoneyUtils.max(GBP_30, GBP_20, GBP_0), GBP_30);
     }
 
     @Test(expectedExceptions = CurrencyMismatchException.class)
@@ -134,7 +126,30 @@ public class TestMoneyUtils_BigMoney {
     }
 
     //-----------------------------------------------------------------------
-    // min(Money,Money)
+    // max(BigMoney...)
+    //-----------------------------------------------------------------------
+    public void test_max_array_null() {
+        assertSame(MoneyUtils.max((BigMoney[]) null), null);
+    }
+
+    public void test_max_array_empty() {
+        assertSame(MoneyUtils.max(new BigMoney[0]), null);
+    }
+
+    public void test_max_array_one() {
+        assertSame(MoneyUtils.max(GBP_30), GBP_30);
+    }
+
+    public void test_max_array_two() {
+        assertSame(MoneyUtils.max(new BigMoney[] {GBP_30, GBP_20}), GBP_30);
+    }
+
+    public void test_max_array_three() {
+        assertSame(MoneyUtils.max(GBP_30, GBP_20, GBP_0), GBP_30);
+    }
+
+    //-----------------------------------------------------------------------
+    // min(BigMoney,BigMoney)
     //-----------------------------------------------------------------------
     public void test_min1() {
         assertSame(MoneyUtils.min(GBP_20, GBP_30), GBP_20);
@@ -142,14 +157,6 @@ public class TestMoneyUtils_BigMoney {
 
     public void test_min2() {
         assertSame(MoneyUtils.min(GBP_30, GBP_20), GBP_20);
-    }
-
-    public void test_min3() {
-        assertSame(MoneyUtils.min(GBP_20), GBP_20);
-    }
-
-    public void test_min4() {
-        assertSame(MoneyUtils.min(GBP_50, GBP_30, GBP_20), GBP_20);
     }
 
     @Test(expectedExceptions = CurrencyMismatchException.class)
@@ -167,6 +174,29 @@ public class TestMoneyUtils_BigMoney {
 
     public void test_min_nullBoth() {
         assertEquals(MoneyUtils.min((BigMoney) null, (BigMoney) null), null);
+    }
+
+    //-----------------------------------------------------------------------
+    // min(BigMoney...)
+    //-----------------------------------------------------------------------
+    public void test_min_array_null() {
+        assertSame(MoneyUtils.min((BigMoney[]) null), null);
+    }
+
+    public void test_min_array_empty() {
+        assertSame(MoneyUtils.min(new BigMoney[0]), null);
+    }
+
+    public void test_min_array_one() {
+        assertSame(MoneyUtils.min(GBP_20), GBP_20);
+    }
+
+    public void test_min_array_two() {
+        assertSame(MoneyUtils.min(new BigMoney[] {GBP_30, GBP_20}), GBP_20);
+    }
+
+    public void test_min_array_three() {
+        assertSame(MoneyUtils.min(GBP_20, GBP_30, GBP_50), GBP_20);
     }
 
     //-----------------------------------------------------------------------

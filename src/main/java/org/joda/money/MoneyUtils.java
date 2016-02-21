@@ -106,53 +106,85 @@ public final class MoneyUtils {
     /**
      * Finds the maximum {@code Money} value, handing null.
      * <p>
-     * This returns the greater money where null is ignored.
-     * If all input values are null, then null is returned.
-     *
-     * @param moneys the money instances
-     * @return the maximum value, null if all inputs are null
+     * This returns the greater of money1 or money2 where null is ignored.
+     * If both input values are null, then null is returned.
+     * 
+     * @param money1  the first money instance, null returns money2
+     * @param money2  the first money instance, null returns money1
+     * @return the maximum value, null if both inputs are null
      * @throws CurrencyMismatchException if the currencies differ
      */
-    public static Money max(Money... moneys) {
-        Money max = null;
-
-        for(Money money : moneys) {
-            if (money == null) continue;
-
-            if (max == null) {
-                max = money;
-            } else {
-                max = max.compareTo(money) > 0 ? max : money;
-            }
+    public static Money max(Money money1, Money money2) {
+        if (money1 == null) {
+            return money2;
         }
+        if (money2 == null) {
+            return money1;
+        }
+        return money1.compareTo(money2) > 0 ? money1 : money2;
+    }
 
-        return max;
+    /**
+     * Finds the maximum {@code Money} value, handing null.
+     * <p>
+     * This returns the greatest money value in the specified array.
+     * If the array is null, or if all values in the array are null, then null is returned.
+     * 
+     * @param moneyArray  the array of money instances, null returns null
+     * @return the maximum value, null if input is null; or if all array elements are null
+     * @throws CurrencyMismatchException if the currencies differ
+     */
+    public static Money max(Money... moneyArray) {
+        if (moneyArray == null || moneyArray.length == 0) {
+            return null;
+        }
+        Money result = moneyArray[0];
+        for (int i = 1; i < moneyArray.length; i++) {
+            result = max(result, moneyArray[i]);
+        }
+        return result;
     }
 
     /**
      * Finds the minimum {@code Money} value, handing null.
      * <p>
-     * This returns the smaller money where null is ignored.
-     * If all input values are null, then null is returned.
+     * This returns the greater of money1 or money2 where null is ignored.
+     * If both input values are null, then null is returned.
      * 
-     * @param moneys the money instances
-     * @return the minimum value, null if all inputs are null
+     * @param money1  the first money instance, null returns money2
+     * @param money2  the first money instance, null returns money1
+     * @return the minimum value, null if both inputs are null
      * @throws CurrencyMismatchException if the currencies differ
      */
-    public static Money min(Money... moneys) {
-        Money min = null;
-
-        for(Money money : moneys) {
-            if (money == null) continue;
-
-            if (min == null) {
-                min = money;
-            } else {
-                min = min.compareTo(money) < 0 ? min : money;
-            }
+    public static Money min(Money money1, Money money2) {
+        if (money1 == null) {
+            return money2;
         }
+        if (money2 == null) {
+            return money1;
+        }
+        return money1.compareTo(money2) < 0 ? money1 : money2;
+    }
 
-        return min;
+    /**
+     * Finds the minimum {@code Money} value, handing null.
+     * <p>
+     * This returns the smallest money value in the specified array.
+     * If the array is null, or if all values in the array are null, then null is returned.
+     * 
+     * @param moneyArray  the array of money instances, null returns null
+     * @return the minimum value, null if input is null; or if all array elements are null
+     * @throws CurrencyMismatchException if the currencies differ
+     */
+    public static Money min(Money... moneyArray) {
+        if (moneyArray == null || moneyArray.length == 0) {
+            return null;
+        }
+        Money result = moneyArray[0];
+        for (int i = 1; i < moneyArray.length; i++) {
+            result = min(result, moneyArray[i]);
+        }
+        return result;
     }
 
     //-----------------------------------------------------------------------
@@ -203,53 +235,85 @@ public final class MoneyUtils {
     /**
      * Finds the maximum {@code BigMoney} value, handing null.
      * <p>
-     * This returns the greatest money where null is ignored.
-     * If all input values are null, then null is returned.
+     * This returns the greater of money1 or money2 where null is ignored.
+     * If both input values are null, then null is returned.
      * 
-     * @param moneys the money instances
+     * @param money1  the first money instance, null returns money2
+     * @param money2  the first money instance, null returns money1
      * @return the maximum value, null if both inputs are null
      * @throws CurrencyMismatchException if the currencies differ
      */
-    public static BigMoney max(BigMoney... moneys) {
-        BigMoney max = null;
-
-        for(BigMoney money : moneys) {
-            if (money == null) continue;
-
-            if (max == null) {
-                max = money;
-            } else {
-                max = max.compareTo(money) > 0 ? max : money;
-            }
+    public static BigMoney max(BigMoney money1, BigMoney money2) {
+        if (money1 == null) {
+            return money2;
         }
+        if (money2 == null) {
+            return money1;
+        }
+        return money1.compareTo(money2) > 0 ? money1 : money2;
+    }
 
-        return max;
+    /**
+     * Finds the maximum {@code BigMoney} value, handing null.
+     * <p>
+     * This returns the greatest money value in the specified array.
+     * If the array is null, or if all values in the array are null, then null is returned.
+     * 
+     * @param moneyArray  the array of money instances, null returns null
+     * @return the maximum value, null if input is null; or if all array elements are null
+     * @throws CurrencyMismatchException if the currencies differ
+     */
+    public static BigMoney max(BigMoney... moneyArray) {
+        if (moneyArray == null || moneyArray.length == 0) {
+            return null;
+        }
+        BigMoney result = moneyArray[0];
+        for (int i = 1; i < moneyArray.length; i++) {
+            result = max(result, moneyArray[i]);
+        }
+        return result;
     }
 
     /**
      * Finds the minimum {@code BigMoney} value, handing null.
      * <p>
-     * This returns the greatest money where null is ignored.
+     * This returns the greater of money1 or money2 where null is ignored.
      * If both input values are null, then null is returned.
      * 
-     * @param moneys the money instances
+     * @param money1  the first money instance, null returns money2
+     * @param money2  the first money instance, null returns money1
      * @return the minimum value, null if both inputs are null
      * @throws CurrencyMismatchException if the currencies differ
      */
-    public static BigMoney min(BigMoney... moneys) {
-        BigMoney min = null;
-
-        for(BigMoney money : moneys) {
-            if (money == null) continue;
-
-            if (min == null) {
-                min = money;
-            } else {
-                min = min.compareTo(money) < 0 ? min : money;
-            }
+    public static BigMoney min(BigMoney money1, BigMoney money2) {
+        if (money1 == null) {
+            return money2;
         }
+        if (money2 == null) {
+            return money1;
+        }
+        return money1.compareTo(money2) < 0 ? money1 : money2;
+    }
 
-        return min;
+    /**
+     * Finds the minimum {@code BigMoney} value, handing null.
+     * <p>
+     * This returns the smallest money value in the specified array.
+     * If the array is null, or if all values in the array are null, then null is returned.
+     * 
+     * @param moneyArray  the array of money instances, null returns null
+     * @return the minimum value, null if input is null; or if all array elements are null
+     * @throws CurrencyMismatchException if the currencies differ
+     */
+    public static BigMoney min(BigMoney... moneyArray) {
+        if (moneyArray == null || moneyArray.length == 0) {
+            return null;
+        }
+        BigMoney result = moneyArray[0];
+        for (int i = 1; i < moneyArray.length; i++) {
+            result = min(result, moneyArray[i]);
+        }
+        return result;
     }
 
     //-----------------------------------------------------------------------
