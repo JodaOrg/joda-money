@@ -2170,13 +2170,18 @@ public class TestBigMoney {
         assertEquals(test.toString(), "EUR 5.825");
     }
 
+    public void test_convertedTo_CurrencyUnit_BigDecimal_sameCurrencyCorrectFactor() {
+        BigMoney test = GBP_2_33.convertedTo(GBP, bd("1.00000"));
+        assertEquals(test, GBP_2_33);
+    }
+
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_convertedTo_CurrencyUnit_BigDecimal_negative() {
         GBP_2_33.convertedTo(EUR, bd("-2.5"));
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void test_convertedTo_CurrencyUnit_BigDecimal_sameCurrency() {
+    public void test_convertedTo_CurrencyUnit_BigDecimal_sameCurrencyWrongFactor() {
         GBP_2_33.convertedTo(GBP, bd("2.5"));
     }
 

@@ -1530,13 +1530,16 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @param currency  the new currency, not null
      * @param conversionMultipler  the conversion factor between the currencies, not null
      * @return the new multiplied instance, never null
-     * @throws IllegalArgumentException if the currency is the same as this currency
-     * @throws IllegalArgumentException if the conversion multiplier is negative
+     * @throws IllegalArgumentException if the currency is the same as this currency and the
+     *  conversion is not one; or if the conversion multiplier is negative
      */
     public BigMoney convertedTo(CurrencyUnit currency, BigDecimal conversionMultipler) {
         MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
         MoneyUtils.checkNotNull(conversionMultipler, "Multiplier must not be null");
         if (this.currency == currency) {
+            if (conversionMultipler.compareTo(BigDecimal.ONE) == 0) {
+                return this;
+            }
             throw new IllegalArgumentException("Cannot convert to the same currency");
         }
         if (conversionMultipler.compareTo(BigDecimal.ZERO) < 0) {
@@ -1560,8 +1563,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @param conversionMultipler  the conversion factor between the currencies, not null
      * @param roundingMode  the rounding mode to use to bring the decimal places back in line, not null
      * @return the new multiplied instance, never null
-     * @throws IllegalArgumentException if the currency is the same as this currency
-     * @throws IllegalArgumentException if the conversion multiplier is negative
+     * @throws IllegalArgumentException if the currency is the same as this currency and the
+     *  conversion is not one; or if the conversion multiplier is negative
      * @throws ArithmeticException if the rounding fails
      */
     public BigMoney convertRetainScale(CurrencyUnit currency, BigDecimal conversionMultipler, RoundingMode roundingMode) {
