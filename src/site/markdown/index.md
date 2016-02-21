@@ -71,7 +71,7 @@ As a flavour of Joda-Money, here is some example code:
 ## <i></i> Releases
 
 There are no full releases yet!
-[Release 0.10.0](download.html) is the current development release intended for feedback.
+[Release 0.11](download.html) is the current development release intended for feedback.
 The code is fully tested, but there may yet be bugs and the API may yet change.
 There should be no great reason why it cannot be used in production if you can cope with future API change.
 
@@ -79,13 +79,13 @@ Joda-Money requires Java SE 6 or later and has [no dependencies](dependencies.ht
 There is a *compile-time* dependency on [Joda-Convert](http://www.joda.org/joda-convert/),
 but this is not required at runtime thanks to the magic of annotations.
 
-Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.joda%7Cjoda-money%7C0.10.0%7Cjar).
+Available in [Maven Central](http://search.maven.org/#artifactdetails%7Corg.joda%7Cjoda-money%7C0.11%7Cjar).
 
 ```xml
 <dependency>
   <groupId>org.joda</groupId>
   <artifactId>joda-money</artifactId>
-  <version>0.10.0</version>
+  <version>0.11</version>
 </dependency>
 ```
 
