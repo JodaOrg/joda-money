@@ -59,7 +59,7 @@ As a flavour of Joda-Money, here is some example code:
   
   // convert to GBP using a supplied rate
   <b>BigDecimal conversionRate = ...;  // obtained from code outside Joda-Money</b>
-  <b>Money moneyGBP = money.convertTo(CurrencyUnit.GBP, conversionRate);</b>
+  <b>Money moneyGBP = money.convertedTo(CurrencyUnit.GBP, conversionRate, RoundingMode.HALF_UP);</b>
   
   // use a BigMoney for more complex calculations where scale matters
   <b><a href="apidocs/org/joda/money/BigMoney.html">BigMoney</a> moneyCalc = money.toBigMoney();</b>
