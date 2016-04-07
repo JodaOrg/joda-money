@@ -10,6 +10,10 @@
     <!-- types are add, fix, remove, update -->
     <release version="0.12" date="SNAPSHOT" description="v0.12">
       <action dev="jodastephen" type="fix" >
+        Update currency codes to latest ISO-4217.
+        Fixes #64.
+      </action>
+      <action dev="jodastephen" type="fix" >
         Update currencies for BY, LT, LV, SS.
         Fixes #68, #70, #72.
       </action>

@@ -362,9 +362,14 @@ public class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     // of(Locale)
     //-----------------------------------------------------------------------
-    public void test_factory_of_Locale() {
+    public void test_factory_of_LocaleUK() {
         CurrencyUnit test = CurrencyUnit.of(Locale.UK);
         assertEquals(test.getCode(), "GBP");
+    }
+
+    public void test_factory_of_LocaleUS() {
+        CurrencyUnit test = CurrencyUnit.of(Locale.US);
+        assertEquals(test.getCode(), "USD");
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -541,7 +546,6 @@ public class TestCurrencyUnit {
         assertEquals(test.contains("JE"), true);
         assertEquals(test.contains("GG"), true);
         assertEquals(test.contains("GS"), true);
-        assertEquals(test.contains("IO"), true);
     }
 
     //-----------------------------------------------------------------------
