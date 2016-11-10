@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="0.12" date="SNAPSHOT" description="v0.12">
+    <release version="0.12" date="2016-11-10" description="v0.12">
       <action dev="jodastephen" type="fix" >
         Update currency codes to latest ISO-4217.
         Fixes #64.
