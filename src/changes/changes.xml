@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="0.12" date="SNAPSHOT" description="v0.12">
+      <action dev="jodastephen" type="fix" >
+        Update currencies for BY, LT, LV, SS.
+        Fixes #68, #70, #72.
+      </action>
+    </release>
     <release version="0.11" date="2016-02-21" description="v0.11">
       <action dev="jodastephen" type="fix" >
         Allow currency conversion to the same currency if the conversion factor is one.
