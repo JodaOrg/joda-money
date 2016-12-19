@@ -790,7 +790,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      */
     public BigMoney withAmount(BigDecimal amount) {
         MoneyUtils.checkNotNull(amount, "Amount must not be null");
-        if (this.amount.equals(amount)) {
+        if (hasSameAmount(amount)) {
             return this;
         }
         return BigMoney.of(currency, amount);
@@ -1696,9 +1696,26 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         if (other instanceof BigMoney) {
             BigMoney otherMoney = (BigMoney) other;
             return currency.equals(otherMoney.getCurrencyUnit()) &&
-                    amount.equals(otherMoney.amount);
+                    hasSameAmount(otherMoney.amount);
         }
         return false;
+    }
+
+    /**
+     * Check whether a given {@code otherAmount} is of the same value with the
+     * current {@link #amount} according to the
+     * {@link java.math.BigDecimal#equals(Object)}
+     * and {@link java.math.BigDecimal#compareTo(java.math.BigDecimal)}
+     * methods' semantics.
+     *
+     * @param otherAmount the monetary amount to compare with, not null
+     * @return {@code true} if {@code otherAmount} and {@link #amount} are equal
+     * in value in spite of their representation, {@code false} otherwise.
+     * @see java.math.BigDecimal#compareTo(Object)
+     * @see java.math.BigDecimal#equals(Object)
+     */
+    private boolean hasSameAmount(BigDecimal otherAmount) {
+        return amount.compareTo(otherAmount) == 0;
     }
 
     /**
