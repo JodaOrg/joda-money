@@ -116,7 +116,10 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * The currency 'CAD' - Canadian Dollar.
      */
     public static final CurrencyUnit CAD = of("CAD");
-
+    /**
+     * The currency 'RUB' - Russian Ruble.
+     */
+    public static final CurrencyUnit RUB = of("RUB");
     /**
      * The currency code, not null.
      */
