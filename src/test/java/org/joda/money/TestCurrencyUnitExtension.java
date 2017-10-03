@@ -51,6 +51,30 @@ public class TestCurrencyUnitExtension {
         assertEquals(found, true);
     }
 
+    public void test_LargerDecimalPrecisionCurrencyFromMoneyDataExtension() {
+        List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
+        boolean found = false;
+        for (CurrencyUnit currencyUnit : curList) {
+            if (currencyUnit.getCode().equals("ETH")) {
+                found = true;
+                break;
+            }
+        }
+        assertEquals(found, true);
+    }
+
+    public void test_InvalidLargerDecimalPrecisionCurrencyFromMoneyDataExtension() {
+        List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
+        boolean found = false;
+        for (CurrencyUnit currencyUnit : curList) {
+            if (currencyUnit.getCode().equals("XXL")) {
+                found = true;
+                break;
+            }
+        }
+        assertEquals(found, false);
+    }
+
     public void test_CurrencyMissing() {
         List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
         boolean found = false;

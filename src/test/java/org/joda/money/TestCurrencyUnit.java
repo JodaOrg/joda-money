@@ -23,6 +23,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Currency;
@@ -119,7 +120,14 @@ public class TestCurrencyUnit {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void test_registeredCurrency_invalidDP_big() {
-        CurrencyUnit.registerCurrency("TST", 991, 10, Arrays.asList("TS"));
+        CurrencyUnit.registerCurrency("TST", 991, 31, Arrays.asList("TS"));
+    }
+
+    public void test_registeredCurrency_validDP_big() {
+        CurrencyUnit.registerCurrency("XLG", -1, 30, new ArrayList<String>());
+
+        CurrencyUnit currency = CurrencyUnit.of("XLG");
+        assertEquals(currency.getDecimalPlaces(), 30);
     }
 
     @Test(expectedExceptions = NullPointerException.class)

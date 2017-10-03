@@ -37,7 +37,7 @@ import java.util.regex.Pattern;
 class DefaultCurrencyUnitDataProvider extends CurrencyUnitDataProvider {
 
     /** Regex format for the csv line. */
-    private static final Pattern REGEX_LINE = Pattern.compile("([A-Z]{3}),(-1|[0-9]{1,3}),(-1|[0-9]),([A-Z]*)#?.*");
+    private static final Pattern REGEX_LINE = Pattern.compile("([A-Z]{3}),(-1|[0-9]{1,3}),(-1|[0-9]|[1-2][0-9]|30),([A-Z]*)#?.*");
 
     /**
      * Registers all the currencies known by this provider.
