@@ -1,15 +1,21 @@
-# This file enables the Travis continuous integration system, which
-# automatically builds and tests joda-money for each GitHub commit or 
-# pull request on three separate JDKs.
-#
-# For more information, see https://travis-ci.org
-
 sudo: false
-
 language: java
-
-jdk: 
+jdk:
   - oraclejdk8
-  - oraclejdk7
-  - openjdk6
-
+  - openjdk7
+cache:
+  directories:
+    - "$HOME/.m2/repository"
+before_cache:
+  - rm -rf $HOME/.m2/repository/org/joda/money
+# install
+install:
+  - mvn --version
+script:
+  - mvn install -e -B
+after_success:
+  - if [[ $TRAVIS_TAG =~ ^v.*$ ]] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_JDK_VERSION" == "oraclejdk8" ]; then travis_wait 40 mvn site-deploy -e -B --settings .github/maven-settings.xml; fi
+# secure keys for GITHUB_TOKEN
+env:
+  global:
+  - secure: RkVwVb42aCiC2WHf1vuKZizw7HB3L0WLA3Sk3uI/doCj8UBI4gahoduClPFJKAs8xTgRFijUXDPtBEzOmVYaverwX2K62Ui0ddhhXWsk+U4bWHVkhJ/QEs07Z0ddBhbEv4TicFhNAlGKezSMIMfFpfW2b2JrjWDVO6Exj3ndUCQ=
