@@ -129,6 +129,9 @@
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
             </manifest>
+            <manifestEntries>
+              <Automatic-Module-Name>org.joda.money</Automatic-Module-Name>
+            </manifestEntries>
           </archive>
         </configuration>
       </plugin>
