@@ -57,6 +57,7 @@ public class TestCurrencyUnitExtension {
         for (CurrencyUnit currencyUnit : curList) {
             if (currencyUnit.getCode().equals("ETH")) {
                 found = true;
+                assertEquals(Money.of(currencyUnit, 1.23456789d).toString(), "ETH 1.234567890000000000000000000000");
                 break;
             }
         }
