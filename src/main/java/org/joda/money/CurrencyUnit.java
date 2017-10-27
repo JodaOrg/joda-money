@@ -53,10 +53,6 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      */
     private static final long serialVersionUID = 327835287287L;
     /**
-     * The currency code pattern.
-     */
-    private static final Pattern CODE = Pattern.compile("[A-Z][A-Z][A-Z]");
-    /**
      * Map of registered currencies by text code.
      */
     private static final ConcurrentMap<String, CurrencyUnit> currenciesByCode = new ConcurrentHashMap<String, CurrencyUnit>();
@@ -191,9 +187,6 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
         if (currencyCode.length() != 3) {
             throw new IllegalArgumentException("Invalid string code, must be length 3");
-        }
-        if (CODE.matcher(currencyCode).matches() == false) {
-            throw new IllegalArgumentException("Invalid string code, must be ASCII upper-case letters");
         }
         if (numericCurrencyCode < -1 || numericCurrencyCode > 999) {
             throw new IllegalArgumentException("Invalid numeric code");
