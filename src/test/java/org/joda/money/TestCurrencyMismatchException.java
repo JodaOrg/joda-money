@@ -15,14 +15,13 @@
  */
 package org.joda.money;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test CurrencyMismatchException.
  */
-@Test
 public class TestCurrencyMismatchException {
 
     private static final CurrencyUnit GBP = CurrencyUnit.of("GBP");
@@ -31,36 +30,40 @@ public class TestCurrencyMismatchException {
     //-----------------------------------------------------------------------
     // new (CurrencyUnit,CurrencyUnit)
     //-----------------------------------------------------------------------
+    @Test
     public void test_new_GBPEUR() {
         CurrencyMismatchException test = new CurrencyMismatchException(GBP, EUR);
-        assertEquals(test.getMessage(), "Currencies differ: GBP/EUR");
-        assertEquals(test.getCause(), null);
-        assertEquals(test.getFirstCurrency(), GBP);
-        assertEquals(test.getSecondCurrency(), EUR);
+        assertEquals("Currencies differ: GBP/EUR", test.getMessage());
+        assertEquals(null, test.getCause());
+        assertEquals(GBP, test.getFirstCurrency());
+        assertEquals(EUR, test.getSecondCurrency());
     }
 
+    @Test
     public void test_new_nullEUR() {
         CurrencyMismatchException test = new CurrencyMismatchException(null, EUR);
-        assertEquals(test.getMessage(), "Currencies differ: null/EUR");
-        assertEquals(test.getCause(), null);
-        assertEquals(test.getFirstCurrency(), null);
-        assertEquals(test.getSecondCurrency(), EUR);
+        assertEquals("Currencies differ: null/EUR", test.getMessage());
+        assertEquals(null, test.getCause());
+        assertEquals(null, test.getFirstCurrency());
+        assertEquals(EUR, test.getSecondCurrency());
     }
 
+    @Test
     public void test_new_GBPnull() {
         CurrencyMismatchException test = new CurrencyMismatchException(GBP, null);
-        assertEquals(test.getMessage(), "Currencies differ: GBP/null");
-        assertEquals(test.getCause(), null);
-        assertEquals(test.getFirstCurrency(), GBP);
-        assertEquals(test.getSecondCurrency(), null);
+        assertEquals("Currencies differ: GBP/null", test.getMessage());
+        assertEquals(null, test.getCause());
+        assertEquals(GBP, test.getFirstCurrency());
+        assertEquals(null, test.getSecondCurrency());
     }
 
+    @Test
     public void test_new_nullnull() {
         CurrencyMismatchException test = new CurrencyMismatchException(null, null);
-        assertEquals(test.getMessage(), "Currencies differ: null/null");
-        assertEquals(test.getCause(), null);
-        assertEquals(test.getFirstCurrency(), null);
-        assertEquals(test.getSecondCurrency(), null);
+        assertEquals("Currencies differ: null/null", test.getMessage());
+        assertEquals(null, test.getCause());
+        assertEquals(null, test.getFirstCurrency());
+        assertEquals(null, test.getSecondCurrency());
     }
 
 }

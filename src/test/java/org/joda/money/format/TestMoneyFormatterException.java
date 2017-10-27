@@ -17,20 +17,20 @@ package org.joda.money.format;
 
 import java.io.IOException;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test MoneyFormatterException.
  */
-@Test
 public class TestMoneyFormatterException {
 
-    @Test(expectedExceptions = IOException.class)
+    @Test(expected = IOException.class)
     public void test_MoneyFormatException_IOException_notRethrown() throws IOException {
         MoneyFormatException test = new MoneyFormatException("Error", new IOException("Inner"));
         test.rethrowIOException();  // should throw
     }
 
+    @Test
     public void test_MoneyFormatException_nonIOException_notRethrown() throws IOException {
         MoneyFormatException test = new MoneyFormatException("Error", new IllegalStateException("Inner"));
         test.rethrowIOException();  // should succeed

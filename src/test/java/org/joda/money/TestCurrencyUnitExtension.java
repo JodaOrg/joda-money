@@ -15,30 +15,31 @@
  */
 package org.joda.money;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test CurrencyUnit.
  */
-@Test
 public class TestCurrencyUnitExtension {
 
-  public void test_CurrencyFromMoneyData() {
-    List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
-    boolean found = false;
-    for (CurrencyUnit currencyUnit : curList) {
-        if (currencyUnit.getCode().equals("GBP")) {
-            found = true;
-            break;
+    @Test
+    public void test_CurrencyFromMoneyData() {
+        List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
+        boolean found = false;
+        for (CurrencyUnit currencyUnit : curList) {
+            if (currencyUnit.getCode().equals("GBP")) {
+                found = true;
+                break;
+            }
         }
+        assertEquals(true, found);
     }
-    assertEquals(found, true);
-   }
 
+    @Test
     public void test_CurrencyFromMoneyDataExtension() {
         List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
         boolean found = false;
@@ -48,22 +49,24 @@ public class TestCurrencyUnitExtension {
                 break;
             }
         }
-        assertEquals(found, true);
+        assertEquals(true, found);
     }
 
+    @Test
     public void test_LargerDecimalPrecisionCurrencyFromMoneyDataExtension() {
         List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
         boolean found = false;
         for (CurrencyUnit currencyUnit : curList) {
             if (currencyUnit.getCode().equals("ETH")) {
                 found = true;
-                assertEquals(Money.of(currencyUnit, 1.23456789d).toString(), "ETH 1.234567890000000000000000000000");
+                assertEquals("ETH 1.234567890000000000000000000000", Money.of(currencyUnit, 1.23456789d).toString());
                 break;
             }
         }
-        assertEquals(found, true);
+        assertEquals(true, found);
     }
 
+    @Test
     public void test_InvalidLargerDecimalPrecisionCurrencyFromMoneyDataExtension() {
         List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
         boolean found = false;
@@ -73,9 +76,10 @@ public class TestCurrencyUnitExtension {
                 break;
             }
         }
-        assertEquals(found, false);
+        assertEquals(false, found);
     }
 
+    @Test
     public void test_CurrencyMissing() {
         List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
         boolean found = false;
@@ -85,14 +89,15 @@ public class TestCurrencyUnitExtension {
                 break;
             }
         }
-        assertEquals(found, false);
+        assertEquals(false, found);
     }
 
+    @Test
     public void test_CurrencyEURChanged() {
         CurrencyUnit currency = CurrencyUnit.ofCountry("HU");
-        assertEquals(currency, CurrencyUnit.EUR);
-        assertEquals(CurrencyUnit.EUR.getCountryCodes().contains("HU"), true);
-        assertEquals(CurrencyUnit.of("HUF").getCountryCodes().isEmpty(), true);
+        assertEquals(CurrencyUnit.EUR, currency);
+        assertEquals(true, CurrencyUnit.EUR.getCountryCodes().contains("HU"));
+        assertEquals(true, CurrencyUnit.of("HUF").getCountryCodes().isEmpty());
     }
 
 }

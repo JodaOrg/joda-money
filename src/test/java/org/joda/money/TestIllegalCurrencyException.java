@@ -15,29 +15,30 @@
  */
 package org.joda.money;
 
-import static org.testng.Assert.assertEquals;
+import static org.junit.Assert.assertEquals;
 
-import org.testng.annotations.Test;
+import org.junit.Test;
 
 /**
  * Test IllegalCurrencyException.
  */
-@Test
 public class TestIllegalCurrencyException {
 
     //-----------------------------------------------------------------------
     // new (String)
     //-----------------------------------------------------------------------
+    @Test
     public void test_String() {
         IllegalCurrencyException test = new IllegalCurrencyException("PROBLEM");
-        assertEquals(test.getMessage(), "PROBLEM");
-        assertEquals(test.getCause(), null);
+        assertEquals("PROBLEM", test.getMessage());
+        assertEquals(null, test.getCause());
     }
 
+    @Test
     public void test_String_nullString() {
         IllegalCurrencyException test = new IllegalCurrencyException(null);
-        assertEquals(test.getMessage(), null);
-        assertEquals(test.getCause(), null);
+        assertEquals(null, test.getMessage());
+        assertEquals(null, test.getCause());
     }
 
 }
