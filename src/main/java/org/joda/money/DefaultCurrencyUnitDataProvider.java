@@ -62,10 +62,12 @@ class DefaultCurrencyUnitDataProvider extends CurrencyUnitDataProvider {
         Exception resultEx = null;
         try {
             in = getClass().getResourceAsStream(fileName);
-            if (in == null && isNecessary) {
-                throw new FileNotFoundException("Data file " + fileName + " not found");
-            } else if (in == null && !isNecessary) {
-                return; // no extension file found, no problem. just return
+            if (in == null) {
+                if (isNecessary) {
+                    throw new FileNotFoundException("Data file " + fileName + " not found");
+                } else {
+                    return; // no extension file found, no problem. just return
+                }
             }
             BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
             String line;
