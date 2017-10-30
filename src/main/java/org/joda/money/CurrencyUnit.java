@@ -407,7 +407,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * Block malicious data streams.
      * 
      * @param ois  the input stream, not null
-     * @throws InvalidObjectException
+     * @throws InvalidObjectException if an error occurs
      */
     private void readObject(ObjectInputStream ois) throws InvalidObjectException {
         throw new InvalidObjectException("Serialization delegate required");
