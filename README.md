@@ -50,15 +50,14 @@ Various documentation is available:
 
 
 ### Releases
-[Release 0.12](http://www.joda.org/joda-money/download.html) is the current latest release.
-The code is fully tested, but there may yet be bugs and the API may yet change.
-There should be no great reason why it cannot be used in production if you can cope with future API change.
+[Release 1.0](download.html) is the current release.
+This release is considered stable and worthy of the 1.x tag.
 It depends on JDK 1.6 or later.
 
 Joda-Money does have a *compile-time* dependency on Joda-Convert, but this is not required at runtime
 thanks to the magic of annotations.
 
-Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-money|0.12|jar)
+Available in the [Maven Central repository](http://search.maven.org/#artifactdetails|org.joda|joda-money|1.0|jar)
 
 
 ### Support
