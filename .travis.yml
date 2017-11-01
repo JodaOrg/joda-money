@@ -13,7 +13,7 @@ before_cache:
 install:
   - mvn --version
 script:
-  - mvn install -e -B
+  - mvn install site -e -B
 after_success:
   - if [[ $TRAVIS_TAG =~ ^v.*$ ]] && [ "$TRAVIS_PULL_REQUEST" == "false" ] && [ "$TRAVIS_JDK_VERSION" == "oraclejdk8" ]; then travis_wait 40 mvn site-deploy -e -B --settings .github/maven-settings.xml; fi
 # secure keys for GITHUB_TOKEN
