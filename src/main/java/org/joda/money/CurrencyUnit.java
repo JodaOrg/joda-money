@@ -76,7 +76,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
                         "org.joda.money.CurrencyUnitDataProvider", "org.joda.money.DefaultCurrencyUnitDataProvider");
                 Class<? extends CurrencyUnitDataProvider> cls =
                         CurrencyUnit.class.getClassLoader().loadClass(clsName).asSubclass(CurrencyUnitDataProvider.class);
-                cls.newInstance().registerCurrencies();
+                cls.getDeclaredConstructor().newInstance().registerCurrencies();
             } catch (SecurityException ex) {
                 new DefaultCurrencyUnitDataProvider().registerCurrencies();
             }
