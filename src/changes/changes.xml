@@ -9,11 +9,11 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="1.0" date="SNAPSHOT" description="v1.0">
+      <action dev="jodastephen" type="add">
+        Update and redesign build to support Java 9.
+      </action>
       <action dev="coderjoe" type="add" >
         Allow currencies to have 30 decimal places.
-      </action>
-      <action dev="jodastephen" type="add" >
-        Add Automatic Module Name for Java SE 9.
       </action>
     </release>
     <release version="0.12" date="2016-11-10" description="v0.12">
