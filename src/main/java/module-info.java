@@ -15,8 +15,6 @@
  */
 
 /**
- * Joda-Money provides basic monetary types.
- * 
  * Joda-Money provides a library of classes to store amounts of money.
  * <p>
  * Joda-Money does not provide monetary algorithms beyond the most basic and obvious.
