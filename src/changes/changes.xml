@@ -10,6 +10,9 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.0" date="SNAPSHOT" description="v1.0">
       <action dev="jodastephen" type="add">
+        Update currency data.
+      </action>
+      <action dev="jodastephen" type="add">
         Add module-info for Java 9.
         Fixes #81.
       </action>
