@@ -18,6 +18,7 @@ package org.joda.money;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -61,6 +62,9 @@ public class TestCurrencyUnit {
     public void test_registeredCurrencies_sorted() {
         List<CurrencyUnit> curList1 = CurrencyUnit.registeredCurrencies();
         List<CurrencyUnit> curList2 = CurrencyUnit.registeredCurrencies();
+        Collections.sort(curList2);
+        assertEquals(curList2, curList1);
+        Collections.shuffle(curList2);
         Collections.sort(curList2);
         assertEquals(curList2, curList1);
     }
@@ -152,34 +156,39 @@ public class TestCurrencyUnit {
         CurrencyUnit.registerCurrency("GBX", 991, 2, Arrays.asList("GB"));
     }
 
-//    public void test_registeredCurrencies_crossCheck() {
-//        List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
-//        for (CurrencyUnit currencyUnit : curList) {
-//            try {
-//                Currency curr = Currency.getInstance(currencyUnit.getCode());
-//                assertEquals(currencyUnit.getDefaultFractionDigits(), curr.getDefaultFractionDigits(), curr.getCurrencyCode());
-//            } catch (IllegalArgumentException ex) {
-//                System.out. println(currencyUnit);
-//            }
-//        }
-//    }
+    public void test_registeredCurrencies_crossCheck() {
+        List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
+        for (CurrencyUnit currencyUnit : curList) {
+            try {
+                Currency curr = Currency.getInstance(currencyUnit.getCode());
+                assertEquals(curr.getCurrencyCode(), curr.getDefaultFractionDigits(), currencyUnit.getDefaultFractionDigits());
+            } catch (IllegalArgumentException ex) {
+                fail(currencyUnit.toString());
+            }
+        }
+    }
 
-//    {
-//        System.out. println(curList1);
-//        for (char a = 'A'; a <= 'Z'; a++) {
-//            for (char b = 'A'; b <= 'Z'; b++) {
-//                for (char c = 'A'; c <= 'Z'; c++) {
-//                    String code = "" + a + b + c;
-//                    try {
-//                        Currency curr = Currency.getInstance(code);
-//                        System.out. println(curr);
-//                    } catch (Exception ex) {
-//                        // continue
-//                    }
-//                }
-//            }
-//        }
-//    }
+    //-----------------------------------------------------------------------
+    // registeredCountries()
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_registeredCountries() {
+        List<String> countryList = CurrencyUnit.registeredCountries();
+        assertTrue(countryList.contains("GB"));
+        assertTrue(countryList.contains("EU"));
+        assertTrue(countryList.contains("US"));
+    }
+
+    @Test
+    public void test_registeredCountries_sorted() {
+        List<String> curList1 = CurrencyUnit.registeredCountries();
+        List<String> curList2 = CurrencyUnit.registeredCountries();
+        Collections.sort(curList2);
+        assertEquals(curList2, curList1);
+        Collections.shuffle(curList2);
+        Collections.sort(curList2);
+        assertEquals(curList2, curList1);
+    }
 
     //-----------------------------------------------------------------------
     // constants
@@ -795,7 +804,8 @@ public class TestCurrencyUnit {
     public void test_equals_false() {
         CurrencyUnit a = CurrencyUnit.of("GBP");
         assertFalse(a.equals(null));
-        assertFalse(a.equals("String"));
+        Object obj = "String";  // avoid warning in Eclipse
+        assertFalse(a.equals(obj));
         assertFalse(a.equals(new Object()));
     }
 

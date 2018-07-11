@@ -16,6 +16,7 @@
 package org.joda.money;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -68,28 +69,20 @@ public class TestCurrencyUnitExtension {
 
     @Test
     public void test_InvalidLargerDecimalPrecisionCurrencyFromMoneyDataExtension() {
-        List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
-        boolean found = false;
-        for (CurrencyUnit currencyUnit : curList) {
+        for (CurrencyUnit currencyUnit : CurrencyUnit.registeredCurrencies()) {
             if (currencyUnit.getCode().equals("XXL")) {
-                found = true;
-                break;
+                fail("Currency XXL should not exist");
             }
         }
-        assertEquals(false, found);
     }
 
     @Test
     public void test_CurrencyMissing() {
-        List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
-        boolean found = false;
-        for (CurrencyUnit currencyUnit : curList) {
+        for (CurrencyUnit currencyUnit : CurrencyUnit.registeredCurrencies()) {
             if (currencyUnit.getCode().equals("NMC")) {
-                found = true;
-                break;
+                fail("Currency NMC should not exist");
             }
         }
-        assertEquals(false, found);
     }
 
     @Test

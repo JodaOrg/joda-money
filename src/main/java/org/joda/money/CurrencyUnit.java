@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.regex.Pattern;
 
 import org.joda.convert.FromString;
@@ -59,7 +60,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     /**
      * Map of registered currencies by text code.
      */
-    private static final ConcurrentMap<String, CurrencyUnit> currenciesByCode = new ConcurrentHashMap<String, CurrencyUnit>();
+    private static final ConcurrentMap<String, CurrencyUnit> currenciesByCode = new ConcurrentSkipListMap<String, CurrencyUnit>();
     /**
      * Map of registered currencies by numeric code.
      */
@@ -67,7 +68,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     /**
      * Map of registered currencies by country.
      */
-    private static final ConcurrentMap<String, CurrencyUnit> currenciesByCountry = new ConcurrentHashMap<String, CurrencyUnit>();
+    private static final ConcurrentMap<String, CurrencyUnit> currenciesByCountry = new ConcurrentSkipListMap<String, CurrencyUnit>();
     static {
         // load one data provider by system property
         try {
@@ -81,8 +82,12 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
                 new DefaultCurrencyUnitDataProvider().registerCurrencies();
             }
         } catch (RuntimeException ex) {
+            System.err.println("ERROR: " + ex.getMessage());
+            ex.printStackTrace();
             throw ex;
         } catch (Exception ex) {
+            System.err.println("ERROR: " + ex.getMessage());
+            ex.printStackTrace();
             throw new RuntimeException(ex.toString(), ex);
         }
     }
@@ -225,11 +230,67 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
             currenciesByNumericCode.putIfAbsent(numericCurrencyCode, currency);
         }
         for (String countryCode : countryCodes) {
-            currenciesByCountry.put(countryCode, currency);
+            registerCountry(countryCode, currency);
         }
         return currenciesByCode.get(currencyCode);
     }
 
+    /**
+     * Registers a currency allowing it to be used, allowing replacement.
+     * <p>
+     * This class only permits known currencies to be returned.
+     * To achieve this, all currencies have to be registered in advance.
+     * <p>
+     * Since this method is public, it is possible to add currencies in
+     * application code. It is recommended to do this only at startup, however
+     * it is safe to do so later as the internal implementation is thread-safe.
+     * <p>
+     * This method uses a flag to determine whether the registered currency
+     * must be new, or can replace an existing currency.
+     * <p>
+     * The currency code must be three upper-case ASCII letters, based on ISO-4217.
+     * The numeric code must be from 0 to 999, or -1 if not applicable.
+     *
+     * @param currencyCode  the three-letter upper-case currency code, not null
+     * @param numericCurrencyCode  the numeric currency code, from 0 to 999, -1 if none
+     * @param decimalPlaces  the number of decimal places that the currency
+     *  normally has, from 0 to 30 (normally 0, 2 or 3), or -1 for a pseudo-currency
+     *  use of ISO-3166 is recommended, not null
+     * @param force  true to register forcefully, replacing any existing matching currency,
+     *  false to validate that there is no existing matching currency
+     * @return the new instance, never null
+     * @throws IllegalArgumentException if the code is already registered and {@code force} is false;
+     *  or if the specified data is invalid
+     */
+    public static synchronized CurrencyUnit registerCurrency(
+            String currencyCode, 
+            int numericCurrencyCode,
+            int decimalPlaces, 
+            boolean force) {
+
+        List<String> countryCodes = Collections.<String>emptyList();
+        return registerCurrency(currencyCode, numericCurrencyCode, decimalPlaces, countryCodes, force);
+    }
+
+    /**
+     * Registers a country code, typically ISO 3166-1-alpha-2.
+     * <p>
+     * This registers a country code and the associated currency.
+     * <p>
+     * The country code is typically from ISO 3166-1-alpha-2, and is therefore two upper-case ASCII letters.
+     * <p>
+     * If the country code already exists, the data is replaced.
+     *
+     * @param countryCode  the country code, two upper case letters if following ISO 3166-1-alpha-2, not null
+     * @param currency  the associated currency
+     * @throws IllegalArgumentException if the code is already registered and {@code force} is false;
+     *  or if the specified data is invalid
+     */
+    public static synchronized void registerCountry(String countryCode, CurrencyUnit currency) {
+        currenciesByCountry.put(countryCode, currency);
+    }
+
+    //-----------------------------------------------------------------------
     /**
      * Gets the list of all registered currencies.
      * <p>
@@ -240,9 +301,19 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @return the sorted, independent, list of all registered currencies, never null
      */
     public static List<CurrencyUnit> registeredCurrencies() {
-        ArrayList<CurrencyUnit> list = new ArrayList<CurrencyUnit>(currenciesByCode.values());
-        Collections.sort(list);
-        return list;
+        return new ArrayList<CurrencyUnit>(currenciesByCode.values());
+    }
+
+    /**
+     * Gets the list of all registered countries.
+     * <p>
+     * This returns the list of known countries.
+     * The list may change after application startup, however this isn't recommended.
+     *
+     * @return the sorted, independent, list of all registered countries, never null
+     */
+    public static List<String> registeredCountries() {
+        return new ArrayList<String>(currenciesByCountry.keySet());
     }
 
     //-----------------------------------------------------------------------

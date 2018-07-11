@@ -45,4 +45,17 @@ public abstract class CurrencyUnitDataProvider {
         CurrencyUnit.registerCurrency(currencyCode, numericCurrencyCode, decimalPlaces, countryCodes, true);
     }
 
+    /**
+     * Registers a country allowing it to be used.
+     * <p>
+     * This method is called by {@link #registerCurrencies()} to perform the
+     * actual creation of a country.
+     *
+     * @param countryCode  the country code, not null
+     * @param currencyCode  the currency code, not null
+     */
+    protected final void registerCountry(String countryCode, String currencyCode) {
+        CurrencyUnit.registerCountry(countryCode, CurrencyUnit.of(currencyCode));
+    }
+
 }
