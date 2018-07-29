@@ -5,7 +5,6 @@
   <property name="severity" value="warning"/>
   <module name="TreeWalker">
     <property name="tabWidth" value="4"/>
-    <module name="FileContentsHolder"/>
     <module name="ConstantName">
       <property name="format" value="^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$|^[a-z][a-zA-Z0-9]*$"/>
     </module>
@@ -118,13 +117,18 @@
       <property name="basicOffset" value="4"/>
       <property name="caseIndent" value="4"/>
     </module>
+    <module name="SuppressWithNearbyCommentFilter">
+      <property name="commentFormat" value="CSIGNORE"/>
+      <property name="checkFormat" value=".*"/>
+      <property name="checkC" value="false"/>
+    </module>
   </module>
   <!-- Header inlined due to m2e -->
   <module name="RegexpHeader">
     <property name="header" value="^/\*[*]?\n^ \*  Copyright 2009[-]present[,] Stephen Colebourne"/>
     <property name="fileExtensions" value="java"/>
   </module>
-  <module name="SuppressionCommentFilter">
+  <module name="SuppressWithPlainTextCommentFilter">
     <property name="offCommentFormat" value="CSOFF"/>
     <property name="onCommentFormat" value="CSON"/>
   </module>
@@ -134,9 +138,4 @@
     <property name="severity" value="error"/>
   </module>
   <module name="NewlineAtEndOfFile"/>
-  <module name="SuppressWithNearbyCommentFilter">
-    <property name="commentFormat" value="CSIGNORE"/>
-    <property name="checkFormat" value=".*"/>
-    <property name="checkC" value="false"/>
-  </module>
 </module>

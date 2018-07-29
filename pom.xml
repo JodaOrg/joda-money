@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project
-    xmlns="http://maven.apache.org/POM/4.0.0"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <!-- ==================================================================== -->
-  <!-- Build requires Java SE 7 or later -->
+  <!-- Build requires Java SE 8 or later -->
   <!-- Releases require Java SE 9 or later -->
   <!-- ==================================================================== -->
+  <parent>
+    <groupId>org.joda</groupId>
+    <artifactId>joda-parent</artifactId>
+    <version>1.1.2</version>
+  </parent>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>org.joda</groupId>
   <artifactId>joda-money</artifactId>
   <packaging>jar</packaging>
   <name>Joda-Money</name>
@@ -18,24 +19,15 @@
   <url>http://www.joda.org/${joda.artifactId}/</url>
 
   <!-- ==================================================================== -->
-  <issueManagement>
-    <system>GitHub</system>
-    <url>https://github.com/JodaOrg/${joda.artifactId}/issues</url>
-  </issueManagement>
   <inceptionYear>2009</inceptionYear>
+  <scm>
+    <connection>scm:git:https://github.com/JodaOrg/${joda.artifactId}.git</connection>
+    <developerConnection>scm:git:https://github.com/JodaOrg/${joda.artifactId}.git</developerConnection>
+    <url>https://github.com/JodaOrg/${joda.artifactId}</url>
+    <tag>HEAD</tag>
+  </scm>
 
   <!-- ==================================================================== -->
-  <developers>
-    <developer>
-      <id>jodastephen</id>
-      <name>Stephen Colebourne</name>
-      <roles>
-        <role>Project Lead</role>
-      </roles>
-      <timezone>0</timezone>
-      <url>https://github.com/jodastephen</url>
-    </developer>
-  </developers>
   <contributors>
     <contributor>
       <name>Ashish Kumar</name>
@@ -63,373 +55,19 @@
   </contributors>
 
   <!-- ==================================================================== -->
-  <licenses>
-    <license>
-      <name>Apache 2</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-  <scm>
-    <connection>scm:git:https://github.com/JodaOrg/${joda.artifactId}.git</connection>
-    <developerConnection>scm:git:git@github.com:JodaOrg/${joda.artifactId}.git</developerConnection>
-    <url>https://github.com/JodaOrg/${joda.artifactId}</url>
-  </scm>
-  <organization>
-    <name>Joda.org</name>
-    <url>http://www.joda.org</url>
-  </organization>
-
-  <!-- ==================================================================== -->
   <build>
-    <resources>
-      <resource>
-        <directory>src/main/resources</directory>
-      </resource>
-      <resource>
-        <targetPath>META-INF</targetPath>
-        <directory>${project.basedir}</directory>
-        <includes>
-          <include>LICENSE.txt</include>
-          <include>NOTICE.txt</include>
-        </includes>
-      </resource>
-    </resources>
-    <!-- define build -->
     <plugins>
-      <!-- Enforce Maven 3.5.0 -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-enforcer-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>enforce-maven</id>
-            <goals>
-              <goal>enforce</goal>
-            </goals>
-            <configuration>
-              <rules>
-                <requireMavenVersion>
-                  <version>3.5.0</version>
-                </requireMavenVersion>
-              </rules>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- Setup Checkstyle, excluding module-info -->
+      <!-- Turn on Checkstyle -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>run-checkstyle</id>
-            <phase>process-sources</phase>
-            <goals>
-              <goal>checkstyle</goal>
-            </goals>
-          </execution>
-        </executions>
-        <configuration>
-          <excludes>module-info.java</excludes>
-        </configuration>
       </plugin>
-      <!-- Setup Jar file manifest entries -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
-        <configuration>
-          <archive>
-            <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-            <manifest>
-              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
-              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
-            </manifest>
-            <manifestEntries>
-              <Automatic-Module-Name>${joda.module.name}</Automatic-Module-Name>
-            </manifestEntries>
-          </archive>
-        </configuration>
-      </plugin>
-      <!-- Setup OSGi bundle data, with fix for Java 9 -->
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <version>2.5.4</version>
-        <dependencies>
-          <dependency>
-            <groupId>biz.aQute.bnd</groupId>
-            <artifactId>biz.aQute.bndlib</artifactId>
-            <version>3.5.0</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <execution>
-            <id>bundle-manifest</id>
-            <phase>process-classes</phase>
-            <goals>
-              <goal>manifest</goal>
-            </goals>
-            <configuration>
-              <instructions>
-                <Export-Package>${joda.osgi.packages}</Export-Package>
-              </instructions>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- Setup Javadoc jar -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-javadocs</id>
-            <phase>package</phase>
-            <goals>
-              <goal>jar</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- Setup source jar -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-source-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>attach-sources</id>
-            <phase>package</phase>
-            <goals>
-              <goal>jar-no-fork</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- Setup spotbugs dependency, would normally only be in reporting section -->
-      <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
-        <version>${spotbugs-maven-plugin.version}</version>
-        <dependencies>
-          <dependency>
-            <groupId>com.github.spotbugs</groupId>
-            <artifactId>spotbugs</artifactId>
-            <version>3.1.0</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <!-- Setup JaCoCo code coverage -->
+      <!-- Turn on JaCoCo -->
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${jacoco-maven-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>jacoco-initialize</id>
-            <goals>
-              <goal>prepare-agent</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>jacoco-site</id>
-            <phase>package</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- Setup site with reflow maven skin -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-site-plugin</artifactId>
-        <configuration>
-          <skipDeploy>true</skipDeploy>
-        </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>lt.velykis.maven.skins</groupId>
-            <artifactId>reflow-velocity-tools</artifactId>
-            <version>1.1.1</version>
-          </dependency>
-          <dependency>
-            <groupId>org.apache.velocity</groupId>
-            <artifactId>velocity</artifactId>
-            <version>1.7</version>
-          </dependency>
-        </dependencies>
-      </plugin>
-      <!-- Setup to deploy site to GitHub, invoked with mvn site-deploy -->
-      <plugin>
-        <groupId>com.github.github</groupId>
-        <artifactId>site-maven-plugin</artifactId>
-        <version>0.12</version>
-        <executions>
-          <execution>
-            <id>github-site</id>
-            <goals>
-              <goal>site</goal>
-            </goals>
-            <phase>site-deploy</phase>
-          </execution>
-        </executions>
-        <configuration>
-          <message>Create website for ${project.artifactId} v${project.version}</message>
-          <path>${project.artifactId}</path>
-          <merge>true</merge>
-          <server>github</server>
-          <repositoryOwner>JodaOrg</repositoryOwner>
-          <repositoryName>jodaorg.github.io</repositoryName>
-          <branch>refs/heads/master</branch>
-        </configuration>
       </plugin>
     </plugins>
-    <!-- Manage plugin versions -->
-    <pluginManagement>
-      <plugins>
-        <!-- Maven build and reporting plugins (alphabetical) -->
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-assembly-plugin</artifactId>
-          <version>${maven-assembly-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-checkstyle-plugin</artifactId>
-          <version>${maven-checkstyle-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-changes-plugin</artifactId>
-          <version>${maven-changes-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>${maven-clean-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>${maven-compiler-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-deploy-plugin</artifactId>
-          <version>${maven-deploy-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-dependency-plugin</artifactId>
-          <version>${maven-dependency-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <version>${maven-enforcer-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-gpg-plugin</artifactId>
-          <version>${maven-gpg-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>${maven-install-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>${maven-jar-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-javadoc-plugin</artifactId>
-          <version>${maven-javadoc-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-jxr-plugin</artifactId>
-          <version>${maven-jxr-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-plugin-plugin</artifactId>
-          <version>${maven-plugin-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-pmd-plugin</artifactId>
-          <version>${maven-pmd-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-project-info-reports-plugin</artifactId>
-          <version>${maven-project-info-reports-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-repository-plugin</artifactId>
-          <version>${maven-repository-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>${maven-resources-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-site-plugin</artifactId>
-          <version>${maven-site-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-source-plugin</artifactId>
-          <version>${maven-source-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>${maven-surefire-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-report-plugin</artifactId>
-          <version>${maven-surefire-report-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-toolchains-plugin</artifactId>
-          <version>${maven-toolchains-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <groupId>org.eclipse.m2e</groupId>
-          <artifactId>lifecycle-mapping</artifactId>
-          <version>1.0.0</version>
-          <configuration>
-            <lifecycleMappingMetadata>
-              <pluginExecutions>
-                <pluginExecution>
-                  <pluginExecutionFilter>
-                    <groupId>org.apache.felix</groupId>
-                    <artifactId>maven-bundle-plugin</artifactId>
-                    <versionRange>[2.5.4,)</versionRange>
-                    <goals>
-                      <goal>manifest</goal>
-                    </goals>
-                  </pluginExecutionFilter>
-                  <action>
-                    <ignore></ignore>
-                  </action>
-                </pluginExecution>
-              </pluginExecutions>
-            </lifecycleMappingMetadata>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
   </build>
 
   <!-- ==================================================================== -->
@@ -437,7 +75,7 @@
     <dependency>
       <groupId>org.joda</groupId>
       <artifactId>joda-convert</artifactId>
-      <version>1.9.2</version>
+      <version>2.1.1</version>
       <scope>compile</scope>
       <optional>true</optional><!-- mandatory in Scala -->
     </dependency>
@@ -456,271 +94,28 @@
   </dependencies>
 
   <!-- ==================================================================== -->
-  <reporting>
-    <plugins>
-      <!-- Setup standard project info reports -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>${maven-project-info-plugin.version}</version>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>dependencies</report>
-              <report>dependency-info</report>
-              <report>issue-tracking</report>
-              <report>license</report>
-              <report>project-team</report>
-              <report>scm</report>
-              <report>summary</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-      <!-- Setup Checkstyle report, excluding module-info -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>${maven-checkstyle-plugin.version}</version>
-        <configuration>
-          <includeResources>false</includeResources>
-          <includeTestResources>false</includeTestResources>
-          <includeTestSourceDirectory>false</includeTestSourceDirectory>
-          <excludes>module-info.java</excludes>
-        </configuration>
-      </plugin>
-      <!-- Setup Javadoc report -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-javadoc-plugin</artifactId>
-        <version>${maven-javadoc-plugin.version}</version>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>javadoc</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-      <!-- Setup Surefire report -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>${maven-surefire-report-plugin.version}</version>
-        <configuration>
-          <showSuccess>true</showSuccess>
-        </configuration>
-      </plugin>
-      <!-- Setup changes (release notes) -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-changes-plugin</artifactId>
-        <version>${maven-changes-plugin.version}</version>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>changes-report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-      <!-- Setup PMD report, excluding module-info -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-pmd-plugin</artifactId>
-        <version>${maven-pmd-plugin.version}</version>
-        <configuration>
-          <minimumTokens>100</minimumTokens>
-          <targetJdk>${maven.compiler.target}</targetJdk>
-          <excludes>
-            <exclude>module-info.java</exclude>
-          </excludes>
-        </configuration>
-      </plugin>
-      <!-- Setup spotbugs report -->
-      <plugin>
-        <groupId>com.github.spotbugs</groupId>
-        <artifactId>spotbugs-maven-plugin</artifactId>
-        <version>${spotbugs-maven-plugin.version}</version>
-      </plugin>
-      <!-- Setup JaCoCo report -->
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-        <version>${jacoco-maven-plugin.version}</version>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>report</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
-    </plugins>
-  </reporting>
-
-  <!-- ==================================================================== -->
-  <distributionManagement>
-    <repository>
-      <id>sonatype-joda-staging</id>
-      <name>Sonatype OSS staging repository</name>
-      <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-      <layout>default</layout>
-    </repository>
-    <snapshotRepository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>sonatype-joda-snapshot</id>
-      <name>Sonatype OSS snapshot repository</name>
-      <url>http://oss.sonatype.org/content/repositories/joda-snapshots</url>
-      <layout>default</layout>
-    </snapshotRepository>
-    <downloadUrl>http://oss.sonatype.org/content/repositories/joda-releases</downloadUrl>
-  </distributionManagement>
-
-  <!-- ==================================================================== -->
   <profiles>
-    <!-- Skip spotbugs on Java 6 and 7 -->
+    <!-- Extra test dependency -->
     <profile>
-      <id>java6and7</id>
-      <activation>
-        <jdk>[1.6,1.8)</jdk>
-      </activation>
-      <properties>
-        <spotbugs.skip>true</spotbugs.skip>
-      </properties>
-    </profile>
-    <!-- Skip module-info.java on Java 6, 7 and 8 -->
-    <profile>
-      <id>java6and7and8</id>
-      <activation>
-        <jdk>[1.6,9)</jdk>
-      </activation>
-      <build>
-        <plugins>
-          <!-- Don't compile module-info.java, see java 9 profile -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <configuration>
-              <excludes>
-                <exclude>module-info.java</exclude>
-              </excludes>
-            </configuration>
-          </plugin>
-          <!-- Avoid errors from module-info -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-              <sourceFileExcludes>
-                <sourceFileExclude>module-info.java</sourceFileExclude>
-              </sourceFileExcludes>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-      <reporting>
-        <plugins>
-          <!-- Avoid errors from module-info -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-              <sourceFileExcludes>
-                <sourceFileExclude>module-info.java</sourceFileExclude>
-              </sourceFileExcludes>
-            </configuration>
-          </plugin>
-        </plugins>
-      </reporting>
-    </profile>
-    <!-- Setup for Java 9 -->
-    <profile>
-      <id>java9plus</id>
+      <id>test-dependency</id>
       <activation>
         <jdk>[9,)</jdk>
       </activation>
       <build>
         <plugins>
-          <!-- Compile twice -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-compiler-plugin</artifactId>
-            <executions>
-              <!-- compile first with module-info for Java 9 -->
-              <execution>
-                <id>default-compile</id>
-                <configuration>
-                  <release>9</release>
-                </configuration>
-              </execution>
-              <!-- then compile without module-info for Java 6 -->
-              <execution>
-                <id>base-compile</id>
-                <goals>
-                  <goal>compile</goal>
-                </goals>
-                <configuration>
-                  <excludes>
-                    <exclude>module-info.java</exclude>
-                  </excludes>
-                </configuration>
-              </execution>
-            </executions>
-            <!-- setup defaults for compile and testCompile -->
+            <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
-              <jdkToolchain>
-                <version>9</version>
-              </jdkToolchain>
-              <release>${joda.release.version}</release>
-            </configuration>
-          </plugin>
-          <!-- Hack to extract dependencies for Javadoc plugin -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>copy-dependencies</id>
-                <phase>compile</phase>
-                <goals>
-                  <goal>copy-dependencies</goal>
-                </goals>
-                <configuration>
-                  <outputDirectory>${project.build.directory}/dependencies</outputDirectory>
-                  <overWriteReleases>true</overWriteReleases>
-                  <overWriteIfNewer>true</overWriteIfNewer>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <!-- Javadoc plugin not Java 9 ready yet -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <configuration>
-              <additionalparam>--module-path ${project.build.directory}/dependencies</additionalparam>
+              <argLine>--add-modules org.joda.convert</argLine>
             </configuration>
           </plugin>
         </plugins>
       </build>
-      <reporting>
-        <plugins>
-          <!-- Javadoc plugin not Java 9 ready yet -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <version>${maven-javadoc-plugin.version}</version>
-            <configuration>
-              <additionalparam>--module-path ${project.build.directory}/dependencies</additionalparam>
-            </configuration>
-          </plugin>
-        </plugins>
-      </reporting>
     </profile>
     <!-- Main deployment profile, activated by -Doss.repo -->
     <profile>
-      <id>repo-sign-artifacts</id>
+      <id>release-artifacts</id>
       <activation>
         <property>
           <name>oss.repo</name>
@@ -728,41 +123,6 @@
       </activation>
       <build>
         <plugins>
-          <!-- Enforce release is on Java 9 -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-enforcer-plugin</artifactId>
-            <version>${maven-enforcer-plugin.version}</version>
-            <executions>
-              <execution>
-                <id>enforce-java</id>
-                <goals>
-                  <goal>enforce</goal>
-                </goals>
-                <configuration>
-                  <rules>
-                    <requireJavaVersion>
-                      <version>[9,)</version>
-                    </requireJavaVersion>
-                  </rules>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <!-- Sign artifacts -->
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
           <!-- Create dist files -->
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
@@ -818,9 +178,6 @@
           </plugin>
         </plugins>
       </build>
-      <properties>
-        <additionalparam></additionalparam>
-      </properties>
     </profile>
   </profiles>
 
@@ -830,48 +187,10 @@
     <joda.osgi.packages>org.joda.money.*</joda.osgi.packages>
     <joda.module.name>org.joda.money</joda.module.name>
     <joda.artifactId>joda-money</joda.artifactId>
+    <!-- Set to Java 6 -->
     <joda.release.version>6</joda.release.version>
-    <!-- Plugin version numbers -->
-    <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
-    <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
-    <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
-    <maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
-    <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
-    <maven-deploy-plugin.version>2.8.2</maven-deploy-plugin.version>
-    <maven-dependency-plugin.version>3.0.2</maven-dependency-plugin.version>
-    <maven-enforcer-plugin.version>3.0.0-M1</maven-enforcer-plugin.version>
-    <maven-gpg-plugin.version>1.6</maven-gpg-plugin.version>
-    <maven-install-plugin.version>2.5.2</maven-install-plugin.version>
-    <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
-    <maven-javadoc-plugin.version>3.0.0-M1</maven-javadoc-plugin.version>
-    <maven-jxr-plugin.version>2.5</maven-jxr-plugin.version>
-    <maven-plugin-plugin.version>3.5</maven-plugin-plugin.version>
-    <maven-pmd-plugin.version>3.8</maven-pmd-plugin.version>
-    <maven-project-info-reports-plugin.version>2.9</maven-project-info-reports-plugin.version>
-    <maven-repository-plugin.version>2.4</maven-repository-plugin.version>
-    <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
-    <!-- v3.6 doesn't work with theme -->
-    <maven-site-plugin.version>3.4</maven-site-plugin.version>
-    <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
-    <maven-surefire-plugin.version>2.20.1</maven-surefire-plugin.version>
-    <maven-surefire-report-plugin.version>2.20.1</maven-surefire-report-plugin.version>
-    <maven-toolchains-plugin.version>1.1</maven-toolchains-plugin.version>
-    <jacoco-maven-plugin.version>0.7.9</jacoco-maven-plugin.version>
-    <spotbugs-maven-plugin.version>3.1.0-RC6</spotbugs-maven-plugin.version>
-    <!-- Properties for maven-compiler-plugin -->
     <maven.compiler.compilerVersion>1.6</maven.compiler.compilerVersion>
     <maven.compiler.source>1.6</maven.compiler.source>
     <maven.compiler.target>1.6</maven.compiler.target>
-    <maven.compiler.fork>true</maven.compiler.fork>
-    <!-- Properties for maven-javadoc-plugin -->
-    <author>false</author>
-    <notimestamp>true</notimestamp>
-    <doclint>none</doclint>
-    <!-- Properties for maven-checkstyle-plugin -->
-    <checkstyle.config.location>${project.basedir}/src/main/checkstyle/checkstyle.xml</checkstyle.config.location>
-    <linkXRef>false</linkXRef>
-    <!-- Other properties -->
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 </project>
