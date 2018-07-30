@@ -10,9 +10,9 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.0" date="SNAPSHOT" description="v1.0">
       <action dev="jodastephen" type="add">
-        Update currency data.
-        Remove countries from `MoneyData.csv` and add new `CountryData.csv` file.
-        These can be overridden in `MoneyDataExtension.csv` and `CountryDataExtension.csv`.
+        Change currency data files.
+        Files are now `CurrencyData.csv` and `CountryData.csv`.
+        These can be overridden in `CurrencyDataExtension.csv` and `CountryDataExtension.csv`.
         Add historic EUR currencies.
       </action>
       <action dev="jodastephen" type="add">

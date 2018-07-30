@@ -1,7 +1,0 @@
-#Code,Numeric,DecPlaces,CountryCodes
-# this uses the old file format with an extra column for testing purposes
-BTC,-1,-1
-ETH,-1,30
-XXL,-1,31
-EUR,978,2,HU
-HUF,348,2

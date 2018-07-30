@@ -15,8 +15,6 @@
  */
 package org.joda.money;
 
-import java.util.List;
-
 /**
  * Provider for available currencies.
  */
@@ -39,10 +37,9 @@ public abstract class CurrencyUnitDataProvider {
      * @param numericCurrencyCode  the numeric currency code, -1 if none
      * @param decimalPlaces  the number of decimal places that the currency
      *  normally has, from 0 to 3, or -1 for a pseudo-currency
-     * @param countryCodes  the country codes to register the currency under, not null
      */
-    protected final void registerCurrency(String currencyCode, int numericCurrencyCode, int decimalPlaces, List<String> countryCodes) {
-        CurrencyUnit.registerCurrency(currencyCode, numericCurrencyCode, decimalPlaces, countryCodes, true);
+    protected final void registerCurrency(String currencyCode, int numericCurrencyCode, int decimalPlaces) {
+        CurrencyUnit.registerCurrency(currencyCode, numericCurrencyCode, decimalPlaces, true);
     }
 
     /**

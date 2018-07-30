@@ -56,25 +56,38 @@ Joda-Money includes its own currency class as the implementation in the JDK is t
 The data for the Joda-Money class is provided by two configuration files.
 </p>
 <p>
-The file <code>org/joda/money/MoneyData.csv</code> holds a basic list of valid currencies.
+The file <code>org/joda/money/CurrencyData.csv</code> holds a basic list of valid currencies.
 The columns are as follows:
+</p>
+<p>
 <ul>
 <li><a href="http://en.wikipedia.org/wiki/ISO_4217">ISO-4217</a> currency code - three letters, mandatory</li>
 <li><a href="http://en.wikipedia.org/wiki/ISO_4217">ISO-4217</a> numeric code - from 1 to 999, set to -1 if no numeric code</li>
 <li>Number of decimal places in common usage - the supplied data is based on various sources</li>
-<li>Country codes - a list of <a href="http://en.wikipedia.org/wiki/ISO_3166-1">ISO-3166-1</a>country codes,
-adjacent to one another and without separators</li>
 </ul>
 </p>
 <p>
-The library will load the first version of this file it finds in the classpath based on the
-class loader that Joda-Money is loaded in.
+If you place a file on the classpath named <code>META-INF/org/joda/money/CurrencyDataExtension.csv</code>
+then the data it contains will augment and replace the base data.
+The extension file has the same format as the base file.
 </p>
 <p>
-The file <code>org/joda/money/MoneyDataExtension.csv</code> holds any user extensions to the currency list.
-It has the same file format as above.
-This file is optional and not supplied by default.
-Again, the first instance of the file on the classpath will be loaded.
+The file <code>org/joda/money/CountryData.csv</code> holds a mapping from ISO-3166 country code to currency.
+The columns are as follows:
+</p>
+<p>
+<ul>
+<li><a href="http://en.wikipedia.org/wiki/ISO_3166-1">ISO-3166-1</a> country code - two letters, mandatory</li>
+<li><a href="http://en.wikipedia.org/wiki/ISO_4217">ISO-4217</a> currency code - three letters, mandatory</li>
+</ul>
+</p>
+<p>
+If you place a file on the classpath named <code>META-INF/org/joda/money/CountryDataExtension.csv</code>
+then the data it contains will augment and replace the base data.
+The extension file has the same format as the base file.
+</p>
+<p>
+(Note that in previous versions, these data files had different names and different formats.)
 </p>
 </section>
 

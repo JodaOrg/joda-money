@@ -20,7 +20,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,18 +30,20 @@ import java.util.regex.Pattern;
 /**
  * Provider for available currencies using a file.
  * <p>
- * This reads currencies from two files.
- * Firstly it reads the mandatory resource named {@code /org/joda/money/MoneyData.csv}.
+ * This reads currencies from various files.
+ * Firstly it reads the mandatory resource named {@code /org/joda/money/CurencyData.csv}.
  * Then it reads the mandatory resource named {@code /org/joda/money/CountryData.csv}.
- * Then it reads the optional resource named {@code /org/joda/money/MoneyDataExtension.csv}.
- * Then it reads the optional resource named {@code /org/joda/money/CountryDataExtension.csv}.
- * Both will be read as the first found on the classpath.
- * The second file may replace entries in the first file.
+ * These files are located in the joda-money jar file.
+ * <p>
+ * Then it reads optional resources named {@code META-INF/org/joda/money/CurencyDataExtension.csv}.
+ * Then it reads optional resources named {@code META-INF/org/joda/money/CountryDataExtension.csv}.
+ * These will be read using {@link ClassLoader#getResources(String)}.
+ * These files may augment or replace data from the first two files.
  */
 class DefaultCurrencyUnitDataProvider extends CurrencyUnitDataProvider {
 
     /** Regex format for the money csv line. */
-    private static final Pattern MONEY_REGEX_LINE = Pattern.compile("([A-Z]{3}),(-1|[0-9]{1,3}),(-1|[0-9]|[1-2][0-9]|30)(?:,([A-Z]*))? *(#.*)?");
+    private static final Pattern CURRENCY_REGEX_LINE = Pattern.compile("([A-Z]{3}),(-1|[0-9]{1,3}),(-1|[0-9]|[1-2][0-9]|30) *(#.*)?");
     /** Regex format for the country csv line. */
     private static final Pattern COUNTRY_REGEX_LINE = Pattern.compile("([A-Z]{2}),([A-Z]{3}) *(#.*)?");
 
@@ -50,51 +54,28 @@ class DefaultCurrencyUnitDataProvider extends CurrencyUnitDataProvider {
      */ 
     @Override
     protected void registerCurrencies() throws Exception {
-        loadCurrenciesFromFile("/org/joda/money/MoneyData.csv", true);
-        loadCountriesFromFile("/org/joda/money/CountryData.csv", true);
-        loadCurrenciesFromFile("/org/joda/money/MoneyDataExtension.csv", false);
-        loadCountriesFromFile("/org/joda/money/CountryDataExtension.csv", false);
+        parseCurrencies(loadFromFile("/org/joda/money/CurrencyData.csv"));
+        parseCountries(loadFromFile("/org/joda/money/CountryData.csv"));
+        parseCurrencies(loadFromFiles("META-INF/org/joda/money/CurrencyDataExtension.csv"));
+        parseCountries(loadFromFiles("META-INF/org/joda/money/CountryDataExtension.csv"));
     }
 
-    /**
-     * Loads Currencies from a file
-     *  
-     * @param fileName  the file to load, not null
-     * @param isNecessary  whether or not the file is necessary
-     * @throws Exception if a necessary file is not found
-     */
-    private void loadCurrenciesFromFile(String fileName, boolean isNecessary) throws Exception {
+    // loads a file
+    private List<String> loadFromFile(String fileName) throws Exception {
         InputStream in = null;
         Exception resultEx = null;
+        List<String> content = new ArrayList<String>();
         try {
             in = getClass().getResourceAsStream(fileName);
             if (in == null) {
-                if (isNecessary) {
-                    throw new FileNotFoundException("Data file " + fileName + " not found");
-                } else {
-                    return; // no extension file found, no problem. just return
-                }
+                throw new FileNotFoundException("Data file " + fileName + " not found");
             }
             BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
             String line;
             while ((line = reader.readLine()) != null) {
-                Matcher matcher = MONEY_REGEX_LINE.matcher(line);
-                if (matcher.matches()) {
-                    List<String> countryCodes = new ArrayList<String>();
-                    String codeStr = matcher.group(4);
-                    codeStr = codeStr == null ? "" : codeStr;
-                    String currencyCode = matcher.group(1);
-                    if (codeStr.length() % 2 == 1) {
-                        continue;  // invalid line
-                    }
-                    for (int i = 0; i < codeStr.length(); i += 2) {
-                        countryCodes.add(codeStr.substring(i, i + 2));
-                    }
-                    int numericCode = Integer.parseInt(matcher.group(2));
-                    int digits = Integer.parseInt(matcher.group(3));
-                    registerCurrency(currencyCode, numericCode, digits, countryCodes);
-                }
+                content.add(line);
             }
+            return content;
         } catch (Exception ex) {
             resultEx = ex;
             throw ex;
@@ -113,49 +94,62 @@ class DefaultCurrencyUnitDataProvider extends CurrencyUnitDataProvider {
         }
     }
 
-    /**
-     * Loads countries from a file
-     *  
-     * @param fileName  the file to load, not null
-     * @param isNecessary  whether or not the file is necessary
-     * @throws Exception if a necessary file is not found
-     */
-    private void loadCountriesFromFile(String fileName, boolean isNecessary) throws Exception {
-        InputStream in = null;
-        Exception resultEx = null;
-        try {
-            in = getClass().getResourceAsStream(fileName);
-            if (in == null) {
-                if (isNecessary) {
-                    throw new FileNotFoundException("Data file " + fileName + " not found");
-                } else {
-                    return; // no extension file found, no problem. just return
+    // loads a file
+    private List<String> loadFromFiles(String fileName) throws Exception {
+        List<String> content = new ArrayList<String>();
+        Enumeration<URL> en = getClass().getClassLoader().getResources(fileName);
+        while (en.hasMoreElements()) {
+            URL url = (URL) en.nextElement();
+            InputStream in = null;
+            Exception resultEx = null;
+            try {
+                in = url.openStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    content.add(line);
                 }
-            }
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                Matcher matcher = COUNTRY_REGEX_LINE.matcher(line);
-                if (matcher.matches()) {
-                    String countryCode = matcher.group(1);
-                    String currencyCode = matcher.group(2);
-                    registerCountry(countryCode, currencyCode);
-                }
-            }
-        } catch (Exception ex) {
-            resultEx = ex;
-            throw ex;
-        } finally {
-            if (in != null) {
-                if (resultEx != null) {
-                    try {
+            } catch (Exception ex) {
+                resultEx = ex;
+                throw ex;
+            } finally {
+                if (in != null) {
+                    if (resultEx != null) {
+                        try {
+                            in.close();
+                        } catch (IOException ignored) {
+                            throw resultEx;
+                        }
+                    } else {
                         in.close();
-                    } catch (IOException ignored) {
-                        throw resultEx;
                     }
-                } else {
-                    in.close();
                 }
+            }
+        }
+        return content;
+    }
+
+    // parse the currencies
+    private void parseCurrencies(List<String> content) throws Exception {
+        for (String line : content) {
+            Matcher matcher = CURRENCY_REGEX_LINE.matcher(line);
+            if (matcher.matches()) {
+                String currencyCode = matcher.group(1);
+                int numericCode = Integer.parseInt(matcher.group(2));
+                int digits = Integer.parseInt(matcher.group(3));
+                registerCurrency(currencyCode, numericCode, digits);
+            }
+        }
+    }
+
+    // parse the countries
+    private void parseCountries(List<String> content) throws Exception {
+        for (String line : content) {
+            Matcher matcher = COUNTRY_REGEX_LINE.matcher(line);
+            if (matcher.matches()) {
+                String countryCode = matcher.group(1);
+                String currencyCode = matcher.group(2);
+                registerCountry(countryCode, currencyCode);
             }
         }
     }
