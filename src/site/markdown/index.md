@@ -73,7 +73,7 @@ As a flavour of Joda-Money, here is some example code:
 [Release 1.0](download.html) is the current release.
 This release is considered stable and worthy of the 1.x tag.
 
-Joda-Money requires Java SE 6 or later and has [no dependencies](dependencies.html).
+Joda-Money requires Java SE 8 or later and has [no dependencies](dependencies.html).
 There is a *compile-time* dependency on [Joda-Convert](http://www.joda.org/joda-convert/),
 but this is not required at runtime thanks to the magic of annotations.
 

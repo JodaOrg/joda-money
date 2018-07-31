@@ -52,7 +52,7 @@ Various documentation is available:
 ### Releases
 [Release 1.0](download.html) is the current release.
 This release is considered stable and worthy of the 1.x tag.
-It depends on Java SE 6 or later.
+It depends on Java SE 8 or later.
 
 Joda-Money does have a *compile-time* dependency on Joda-Convert, but this is not required at runtime
 thanks to the magic of annotations.
