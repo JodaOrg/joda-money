@@ -36,6 +36,9 @@
         Update currencies for BY, LT, LV, SS.
         Fixes #68, #70, #72.
       </action>
+      <action dev="jodastephen" type="update">
+        Deprecate some less-than-ideal methods.
+      </action>
     </release>
     <release version="0.11" date="2016-02-21" description="v0.11">
       <action dev="jodastephen" type="fix" >

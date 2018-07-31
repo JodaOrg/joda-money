@@ -783,28 +783,33 @@ public class TestBigMoney {
     //-----------------------------------------------------------------------
     // nonNull(BigMoney,CurrencyUnit)
     //-----------------------------------------------------------------------
+    @SuppressWarnings("deprecation")
     @Test
     public void test_nonNull_BigMoneyCurrencyUnit_nonNull() {
         BigMoney test = BigMoney.nonNull(GBP_1_23, GBP);
         assertSame(GBP_1_23, test);
     }
 
+    @SuppressWarnings("deprecation")
     @Test(expected = CurrencyMismatchException.class)
     public void test_nonNull_BigMoneyCurrencyUnit_nonNullCurrencyMismatch() {
         BigMoney.nonNull(GBP_1_23, JPY);
     }
 
+    @SuppressWarnings("deprecation")
     @Test(expected = NullPointerException.class)
     public void test_nonNull_BigMoneyCurrencyUnit_nonNull_nullCurrency() {
         BigMoney.nonNull(GBP_1_23, null);
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void test_nonNull_BigMoneyCurrencyUnit_null() {
         BigMoney test = BigMoney.nonNull(null, GBP);
         assertEquals(BigMoney.ofMajor(GBP, 0), test);
     }
 
+    @SuppressWarnings("deprecation")
     @Test(expected = NullPointerException.class)
     public void test_nonNull_BigMoneyCurrencyUnit_null_nullCurrency() {
         BigMoney.nonNull(null, null);

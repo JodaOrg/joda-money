@@ -397,7 +397,9 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      * @param currency  the currency to use, not null
      * @return the input money or zero in the specified currency, never null
      * @throws CurrencyMismatchException if the input money is non-null and the currencies differ
+     * @deprecated This method encourages nulls, so is deprecated
      */
+    @Deprecated
     public static BigMoney nonNull(BigMoney money, CurrencyUnit currency) {
         if (money == null) {
             return zero(currency);

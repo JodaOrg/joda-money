@@ -103,7 +103,7 @@ final class Ser implements Externalizable {
     private void writeCurrency(ObjectOutput out, CurrencyUnit obj) throws IOException {
         out.writeUTF(obj.getCode());
         out.writeShort(obj.getNumericCode());
-        out.writeShort(obj.getDefaultFractionDigits());
+        out.writeShort(obj.getDecimalPlaces());
     }
 
     /**
@@ -147,7 +147,7 @@ final class Ser implements Externalizable {
         if (singletonCurrency.getNumericCode() != in.readShort()) {
             throw new InvalidObjectException("Deserialization found a mismatch in the numeric code for currency " + code);
         }
-        if (singletonCurrency.getDefaultFractionDigits() != in.readShort()) {
+        if (singletonCurrency.getDecimalPlaces() != in.readShort()) {
             throw new InvalidObjectException("Deserialization found a mismatch in the decimal places for currency " + code);
         }
         return singletonCurrency;

@@ -137,7 +137,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
 
     //-----------------------------------------------------------------------
     /**
-     * Registers a currency allowing it to be used.
+     * Registers a currency and associated countries allowing it to be used.
      * <p>
      * This class only permits known currencies to be returned.
      * To achieve this, all currencies have to be registered in advance.
@@ -164,7 +164,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Registers a currency allowing it to be used, allowing replacement.
+     * Registers a currency and associated countries allowing it to be used, allowing replacement.
      * <p>
      * This class only permits known currencies to be returned.
      * To achieve this, all currencies have to be registered in advance.
@@ -441,7 +441,9 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @param currencyCode  the three-letter currency code, not null
      * @return the singleton instance, never null
      * @throws IllegalCurrencyException if the currency is unknown
+     * @deprecated Use {@link CurrencyUnit#of(String)}
      */
+    @Deprecated
     public static CurrencyUnit getInstance(String currencyCode) {
         return CurrencyUnit.of(currencyCode);
     }
@@ -454,7 +456,9 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @param locale  the locale, not null
      * @return the singleton instance, never null
      * @throws IllegalCurrencyException if the currency is unknown
+     * @deprecated Use {@link CurrencyUnit#of(Locale)}
      */
+    @Deprecated
     public static CurrencyUnit getInstance(Locale locale) {
         return CurrencyUnit.of(locale);
     }
@@ -589,7 +593,9 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * This method matches the API of {@link Currency}.
      * 
      * @return the currency code, never null
+     * @deprecated Use {@link CurrencyUnit#getCode()}
      */
+    @Deprecated
     public String getCurrencyCode() {
         return code;
     }
@@ -605,7 +611,9 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * The alternative method {@link #getDecimalPlaces()} may be more useful.
      * 
      * @return the fractional digits, from 0 to 9 (normally 0, 2 or 3), or -1 for pseudo-currencies
+     * @deprecated Use {@link CurrencyUnit#getDecimalPlaces()}
      */
+    @Deprecated
     public int getDefaultFractionDigits() {
         return decimalPlaces;
     }

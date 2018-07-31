@@ -399,7 +399,7 @@ public class TestMoneyFormatterBuilder {
     public void test_appendAmount_3dp_BHD() {
         iBuilder.appendAmount();
         MoneyFormatter test = iBuilder.toFormatter();
-        Money money = Money.of(CurrencyUnit.getInstance("BHD"), 6345345.735d);
+        Money money = Money.of(CurrencyUnit.of("BHD"), 6345345.735d);
         assertEquals("6,345,345.735", test.print(money));
     }
 

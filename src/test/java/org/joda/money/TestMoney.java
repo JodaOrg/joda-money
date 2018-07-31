@@ -724,12 +724,14 @@ public class TestMoney {
     //-----------------------------------------------------------------------
     // nonNull(Money,CurrencyUnit)
     //-----------------------------------------------------------------------
+    @SuppressWarnings("deprecation")
     @Test
     public void test_nonNull_MoneyCurrencyUnit_nonNull() {
         Money test = Money.nonNull(GBP_1_23, GBP);
         assertSame(GBP_1_23, test);
     }
 
+    @SuppressWarnings("deprecation")
     @Test(expected = CurrencyMismatchException.class)
     public void test_nonNull_MoneyCurrencyUnit_nonNullCurrencyMismatch() {
         try {
@@ -741,17 +743,20 @@ public class TestMoney {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @Test(expected = NullPointerException.class)
     public void test_nonNull_MoneyCurrencyUnit_nonNull_nullCurrency() {
         Money.nonNull(GBP_1_23, null);
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void test_nonNull_MoneyCurrencyUnit_null() {
         Money test = Money.nonNull(null, GBP);
         assertEquals(GBP_0_00, test);
     }
 
+    @SuppressWarnings("deprecation")
     @Test(expected = NullPointerException.class)
     public void test_nonNull_MoneyCurrencyUnit_null_nullCurrency() {
         Money.nonNull(null, null);
