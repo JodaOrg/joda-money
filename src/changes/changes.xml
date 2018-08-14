@@ -16,10 +16,6 @@
         Add historic EUR currencies.
       </action>
       <action dev="jodastephen" type="add">
-        Add module-info for Java 9.
-        Fixes #81.
-      </action>
-      <action dev="jodastephen" type="add">
         Update and redesign build to support Java 9.
       </action>
       <action dev="coderjoe" type="add" >
