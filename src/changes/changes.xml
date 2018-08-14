@@ -10,18 +10,17 @@
     <!-- types are add, fix, remove, update -->
     <release version="1.0" date="SNAPSHOT" description="v1.0">
       <action dev="jodastephen" type="add">
-        Move project to Java 8.
-        Update and redesign build to support Java 9.
+        Change currency data files.
+        Files are now `CurrencyData.csv` and `CountryData.csv`.
+        These can be overridden in `CurrencyDataExtension.csv` and `CountryDataExtension.csv`.
+        Add historic EUR currencies.
       </action>
       <action dev="jodastephen" type="add">
         Add module-info for Java 9.
         Fixes #81.
       </action>
       <action dev="jodastephen" type="add">
-        Change currency data files.
-        Files are now `CurrencyData.csv` and `CountryData.csv`.
-        These can be overridden in `CurrencyDataExtension.csv` and `CountryDataExtension.csv`.
-        Add historic EUR currencies.
+        Update and redesign build to support Java 9.
       </action>
       <action dev="coderjoe" type="add" >
         Allow currencies to have 30 decimal places.

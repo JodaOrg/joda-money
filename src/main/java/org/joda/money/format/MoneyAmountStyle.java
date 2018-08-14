@@ -16,6 +16,7 @@
 package org.joda.money.format;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
@@ -266,7 +267,13 @@ public final class MoneyAmountStyle implements Serializable {
     private static MoneyAmountStyle getLocalizedStyle(Locale locale) {
         MoneyAmountStyle protoStyle = LOCALIZED_CACHE.get(locale);
         if (protoStyle == null) {
-            DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(locale);
+            DecimalFormatSymbols symbols;
+            try {
+                Method method = DecimalFormatSymbols.class.getMethod("getInstance", new Class[] {Locale.class});
+                symbols = (DecimalFormatSymbols) method.invoke(null, new Object[] {locale});  // handle JDK 6
+            } catch (Exception ex) {
+                symbols = new DecimalFormatSymbols(locale);  // handle JDK 5
+            }
             NumberFormat format = NumberFormat.getCurrencyInstance(locale);
             int size = (format instanceof DecimalFormat ? ((DecimalFormat) format).getGroupingSize() : 3);
             protoStyle = new MoneyAmountStyle(

@@ -64,7 +64,7 @@ class DefaultCurrencyUnitDataProvider extends CurrencyUnitDataProvider {
     private List<String> loadFromFile(String fileName) throws Exception {
         InputStream in = null;
         Exception resultEx = null;
-        List<String> content = new ArrayList<>();
+        List<String> content = new ArrayList<String>();
         try {
             in = getClass().getResourceAsStream(fileName);
             if (in == null) {
@@ -96,7 +96,7 @@ class DefaultCurrencyUnitDataProvider extends CurrencyUnitDataProvider {
 
     // loads a file
     private List<String> loadFromFiles(String fileName) throws Exception {
-        List<String> content = new ArrayList<>();
+        List<String> content = new ArrayList<String>();
         Enumeration<URL> en = getClass().getClassLoader().getResources(fileName);
         while (en.hasMoreElements()) {
             URL url = (URL) en.nextElement();

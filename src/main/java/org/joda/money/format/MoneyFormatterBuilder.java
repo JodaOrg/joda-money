@@ -36,11 +36,11 @@ public final class MoneyFormatterBuilder {
     /**
      * The printers.
      */
-    private final List<MoneyPrinter> printers = new ArrayList<>();
+    private final List<MoneyPrinter> printers = new ArrayList<MoneyPrinter>();
     /**
      * The parsers.
      */
-    private final List<MoneyParser> parsers = new ArrayList<>();
+    private final List<MoneyParser> parsers = new ArrayList<MoneyParser>();
 
     //-----------------------------------------------------------------------
     /**
