@@ -8,6 +8,16 @@
       <username></username>
       <password>${GITHUB_TOKEN}</password>
     </server>
+    <server>
+      <id>sonatype-joda-staging</id>
+      <username>jodastephen</username>
+      <password>${OSS_SONATYPE}</password>
+    </server>
+    <server>
+      <id>sonatype-joda-snapshot</id>
+      <username>jodastephen</username>
+      <password>${OSS_SONATYPE}</password>
+    </server>
   </servers>
   
 </settings>
