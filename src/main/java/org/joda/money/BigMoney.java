@@ -386,33 +386,6 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
 
     //-----------------------------------------------------------------------
     /**
-     * Ensures that a {@code BigMoney} is not {@code null}.
-     * <p>
-     * If the input money is not {@code null}, then it is returned, providing
-     * that the currency matches the specified currency.
-     * If the input money is {@code null}, then zero money in the currency
-     * is returned with a scale of zero.
-     * 
-     * @param money  the monetary value to check, may be null
-     * @param currency  the currency to use, not null
-     * @return the input money or zero in the specified currency, never null
-     * @throws CurrencyMismatchException if the input money is non-null and the currencies differ
-     * @deprecated This method encourages nulls, so is deprecated
-     */
-    @Deprecated
-    public static BigMoney nonNull(BigMoney money, CurrencyUnit currency) {
-        if (money == null) {
-            return zero(currency);
-        }
-        if (money.getCurrencyUnit().equals(currency) == false) {
-            MoneyUtils.checkNotNull(currency, "Currency must not be null");
-            throw new CurrencyMismatchException(money.getCurrencyUnit(), currency);
-        }
-        return money;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Private no-args constructor, for use as JPA Embeddable (for example).
      */
     @SuppressWarnings("unused")

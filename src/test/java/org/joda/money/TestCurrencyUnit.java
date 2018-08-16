@@ -445,49 +445,6 @@ public class TestCurrencyUnit {
     }
 
     //-----------------------------------------------------------------------
-    // getInstance(String)
-    //-----------------------------------------------------------------------
-    @SuppressWarnings("deprecation")
-    public void test_factory_getInstance_String() {
-        CurrencyUnit test = CurrencyUnit.getInstance("GBP");
-        assertEquals("GBP", test.getCode());
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test(expected = NullPointerException.class)
-    public void test_factory_getInstance_String_nullString() {
-        CurrencyUnit.getInstance((String) null);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test(expected = IllegalCurrencyException.class)
-    public void test_factory_getInstance_String_unknownCurrency() {
-        CurrencyUnit.getInstance("ABC");
-    }
-
-    //-----------------------------------------------------------------------
-    // getInstance(Locale)
-    //-----------------------------------------------------------------------
-    @SuppressWarnings("deprecation")
-    @Test
-    public void test_factory_getInstance_Locale() {
-        CurrencyUnit test = CurrencyUnit.getInstance(Locale.UK);
-        assertEquals("GBP", test.getCode());
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test(expected = NullPointerException.class)
-    public void test_factory_getInstance_Locale_nullString() {
-        CurrencyUnit.getInstance((Locale) null);
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test(expected = IllegalCurrencyException.class)
-    public void test_factory_getInstance_Locale_unknownCurrency() {
-        CurrencyUnit.getInstance(new Locale("en", "XY"));
-    }
-
-    //-----------------------------------------------------------------------
     // Serialisation
     //-----------------------------------------------------------------------
     @Test
@@ -539,17 +496,6 @@ public class TestCurrencyUnit {
                 throw ex;
             }
         }
-    }
-
-    //-----------------------------------------------------------------------
-    // getCurrencyCode()
-    //-----------------------------------------------------------------------
-    @SuppressWarnings("deprecation")
-    @Test
-    public void test_getCurrencyCode_GBP() {
-        CurrencyUnit test = CurrencyUnit.of("GBP");
-        assertEquals("GBP", test.getCode());
-        assertEquals("GBP", test.getCurrencyCode());
     }
 
     //-----------------------------------------------------------------------
@@ -640,30 +586,6 @@ public class TestCurrencyUnit {
     public void test_isPseudoCurrency_XXX() {
         CurrencyUnit test = CurrencyUnit.of("XXX");
         assertTrue(test.isPseudoCurrency());
-    }
-
-    //-----------------------------------------------------------------------
-    // getDefaultFractionDigits()
-    //-----------------------------------------------------------------------
-    @SuppressWarnings("deprecation")
-    @Test
-    public void test_getDefaultFractionDigits_GBP() {
-        CurrencyUnit test = CurrencyUnit.of("GBP");
-        assertEquals(2, test.getDefaultFractionDigits());
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void test_getDefaultFractionDigits_JPY() {
-        CurrencyUnit test = CurrencyUnit.of("JPY");
-        assertEquals(0, test.getDefaultFractionDigits());
-    }
-
-    @SuppressWarnings("deprecation")
-    @Test
-    public void test_getDefaultFractionDigits_XXX() {
-        CurrencyUnit test = CurrencyUnit.of("XXX");
-        assertEquals(-1, test.getDefaultFractionDigits());
     }
 
     //-----------------------------------------------------------------------

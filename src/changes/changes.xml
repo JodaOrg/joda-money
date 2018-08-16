@@ -16,6 +16,9 @@
         Add module-info.
         Fixes #81.
       </action>
+      <action dev="jodastephen" type="remove">
+        Remove deprecated methods.
+      </action>
     </release>
     <release version="0.90" date="2018-08-15" description="v0.90">
       <action dev="jodastephen" type="add">

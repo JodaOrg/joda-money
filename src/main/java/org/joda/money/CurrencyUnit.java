@@ -434,37 +434,6 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
 
     //-----------------------------------------------------------------------
     /**
-     * Obtains an instance of {@code CurrencyUnit} for the specified three-letter currency code.
-     * <p>
-     * This method exists to match the API of {@link Currency}.
-     *
-     * @param currencyCode  the three-letter currency code, not null
-     * @return the singleton instance, never null
-     * @throws IllegalCurrencyException if the currency is unknown
-     * @deprecated Use {@link CurrencyUnit#of(String)}
-     */
-    @Deprecated
-    public static CurrencyUnit getInstance(String currencyCode) {
-        return CurrencyUnit.of(currencyCode);
-    }
-
-    /**
-     * Obtains an instance of {@code CurrencyUnit} for the specified locale.
-     * <p>
-     * This method exists to match the API of {@link Currency}.
-     *
-     * @param locale  the locale, not null
-     * @return the singleton instance, never null
-     * @throws IllegalCurrencyException if the currency is unknown
-     * @deprecated Use {@link CurrencyUnit#of(Locale)}
-     */
-    @Deprecated
-    public static CurrencyUnit getInstance(Locale locale) {
-        return CurrencyUnit.of(locale);
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Constructor, creating a new currency instance.
      * 
      * @param code  the three-letter currency code, not null
@@ -584,38 +553,6 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      */
     public boolean isPseudoCurrency() {
         return decimalPlaces < 0;
-    }
-
-    //-----------------------------------------------------------------------
-    /**
-     * Gets the ISO-4217 three-letter currency code.
-     * <p>
-     * This method matches the API of {@link Currency}.
-     * 
-     * @return the currency code, never null
-     * @deprecated Use {@link CurrencyUnit#getCode()}
-     */
-    @Deprecated
-    public String getCurrencyCode() {
-        return code;
-    }
-
-    /**
-     * Gets the number of fractional digits typically used by this currency.
-     * <p>
-     * Different currencies have different numbers of fractional digits by default.
-     * For example, 'GBP' has 2 fractional digits, but 'JPY' has zero.
-     * Pseudo-currencies are indicated by -1.
-     * <p>
-     * This method matches the API of {@link Currency}.
-     * The alternative method {@link #getDecimalPlaces()} may be more useful.
-     * 
-     * @return the fractional digits, from 0 to 9 (normally 0, 2 or 3), or -1 for pseudo-currencies
-     * @deprecated Use {@link CurrencyUnit#getDecimalPlaces()}
-     */
-    @Deprecated
-    public int getDefaultFractionDigits() {
-        return decimalPlaces;
     }
 
     //-----------------------------------------------------------------------
