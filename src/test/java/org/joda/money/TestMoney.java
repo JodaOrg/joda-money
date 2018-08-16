@@ -798,12 +798,13 @@ public class TestMoney {
     public void test_serialization() throws Exception {
         Money a = GBP_2_34;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(a);
-        oos.close();
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        Money input = (Money) ois.readObject();
-        assertEquals(a, input);
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(a);
+            oos.close();
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+            Money input = (Money) ois.readObject();
+            assertEquals(a, input);
+        }
     }
 
     @Test(expected = InvalidObjectException.class)
@@ -811,11 +812,12 @@ public class TestMoney {
         CurrencyUnit cu = new CurrencyUnit("GBP", (short) 234, (short) 2);
         Money m = Money.of(cu, 123.43d);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(m);
-        oos.close();
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        ois.readObject();
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(m);
+            oos.close();
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+            ois.readObject();
+        }
     }
 
     @Test(expected = InvalidObjectException.class)
@@ -823,11 +825,12 @@ public class TestMoney {
         CurrencyUnit cu = new CurrencyUnit("GBP", (short) 826, (short) 3);
         Money m = Money.of(cu, 123.43d);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(m);
-        oos.close();
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        ois.readObject();
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(m);
+            oos.close();
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+            ois.readObject();
+        }
     }
 
     //-----------------------------------------------------------------------

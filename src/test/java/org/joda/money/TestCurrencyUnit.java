@@ -494,29 +494,31 @@ public class TestCurrencyUnit {
     public void test_serialization() throws Exception {
         CurrencyUnit cu = CurrencyUnit.of("GBP");
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(cu);
-        oos.close();
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        CurrencyUnit input = (CurrencyUnit) ois.readObject();
-        assertEquals(cu, input);
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(cu);
+            oos.close();
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+            CurrencyUnit input = (CurrencyUnit) ois.readObject();
+            assertEquals(cu, input);
+        }
     }
 
     @Test(expected = InvalidObjectException.class)
     public void test_serialization_invalidNumericCode() throws Exception {
         CurrencyUnit cu = new CurrencyUnit("GBP", (short) 234, (short) 2);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(cu);
-        oos.close();
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        try {
-            ois.readObject();
-        } catch (InvalidObjectException ex) {
-            // expected
-            assertTrue(ex.getMessage().contains("numeric code"));
-            assertTrue(ex.getMessage().contains("currency GBP"));
-            throw ex;
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(cu);
+            oos.close();
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+            try {
+                ois.readObject();
+            } catch (InvalidObjectException ex) {
+                // expected
+                assertTrue(ex.getMessage().contains("numeric code"));
+                assertTrue(ex.getMessage().contains("currency GBP"));
+                throw ex;
+            }
         }
     }
 
@@ -524,17 +526,18 @@ public class TestCurrencyUnit {
     public void test_serialization_invalidDecimalPlaces() throws Exception {
         CurrencyUnit cu = new CurrencyUnit("GBP", (short) 826, (short) 1);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(cu);
-        oos.close();
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        try {
-            ois.readObject();
-        } catch (InvalidObjectException ex) {
-            // expected
-            assertTrue(ex.getMessage().contains("decimal places"));
-            assertTrue(ex.getMessage().contains("currency GBP"));
-            throw ex;
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(cu);
+            oos.close();
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+            try {
+                ois.readObject();
+            } catch (InvalidObjectException ex) {
+                // expected
+                assertTrue(ex.getMessage().contains("decimal places"));
+                assertTrue(ex.getMessage().contains("currency GBP"));
+                throw ex;
+            }
         }
     }
 

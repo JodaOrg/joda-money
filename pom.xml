@@ -187,11 +187,6 @@
     <joda.osgi.packages>org.joda.money.*</joda.osgi.packages>
     <joda.module.name>org.joda.money</joda.module.name>
     <joda.artifactId>joda-money</joda.artifactId>
-    <!-- Set to Java 6 -->
-    <joda.release.version>6</joda.release.version>
-    <maven.compiler.compilerVersion>1.6</maven.compiler.compilerVersion>
-    <maven.compiler.source>1.6</maven.compiler.source>
-    <maven.compiler.target>1.6</maven.compiler.target>
     <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
   </properties>
 </project>

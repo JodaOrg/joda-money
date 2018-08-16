@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.0" date="SNAPSHOT" description="v1.0">
+      <action dev="jodastephen" type="add">
+        Move project to Java 8.
+      </action>
+    </release>
     <release version="0.90" date="2018-08-15" description="v0.90">
       <action dev="jodastephen" type="add">
         Change currency data files.

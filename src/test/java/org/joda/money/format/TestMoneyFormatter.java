@@ -95,13 +95,14 @@ public class TestMoneyFormatter {
     public void test_serialization() throws Exception {
         MoneyFormatter a = iPrintTest;
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        ObjectOutputStream oos = new ObjectOutputStream(baos);
-        oos.writeObject(a);
-        oos.close();
-        ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-        MoneyFormatter input = (MoneyFormatter) ois.readObject();
-        Money value = MONEY_GBP_12_34;
-        assertEquals(a.print(value), input.print(value));
+        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+            oos.writeObject(a);
+            oos.close();
+            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+            MoneyFormatter input = (MoneyFormatter) ois.readObject();
+            Money value = MONEY_GBP_12_34;
+            assertEquals(a.print(value), input.print(value));
+        }
     }
 
     //-----------------------------------------------------------------------

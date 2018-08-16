@@ -17,7 +17,6 @@ package org.joda.money;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -62,67 +61,31 @@ class DefaultCurrencyUnitDataProvider extends CurrencyUnitDataProvider {
 
     // loads a file
     private List<String> loadFromFile(String fileName) throws Exception {
-        InputStream in = null;
-        Exception resultEx = null;
-        List<String> content = new ArrayList<String>();
-        try {
-            in = getClass().getResourceAsStream(fileName);
+        try (InputStream in = getClass().getResourceAsStream(fileName)) {
             if (in == null) {
                 throw new FileNotFoundException("Data file " + fileName + " not found");
             }
             BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
             String line;
+            List<String> content = new ArrayList<>();
             while ((line = reader.readLine()) != null) {
                 content.add(line);
             }
             return content;
-        } catch (Exception ex) {
-            resultEx = ex;
-            throw ex;
-        } finally {
-            if (in != null) {
-                if (resultEx != null) {
-                    try {
-                        in.close();
-                    } catch (IOException ignored) {
-                        throw resultEx;
-                    }
-                } else {
-                    in.close();
-                }
-            }
         }
     }
 
     // loads a file
     private List<String> loadFromFiles(String fileName) throws Exception {
-        List<String> content = new ArrayList<String>();
+        List<String> content = new ArrayList<>();
         Enumeration<URL> en = getClass().getClassLoader().getResources(fileName);
         while (en.hasMoreElements()) {
             URL url = (URL) en.nextElement();
-            InputStream in = null;
-            Exception resultEx = null;
-            try {
-                in = url.openStream();
+            try (InputStream in = url.openStream()) {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
                 String line;
                 while ((line = reader.readLine()) != null) {
                     content.add(line);
-                }
-            } catch (Exception ex) {
-                resultEx = ex;
-                throw ex;
-            } finally {
-                if (in != null) {
-                    if (resultEx != null) {
-                        try {
-                            in.close();
-                        } catch (IOException ignored) {
-                            throw resultEx;
-                        }
-                    } else {
-                        in.close();
-                    }
                 }
             }
         }

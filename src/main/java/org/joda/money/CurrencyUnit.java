@@ -268,7 +268,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
             int decimalPlaces, 
             boolean force) {
 
-        List<String> countryCodes = Collections.<String>emptyList();
+        List<String> countryCodes = Collections.emptyList();
         return registerCurrency(currencyCode, numericCurrencyCode, decimalPlaces, countryCodes, force);
     }
 
@@ -301,7 +301,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @return the sorted, independent, list of all registered currencies, never null
      */
     public static List<CurrencyUnit> registeredCurrencies() {
-        return new ArrayList<CurrencyUnit>(currenciesByCode.values());
+        return new ArrayList<>(currenciesByCode.values());
     }
 
     /**
@@ -313,7 +313,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @return the sorted, independent, list of all registered countries, never null
      */
     public static List<String> registeredCountries() {
-        return new ArrayList<String>(currenciesByCountry.keySet());
+        return new ArrayList<>(currenciesByCountry.keySet());
     }
 
     //-----------------------------------------------------------------------
