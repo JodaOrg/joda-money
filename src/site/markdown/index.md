@@ -87,6 +87,8 @@ Available in [Maven Central](https://search.maven.org/search?q=g:org.joda%20AND%
 </dependency>
 ```
 
+Java module name: `org.joda.money`.
+
 ---
 
 ### Support

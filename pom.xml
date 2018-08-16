@@ -187,6 +187,7 @@
     <joda.osgi.packages>org.joda.money.*</joda.osgi.packages>
     <joda.module.name>org.joda.money</joda.module.name>
     <joda.artifactId>joda-money</joda.artifactId>
+    <maven-javadoc-plugin.version>3.0.0-M1</maven-javadoc-plugin.version>
     <keepStagingRepositoryOnCloseRuleFailure>true</keepStagingRepositoryOnCloseRuleFailure>
   </properties>
 </project>
