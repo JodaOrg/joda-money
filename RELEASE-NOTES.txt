@@ -18,12 +18,3 @@ Feedback is best received using GitHub issues and Pull Requests.
 https://github.com/JodaOrg/joda-money/
 
 The Joda team
-
-
-### Release process
-
-* Update version (pom.xml, README.md, index.md, changes.xml)
-* Commit and push
-* `mvn clean deploy -Doss.repo -Dgpg.passphrase=""`
-* Release project in [Nexus](https://oss.sonatype.org)
-* Website will be built and released by Travis

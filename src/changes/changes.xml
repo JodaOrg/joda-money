@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="1.0" date="SNAPSHOT" description="v1.0">
+    <release version="1.0" date="2018-08-17" description="v1.0">
       <action dev="jodastephen" type="add">
         Move project to Java 8.
       </action>

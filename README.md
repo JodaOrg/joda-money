@@ -66,6 +66,8 @@ Please use GitHub issues and Pull Requests for support.
 
 ### Release process
 
-* Ensure everything is ready to release
+* Update version (README.md, index.md, changes.xml)
+* Commit and push
 * `mvn clean release:clean release:prepare release:perform`
+* `git fetch`
 * Website will be built and released by Travis
