@@ -95,6 +95,29 @@
 
   <!-- ==================================================================== -->
   <profiles>
+    <!-- Disable classicjar profile from parent -->
+    <profile>
+      <id>no-classicjar</id>
+      <activation>
+        <file>
+          <exists>src/main/java/module-info.java</exists>
+        </file>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>classic</id>
+                <phase>none</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <!-- Extra test dependency -->
     <profile>
       <id>test-dependency</id>
