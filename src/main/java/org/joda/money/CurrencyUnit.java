@@ -537,8 +537,6 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * Different currencies have different numbers of decimal places by default.
      * For example, 'GBP' has 2 decimal places, but 'JPY' has zero.
      * Pseudo-currencies will return zero.
-     * <p>
-     * See also {@link #getDefaultFractionDigits()}.
      * 
      * @return the decimal places, from 0 to 9 (normally 0, 2 or 3)
      */
