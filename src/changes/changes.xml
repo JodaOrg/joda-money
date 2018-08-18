@@ -12,6 +12,9 @@
       <action dev="jodastephen" type="fix">
         Ensure that localized format handles no grouping in JDK data.
       </action>
+      <action dev="jodastephen" type="fix">
+        Change currency VEF to VES.
+      </action>
     </release>
     <release version="1.0" date="2018-08-17" description="v1.0">
       <action dev="jodastephen" type="add">

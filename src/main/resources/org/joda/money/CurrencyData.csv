@@ -179,8 +179,8 @@ USN,997,2 # FundsCode
 UYI,940,0 # FundsCode
 UYU,858,2
 UZS,860,2
-VEF,937,2
-VES,928,2 # ComingSoon
+VEF,937,2 # Old, now VES
+VES,928,2
 VND,704,0
 VUV,548,0
 WST,882,2
