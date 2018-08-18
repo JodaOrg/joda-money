@@ -608,7 +608,7 @@ public class TestMoneyAmountStyle {
     @Test
     public void test_equals_otherType() {
         MoneyAmountStyle a = MoneyAmountStyle.LOCALIZED_GROUPING;
-        assertEquals(false, a.equals(""));
+        assertEquals(false, a.equals(new Object()));
     }
 
     @Test

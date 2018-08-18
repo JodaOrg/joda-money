@@ -2646,7 +2646,6 @@ public class TestBigMoney {
     public void test_equals_false() {
         BigMoney a = GBP_2_34;
         assertEquals(false, a.equals(null));
-        assertEquals(false, a.equals("String"));
         assertEquals(false, a.equals(new Object()));
     }
 
