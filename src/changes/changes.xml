@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.0.1" date="SNAPSHOT" description="v1.0.1">
+      <action dev="jodastephen" type="fix">
+        Ensure that localized format handles no grouping in JDK data.
+      </action>
+    </release>
     <release version="1.0" date="2018-08-17" description="v1.0">
       <action dev="jodastephen" type="add">
         Move project to Java 8.

@@ -36,6 +36,7 @@ public class TestMoneyAmountStyle {
     private static final Locale cCachedLocale = Locale.getDefault();
     private static final Locale TEST_GB_LOCALE = new Locale("en", "GB", "TEST");
     private static final Locale TEST_DE_LOCALE = new Locale("de", "DE", "TEST");
+    private static final Locale TEST_LV_LOCALE = new Locale("lv", "LV", "TEST");
     private static final BigMoney MONEY = BigMoney.of(CurrencyUnit.GBP, new BigDecimal("87654321.12345678"));
 
     @Before
@@ -373,6 +374,34 @@ public class TestMoneyAmountStyle {
         assertEquals((Character) '-', style.getDecimalPointCharacter());
         assertEquals((Character) '.', style.getGroupingCharacter());
         assertEquals(GroupingStyle.FULL, style.getGroupingStyle());
+        assertEquals((Integer) 3, style.getGroupingSize());
+        assertEquals((Integer) 0, style.getExtendedGroupingSize());
+        assertEquals(false, style.isForcedDecimalPoint());
+    }
+
+    @Test
+    public void test_localize_DE_noGrouping() {
+        MoneyAmountStyle style = MoneyAmountStyle.LOCALIZED_NO_GROUPING.localize(TEST_DE_LOCALE);
+        assertEquals((Character) '0', style.getZeroCharacter());
+        assertEquals((Character) '+', style.getPositiveSignCharacter());
+        assertEquals((Character) '-', style.getNegativeSignCharacter());
+        assertEquals((Character) ',', style.getDecimalPointCharacter());
+        assertEquals((Character) '.', style.getGroupingCharacter());
+        assertEquals(GroupingStyle.NONE, style.getGroupingStyle());
+        assertEquals((Integer) 3, style.getGroupingSize());
+        assertEquals((Integer) 0, style.getExtendedGroupingSize());
+        assertEquals(false, style.isForcedDecimalPoint());
+    }
+
+    @Test
+    public void test_localize_LV() {
+        MoneyAmountStyle style = MoneyAmountStyle.LOCALIZED_NO_GROUPING.localize(TEST_LV_LOCALE);
+        assertEquals((Character) '0', style.getZeroCharacter());
+        assertEquals((Character) '+', style.getPositiveSignCharacter());
+        assertEquals((Character) '-', style.getNegativeSignCharacter());
+        assertEquals((Character) ',', style.getDecimalPointCharacter());
+        assertEquals((Character) '\u00a0', style.getGroupingCharacter());
+        assertEquals(GroupingStyle.NONE, style.getGroupingStyle());
         assertEquals((Integer) 3, style.getGroupingSize());
         assertEquals((Integer) 0, style.getExtendedGroupingSize());
         assertEquals(false, style.isForcedDecimalPoint());

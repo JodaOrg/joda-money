@@ -224,11 +224,11 @@ public final class MoneyAmountStyle implements Serializable {
             result = result.withZeroCharacter(protoStyle.getZeroCharacter());
         }
         if (positiveCharacter < 0) {
-            protoStyle = getLocalizedStyle(locale);
+            protoStyle = (protoStyle == null ? getLocalizedStyle(locale) : protoStyle);
             result = result.withPositiveSignCharacter(protoStyle.getPositiveSignCharacter());
         }
         if (negativeCharacter < 0) {
-            protoStyle = getLocalizedStyle(locale);
+            protoStyle = (protoStyle == null ? getLocalizedStyle(locale) : protoStyle);
             result = result.withNegativeSignCharacter(protoStyle.getNegativeSignCharacter());
         }
         if (decimalPointCharacter < 0) {
@@ -268,11 +268,18 @@ public final class MoneyAmountStyle implements Serializable {
             DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(locale);
             NumberFormat format = NumberFormat.getCurrencyInstance(locale);
             int size = (format instanceof DecimalFormat ? ((DecimalFormat) format).getGroupingSize() : 3);
+            size = size <= 0 ? 3 : size;
             protoStyle = new MoneyAmountStyle(
                     symbols.getZeroDigit(),
-                    '+', symbols.getMinusSign(),
+                    '+', 
+                    symbols.getMinusSign(),
                     symbols.getMonetaryDecimalSeparator(),
-                    GroupingStyle.FULL, symbols.getGroupingSeparator(), size, 0, false, false);
+                    GroupingStyle.FULL,
+                    symbols.getGroupingSeparator(), 
+                    size, 
+                    0, 
+                    false, 
+                    false);
             LOCALIZED_CACHE.putIfAbsent(locale, protoStyle);
         }
         return protoStyle;
