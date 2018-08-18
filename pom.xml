@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.joda</groupId>
     <artifactId>joda-parent</artifactId>
-    <version>1.3</version>
+    <version>1.3.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>joda-money</artifactId>
@@ -169,7 +169,6 @@
     <joda.osgi.packages>org.joda.money.*</joda.osgi.packages>
     <joda.module.name>org.joda.money</joda.module.name>
     <joda.artifactId>joda-money</joda.artifactId>
-    <joda.attach.site>false</joda.attach.site>
     <joda.surefire.moduleargs>--add-modules org.joda.convert</joda.surefire.moduleargs>
   </properties>
 </project>
