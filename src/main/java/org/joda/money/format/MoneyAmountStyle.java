@@ -256,9 +256,8 @@ public final class MoneyAmountStyle implements Serializable {
      * <p>
      * This uses {@link DecimalFormatSymbols} and {@link NumberFormat}.
      * <p>
-     * If JDK 6 or newer is being used, {@code DecimalFormatSymbols.getInstance(locale)}
-     * will be used in order to allow the use of locales defined as extensions.
-     * Otherwise, {@code new DecimalFormatSymbols(locale)} will be used.
+     * The method {@code DecimalFormatSymbols.getInstance(locale)} will be used
+     * in order to allow the use of locales defined as extensions.
      * 
      * @param locale  the {@link Locale} used to get the correct {@link DecimalFormatSymbols}
      * @return the symbols, never null
