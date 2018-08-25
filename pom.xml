@@ -67,6 +67,19 @@
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
+      <!-- Turn on JUnit Platform -->
+      <plugin>
+        <groupId>de.sormuras</groupId>
+        <artifactId>junit-platform-maven-plugin</artifactId>
+        <version>0.0.7</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>launch-junit-platform</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
@@ -80,9 +93,9 @@
       <optional>true</optional><!-- mandatory in Scala -->
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <version>5.2.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>
