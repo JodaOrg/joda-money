@@ -67,19 +67,6 @@
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
       </plugin>
-      <!-- Turn on JUnit Platform -->
-      <plugin>
-        <groupId>de.sormuras</groupId>
-        <artifactId>junit-platform-maven-plugin</artifactId>
-        <version>0.0.7</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>launch-junit-platform</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 
@@ -108,6 +95,43 @@
 
   <!-- ==================================================================== -->
   <profiles>
+    <!-- Main deployment profile, activated by -Doss.repo -->
+    <profile>
+      <id>modular-test</id>
+      <activation>
+        <jdk>[9,)</jdk>
+      </activation>
+      <build>
+        <plugins>
+          <!-- Compile source 9 -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>default-testCompile</id>
+                <configuration>
+                  <release>9</release>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <!-- Turn on JUnit Platform -->
+          <plugin>
+            <groupId>de.sormuras</groupId>
+            <artifactId>junit-platform-maven-plugin</artifactId>
+            <version>0.0.7</version>
+            <executions>
+              <execution>
+                <goals>
+                  <goal>launch-junit-platform</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <!-- Main deployment profile, activated by -Doss.repo -->
     <profile>
       <id>release-artifacts</id>
