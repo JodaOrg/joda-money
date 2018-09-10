@@ -1,0 +1,21 @@
+// open module org.joda.money {
+    // ---
+    // Copied from "main" module descriptor
+    // ---
+    // only annotations are used, thus they are optional
+    //    requires static org.joda.convert;
+    // all packages are exported
+    //    exports org.joda.money;
+    //    exports org.joda.money.format;
+    // ---
+    // Add modules required by test code
+    // ---
+    //    requires junit; // JUnit 3/4 vintage API
+//}
+
+--add-reads
+  org.joda.money=junit
+--add-opens
+  org.joda.money/org.joda.money=junit
+--add-opens
+  org.joda.money/org.joda.money.format=junit
