@@ -121,6 +121,13 @@
             <groupId>de.sormuras</groupId>
             <artifactId>junit-platform-maven-plugin</artifactId>
             <version>0.0.10</version>
+            <configuration>
+              <javaOptions>
+                <additionalOptions>
+                  <additionalOption>-Dfile.encoding=UTF-8</additionalOption>
+                </additionalOptions>
+              </javaOptions>
+            </configuration>
             <executions>
               <execution>
                 <goals>
