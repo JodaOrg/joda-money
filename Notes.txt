@@ -20,7 +20,7 @@ Java practices - Class based on BigDecimal
 http://www.javapractices.com/topic/TopicAction.do?Id=13
 
 Grails Currency Plugin - Class based on BigDecimal
-http://github.com/ricardojmendez/grails-currencies/blob/master/grails-app/domain/Money.groovy
+https://github.com/ricardojmendez/grails-currencies/blob/master/grails-app/domain/Money.groovy
 
 OpenGamma CurrencyAmount - Class based on double (its an estimate)
 https://github.com/OpenGamma/OG-Platform/blob/master/projects/OG-Util/src/main/java/com/opengamma/util/money/CurrencyAmount.java

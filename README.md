@@ -37,20 +37,20 @@ BigMoney moneyCalc = money.toBigMoney();
 Users are reminded that this software, like all open source software, is provided
 on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND.
 
-Joda-Money is licensed under the business-friendly [Apache 2.0 licence](http://www.joda.org/joda-money/license.html).
+Joda-Money is licensed under the business-friendly [Apache 2.0 licence](https://www.joda.org/joda-money/licenses.html).
 
 
 ### Documentation
 Various documentation is available:
 
-* The [home page](http://www.joda.org/joda-money/)
-* The helpful [user guide](http://www.joda.org/joda-money/userguide.html)
-* The [Javadoc](http://www.joda.org/joda-money/apidocs/index.html)
-* The change notes for the [releases](http://www.joda.org/joda-money/changes-report.html)
+* The [home page](https://www.joda.org/joda-money/)
+* The helpful [user guide](https://www.joda.org/joda-money/userguide.html)
+* The [Javadoc](https://www.joda.org/joda-money/apidocs/index.html)
+* The change notes for the [releases](https://www.joda.org/joda-money/changes-report.html)
 
 
 ### Releases
-[Release 1.0.1](http://www.joda.org/joda-money/download.html) is the current release.
+[Release 1.0.1](https://www.joda.org/joda-money/download.html) is the current release.
 This release is considered stable and worthy of the 1.x tag.
 It depends on Java SE 8 or later.
 

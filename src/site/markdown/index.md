@@ -5,7 +5,7 @@
 The JDK provides a standard currency class, but not a standard representation of money.
 Joda-Money fills this gap, providing the value types to represent money.
 
-Joda-Money is licensed under the business-friendly [Apache 2.0 licence](license.html).
+Joda-Money is licensed under the business-friendly [Apache 2.0 licence](licenses.html).
 
 
 ## <i></i> Features
@@ -74,7 +74,7 @@ As a flavour of Joda-Money, here is some example code:
 This release is considered stable and worthy of the 1.x tag.
 
 Joda-Money requires Java SE 8 or later and has [no dependencies](dependencies.html).
-There is a *compile-time* dependency on [Joda-Convert](http://www.joda.org/joda-convert/),
+There is a *compile-time* dependency on [Joda-Convert](https://www.joda.org/joda-convert/),
 but this is not required at runtime thanks to the magic of annotations.
 
 Available in [Maven Central](https://search.maven.org/search?q=g:org.joda%20AND%20a:joda-money&core=gav).

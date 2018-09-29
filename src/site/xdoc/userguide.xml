@@ -61,8 +61,8 @@ The columns are as follows:
 </p>
 <p>
 <ul>
-<li><a href="http://en.wikipedia.org/wiki/ISO_4217">ISO-4217</a> currency code - three letters, mandatory</li>
-<li><a href="http://en.wikipedia.org/wiki/ISO_4217">ISO-4217</a> numeric code - from 1 to 999, set to -1 if no numeric code</li>
+<li><a href="https://en.wikipedia.org/wiki/ISO_4217">ISO-4217</a> currency code - three letters, mandatory</li>
+<li><a href="https://en.wikipedia.org/wiki/ISO_4217">ISO-4217</a> numeric code - from 1 to 999, set to -1 if no numeric code</li>
 <li>Number of decimal places in common usage - the supplied data is based on various sources</li>
 </ul>
 </p>
@@ -77,8 +77,8 @@ The columns are as follows:
 </p>
 <p>
 <ul>
-<li><a href="http://en.wikipedia.org/wiki/ISO_3166-1">ISO-3166-1</a> country code - two letters, mandatory</li>
-<li><a href="http://en.wikipedia.org/wiki/ISO_4217">ISO-4217</a> currency code - three letters, mandatory</li>
+<li><a href="https://en.wikipedia.org/wiki/ISO_3166-1">ISO-3166-1</a> country code - two letters, mandatory</li>
+<li><a href="https://en.wikipedia.org/wiki/ISO_4217">ISO-4217</a> currency code - three letters, mandatory</li>
 </ul>
 </p>
 <p>

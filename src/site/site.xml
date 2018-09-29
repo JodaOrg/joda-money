@@ -34,6 +34,7 @@
       <toc>false</toc>
       <breadcrumbs>false</breadcrumbs>
       <markPageHeader>false</markPageHeader>
+      <protocolRelativeURLs>true</protocolRelativeURLs>
       <pages>
         <index>
           <sections>
@@ -61,7 +62,7 @@
   <body>
     <head>
       <![CDATA[
-        <link href="http://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.css" rel="stylesheet"/>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"/>
         <link rel="author" href="https://plus.google.com/113137868744510231215"/>]]>
     </head>
 
@@ -86,10 +87,10 @@
     </menu>
 
     <menu name="Joda">
-      <item name="Home" href="http://www.joda.org"/>
-      <item name="Beans" href="http://www.joda.org/joda-beans/"/>
-      <item name="Convert" href="http://www.joda.org/joda-convert/"/>
-      <item name="Time" href="http://www.joda.org/joda-time/"/>
+      <item name="Home" href="https://www.joda.org"/>
+      <item name="Beans" href="https://www.joda.org/joda-beans/"/>
+      <item name="Convert" href="https://www.joda.org/joda-convert/"/>
+      <item name="Time" href="https://www.joda.org/joda-time/"/>
     </menu>
 
     <menu name="Reports" ref="reports"/>
