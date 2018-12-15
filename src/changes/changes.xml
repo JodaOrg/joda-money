@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.0.2" date="SNAPSHOT" description="v1.0.2">
+      <action dev="jodastephen" type="add">
+        Add Tidelift commercial support and security policy.
+      </action>
+    </release>
     <release version="1.0.1" date="2018-08-20" description="v1.0.1">
       <action dev="jodastephen" type="fix">
         Ensure that localized format handles no grouping in JDK data.

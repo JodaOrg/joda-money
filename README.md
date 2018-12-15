@@ -59,9 +59,18 @@ thanks to the magic of annotations.
 
 Available in the [Maven Central repository](https://search.maven.org/search?q=g:org.joda%20AND%20a:joda-money&core=gav)
 
+![Tidelift dependency check](https://tidelift.com/badges/github/JodaOrg/joda-money)
+
 
 ### Support
-Please use GitHub issues and Pull Requests for support.
+Please use [Stack Overflow](https://stackoverflow.com/questions/tagged/joda-money) for general usage questions.
+GitHub [issues](https://github.com/JodaOrg/joda-money/issues) and [pull requests](https://github.com/JodaOrg/joda-money/pulls)
+should be used when you want to help advance the project.
+Commercial support is available via the
+[Tidelift subscription](https://tidelift.com/subscription/pkg/maven-org-joda-joda-money?utm_source=maven-org-joda-joda-money&utm_medium=referral&utm_campaign=readme).
+
+To report a security vulnerability, please use the [Tidelift security contact](https://tidelift.com/security).
+Tidelift will coordinate the fix and disclosure.
 
 
 ### Release process
