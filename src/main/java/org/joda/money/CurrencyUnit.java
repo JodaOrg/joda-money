@@ -408,7 +408,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         MoneyUtils.checkNotNull(locale, "Locale must not be null");
         CurrencyUnit currency = currenciesByCountry.get(locale.getCountry());
         if (currency == null) {
-            throw new IllegalCurrencyException("Unknown currency for locale '" + locale + '\'');
+            throw new IllegalCurrencyException("No currency found for locale '" + locale + '\'');
         }
         return currency;
     }
@@ -427,7 +427,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         MoneyUtils.checkNotNull(countryCode, "Country code must not be null");
         CurrencyUnit currency = currenciesByCountry.get(countryCode);
         if (currency == null) {
-            throw new IllegalCurrencyException("Unknown currency for country '" + countryCode + '\'');
+            throw new IllegalCurrencyException("No currency found for country '" + countryCode + '\'');
         }
         return currency;
     }
