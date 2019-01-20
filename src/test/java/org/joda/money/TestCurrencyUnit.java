@@ -415,7 +415,7 @@ public class TestCurrencyUnit {
         try {
             CurrencyUnit.of(new Locale("en", "XY"));
         } catch (IllegalCurrencyException ex) {
-            assertEquals("Unknown currency for locale 'en_XY'", ex.getMessage());
+            assertEquals("No currency found for locale 'en_XY'", ex.getMessage());
             throw ex;
         }
     }
@@ -439,7 +439,7 @@ public class TestCurrencyUnit {
         try {
             CurrencyUnit.ofCountry("gb");
         } catch (IllegalCurrencyException ex) {
-            assertEquals("Unknown currency for country 'gb'", ex.getMessage());
+            assertEquals("No currency found for country 'gb'", ex.getMessage());
             throw ex;
         }
     }
