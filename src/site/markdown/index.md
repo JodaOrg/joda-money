@@ -42,10 +42,10 @@ As a flavour of Joda-Money, here is some example code:
 
 <pre>
   // create a monetary value
-  <b><a href="apidocs/org/joda/money/Money.html">Money</a> money = Money.parse("USD 23.87");</b>
+  <b><a href="apidocs/org.joda.money/org/joda/money/Money.html">Money</a> money = Money.parse("USD 23.87");</b>
   
   // add another amount with safe double conversion
-  <b><a href="apidocs/org/joda/money/CurrencyUnit.html">CurrencyUnit</a> usd = CurrencyUnit.of("USD");</b>
+  <b><a href="apidocs/org.joda.money/org/joda/money/CurrencyUnit.html">CurrencyUnit</a> usd = CurrencyUnit.of("USD");</b>
   <b>money = money.plus(Money.of(usd, 12.43d));</b>
   
   // subtracts an amount in dollars
@@ -62,7 +62,7 @@ As a flavour of Joda-Money, here is some example code:
   <b>Money moneyGBP = money.convertedTo(CurrencyUnit.GBP, conversionRate, RoundingMode.HALF_UP);</b>
   
   // use a BigMoney for more complex calculations where scale matters
-  <b><a href="apidocs/org/joda/money/BigMoney.html">BigMoney</a> moneyCalc = money.toBigMoney();</b>
+  <b><a href="apidocs/org.joda.money/org/joda/money/BigMoney.html">BigMoney</a> moneyCalc = money.toBigMoney();</b>
 </pre>
 
 
