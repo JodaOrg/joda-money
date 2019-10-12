@@ -108,5 +108,7 @@ Please use [Stack Overflow](https://stackoverflow.com/questions/tagged/joda-mone
 GitHub [issues](https://github.com/JodaOrg/joda-money/issues) and [pull requests](https://github.com/JodaOrg/joda-money/pulls)
 should be used when you want to help advance the project.
 
+Any donations to support the project are accepted via [OpenCollective](https://opencollective.com/joda).
+
 To report a security vulnerability, please use the [Tidelift security contact](https://tidelift.com/security).
 Tidelift will coordinate the fix and disclosure.
