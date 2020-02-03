@@ -142,7 +142,7 @@ public final class MoneyFormatter implements Serializable {
      * Checks whether this formatter can parse.
      * <p>
      * If the formatter cannot parse, an UnsupportedOperationException will
-     * be thrown from the print methods.
+     * be thrown from the parse methods.
      * 
      * @return true if the formatter can parse
      */
