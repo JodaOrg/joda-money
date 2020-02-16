@@ -16,7 +16,7 @@ cp -R ../site joda-money/
 echo "## update..."
 git add -A
 git status
-git commit --message "Update joda-money from Travis: Build $TRAVIS_BUILD_NUMBER"
+git commit --message "Update joda-beans from CI: $GITHUB_ACTION"
 
 echo "## push..."
 git push origin master
