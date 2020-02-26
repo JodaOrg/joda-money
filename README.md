@@ -89,4 +89,4 @@ Tidelift will coordinate the fix and disclosure.
 * Commit and push
 * `mvn clean release:clean release:prepare release:perform`
 * `git fetch`
-* Website will be built and released by Travis
+* Website will be built and released by GitHub Actions
