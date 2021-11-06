@@ -70,10 +70,12 @@ public final class MoneyFormatter implements Serializable {
      * @param parsers  the parsers, not null
      */
     MoneyFormatter(Locale locale, MoneyPrinter[] printers, MoneyParser[] parsers) {
-        assert locale != null;
-        assert printers != null;
-        assert parsers != null;
-        assert printers.length == parsers.length;
+        MoneyFormatter.checkNotNull(locale, "Locale must not be null");
+        MoneyFormatter.checkNotNull(printers, "Printers must not be null");
+        MoneyFormatter.checkNotNull(parsers, "Parsers must not be null");
+        if (printers.length != parsers.length) {
+            throw new IllegalArgumentException("Printers and parsers must match");
+        }
         this.locale = locale;
         this.printerParser = new MultiPrinterParser(printers, parsers);
     }
@@ -85,8 +87,8 @@ public final class MoneyFormatter implements Serializable {
      * @param printerParser  the printer/parser, not null
      */
     private MoneyFormatter(Locale locale, MultiPrinterParser printerParser) {
-        assert locale != null;
-        assert printerParser != null;
+        MoneyFormatter.checkNotNull(locale, "Locale must not be null");
+        MoneyFormatter.checkNotNull(printerParser, "PrinterParser must not be null");
         this.locale = locale;
         this.printerParser = printerParser;
     }

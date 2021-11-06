@@ -12,6 +12,9 @@
       <action dev="jodastephen" type="add">
         Add Tidelift commercial support and security policy.
       </action>
+      <action dev="sgbasaraner" type="fix">
+        Enhance null checks.
+      </action>
     </release>
     <release version="1.0.1" date="2018-08-20" description="v1.0.1">
       <action dev="jodastephen" type="fix">
