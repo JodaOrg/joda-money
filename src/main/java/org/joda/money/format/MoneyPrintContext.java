@@ -36,6 +36,7 @@ public final class MoneyPrintContext {
      * @param locale  the locale, not null
      */
     MoneyPrintContext(Locale locale) {
+        MoneyFormatter.checkNotNull(locale, "Locale must not be null");
         this.locale = locale;
     }
 
