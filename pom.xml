@@ -28,6 +28,17 @@
   </scm>
 
   <!-- ==================================================================== -->
+  <developers>
+    <developer>
+      <id>jodastephen</id>
+      <name>Stephen Colebourne</name>
+      <roles>
+        <role>Project Lead</role>
+      </roles>
+      <timezone>0</timezone>
+      <url>https://github.com/jodastephen</url>
+    </developer>
+  </developers>
   <contributors>
     <contributor>
       <name>Ashish Kumar</name>
@@ -64,6 +75,29 @@
 
   <!-- ==================================================================== -->
   <build>
+    <pluginManagement>
+      <plugins>
+        <!-- Setup release -->
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>${maven-release-plugin.version}</version>
+          <configuration>
+            <arguments>-Doss.repo</arguments>
+            <autoVersionSubmodules>true</autoVersionSubmodules>
+            <tagNameFormat>v@{project.version}</tagNameFormat>
+            <localCheckout>true</localCheckout>
+          </configuration>
+          <dependencies>
+            <dependency>
+              <groupId>org.kohsuke</groupId>
+              <artifactId>github-api</artifactId>
+              <version>${github-api.version}</version>
+            </dependency>
+          </dependencies>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <!-- Turn on Checkstyle -->
       <plugin>
@@ -83,20 +117,20 @@
     <dependency>
       <groupId>org.joda</groupId>
       <artifactId>joda-convert</artifactId>
-      <version>2.1.1</version>
+      <version>${joda-convert.version}</version>
       <scope>compile</scope>
       <optional>true</optional><!-- mandatory in Scala -->
     </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.13.1</version>
+      <version>${junit.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.tngtech.java</groupId>
       <artifactId>junit-dataprovider</artifactId>
-      <version>1.10.0</version>
+      <version>${junit-dataprovider.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -140,7 +174,7 @@
           <plugin>
             <groupId>de.jutzig</groupId>
             <artifactId>github-release-plugin</artifactId>
-            <version>1.4.0</version>
+            <version>${github-release-plugin.version}</version>
             <configuration>
               <releaseName>Release v${project.version}</releaseName>
               <description>See the [change notes](https://www.joda.org/${joda.artifactId}/changes-report.html#a${project.version}) for more information.</description>
@@ -173,10 +207,20 @@
 
   <!-- ==================================================================== -->
   <properties>
+    <!-- Dependencies -->
+    <junit-dataprovider.version>1.13.1</junit-dataprovider.version>
+    <joda-convert.version>2.2.2</joda-convert.version>
+    <junit.version>4.13.2</junit.version>
+    <!-- Plugins -->
+    <github-api.version>1.307</github-api.version>
+    <github-release-plugin.version>1.4.0</github-release-plugin.version>
     <!-- Parent pom.xml control -->
     <joda.osgi.packages>org.joda.money.*</joda.osgi.packages>
     <joda.module.name>org.joda.money</joda.module.name>
     <joda.artifactId>joda-money</joda.artifactId>
     <joda.surefire.moduleargs>--add-modules org.joda.convert</joda.surefire.moduleargs>
+    <stagingProgressTimeoutMinutes>20</stagingProgressTimeoutMinutes>
+    <revapi-maven-plugin.version>0.10.0</revapi-maven-plugin.version>
+    <revapi-java.version>0.15.1</revapi-java.version>
   </properties>
 </project>

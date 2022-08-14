@@ -87,6 +87,7 @@ Tidelift will coordinate the fix and disclosure.
 
 * Update version (README.md, index.md, changes.xml)
 * Commit and push
+* Switch to Java 11
 * `mvn clean release:clean release:prepare release:perform`
 * `git fetch`
 * Website will be built and released by GitHub Actions
