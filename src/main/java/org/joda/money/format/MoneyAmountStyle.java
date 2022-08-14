@@ -173,12 +173,13 @@ public final class MoneyAmountStyle implements Serializable {
      * Constructor, creating a new monetary instance.
      * 
      * @param zeroCharacter  the zero character
-     * @param postiveCharacter  the positive sign
+     * @param positiveCharacter  the positive sign
      * @param negativeCharacter  the negative sign
      * @param decimalPointCharacter  the decimal point character
      * @param groupingStyle  the grouping style, not null
      * @param groupingCharacter  the grouping character
      * @param groupingSize  the grouping size
+     * @param extendedGroupingSize  the extended grouping size
      * @param forceDecimalPoint  whether to always use the decimal point character
      * @param absValue  true to output the absolute value rather than the signed value
      */
