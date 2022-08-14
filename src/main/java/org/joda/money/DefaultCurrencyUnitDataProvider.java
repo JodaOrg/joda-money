@@ -65,13 +65,14 @@ class DefaultCurrencyUnitDataProvider extends CurrencyUnitDataProvider {
             if (in == null) {
                 throw new FileNotFoundException("Data file " + fileName + " not found");
             }
-            BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-            String line;
-            List<String> content = new ArrayList<>();
-            while ((line = reader.readLine()) != null) {
-                content.add(line);
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"))) {
+                String line;
+                List<String> content = new ArrayList<>();
+                while ((line = reader.readLine()) != null) {
+                    content.add(line);
+                }
+                return content;
             }
-            return content;
         }
     }
 
@@ -82,10 +83,11 @@ class DefaultCurrencyUnitDataProvider extends CurrencyUnitDataProvider {
         while (en.hasMoreElements()) {
             URL url = (URL) en.nextElement();
             try (InputStream in = url.openStream()) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    content.add(line);
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"))) {
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        content.add(line);
+                    }
                 }
             }
         }
