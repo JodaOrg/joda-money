@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.0.3" date="SNAPSHOT" description="v1.0.3">
+      <action dev="jodastephen" type="update">
+        Switch master to main.
+      </action>
+    </release>
     <release version="1.0.2" date="2022-08-14" description="v1.0.2">
       <action dev="jodastephen" type="update">
         Change currency SLL to SLE.
