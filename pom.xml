@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.joda</groupId>
     <artifactId>joda-parent</artifactId>
-    <version>1.4.0</version>
+    <version>1.4.1</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>joda-money</artifactId>
@@ -108,6 +108,26 @@
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
+      </plugin>
+      <!-- Enforce Maven 3.6.0 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>3.6.0</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
@@ -212,7 +232,7 @@
     <joda-convert.version>2.2.2</joda-convert.version>
     <junit.version>4.13.2</junit.version>
     <!-- Plugins -->
-    <github-api.version>1.307</github-api.version>
+    <github-api.version>1.308</github-api.version>
     <github-release-plugin.version>1.4.0</github-release-plugin.version>
     <!-- Parent pom.xml control -->
     <joda.osgi.packages>org.joda.money.*</joda.osgi.packages>

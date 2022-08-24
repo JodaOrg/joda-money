@@ -7,9 +7,12 @@ on:
     tags:
       - 'v*'
       - 'website*'
-  pull_request:
+  pull_request_target:
     branches:
-      - 'master'
+      - '*'
+
+permissions:
+  contents: read
 
 jobs:
   build:
