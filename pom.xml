@@ -847,7 +847,7 @@
     <doclint>none</doclint>
 
     <!-- Properties for maven-checkstyle-plugin -->
-    <checkstyle.version>8.14</checkstyle.version>
+    <checkstyle.version>8.29</checkstyle.version>
     <checkstyle.config.location>src/main/checkstyle/checkstyle.xml</checkstyle.config.location>
     <linkXRef>false</linkXRef>
 
