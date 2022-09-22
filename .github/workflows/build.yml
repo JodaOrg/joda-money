@@ -17,10 +17,6 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java: [8, 11]
-    
     steps:
     - name: Checkout
       uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b  #v3.0.2
@@ -28,7 +24,7 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@2c7a4878f5d120bd643426d54ae1209b29cc01a3  #v3.4.1
       with:
-        java-version: ${{ matrix.java }}
+        java-version: 11
         distribution: 'temurin'
         cache: 'maven'
 
