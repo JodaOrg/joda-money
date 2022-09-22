@@ -40,7 +40,7 @@ jobs:
         mvn install site
 
     - name: Website
-      if: matrix.java == '11' && github.event_name == 'push' && (startsWith(github.ref, 'refs/tags/website') || startsWith(github.ref, 'refs/tags/v'))
+      if: github.event_name == 'push' && (startsWith(github.ref, 'refs/tags/website') || startsWith(github.ref, 'refs/tags/v'))
       env:
         GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN_GH }}
       run: |
