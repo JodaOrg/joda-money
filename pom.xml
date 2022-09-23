@@ -804,8 +804,7 @@
     <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
     <maven-bundle-plugin.version>5.1.8</maven-bundle-plugin.version>
     <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
-    <!-- v3.0.0 does not work with Eclipse -->
-    <maven-checkstyle-plugin.version>2.17</maven-checkstyle-plugin.version>
+    <maven-checkstyle-plugin.version>3.1.1</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
     <maven-compiler-plugin.version>3.10.1</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>3.0.0</maven-deploy-plugin.version>
@@ -847,7 +846,7 @@
     <doclint>none</doclint>
 
     <!-- Properties for maven-checkstyle-plugin -->
-    <checkstyle.version>8.14</checkstyle.version>
+    <checkstyle.version>8.45.1</checkstyle.version>
     <checkstyle.config.location>src/main/checkstyle/checkstyle.xml</checkstyle.config.location>
     <linkXRef>false</linkXRef>
 

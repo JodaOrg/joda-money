@@ -94,8 +94,8 @@ public final class Money implements BigMoneyProvider, Comparable<BigMoneyProvide
         MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
         MoneyUtils.checkNotNull(amount, "Amount must not be null");
         MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
-        amount = amount.setScale(currency.getDecimalPlaces(), roundingMode);
-        return new Money(BigMoney.of(currency, amount));
+        BigDecimal scaledAmount = amount.setScale(currency.getDecimalPlaces(), roundingMode);
+        return new Money(BigMoney.of(currency, scaledAmount));
     }
 
     //-----------------------------------------------------------------------
