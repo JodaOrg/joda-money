@@ -78,6 +78,7 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     public static BigMoney of(CurrencyUnit currency, BigDecimal amount) {
         MoneyUtils.checkNotNull(currency, "Currency must not be null");
         MoneyUtils.checkNotNull(amount, "Amount must not be null");
+        BigDecimal checkedAmount = amount;
         if (amount.getClass() != BigDecimal.class) {
             BigInteger value = amount.unscaledValue();
             if (value == null) {
@@ -86,9 +87,9 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
             if (value.getClass() != BigInteger.class) {
                 value = new BigInteger(value.toString());
             }
-            amount = new BigDecimal(value, amount.scale());
+            checkedAmount = new BigDecimal(value, amount.scale());
         }
-        return new BigMoney(currency, amount);
+        return new BigMoney(currency, checkedAmount);
     }
 
     /**
@@ -152,8 +153,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
         MoneyUtils.checkNotNull(currency, "CurrencyUnit must not be null");
         MoneyUtils.checkNotNull(amount, "Amount must not be null");
         MoneyUtils.checkNotNull(roundingMode, "RoundingMode must not be null");
-        amount = amount.setScale(scale, roundingMode);
-        return BigMoney.of(currency, amount);
+        BigDecimal scaledAmount = amount.setScale(scale, roundingMode);
+        return BigMoney.of(currency, scaledAmount);
     }
 
     /**
@@ -701,8 +702,8 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     public int getMinorPart() {
         int cdp = getCurrencyUnit().getDecimalPlaces();
         return amount.setScale(cdp, RoundingMode.DOWN)
-                    .remainder(BigDecimal.ONE)
-                    .movePointRight(cdp).intValueExact();
+            .remainder(BigDecimal.ONE)
+            .movePointRight(cdp).intValueExact();
     }
 
     //-----------------------------------------------------------------------

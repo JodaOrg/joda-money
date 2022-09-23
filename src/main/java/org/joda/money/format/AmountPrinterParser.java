@@ -46,13 +46,15 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
     @Override
     public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
         MoneyAmountStyle activeStyle = style.localize(context.getLocale());
+        String str;
         if (money.isNegative()) {
-            money = money.negated();
             if (!activeStyle.isAbsValue()) {
                 appendable.append(activeStyle.getNegativeSignCharacter());
             }
+            str = money.negated().getAmount().toPlainString();
+        } else {
+            str = money.getAmount().toPlainString();
         }
-        String str = money.getAmount().toPlainString();
         char zeroChar = activeStyle.getZeroCharacter();
         if (zeroChar != '0') {
             int diff = zeroChar - '0';
