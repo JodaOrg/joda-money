@@ -213,8 +213,7 @@ public final class MoneyFormatterBuilder {
      * @param whenNegative  the formatter to use when the amount is negative
      * @return this for chaining, never null
      */
-    public MoneyFormatterBuilder appendSigned(
-            MoneyFormatter whenPositiveOrZero, MoneyFormatter whenNegative) {
+    public MoneyFormatterBuilder appendSigned(MoneyFormatter whenPositiveOrZero, MoneyFormatter whenNegative) {
         return appendSigned(whenPositiveOrZero, whenPositiveOrZero, whenNegative);
     }
 
@@ -241,8 +240,7 @@ public final class MoneyFormatterBuilder {
      * @param whenNegative  the formatter to use when the amount is negative
      * @return this for chaining, never null
      */
-    public MoneyFormatterBuilder appendSigned(
-            MoneyFormatter whenPositive, MoneyFormatter whenZero, MoneyFormatter whenNegative) {
+    public MoneyFormatterBuilder appendSigned(MoneyFormatter whenPositive, MoneyFormatter whenZero, MoneyFormatter whenNegative) {
         MoneyFormatter.checkNotNull(whenPositive, "MoneyFormatter whenPositive must not be null");
         MoneyFormatter.checkNotNull(whenZero, "MoneyFormatter whenZero must not be null");
         MoneyFormatter.checkNotNull(whenNegative, "MoneyFormatter whenNegative must not be null");
@@ -314,6 +312,7 @@ public final class MoneyFormatterBuilder {
             public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
                 appendable.append(money.getCurrencyUnit().getCode());
             }
+
             @Override
             public void parse(MoneyParseContext context) {
                 int endPos = context.getIndex() + 3;
@@ -335,6 +334,7 @@ public final class MoneyFormatterBuilder {
             public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
                 appendable.append(money.getCurrencyUnit().getNumeric3Code());
             }
+
             @Override
             public void parse(MoneyParseContext context) {
                 int endPos = context.getIndex() + 3;
@@ -356,10 +356,11 @@ public final class MoneyFormatterBuilder {
             public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
                 appendable.append(Integer.toString(money.getCurrencyUnit().getNumericCode()));
             }
+
             @Override
             public void parse(MoneyParseContext context) {
                 int count = 0;
-                for ( ; count < 3 && context.getIndex() + count < context.getTextLength(); count++) {
+                for (; count < 3 && context.getIndex() + count < context.getTextLength(); count++) {
                     char ch = context.getText().charAt(context.getIndex() + count);
                     if (ch < '0' || ch > '9') {
                         break;
@@ -375,10 +376,13 @@ public final class MoneyFormatterBuilder {
                 }
             }
         };
+
         private final String toString;
+
         private Singletons(String toString) {
             this.toString = toString;
         }
+
         @Override
         public String toString() {
             return toString;
@@ -391,10 +395,12 @@ public final class MoneyFormatterBuilder {
      */
     private static enum SingletonPrinters implements MoneyPrinter {
         LOCALIZED_SYMBOL;
+
         @Override
         public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
             appendable.append(money.getCurrencyUnit().getSymbol(context.getLocale()));
         }
+
         @Override
         public String toString() {
             return "${symbolLocalized}";

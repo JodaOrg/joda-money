@@ -55,54 +55,54 @@ public final class MoneyAmountStyle implements Serializable {
      * Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle ASCII_DECIMAL_POINT_GROUP3_COMMA =
-        new MoneyAmountStyle('0', '+', '-', '.', GroupingStyle.FULL, ',', 3, 0, false, false);
+            new MoneyAmountStyle('0', '+', '-', '.', GroupingStyle.FULL, ',', 3, 0, false, false);
     /**
      * A style that uses ASCII digits/negative sign, the decimal point
      * and groups large amounts in 3's using a space.
      * Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle ASCII_DECIMAL_POINT_GROUP3_SPACE =
-        new MoneyAmountStyle('0', '+', '-', '.', GroupingStyle.FULL, ' ', 3, 0, false, false);
+            new MoneyAmountStyle('0', '+', '-', '.', GroupingStyle.FULL, ' ', 3, 0, false, false);
     /**
      * A style that uses ASCII digits/negative sign, the decimal point
      * and no grouping of large amounts.
      * Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle ASCII_DECIMAL_POINT_NO_GROUPING =
-        new MoneyAmountStyle('0', '+', '-', '.', GroupingStyle.NONE, ',', 3, 0, false, false);
+            new MoneyAmountStyle('0', '+', '-', '.', GroupingStyle.NONE, ',', 3, 0, false, false);
     /**
      * A style that uses ASCII digits/negative sign, the decimal comma
      * and groups large amounts in 3's using a dot.
      * Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle ASCII_DECIMAL_COMMA_GROUP3_DOT =
-        new MoneyAmountStyle('0', '+', '-', ',', GroupingStyle.FULL, '.', 3, 0, false, false);
+            new MoneyAmountStyle('0', '+', '-', ',', GroupingStyle.FULL, '.', 3, 0, false, false);
     /**
      * A style that uses ASCII digits/negative sign, the decimal comma
      * and groups large amounts in 3's using a space.
      * Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle ASCII_DECIMAL_COMMA_GROUP3_SPACE =
-        new MoneyAmountStyle('0', '+', '-', ',', GroupingStyle.FULL, ' ', 3, 0, false, false);
+            new MoneyAmountStyle('0', '+', '-', ',', GroupingStyle.FULL, ' ', 3, 0, false, false);
     /**
      * A style that uses ASCII digits/negative sign, the decimal point
      * and no grouping of large amounts.
      * Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle ASCII_DECIMAL_COMMA_NO_GROUPING =
-        new MoneyAmountStyle('0', '+', '-', ',', GroupingStyle.NONE, '.', 3, 0, false, false);
+            new MoneyAmountStyle('0', '+', '-', ',', GroupingStyle.NONE, '.', 3, 0, false, false);
     /**
      * A style that will be filled in with localized values using the locale of the formatter.
      * Grouping is enabled. Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle LOCALIZED_GROUPING =
-        new MoneyAmountStyle(-1, -1, -1, -1, GroupingStyle.FULL, -1, -1, -1, false, false);
+            new MoneyAmountStyle(-1, -1, -1, -1, GroupingStyle.FULL, -1, -1, -1, false, false);
     /**
      * A style that will be filled in with localized values using the locale of the formatter.
      * Grouping is disabled. Forced decimal point is disabled.
      */
     public static final MoneyAmountStyle LOCALIZED_NO_GROUPING =
-        new MoneyAmountStyle(-1, -1, -1, -1, GroupingStyle.NONE, -1, -1, -1, false, false);
+            new MoneyAmountStyle(-1, -1, -1, -1, GroupingStyle.NONE, -1, -1, -1, false, false);
     /**
      * Cache of localized styles.
      */
@@ -184,11 +184,17 @@ public final class MoneyAmountStyle implements Serializable {
      * @param absValue  true to output the absolute value rather than the signed value
      */
     private MoneyAmountStyle(
-                int zeroCharacter,
-                int positiveCharacter, int negativeCharacter,
-                int decimalPointCharacter, GroupingStyle groupingStyle,
-                int groupingCharacter, int groupingSize, int extendedGroupingSize,
-                boolean forceDecimalPoint, boolean absValue) {
+            int zeroCharacter,
+            int positiveCharacter,
+            int negativeCharacter,
+            int decimalPointCharacter,
+            GroupingStyle groupingStyle,
+            int groupingCharacter,
+            int groupingSize,
+            int extendedGroupingSize,
+            boolean forceDecimalPoint,
+            boolean absValue) {
+
         this.zeroCharacter = zeroCharacter;
         this.positiveCharacter = positiveCharacter;
         this.negativeCharacter = negativeCharacter;
@@ -272,14 +278,14 @@ public final class MoneyAmountStyle implements Serializable {
             size = size <= 0 ? 3 : size;
             protoStyle = new MoneyAmountStyle(
                     symbols.getZeroDigit(),
-                    '+', 
+                    '+',
                     symbols.getMinusSign(),
                     symbols.getMonetaryDecimalSeparator(),
                     GroupingStyle.FULL,
-                    symbols.getGroupingSeparator(), 
-                    size, 
-                    0, 
-                    false, 
+                    symbols.getGroupingSeparator(),
+                    size,
+                    0,
+                    false,
                     false);
             LOCALIZED_CACHE.putIfAbsent(locale, protoStyle);
         }
@@ -666,9 +672,9 @@ public final class MoneyAmountStyle implements Serializable {
     @Override
     public String toString() {
         return "MoneyAmountStyle['" + getZeroCharacter() + "','" + getPositiveSignCharacter() + "','" +
-            getNegativeSignCharacter() + "','" + getDecimalPointCharacter() + "','" +
-            getGroupingStyle() + "," + getGroupingCharacter() + "','" + getGroupingSize() + "'," +
-            isForcedDecimalPoint() + "'," + isAbsValue() + "]";
+                getNegativeSignCharacter() + "','" + getDecimalPointCharacter() + "','" +
+                getGroupingStyle() + "," + getGroupingCharacter() + "','" + getGroupingSize() + "'," +
+                isForcedDecimalPoint() + "'," + isAbsValue() + "]";
     }
 
 }

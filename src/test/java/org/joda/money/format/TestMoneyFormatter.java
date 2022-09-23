@@ -310,10 +310,10 @@ public class TestMoneyFormatter {
             new Object[] {".12 GBP", BigDecimal.valueOf(12, 2), MONEY_GBP_12_34.getCurrencyUnit(), 7, -1, false, true, true},
             new Object[] {"12. GBP", BigDecimal.valueOf(12), MONEY_GBP_12_34.getCurrencyUnit(), 7, -1, false, true, true},
             new Object[] {"12,34 GBP", BigDecimal.valueOf(1234), MONEY_GBP_12_34.getCurrencyUnit(), 9, -1, false, true, true},
-            
+
             new Object[] {"-12.34 GBP", BigDecimal.valueOf(-1234, 2), CurrencyUnit.GBP, 10, -1, false, true, true},
             new Object[] {"+12.34 GBP", BigDecimal.valueOf(1234, 2), CurrencyUnit.GBP, 10, -1, false, true, true},
-            
+
             new Object[] {"12.34 GB", BigDecimal.valueOf(1234, 2), null, 6, 6, true, false, false},
             new Object[] {",12.34 GBP", null, null, 0, 0, true, false, false},
             new Object[] {"12..34 GBP", BigDecimal.valueOf(12), null, 3, 3, true, false, false},
@@ -325,8 +325,16 @@ public class TestMoneyFormatter {
 
     @Test
     @UseDataProvider("data_parse")
-    public void test_parse_CharSequenceInt(String str, BigDecimal amount, CurrencyUnit currency,
-                    int index, int errorIndex, boolean error, boolean fullyParsed, boolean complete) {
+    public void test_parse_CharSequenceInt(
+            String str,
+            BigDecimal amount,
+            CurrencyUnit currency,
+            int index,
+            int errorIndex,
+            boolean error,
+            boolean fullyParsed,
+            boolean complete) {
+
         CharSequence input = new StringBuilder(str);
         MoneyParseContext test = iParseTest.parse(input, 0);
         assertEquals(amount, test.getAmount());
@@ -475,6 +483,7 @@ public class TestMoneyFormatter {
             @Override
             public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
             }
+
             @Override
             public String toString() {
                 return "A";
@@ -484,6 +493,7 @@ public class TestMoneyFormatter {
             @Override
             public void parse(MoneyParseContext context) {
             }
+
             @Override
             public String toString() {
                 return "B";
@@ -499,10 +509,12 @@ public class TestMoneyFormatter {
         public Appendable append(CharSequence csq, int start, int end) throws IOException {
             throw new IOException();
         }
+
         @Override
         public Appendable append(char c) throws IOException {
             throw new IOException();
         }
+
         @Override
         public Appendable append(CharSequence csq) throws IOException {
             throw new IOException();

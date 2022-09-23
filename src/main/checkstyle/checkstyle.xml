@@ -14,12 +14,8 @@
     <module name="EmptyBlock">
       <property name="tokens" value="LITERAL_DO,LITERAL_ELSE,LITERAL_FINALLY,LITERAL_IF,LITERAL_FOR,LITERAL_TRY,LITERAL_WHILE,STATIC_INIT"/>
     </module>
-    <module name="EmptyForInitializerPad">
-      <property name="option" value="space"/>
-    </module>
-    <module name="EmptyForIteratorPad">
-      <property name="option" value="space"/>
-    </module>
+    <module name="EmptyForInitializerPad"/>
+    <module name="EmptyForIteratorPad"/>
     <module name="EqualsHashCode"/>
     <module name="IllegalImport"/>
     <module name="IllegalInstantiation">
