@@ -207,7 +207,7 @@ public final class MoneyFormatter implements Serializable {
         if (isPrinter() == false) {
             throw new UnsupportedOperationException("MoneyFomatter has not been configured to be able to print");
         }
-        
+
         BigMoney money = BigMoney.of(moneyProvider);
         MoneyPrintContext context = new MoneyPrintContext(locale);
         printerParser.print(context, appendable, money);

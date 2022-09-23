@@ -151,7 +151,7 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
             }
         }
         boolean lastWasGroup = false;
-        for ( ; pos < len; pos++) {
+        for (; pos < len; pos++) {
             char ch = context.getText().charAt(pos);
             if (ch >= activeStyle.getZeroCharacter() && ch < activeStyle.getZeroCharacter() + 10) {
                 buf[bufPos++] = (char) ('0' + ch - activeStyle.getZeroCharacter());

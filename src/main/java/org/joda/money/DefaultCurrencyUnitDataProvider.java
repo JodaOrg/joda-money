@@ -50,7 +50,7 @@ class DefaultCurrencyUnitDataProvider extends CurrencyUnitDataProvider {
      * Registers all the currencies known by this provider.
      * 
      * @throws Exception if an error occurs
-     */ 
+     */
     @Override
     protected void registerCurrencies() throws Exception {
         parseCurrencies(loadFromFile("/org/joda/money/CurrencyData.csv"));

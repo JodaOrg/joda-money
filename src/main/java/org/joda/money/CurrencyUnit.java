@@ -74,7 +74,8 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         try {
             try {
                 String clsName = System.getProperty(
-                        "org.joda.money.CurrencyUnitDataProvider", "org.joda.money.DefaultCurrencyUnitDataProvider");
+                        "org.joda.money.CurrencyUnitDataProvider",
+                        "org.joda.money.DefaultCurrencyUnitDataProvider");
                 Class<? extends CurrencyUnitDataProvider> cls =
                         CurrencyUnit.class.getClassLoader().loadClass(clsName).asSubclass(CurrencyUnitDataProvider.class);
                 cls.getDeclaredConstructor().newInstance().registerCurrencies();
@@ -159,7 +160,11 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      *  specified data is invalid
      */
     public static synchronized CurrencyUnit registerCurrency(
-            String currencyCode, int numericCurrencyCode, int decimalPlaces, List<String> countryCodes) {
+            String currencyCode,
+            int numericCurrencyCode,
+            int decimalPlaces,
+            List<String> countryCodes) {
+
         return registerCurrency(currencyCode, numericCurrencyCode, decimalPlaces, countryCodes, false);
     }
 
@@ -192,7 +197,12 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      *  or if the specified data is invalid
      */
     public static synchronized CurrencyUnit registerCurrency(
-                    String currencyCode, int numericCurrencyCode, int decimalPlaces, List<String> countryCodes, boolean force) {
+            String currencyCode,
+            int numericCurrencyCode,
+            int decimalPlaces,
+            List<String> countryCodes,
+            boolean force) {
+
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
         if (currencyCode.length() != 3) {
             throw new IllegalArgumentException("Invalid string code, must be length 3");
@@ -207,7 +217,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
             throw new IllegalArgumentException("Invalid number of decimal places");
         }
         MoneyUtils.checkNotNull(countryCodes, "Country codes must not be null");
-        
+
         CurrencyUnit currency = new CurrencyUnit(currencyCode, (short) numericCurrencyCode, (short) decimalPlaces);
         if (force) {
             currenciesByCode.remove(currencyCode);
@@ -263,9 +273,9 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      *  or if the specified data is invalid
      */
     public static synchronized CurrencyUnit registerCurrency(
-            String currencyCode, 
+            String currencyCode,
             int numericCurrencyCode,
-            int decimalPlaces, 
+            int decimalPlaces,
             boolean force) {
 
         List<String> countryCodes = Collections.emptyList();
@@ -367,12 +377,14 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
             case 1:
                 return ofNumericCode(numericCurrencyCode.charAt(0) - '0');
             case 2:
-                return ofNumericCode((numericCurrencyCode.charAt(0) - '0') * 10 +
-                                      numericCurrencyCode.charAt(1) - '0');
+                return ofNumericCode(
+                        (numericCurrencyCode.charAt(0) - '0') * 10 +
+                                numericCurrencyCode.charAt(1) - '0');
             case 3:
-                return ofNumericCode((numericCurrencyCode.charAt(0) - '0') * 100 +
-                                     (numericCurrencyCode.charAt(1) - '0') * 10 +
-                                      numericCurrencyCode.charAt(2) - '0');
+                return ofNumericCode(
+                        (numericCurrencyCode.charAt(0) - '0') * 100 +
+                                (numericCurrencyCode.charAt(1) - '0') * 10 +
+                                numericCurrencyCode.charAt(2) - '0');
             default:
                 throw new IllegalCurrencyException("Unknown currency '" + numericCurrencyCode + '\'');
         }

@@ -746,13 +746,13 @@ public class TestCurrencyUnit {
         assertEquals(0, a.compareTo(a));
         assertEquals(0, b.compareTo(b));
         assertEquals(0, c.compareTo(c));
-        
+
         assertTrue(a.compareTo(b) < 0);
         assertTrue(b.compareTo(a) > 0);
-        
+
         assertTrue(a.compareTo(c) < 0);
         assertTrue(c.compareTo(a) > 0);
-        
+
         assertTrue(b.compareTo(c) < 0);
         assertTrue(c.compareTo(b) > 0);
     }
@@ -773,11 +773,11 @@ public class TestCurrencyUnit {
         assertTrue(a.equals(a));
         assertTrue(b.equals(b));
         assertTrue(c.equals(c));
-        
+
         assertTrue(a.equals(b));
         assertTrue(b.equals(a));
         assertTrue(a.hashCode() == b.hashCode());
-        
+
         assertFalse(a.equals(c));
         assertFalse(b.equals(c));
     }

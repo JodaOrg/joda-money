@@ -69,10 +69,12 @@ public class TestMoney {
     private static final Money GBP_INT_MIN_MAJOR_MINUS1 = Money.ofMinor(GBP, (((long) Integer.MIN_VALUE) - 1) * 100);
     private static final Money GBP_LONG_MAX_PLUS1 = Money.of(GBP, BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.ONE));
     private static final Money GBP_LONG_MIN_MINUS1 =
-        Money.of(GBP, BigDecimal.valueOf(Long.MIN_VALUE).subtract(BigDecimal.ONE));
-    private static final Money GBP_LONG_MAX_MAJOR_PLUS1 = Money.of(GBP,
+            Money.of(GBP, BigDecimal.valueOf(Long.MIN_VALUE).subtract(BigDecimal.ONE));
+    private static final Money GBP_LONG_MAX_MAJOR_PLUS1 = Money.of(
+            GBP,
             BigDecimal.valueOf(Long.MAX_VALUE).add(BigDecimal.ONE).multiply(BigDecimal.valueOf(100)));
-    private static final Money GBP_LONG_MIN_MAJOR_MINUS1 = Money.of(GBP,
+    private static final Money GBP_LONG_MIN_MAJOR_MINUS1 = Money.of(
+            GBP,
             BigDecimal.valueOf(Long.MIN_VALUE).subtract(BigDecimal.ONE).multiply(BigDecimal.valueOf(100)));
     private static final Money JPY_423 = Money.parse("JPY 423");
     private static final Money USD_1_23 = Money.parse("USD 1.23");
@@ -731,7 +733,7 @@ public class TestMoney {
         assertEquals(false, Modifier.isProtected(con.getModifiers()));
         try {
             con.setAccessible(true);
-            con.newInstance(new Object[] { null });
+            con.newInstance(new Object[] {null});
             fail();
         } catch (InvocationTargetException ex) {
             assertEquals(AssertionError.class, ex.getCause().getClass());
@@ -743,7 +745,7 @@ public class TestMoney {
         Constructor<Money> con = Money.class.getDeclaredConstructor(BigMoney.class);
         try {
             con.setAccessible(true);
-            con.newInstance(new Object[] { BigMoney.of(GBP, BIGDEC_2_3) });
+            con.newInstance(new Object[] {BigMoney.of(GBP, BIGDEC_2_3)});
             fail();
         } catch (InvocationTargetException ex) {
             assertEquals(AssertionError.class, ex.getCause().getClass());
@@ -2056,13 +2058,13 @@ public class TestMoney {
         assertEquals(0, a.compareTo(a));
         assertEquals(0, b.compareTo(b));
         assertEquals(0, c.compareTo(c));
-        
+
         assertEquals(-1, a.compareTo(b));
         assertEquals(1, b.compareTo(a));
-        
+
         assertEquals(-1, a.compareTo(c));
         assertEquals(1, c.compareTo(a));
-        
+
         assertEquals(-1, b.compareTo(c));
         assertEquals(1, c.compareTo(b));
     }
@@ -2086,7 +2088,7 @@ public class TestMoney {
     }
 
     @Test(expected = ClassCastException.class)
-    @SuppressWarnings({ "unchecked", "rawtypes" })
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public void test_compareTo_wrongType() {
         Comparable a = GBP_2_34;
         a.compareTo("NotRightType");
@@ -2103,13 +2105,13 @@ public class TestMoney {
         assertEquals(true, a.isEqual(a));
         assertEquals(true, b.isEqual(b));
         assertEquals(true, c.isEqual(c));
-        
+
         assertEquals(false, a.isEqual(b));
         assertEquals(false, b.isEqual(a));
-        
+
         assertEquals(false, a.isEqual(c));
         assertEquals(false, c.isEqual(a));
-        
+
         assertEquals(false, b.isEqual(c));
         assertEquals(false, c.isEqual(b));
     }
@@ -2139,13 +2141,13 @@ public class TestMoney {
         assertEquals(false, a.isGreaterThan(a));
         assertEquals(false, b.isGreaterThan(b));
         assertEquals(false, c.isGreaterThan(c));
-        
+
         assertEquals(false, a.isGreaterThan(b));
         assertEquals(true, b.isGreaterThan(a));
-        
+
         assertEquals(false, a.isGreaterThan(c));
         assertEquals(true, c.isGreaterThan(a));
-        
+
         assertEquals(false, b.isGreaterThan(c));
         assertEquals(true, c.isGreaterThan(b));
     }
@@ -2168,13 +2170,13 @@ public class TestMoney {
         assertEquals(false, a.isLessThan(a));
         assertEquals(false, b.isLessThan(b));
         assertEquals(false, c.isLessThan(c));
-        
+
         assertEquals(true, a.isLessThan(b));
         assertEquals(false, b.isLessThan(a));
-        
+
         assertEquals(true, a.isLessThan(c));
         assertEquals(false, c.isLessThan(a));
-        
+
         assertEquals(true, b.isLessThan(c));
         assertEquals(false, c.isLessThan(b));
     }
@@ -2197,11 +2199,11 @@ public class TestMoney {
         assertEquals(true, a.equals(a));
         assertEquals(true, b.equals(b));
         assertEquals(true, c.equals(c));
-        
+
         assertEquals(true, a.equals(b));
         assertEquals(true, b.equals(a));
         assertEquals(true, a.hashCode() == b.hashCode());
-        
+
         assertEquals(false, a.equals(c));
         assertEquals(false, b.equals(c));
     }
