@@ -8,7 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="1.0.3" date="SNAPSHOT" description="v1.0.3">
+    <release version="1.0.3" date="2022-12-06" description="v1.0.3">
+      <action dev="janjaali" type="update">
+        Change currency HRK to EUR.
+        Note that the official switch from HRK to EUR occurs on 2023-01-01.
+        You may want to delay updating this dependency until then.
+      </action>
       <action dev="jodastephen" type="update">
         Switch master to main.
       </action>
