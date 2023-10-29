@@ -50,7 +50,7 @@ Various documentation is available:
 
 
 ### Releases
-[Release 1.0.3](https://www.joda.org/joda-money/download.html) is the current release.
+[Release 1.0.4](https://www.joda.org/joda-money/download.html) is the current release.
 This release is considered stable and worthy of the 1.x tag.
 It depends on Java SE 8 or later.
 

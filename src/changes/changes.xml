@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="1.0.4" date="SNAPSHOT" description="v1.0.4">
+    <release version="1.0.4" date="2023-10-29" description="v1.0.4">
       <action dev="jodastephen" type="add">
         Add isGreaterThanOrEqual() and isLessThanOrEqual() to money classes.
         Fixes #98.
