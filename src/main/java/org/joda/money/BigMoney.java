@@ -1644,6 +1644,18 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
     }
 
     /**
+     * Checks if this monetary value is greater than or equal to another.
+     * The compared values must be in the same currency.
+     * 
+     * @param other  the other monetary value, not null
+     * @return true if this is greater than or equal to the specified monetary value
+     * @throws CurrencyMismatchException if the currencies differ
+     */
+    public boolean isGreaterThanOrEqual(BigMoneyProvider other) {
+        return compareTo(other) >= 0;
+    }
+
+    /**
      * Checks if this monetary value is less than another.
      * The compared values must be in the same currency.
      * 
@@ -1653,6 +1665,18 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      */
     public boolean isLessThan(BigMoneyProvider other) {
         return compareTo(other) < 0;
+    }
+
+    /**
+     * Checks if this monetary value is less or equal to than another.
+     * The compared values must be in the same currency.
+     * 
+     * @param other  the other monetary value, not null
+     * @return true if this is less than or equal to the specified monetary value
+     * @throws CurrencyMismatchException if the currencies differ
+     */
+    public boolean isLessThanOrEqual(BigMoneyProvider other) {
+        return compareTo(other) <= 0;
     }
 
     //-----------------------------------------------------------------------

@@ -8,6 +8,16 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.0.4" date="SNAPSHOT" description="v1.0.4">
+      <action dev="jodastephen" type="add">
+        Add isGreaterThanOrEqual() and isLessThanOrEqual() to money classes.
+        Fixes #98.
+      </action>
+      <action dev="jodastephen" type="fix">
+        Workaround issue with BigDecimal.stripTrailingZeros() on early Android versions.
+        Fixes #129.
+      </action>
+    </release>
     <release version="1.0.3" date="2022-12-06" description="v1.0.3">
       <action dev="janjaali" type="update">
         Change currency HRK to EUR.
