@@ -87,6 +87,7 @@ Tidelift will coordinate the fix and disclosure.
 
 * Update version (README.md, index.md, changes.xml)
 * Commit and push
+* In an admin window `gpg-connect-agent -v`
 * Switch to Java 11
 * `mvn clean release:clean release:prepare release:perform`
 * `git fetch`
