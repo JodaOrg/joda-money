@@ -2591,17 +2591,16 @@ public class TestBigMoney {
         BigMoney b = GBP_2_35;
         BigMoney c = GBP_2_36;
         assertEquals(false, a.isGreaterThan(a));
-        assertEquals(false, b.isGreaterThan(b));
-        assertEquals(false, c.isGreaterThan(c));
-
         assertEquals(false, a.isGreaterThan(b));
-        assertEquals(true, b.isGreaterThan(a));
-
         assertEquals(false, a.isGreaterThan(c));
-        assertEquals(true, c.isGreaterThan(a));
 
+        assertEquals(true, b.isGreaterThan(a));
+        assertEquals(false, b.isGreaterThan(b));
         assertEquals(false, b.isGreaterThan(c));
+
+        assertEquals(true, c.isGreaterThan(a));
         assertEquals(true, c.isGreaterThan(b));
+        assertEquals(false, c.isGreaterThan(c));
     }
 
     @Test(expected = CurrencyMismatchException.class)
@@ -2609,6 +2608,34 @@ public class TestBigMoney {
         BigMoney a = GBP_2_34;
         BigMoney b = USD_2_35;
         a.isGreaterThan(b);
+    }
+
+    //-----------------------------------------------------------------------
+    // isGreaterThanOrEqual()
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_isGreaterThanOrEqual() {
+        BigMoney a = GBP_2_34;
+        BigMoney b = GBP_2_35;
+        BigMoney c = GBP_2_36;
+        assertEquals(true, a.isGreaterThanOrEqual(a));
+        assertEquals(false, a.isGreaterThanOrEqual(b));
+        assertEquals(false, a.isGreaterThanOrEqual(c));
+
+        assertEquals(true, b.isGreaterThanOrEqual(a));
+        assertEquals(true, b.isGreaterThanOrEqual(b));
+        assertEquals(false, b.isGreaterThanOrEqual(c));
+
+        assertEquals(true, c.isGreaterThanOrEqual(a));
+        assertEquals(true, c.isGreaterThanOrEqual(b));
+        assertEquals(true, c.isGreaterThanOrEqual(c));
+    }
+
+    @Test(expected = CurrencyMismatchException.class)
+    public void test_isGreaterThanOrEqual_currenciesDiffer() {
+        BigMoney a = GBP_2_34;
+        BigMoney b = USD_2_35;
+        a.isGreaterThanOrEqual(b);
     }
 
     //-----------------------------------------------------------------------
@@ -2620,17 +2647,16 @@ public class TestBigMoney {
         BigMoney b = GBP_2_35;
         BigMoney c = GBP_2_36;
         assertEquals(false, a.isLessThan(a));
-        assertEquals(false, b.isLessThan(b));
-        assertEquals(false, c.isLessThan(c));
-
         assertEquals(true, a.isLessThan(b));
-        assertEquals(false, b.isLessThan(a));
-
         assertEquals(true, a.isLessThan(c));
-        assertEquals(false, c.isLessThan(a));
 
+        assertEquals(false, b.isLessThan(a));
+        assertEquals(false, b.isLessThan(b));
         assertEquals(true, b.isLessThan(c));
+
+        assertEquals(false, c.isLessThan(a));
         assertEquals(false, c.isLessThan(b));
+        assertEquals(false, c.isLessThan(c));
     }
 
     @Test(expected = CurrencyMismatchException.class)
@@ -2638,6 +2664,34 @@ public class TestBigMoney {
         BigMoney a = GBP_2_34;
         BigMoney b = USD_2_35;
         a.isLessThan(b);
+    }
+
+    //-----------------------------------------------------------------------
+    // isLessThanOrEqual()
+    //-----------------------------------------------------------------------
+    @Test
+    public void test_isLessThanOrEqual() {
+        BigMoney a = GBP_2_34;
+        BigMoney b = GBP_2_35;
+        BigMoney c = GBP_2_36;
+        assertEquals(true, a.isLessThanOrEqual(a));
+        assertEquals(true, a.isLessThanOrEqual(b));
+        assertEquals(true, a.isLessThanOrEqual(c));
+
+        assertEquals(false, b.isLessThanOrEqual(a));
+        assertEquals(true, b.isLessThanOrEqual(b));
+        assertEquals(true, b.isLessThanOrEqual(c));
+
+        assertEquals(false, c.isLessThanOrEqual(a));
+        assertEquals(false, c.isLessThanOrEqual(b));
+        assertEquals(true, c.isLessThanOrEqual(c));
+    }
+
+    @Test(expected = CurrencyMismatchException.class)
+    public void test_isLessThanOrEqual_currenciesDiffer() {
+        BigMoney a = GBP_2_34;
+        BigMoney b = USD_2_35;
+        a.isLessThanOrEqual(b);
     }
 
     //-----------------------------------------------------------------------
