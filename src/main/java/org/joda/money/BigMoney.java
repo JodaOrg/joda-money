@@ -111,6 +111,10 @@ public final class BigMoney implements BigMoneyProvider, Comparable<BigMoneyProv
      */
     public static BigMoney of(CurrencyUnit currency, double amount) {
         MoneyUtils.checkNotNull(currency, "Currency must not be null");
+        // if statement added to support Android before v30 where stripTrailingZeros() is broken, see #129
+        if (amount == 0d) {
+            return zero(currency);
+        }
         return BigMoney.of(currency, BigDecimal.valueOf(amount).stripTrailingZeros());
     }
 
