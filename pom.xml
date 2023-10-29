@@ -792,7 +792,7 @@
   <properties>
     <!-- Dependencies -->
     <junit-dataprovider.version>1.13.1</junit-dataprovider.version>
-    <joda-convert.version>2.2.2</joda-convert.version>
+    <joda-convert.version>2.2.3</joda-convert.version>
     <junit.version>4.13.2</junit.version>
 
     <!-- Common control parameters -->
