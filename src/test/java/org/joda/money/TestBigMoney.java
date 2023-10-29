@@ -196,6 +196,15 @@ public class TestBigMoney {
     }
 
     @Test
+    public void test_factory_of_Currency_double_zero() {
+        assertEquals(BigMoney.of(GBP, BigDecimal.valueOf(0L, 0)), BigMoney.of(GBP, 0d));
+        assertEquals(BigMoney.of(GBP, BigDecimal.valueOf(0L, 0)), BigMoney.of(GBP, -0d));
+        assertEquals(BigMoney.of(GBP, BigDecimal.valueOf(0L, 0)), BigMoney.of(GBP, 0.0d));
+        assertEquals(BigMoney.of(GBP, BigDecimal.valueOf(0L, 0)), BigMoney.of(GBP, 0.00d));
+        assertEquals(BigMoney.of(GBP, BigDecimal.valueOf(0L, 0)), BigMoney.of(GBP, -0.0d));
+    }
+
+    @Test
     public void test_factory_of_Currency_double_medium() {
         BigMoney test = BigMoney.of(GBP, 2000d);
         assertEquals(GBP, test.getCurrencyUnit());
