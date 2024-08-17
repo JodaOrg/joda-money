@@ -15,20 +15,22 @@
  */
 package org.joda.money;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test MoneyUtils.
  */
-public class TestMoneyUtils_BigMoney {
+class TestMoneyUtils_BigMoney {
 
     private static final BigMoney GBP_0 = BigMoney.parse("GBP 0");
     private static final BigMoney GBP_20 = BigMoney.parse("GBP 20");
@@ -42,7 +44,7 @@ public class TestMoneyUtils_BigMoney {
     // constructor
     //-----------------------------------------------------------------------
     @Test
-    public void test_constructor() throws Exception {
+    void test_constructor() throws Exception {
         Constructor<MoneyUtils> con = MoneyUtils.class.getDeclaredConstructor();
         assertTrue(Modifier.isPrivate(con.getModifiers()));
         con.setAccessible(true);
@@ -53,7 +55,7 @@ public class TestMoneyUtils_BigMoney {
     // isZero(BigMoney)
     //-----------------------------------------------------------------------
     @Test
-    public void test_isZero() {
+    void test_isZero() {
         assertTrue(MoneyUtils.isZero(null));
         assertTrue(MoneyUtils.isZero(GBP_0));
         assertFalse(MoneyUtils.isZero(GBP_30));
@@ -64,7 +66,7 @@ public class TestMoneyUtils_BigMoney {
     // isPositive(BigMoney)
     //-----------------------------------------------------------------------
     @Test
-    public void test_isPositive() {
+    void test_isPositive() {
         assertFalse(MoneyUtils.isPositive(null));
         assertFalse(MoneyUtils.isPositive(GBP_0));
         assertTrue(MoneyUtils.isPositive(GBP_30));
@@ -75,7 +77,7 @@ public class TestMoneyUtils_BigMoney {
     // isPositiveOrZero(BigMoney)
     //-----------------------------------------------------------------------
     @Test
-    public void test_isPositiveOrZero() {
+    void test_isPositiveOrZero() {
         assertTrue(MoneyUtils.isPositiveOrZero(null));
         assertTrue(MoneyUtils.isPositiveOrZero(GBP_0));
         assertTrue(MoneyUtils.isPositiveOrZero(GBP_30));
@@ -86,7 +88,7 @@ public class TestMoneyUtils_BigMoney {
     // isNegative(BigMoney)
     //-----------------------------------------------------------------------
     @Test
-    public void test_isNegative() {
+    void test_isNegative() {
         assertFalse(MoneyUtils.isNegative(null));
         assertFalse(MoneyUtils.isNegative(GBP_0));
         assertFalse(MoneyUtils.isNegative(GBP_30));
@@ -97,7 +99,7 @@ public class TestMoneyUtils_BigMoney {
     // isNegativeOrZero(BigMoney)
     //-----------------------------------------------------------------------
     @Test
-    public void test_isNegativeOrZero() {
+    void test_isNegativeOrZero() {
         assertTrue(MoneyUtils.isNegativeOrZero(null));
         assertTrue(MoneyUtils.isNegativeOrZero(GBP_0));
         assertFalse(MoneyUtils.isNegativeOrZero(GBP_30));
@@ -108,122 +110,130 @@ public class TestMoneyUtils_BigMoney {
     // max(Money,Money)
     //-----------------------------------------------------------------------
     @Test
-    public void test_max1() {
+    void test_max1() {
         assertSame(GBP_30, MoneyUtils.max(GBP_20, GBP_30));
     }
 
     @Test
-    public void test_max2() {
+    void test_max2() {
         assertSame(GBP_30, MoneyUtils.max(GBP_30, GBP_20));
     }
 
-    @Test(expected = CurrencyMismatchException.class)
-    public void test_max_differentCurrencies() {
-        MoneyUtils.max(GBP_20, EUR_30);
+    @Test
+    void test_max_differentCurrencies() {
+        assertThrows(CurrencyMismatchException.class, () -> {
+            MoneyUtils.max(GBP_20, EUR_30);
+        });
     }
 
     @Test
-    public void test_max_null1() {
+    void test_max_null1() {
         assertSame(GBP_30, MoneyUtils.max((BigMoney) null, GBP_30));
     }
 
     @Test
-    public void test_max_null2() {
+    void test_max_null2() {
         assertSame(GBP_20, MoneyUtils.max(GBP_20, (BigMoney) null));
     }
 
     @Test
-    public void test_max_nullBoth() {
-        assertEquals(null, MoneyUtils.max((BigMoney) null, (BigMoney) null));
+    void test_max_nullBoth() {
+        assertNull(MoneyUtils.max((BigMoney) null, (BigMoney) null));
     }
 
     //-----------------------------------------------------------------------
     // min(Money,Money)
     //-----------------------------------------------------------------------
     @Test
-    public void test_min1() {
+    void test_min1() {
         assertSame(GBP_20, MoneyUtils.min(GBP_20, GBP_30));
     }
 
     @Test
-    public void test_min2() {
+    void test_min2() {
         assertSame(GBP_20, MoneyUtils.min(GBP_30, GBP_20));
     }
 
-    @Test(expected = CurrencyMismatchException.class)
-    public void test_min_differentCurrencies() {
-        MoneyUtils.min(GBP_20, EUR_30);
+    @Test
+    void test_min_differentCurrencies() {
+        assertThrows(CurrencyMismatchException.class, () -> {
+            MoneyUtils.min(GBP_20, EUR_30);
+        });
     }
 
     @Test
-    public void test_min_null1() {
+    void test_min_null1() {
         assertSame(GBP_30, MoneyUtils.min((BigMoney) null, GBP_30));
     }
 
     @Test
-    public void test_min_null2() {
+    void test_min_null2() {
         assertSame(GBP_20, MoneyUtils.min(GBP_20, (BigMoney) null));
     }
 
     @Test
-    public void test_min_nullBoth() {
-        assertEquals(null, MoneyUtils.min((BigMoney) null, (BigMoney) null));
+    void test_min_nullBoth() {
+        assertNull(MoneyUtils.min((BigMoney) null, (BigMoney) null));
     }
 
     //-----------------------------------------------------------------------
     // add(Money,Money)
     //-----------------------------------------------------------------------
     @Test
-    public void test_add() {
+    void test_add() {
         assertEquals(GBP_50, MoneyUtils.add(GBP_20, GBP_30));
     }
 
-    @Test(expected = CurrencyMismatchException.class)
-    public void test_add_differentCurrencies() {
-        MoneyUtils.add(GBP_20, EUR_30);
+    @Test
+    void test_add_differentCurrencies() {
+        assertThrows(CurrencyMismatchException.class, () -> {
+            MoneyUtils.add(GBP_20, EUR_30);
+        });
     }
 
     @Test
-    public void test_add_null1() {
+    void test_add_null1() {
         assertSame(GBP_30, MoneyUtils.add((BigMoney) null, GBP_30));
     }
 
     @Test
-    public void test_add_null2() {
+    void test_add_null2() {
         assertSame(GBP_20, MoneyUtils.add(GBP_20, (BigMoney) null));
     }
 
     @Test
-    public void test_add_nullBoth() {
-        assertEquals(null, MoneyUtils.add((BigMoney) null, (BigMoney) null));
+    void test_add_nullBoth() {
+        assertNull(MoneyUtils.add((BigMoney) null, (BigMoney) null));
     }
 
     //-----------------------------------------------------------------------
     // subtract(Money,Money)
     //-----------------------------------------------------------------------
     @Test
-    public void test_subtract() {
+    void test_subtract() {
         assertEquals(GBP_M10, MoneyUtils.subtract(GBP_20, GBP_30));
     }
 
-    @Test(expected = CurrencyMismatchException.class)
-    public void test_subtract_differentCurrencies() {
-        MoneyUtils.subtract(GBP_20, EUR_30);
+    @Test
+    void test_subtract_differentCurrencies() {
+        assertThrows(CurrencyMismatchException.class, () -> {
+            MoneyUtils.subtract(GBP_20, EUR_30);
+        });
     }
 
     @Test
-    public void test_subtract_null1() {
+    void test_subtract_null1() {
         assertEquals(GBP_M30, MoneyUtils.subtract((BigMoney) null, GBP_30));
     }
 
     @Test
-    public void test_subtract_null2() {
+    void test_subtract_null2() {
         assertSame(GBP_20, MoneyUtils.subtract(GBP_20, (BigMoney) null));
     }
 
     @Test
-    public void test_subtract_nullBoth() {
-        assertEquals(null, MoneyUtils.subtract((BigMoney) null, (BigMoney) null));
+    void test_subtract_nullBoth() {
+        assertNull(MoneyUtils.subtract((BigMoney) null, (BigMoney) null));
     }
 
 }

@@ -520,15 +520,9 @@
       <optional>true</optional><!-- mandatory in Scala -->
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
       <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.tngtech.java</groupId>
-      <artifactId>junit-dataprovider</artifactId>
-      <version>${junit-dataprovider.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -791,9 +785,8 @@
   <!-- ==================================================================== -->
   <properties>
     <!-- Dependencies -->
-    <junit-dataprovider.version>1.13.1</junit-dataprovider.version>
     <joda-convert.version>2.2.3</joda-convert.version>
-    <junit.version>4.13.2</junit.version>
+    <junit.version>5.11.0</junit.version>
 
     <!-- Common control parameters -->
     <joda.osgi.packages>org.joda.money.*</joda.osgi.packages>

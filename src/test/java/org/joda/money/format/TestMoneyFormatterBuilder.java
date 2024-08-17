@@ -15,7 +15,11 @@
  */
 package org.joda.money.format;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -26,20 +30,16 @@ import org.joda.money.BigMoney;
 import org.joda.money.BigMoneyProvider;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.Money;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  * Test MoneyFormatterBuilder.
  */
-@RunWith(DataProviderRunner.class)
-public class TestMoneyFormatterBuilder {
+class TestMoneyFormatterBuilder {
 
     private static final CurrencyUnit GBP = CurrencyUnit.GBP;
     private static final CurrencyUnit JPY = CurrencyUnit.JPY;
@@ -63,21 +63,21 @@ public class TestMoneyFormatterBuilder {
 
     private MoneyFormatterBuilder iBuilder;
 
-    @Before
-    public void beforeMethod() {
+    @BeforeEach
+    void beforeMethod() {
         Locale.setDefault(TEST_GB_LOCALE);
         iBuilder = new MoneyFormatterBuilder();
     }
 
-    @After
-    public void afterMethod() {
+    @AfterEach
+    void afterMethod() {
         Locale.setDefault(cCachedLocale);
         iBuilder = null;
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_empty() {
+    void test_empty() {
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals("", test.print(GBP_2_34));
         assertEquals("", test.toString());
@@ -85,7 +85,7 @@ public class TestMoneyFormatterBuilder {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_appendCurrencyCode_print() {
+    void test_appendCurrencyCode_print() {
         iBuilder.appendCurrencyCode();
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals("GBP", test.print(GBP_2_34));
@@ -93,44 +93,44 @@ public class TestMoneyFormatterBuilder {
     }
 
     @Test
-    public void test_appendCurrencyCode_parse_ok() {
+    void test_appendCurrencyCode_parse_ok() {
         iBuilder.appendCurrencyCode();
         MoneyFormatter test = iBuilder.toFormatter();
         MoneyParseContext parsed = test.parse("GBP", 0);
-        assertEquals(false, parsed.isError());
+        assertFalse(parsed.isError());
         assertEquals(3, parsed.getIndex());
         assertEquals(-1, parsed.getErrorIndex());
-        assertEquals(null, parsed.getAmount());
+        assertNull(parsed.getAmount());
         assertEquals(CurrencyUnit.GBP, parsed.getCurrency());
     }
 
     @Test
-    public void test_appendCurrencyCode_parse_tooShort() {
+    void test_appendCurrencyCode_parse_tooShort() {
         iBuilder.appendCurrencyCode();
         MoneyFormatter test = iBuilder.toFormatter();
         MoneyParseContext parsed = test.parse("GB", 0);
-        assertEquals(true, parsed.isError());
+        assertTrue(parsed.isError());
         assertEquals(0, parsed.getIndex());
         assertEquals(0, parsed.getErrorIndex());
-        assertEquals(null, parsed.getAmount());
-        assertEquals(null, parsed.getCurrency());
+        assertNull(parsed.getAmount());
+        assertNull(parsed.getCurrency());
     }
 
     @Test
-    public void test_appendCurrencyCode_parse_empty() {
+    void test_appendCurrencyCode_parse_empty() {
         iBuilder.appendCurrencyCode();
         MoneyFormatter test = iBuilder.toFormatter();
         MoneyParseContext parsed = test.parse("", 0);
-        assertEquals(true, parsed.isError());
+        assertTrue(parsed.isError());
         assertEquals(0, parsed.getIndex());
         assertEquals(0, parsed.getErrorIndex());
-        assertEquals(null, parsed.getAmount());
-        assertEquals(null, parsed.getCurrency());
+        assertNull(parsed.getAmount());
+        assertNull(parsed.getCurrency());
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_appendCurrencyNumeric3Code_print() {
+    void test_appendCurrencyNumeric3Code_print() {
         iBuilder.appendCurrencyNumeric3Code();
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals("826", test.print(GBP_2_34));
@@ -138,56 +138,56 @@ public class TestMoneyFormatterBuilder {
     }
 
     @Test
-    public void test_appendCurrencyNumeric3Code_parse_ok() {
+    void test_appendCurrencyNumeric3Code_parse_ok() {
         iBuilder.appendCurrencyNumeric3Code();
         MoneyFormatter test = iBuilder.toFormatter();
         MoneyParseContext parsed = test.parse("826A", 0);
-        assertEquals(false, parsed.isError());
+        assertFalse(parsed.isError());
         assertEquals(3, parsed.getIndex());
         assertEquals(-1, parsed.getErrorIndex());
-        assertEquals(null, parsed.getAmount());
+        assertNull(parsed.getAmount());
         assertEquals(CurrencyUnit.GBP, parsed.getCurrency());
     }
 
     @Test
-    public void test_appendCurrencyNumeric3Code_parse_tooShort() {
+    void test_appendCurrencyNumeric3Code_parse_tooShort() {
         iBuilder.appendCurrencyNumeric3Code();
         MoneyFormatter test = iBuilder.toFormatter();
         MoneyParseContext parsed = test.parse("82", 0);
-        assertEquals(true, parsed.isError());
+        assertTrue(parsed.isError());
         assertEquals(0, parsed.getIndex());
         assertEquals(0, parsed.getErrorIndex());
-        assertEquals(null, parsed.getAmount());
-        assertEquals(null, parsed.getCurrency());
+        assertNull(parsed.getAmount());
+        assertNull(parsed.getCurrency());
     }
 
     @Test
-    public void test_appendCurrencyNumeric3Code_parse_badCurrency() {
+    void test_appendCurrencyNumeric3Code_parse_badCurrency() {
         iBuilder.appendCurrencyNumeric3Code();
         MoneyFormatter test = iBuilder.toFormatter();
         MoneyParseContext parsed = test.parse("991A", 0);
-        assertEquals(true, parsed.isError());
+        assertTrue(parsed.isError());
         assertEquals(0, parsed.getIndex());
         assertEquals(0, parsed.getErrorIndex());
-        assertEquals(null, parsed.getAmount());
-        assertEquals(null, parsed.getCurrency());
+        assertNull(parsed.getAmount());
+        assertNull(parsed.getCurrency());
     }
 
     @Test
-    public void test_appendCurrencyNumeric3Code_parse_empty() {
+    void test_appendCurrencyNumeric3Code_parse_empty() {
         iBuilder.appendCurrencyNumeric3Code();
         MoneyFormatter test = iBuilder.toFormatter();
         MoneyParseContext parsed = test.parse("", 0);
-        assertEquals(true, parsed.isError());
+        assertTrue(parsed.isError());
         assertEquals(0, parsed.getIndex());
         assertEquals(0, parsed.getErrorIndex());
-        assertEquals(null, parsed.getAmount());
-        assertEquals(null, parsed.getCurrency());
+        assertNull(parsed.getAmount());
+        assertNull(parsed.getCurrency());
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_appendCurrencyNumericCode_print() {
+    void test_appendCurrencyNumericCode_print() {
         iBuilder.appendCurrencyNumericCode();
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals("826", test.print(GBP_2_34));
@@ -195,92 +195,92 @@ public class TestMoneyFormatterBuilder {
     }
 
     @Test
-    public void test_appendCurrencyNumericCode_parse_ok() {
+    void test_appendCurrencyNumericCode_parse_ok() {
         iBuilder.appendCurrencyNumericCode();
         MoneyFormatter test = iBuilder.toFormatter();
         MoneyParseContext parsed = test.parse("826A", 0);
-        assertEquals(false, parsed.isError());
+        assertFalse(parsed.isError());
         assertEquals(3, parsed.getIndex());
         assertEquals(-1, parsed.getErrorIndex());
-        assertEquals(null, parsed.getAmount());
+        assertNull(parsed.getAmount());
         assertEquals(CurrencyUnit.GBP, parsed.getCurrency());
     }
 
     @Test
-    public void test_appendCurrencyNumericCode_parse_ok_padded() {
+    void test_appendCurrencyNumericCode_parse_ok_padded() {
         iBuilder.appendCurrencyNumericCode();
         MoneyFormatter test = iBuilder.toFormatter();
         MoneyParseContext parsed = test.parse("008A", 0);
-        assertEquals(false, parsed.isError());
+        assertFalse(parsed.isError());
         assertEquals(3, parsed.getIndex());
         assertEquals(-1, parsed.getErrorIndex());
-        assertEquals(null, parsed.getAmount());
+        assertNull(parsed.getAmount());
         assertEquals("ALL", parsed.getCurrency().getCode());
     }
 
     @Test
-    public void test_appendCurrencyNumericCode_parse_ok_notPadded1() {
+    void test_appendCurrencyNumericCode_parse_ok_notPadded1() {
         iBuilder.appendCurrencyNumericCode();
         MoneyFormatter test = iBuilder.toFormatter();
         MoneyParseContext parsed = test.parse("8A", 0);
-        assertEquals(false, parsed.isError());
+        assertFalse(parsed.isError());
         assertEquals(1, parsed.getIndex());
         assertEquals(-1, parsed.getErrorIndex());
-        assertEquals(null, parsed.getAmount());
+        assertNull(parsed.getAmount());
         assertEquals("ALL", parsed.getCurrency().getCode());
     }
 
     @Test
-    public void test_appendCurrencyNumericCode_parse_ok_notPadded2() {
+    void test_appendCurrencyNumericCode_parse_ok_notPadded2() {
         iBuilder.appendCurrencyNumericCode();
         MoneyFormatter test = iBuilder.toFormatter();
         MoneyParseContext parsed = test.parse("51 ", 0);
-        assertEquals(false, parsed.isError());
+        assertFalse(parsed.isError());
         assertEquals(2, parsed.getIndex());
         assertEquals(-1, parsed.getErrorIndex());
-        assertEquals(null, parsed.getAmount());
+        assertNull(parsed.getAmount());
         assertEquals("AMD", parsed.getCurrency().getCode());
     }
 
     @Test
-    public void test_appendCurrencyNumericCode_parse_tooShort() {
+    void test_appendCurrencyNumericCode_parse_tooShort() {
         iBuilder.appendCurrencyNumericCode();
         MoneyFormatter test = iBuilder.toFormatter();
         MoneyParseContext parsed = test.parse("", 0);
-        assertEquals(true, parsed.isError());
+        assertTrue(parsed.isError());
         assertEquals(0, parsed.getIndex());
         assertEquals(0, parsed.getErrorIndex());
-        assertEquals(null, parsed.getAmount());
-        assertEquals(null, parsed.getCurrency());
+        assertNull(parsed.getAmount());
+        assertNull(parsed.getCurrency());
     }
 
     @Test
-    public void test_appendCurrencyNumericCode_parse_badCurrency() {
+    void test_appendCurrencyNumericCode_parse_badCurrency() {
         iBuilder.appendCurrencyNumericCode();
         MoneyFormatter test = iBuilder.toFormatter();
         MoneyParseContext parsed = test.parse("991A", 0);
-        assertEquals(true, parsed.isError());
+        assertTrue(parsed.isError());
         assertEquals(0, parsed.getIndex());
         assertEquals(0, parsed.getErrorIndex());
-        assertEquals(null, parsed.getAmount());
-        assertEquals(null, parsed.getCurrency());
+        assertNull(parsed.getAmount());
+        assertNull(parsed.getCurrency());
     }
 
     @Test
-    public void test_appendCurrencyNumericCode_parse_empty() {
+    void test_appendCurrencyNumericCode_parse_empty() {
         iBuilder.appendCurrencyNumericCode();
         MoneyFormatter test = iBuilder.toFormatter();
         MoneyParseContext parsed = test.parse("", 0);
-        assertEquals(true, parsed.isError());
+        assertTrue(parsed.isError());
         assertEquals(0, parsed.getIndex());
         assertEquals(0, parsed.getErrorIndex());
-        assertEquals(null, parsed.getAmount());
-        assertEquals(null, parsed.getCurrency());
+        assertNull(parsed.getAmount());
+        assertNull(parsed.getCurrency());
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_appendCurrencySymbolLocalized_print() {
+    void test_appendCurrencySymbolLocalized_print() {
         iBuilder.appendCurrencySymbolLocalized();
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals("\u00a3", test.print(GBP_2_34));
@@ -288,15 +288,15 @@ public class TestMoneyFormatterBuilder {
     }
 
     @Test
-    public void test_appendCurrencySymbolLocalized_parse() {
+    void test_appendCurrencySymbolLocalized_parse() {
         iBuilder.appendCurrencySymbolLocalized();
         MoneyFormatter test = iBuilder.toFormatter();
-        assertEquals(false, test.isParser());
+        assertFalse(test.isParser());
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_appendLiteral_print() {
+    void test_appendLiteral_print() {
         iBuilder.appendLiteral("Hello");
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals("Hello", test.print(GBP_2_34));
@@ -304,7 +304,7 @@ public class TestMoneyFormatterBuilder {
     }
 
     @Test
-    public void test_appendLiteral_print_empty() {
+    void test_appendLiteral_print_empty() {
         iBuilder.appendLiteral("");
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals("", test.print(GBP_2_34));
@@ -312,7 +312,7 @@ public class TestMoneyFormatterBuilder {
     }
 
     @Test
-    public void test_appendLiteral_print_null() {
+    void test_appendLiteral_print_null() {
         iBuilder.appendLiteral((CharSequence) null);
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals("", test.print(GBP_2_34));
@@ -320,43 +320,42 @@ public class TestMoneyFormatterBuilder {
     }
 
     @Test
-    public void test_appendLiteral_parse_ok() {
+    void test_appendLiteral_parse_ok() {
         iBuilder.appendLiteral("Hello");
         MoneyFormatter test = iBuilder.toFormatter();
         MoneyParseContext parsed = test.parse("HelloWorld", 0);
-        assertEquals(false, parsed.isError());
+        assertFalse(parsed.isError());
         assertEquals(5, parsed.getIndex());
         assertEquals(-1, parsed.getErrorIndex());
-        assertEquals(null, parsed.getAmount());
-        assertEquals(null, parsed.getCurrency());
+        assertNull(parsed.getAmount());
+        assertNull(parsed.getCurrency());
     }
 
     @Test
-    public void test_appendLiteral_parse_tooShort() {
+    void test_appendLiteral_parse_tooShort() {
         iBuilder.appendLiteral("Hello");
         MoneyFormatter test = iBuilder.toFormatter();
         MoneyParseContext parsed = test.parse("Hell", 0);
-        assertEquals(true, parsed.isError());
+        assertTrue(parsed.isError());
         assertEquals(0, parsed.getIndex());
         assertEquals(0, parsed.getErrorIndex());
-        assertEquals(null, parsed.getAmount());
-        assertEquals(null, parsed.getCurrency());
+        assertNull(parsed.getAmount());
+        assertNull(parsed.getCurrency());
     }
 
     @Test
-    public void test_appendLiteral_parse_noMatch() {
+    void test_appendLiteral_parse_noMatch() {
         iBuilder.appendLiteral("Hello");
         MoneyFormatter test = iBuilder.toFormatter();
         MoneyParseContext parsed = test.parse("Helol", 0);
-        assertEquals(true, parsed.isError());
+        assertTrue(parsed.isError());
         assertEquals(0, parsed.getIndex());
         assertEquals(0, parsed.getErrorIndex());
-        assertEquals(null, parsed.getAmount());
-        assertEquals(null, parsed.getCurrency());
+        assertNull(parsed.getAmount());
+        assertNull(parsed.getCurrency());
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_appendAmount() {
         return new Object[][] {
             {GBP_2_34, "2.34"},
@@ -370,9 +369,9 @@ public class TestMoneyFormatterBuilder {
         };
     }
 
-    @Test
-    @UseDataProvider("data_appendAmount")
-    public void test_appendAmount(BigMoneyProvider money, String expected) {
+    @ParameterizedTest
+    @MethodSource("data_appendAmount")
+    void test_appendAmount(BigMoneyProvider money, String expected) {
         iBuilder.appendAmount();
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals(expected, test.print(money));
@@ -380,7 +379,7 @@ public class TestMoneyFormatterBuilder {
     }
 
     @Test
-    public void test_appendAmount_GBP_1234_56789_France() {
+    void test_appendAmount_GBP_1234_56789_France() {
         iBuilder.appendAmount();
         MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
         assertEquals("1,234.567,89", test.print(GBP_1234_56789));
@@ -388,7 +387,7 @@ public class TestMoneyFormatterBuilder {
     }
 
     @Test
-    public void test_appendAmount_JPY_2345() {
+    void test_appendAmount_JPY_2345() {
         iBuilder.appendAmount();
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals("2,345", test.print(JPY_2345));
@@ -396,7 +395,7 @@ public class TestMoneyFormatterBuilder {
     }
 
     @Test
-    public void test_appendAmount_3dp_BHD() {
+    void test_appendAmount_3dp_BHD() {
         iBuilder.appendAmount();
         MoneyFormatter test = iBuilder.toFormatter();
         Money money = Money.of(CurrencyUnit.of("BHD"), 6345345.735d);
@@ -404,7 +403,6 @@ public class TestMoneyFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_appendAmountLocalized() {
         return new Object[][] {
             {GBP_2_34, "2" + FR_DECIMAL + "34"},
@@ -417,9 +415,9 @@ public class TestMoneyFormatterBuilder {
         };
     }
 
-    @Test
-    @UseDataProvider("data_appendAmountLocalized")
-    public void test_appendAmountLocalized(BigMoneyProvider money, String expected) {
+    @ParameterizedTest
+    @MethodSource("data_appendAmountLocalized")
+    void test_appendAmountLocalized(BigMoneyProvider money, String expected) {
         iBuilder.appendAmountLocalized();
         MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
         assertEquals(expected, test.print(money));
@@ -427,7 +425,7 @@ public class TestMoneyFormatterBuilder {
     }
 
     @Test
-    public void test_appendAmountLocalized_GBP_1234_56789_US() {
+    void test_appendAmountLocalized_GBP_1234_56789_US() {
         iBuilder.appendAmountLocalized();
         MoneyFormatter test = iBuilder.toFormatter(Locale.US);
         assertEquals("1,234.567,89", test.print(GBP_1234_56789));
@@ -435,7 +433,7 @@ public class TestMoneyFormatterBuilder {
     }
 
     @Test
-    public void test_appendAmountLocalized_JPY_2345() {
+    void test_appendAmountLocalized_JPY_2345() {
         iBuilder.appendAmountLocalized();
         MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
         assertEquals("2" + FR_GROUP + "345", test.print(JPY_2345));
@@ -443,12 +441,13 @@ public class TestMoneyFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
-    @Test(expected = NullPointerException.class)
-    public void test_appendAmount_MoneyAmountStyle_null() {
-        iBuilder.appendAmount((MoneyAmountStyle) null);
+    @Test
+    void test_appendAmount_MoneyAmountStyle_null() {
+        assertThrows(NullPointerException.class, () -> {
+            iBuilder.appendAmount((MoneyAmountStyle) null);
+        });
     }
 
-    @DataProvider
     public static Object[][] data_appendAmount_MoneyAmountStyle() {
         MoneyAmountStyle noGrouping = MoneyAmountStyle.ASCII_DECIMAL_POINT_NO_GROUPING;
         MoneyAmountStyle group3Comma = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA;
@@ -617,9 +616,9 @@ public class TestMoneyFormatterBuilder {
         };
     }
 
-    @Test
-    @UseDataProvider("data_appendAmount_MoneyAmountStyle")
-    public void test_appendAmount_MoneyAmountStyle_GBP(
+    @ParameterizedTest
+    @MethodSource("data_appendAmount_MoneyAmountStyle")
+    void test_appendAmount_MoneyAmountStyle_GBP(
             MoneyAmountStyle style,
             String amount,
             String expected) {
@@ -635,9 +634,9 @@ public class TestMoneyFormatterBuilder {
         }
     }
 
-    @Test
-    @UseDataProvider("data_appendAmount_MoneyAmountStyle")
-    public void test_appendAmount_MoneyAmountStyle_JPY(
+    @ParameterizedTest
+    @MethodSource("data_appendAmount_MoneyAmountStyle")
+    void test_appendAmount_MoneyAmountStyle_JPY(
             MoneyAmountStyle style,
             String amount,
             String expected) {
@@ -653,9 +652,9 @@ public class TestMoneyFormatterBuilder {
         }
     }
 
-    @Test
-    @UseDataProvider("data_appendAmount_MoneyAmountStyle")
-    public void test_appendAmount_MoneyAmountStyle_BHD(
+    @ParameterizedTest
+    @MethodSource("data_appendAmount_MoneyAmountStyle")
+    void test_appendAmount_MoneyAmountStyle_BHD(
             MoneyAmountStyle style,
             String amount,
             String expected) {
@@ -672,7 +671,7 @@ public class TestMoneyFormatterBuilder {
     }
 
     @Test
-    public void test_appendAmount_MoneyAmountStyle_JPY_issue49() {
+    void test_appendAmount_MoneyAmountStyle_JPY_issue49() {
         Money money = Money.parse("JPY 12");
         MoneyAmountStyle style = MoneyAmountStyle.LOCALIZED_GROUPING;
         MoneyFormatter formatter = new MoneyFormatterBuilder()
@@ -683,7 +682,6 @@ public class TestMoneyFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
-    @DataProvider
     public static Object[][] data_appendAmountExtendedGrouping() {
         return new Object[][] {
             {GBP_2_34, "2.34"},
@@ -697,9 +695,9 @@ public class TestMoneyFormatterBuilder {
         };
     }
 
-    @Test
-    @UseDataProvider("data_appendAmountExtendedGrouping")
-    public void test_appendAmount_parseExtendedGroupingSize(BigMoneyProvider money, String expected) {
+    @ParameterizedTest
+    @MethodSource("data_appendAmountExtendedGrouping")
+    void test_appendAmount_parseExtendedGroupingSize(BigMoneyProvider money, String expected) {
         iBuilder.appendAmount();
         MoneyFormatter test = new MoneyFormatterBuilder()
             .appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withExtendedGroupingSize(2))
@@ -710,7 +708,7 @@ public class TestMoneyFormatterBuilder {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_appendAmount_parseExcessGrouping() {
+    void test_appendAmount_parseExcessGrouping() {
         BigMoney expected = BigMoney.parse("GBP 12123.4567");
         MoneyFormatter f = new MoneyFormatterBuilder()
             .appendCurrencyCode()
@@ -723,7 +721,7 @@ public class TestMoneyFormatterBuilder {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_append_MoneyPrinterMoneyParser_printer() {
+    void test_append_MoneyPrinterMoneyParser_printer() {
         MoneyPrinter printer = new MoneyPrinter() {
             @Override
             @Test
@@ -733,14 +731,14 @@ public class TestMoneyFormatterBuilder {
         };
         iBuilder.append(printer, null);
         MoneyFormatter test = iBuilder.toFormatter();
-        assertEquals(true, test.isPrinter());
-        assertEquals(false, test.isParser());
+        assertTrue(test.isPrinter());
+        assertFalse(test.isParser());
         assertEquals("HELLO", test.print(JPY_2345));
-        assertEquals(true, test.toString().startsWith("org.joda.money.format.TestMoneyFormatterBuilder$"));
+        assertTrue(test.toString().startsWith("org.joda.money.format.TestMoneyFormatterBuilder$"));
     }
 
     @Test
-    public void test_append_MoneyPrinterMoneyParser_parser() {
+    void test_append_MoneyPrinterMoneyParser_parser() {
         MoneyParser parser = new MoneyParser() {
             @Override
             @Test
@@ -751,24 +749,24 @@ public class TestMoneyFormatterBuilder {
         };
         iBuilder.append(null, parser);
         MoneyFormatter test = iBuilder.toFormatter();
-        assertEquals(false, test.isPrinter());
-        assertEquals(true, test.isParser());
+        assertFalse(test.isPrinter());
+        assertTrue(test.isParser());
         assertEquals(JPY_2345, test.parseMoney(""));
-        assertEquals(true, test.toString().startsWith("org.joda.money.format.TestMoneyFormatterBuilder$"));
+        assertTrue(test.toString().startsWith("org.joda.money.format.TestMoneyFormatterBuilder$"));
     }
 
     @Test
-    public void test_append_MoneyPrinter_nullMoneyPrinter_nullMoneyParser() {
+    void test_append_MoneyPrinter_nullMoneyPrinter_nullMoneyParser() {
         iBuilder.append((MoneyPrinter) null, (MoneyParser) null);
         MoneyFormatter test = iBuilder.toFormatter();
-        assertEquals(false, test.isPrinter());
-        assertEquals(false, test.isParser());
+        assertFalse(test.isPrinter());
+        assertFalse(test.isParser());
         assertEquals("", test.toString());
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_append_MoneyFormatter() {
+    void test_append_MoneyFormatter() {
         MoneyFormatter f1 = new MoneyFormatterBuilder().appendAmount().toFormatter();
         MoneyFormatter f2 = new MoneyFormatterBuilder().appendCurrencyCode().appendLiteral(" ").append(f1).toFormatter();
         assertEquals("GBP 2,345.67", f2.print(GBP_2345_67));
@@ -776,7 +774,7 @@ public class TestMoneyFormatterBuilder {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_appendSigned_PN() {
+    void test_appendSigned_PN() {
         MoneyFormatter pos = new MoneyFormatterBuilder()
             .appendCurrencyCode()
             .appendLiteral(" ")
@@ -806,7 +804,7 @@ public class TestMoneyFormatterBuilder {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_appendSigned_PZN() {
+    void test_appendSigned_PZN() {
         MoneyFormatter pos = new MoneyFormatterBuilder()
             .appendCurrencyCode()
             .appendLiteral(" ")
@@ -835,7 +833,7 @@ public class TestMoneyFormatterBuilder {
     }
 
     @Test
-    public void test_appendSigned_PZN_edgeCases() {
+    void test_appendSigned_PZN_edgeCases() {
         MoneyFormatter pos = new MoneyFormatterBuilder()
             .appendAmount()
             .toFormatter();
@@ -861,13 +859,13 @@ public class TestMoneyFormatterBuilder {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_toFormatter_defaultLocale() {
+    void test_toFormatter_defaultLocale() {
         MoneyFormatter test = iBuilder.toFormatter();
         assertEquals(TEST_GB_LOCALE, test.getLocale());
     }
 
     @Test
-    public void test_toFormatter_Locale() {
+    void test_toFormatter_Locale() {
         MoneyFormatter test = iBuilder.toFormatter(TEST_FR_LOCALE);
         assertEquals(TEST_FR_LOCALE, test.getLocale());
     }

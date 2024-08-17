@@ -15,39 +15,42 @@
  */
 package org.joda.money.format;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
 import java.text.ParsePosition;
 import java.util.Locale;
 
 import org.joda.money.CurrencyUnit;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test MoneyParseContext.
  */
-public class TestMoneyParseContext {
+class TestMoneyParseContext {
 
     @Test
-    public void test_initialState() {
+    void test_initialState() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
-        assertEquals(null, test.getAmount());
-        assertEquals(null, test.getCurrency());
+        assertNull(test.getAmount());
+        assertNull(test.getCurrency());
         assertEquals(0, test.getIndex());
         assertEquals(-1, test.getErrorIndex());
         assertEquals("GBP 123", test.getText().toString());
         assertEquals(7, test.getTextLength());
-        assertEquals(false, test.isError());
-        assertEquals(false, test.isFullyParsed());
-        assertEquals(false, test.isComplete());
+        assertFalse(test.isError());
+        assertFalse(test.isFullyParsed());
+        assertFalse(test.isComplete());
         ParsePosition pp = new ParsePosition(0);
         pp.setErrorIndex(-1);
         assertEquals(pp, test.toParsePosition());
     }
 
     @Test
-    public void test_setIndex() {
+    void test_setIndex() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         assertEquals(0, test.getIndex());
         test.setIndex(2);
@@ -55,7 +58,7 @@ public class TestMoneyParseContext {
     }
 
     @Test
-    public void test_setErrorIndex() {
+    void test_setErrorIndex() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         assertEquals(-1, test.getErrorIndex());
         test.setErrorIndex(3);
@@ -63,7 +66,7 @@ public class TestMoneyParseContext {
     }
 
     @Test
-    public void test_setError() {
+    void test_setError() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         assertEquals(0, test.getIndex());
         assertEquals(-1, test.getErrorIndex());
@@ -73,7 +76,7 @@ public class TestMoneyParseContext {
     }
 
     @Test
-    public void test_setError_withIndex() {
+    void test_setError_withIndex() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         assertEquals(0, test.getIndex());
         assertEquals(-1, test.getErrorIndex());
@@ -85,51 +88,59 @@ public class TestMoneyParseContext {
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_isComplete_noCurrency() {
+    void test_isComplete_noCurrency() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         test.setAmount(BigDecimal.TEN);
-        assertEquals(false, test.isComplete());
+        assertFalse(test.isComplete());
     }
 
     @Test
-    public void test_isComplete_noAmount() {
+    void test_isComplete_noAmount() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         test.setCurrency(CurrencyUnit.GBP);
-        assertEquals(false, test.isComplete());
+        assertFalse(test.isComplete());
     }
 
-    @Test(expected = MoneyFormatException.class)
-    public void test_toBigMoney_noCurrency() {
+    @Test
+    void test_toBigMoney_noCurrency() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         test.setAmount(BigDecimal.TEN);
-        test.toBigMoney();
+        assertThrows(MoneyFormatException.class, () -> {
+            test.toBigMoney();
+        });
     }
 
-    @Test(expected = MoneyFormatException.class)
-    public void test_toBigMoney_noAmount() {
+    @Test
+    void test_toBigMoney_noAmount() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         test.setCurrency(CurrencyUnit.GBP);
-        test.toBigMoney();
+        assertThrows(MoneyFormatException.class, () -> {
+            test.toBigMoney();
+        });
     }
 
     //-----------------------------------------------------------------------
     @Test
-    public void test_getTextSubstring_ok() {
+    void test_getTextSubstring_ok() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         assertEquals("GB", test.getTextSubstring(0, 2));
         assertEquals("23", test.getTextSubstring(5, 7));
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void test_getTextSubstring_beforeStart() {
+    @Test
+    void test_getTextSubstring_beforeStart() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
-        test.getTextSubstring(-1, 2);
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            test.getTextSubstring(-1, 2);
+        });
     }
 
-    @Test(expected = IndexOutOfBoundsException.class)
-    public void test_getTextSubstring_afterEnd() {
+    @Test
+    void test_getTextSubstring_afterEnd() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
-        test.getTextSubstring(0, 8);
+        assertThrows(IndexOutOfBoundsException.class, () -> {
+            test.getTextSubstring(0, 8);
+        });
     }
 
 }

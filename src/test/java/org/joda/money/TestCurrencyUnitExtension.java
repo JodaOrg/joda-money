@@ -15,20 +15,21 @@
  */
 package org.joda.money;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.List;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test CurrencyUnit.
  */
-public class TestCurrencyUnitExtension {
+class TestCurrencyUnitExtension {
 
     @Test
-    public void test_CurrencyFromMoneyData() {
+    void test_CurrencyFromMoneyData() {
         List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
         boolean found = false;
         for (CurrencyUnit currencyUnit : curList) {
@@ -37,11 +38,11 @@ public class TestCurrencyUnitExtension {
                 break;
             }
         }
-        assertEquals(true, found);
+        assertTrue(found);
     }
 
     @Test
-    public void test_CurrencyFromMoneyDataExtension() {
+    void test_CurrencyFromMoneyDataExtension() {
         List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
         boolean found = false;
         for (CurrencyUnit currencyUnit : curList) {
@@ -50,11 +51,11 @@ public class TestCurrencyUnitExtension {
                 break;
             }
         }
-        assertEquals(true, found);
+        assertTrue(found);
     }
 
     @Test
-    public void test_LargerDecimalPrecisionCurrencyFromMoneyDataExtension() {
+    void test_LargerDecimalPrecisionCurrencyFromMoneyDataExtension() {
         List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
         boolean found = false;
         for (CurrencyUnit currencyUnit : curList) {
@@ -64,11 +65,11 @@ public class TestCurrencyUnitExtension {
                 break;
             }
         }
-        assertEquals(true, found);
+        assertTrue(found);
     }
 
     @Test
-    public void test_InvalidLargerDecimalPrecisionCurrencyFromMoneyDataExtension() {
+    void test_InvalidLargerDecimalPrecisionCurrencyFromMoneyDataExtension() {
         for (CurrencyUnit currencyUnit : CurrencyUnit.registeredCurrencies()) {
             if (currencyUnit.getCode().equals("XXL")) {
                 fail("Currency XXL should not exist");
@@ -77,7 +78,7 @@ public class TestCurrencyUnitExtension {
     }
 
     @Test
-    public void test_CurrencyMissing() {
+    void test_CurrencyMissing() {
         for (CurrencyUnit currencyUnit : CurrencyUnit.registeredCurrencies()) {
             if (currencyUnit.getCode().equals("NMC")) {
                 fail("Currency NMC should not exist");
@@ -86,11 +87,11 @@ public class TestCurrencyUnitExtension {
     }
 
     @Test
-    public void test_CurrencyEURChanged() {
+    void test_CurrencyEURChanged() {
         CurrencyUnit currency = CurrencyUnit.ofCountry("HU");
         assertEquals(CurrencyUnit.EUR, currency);
-        assertEquals(true, CurrencyUnit.EUR.getCountryCodes().contains("HU"));
-        assertEquals(true, CurrencyUnit.of("HUF").getCountryCodes().isEmpty());
+        assertTrue(CurrencyUnit.EUR.getCountryCodes().contains("HU"));
+        assertTrue(CurrencyUnit.of("HUF").getCountryCodes().isEmpty());
     }
 
 }
