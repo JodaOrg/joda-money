@@ -15,8 +15,8 @@
  */
 package org.joda.money.format;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 import java.io.IOException;
 
@@ -30,13 +30,15 @@ class TestMoneyFormatterException {
     @Test
     void test_MoneyFormatException_IOException_notRethrown() {
         MoneyFormatException test = new MoneyFormatException("Error", new IOException("Inner"));
-        assertThrows(IOException.class, () -> test.rethrowIOException());
+        assertThatExceptionOfType(IOException.class)
+            .isThrownBy(() -> test.rethrowIOException());
     }
 
     @Test
     void test_MoneyFormatException_nonIOException_notRethrown() throws IOException {
         MoneyFormatException test = new MoneyFormatException("Error", new IllegalStateException("Inner"));
-        assertDoesNotThrow(() -> test.rethrowIOException());
+        assertThatNoException()
+            .isThrownBy(() -> test.rethrowIOException());
     }
 
 }

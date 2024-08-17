@@ -15,10 +15,8 @@
  */
 package org.joda.money.format;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 import java.math.BigDecimal;
 import java.text.ParsePosition;
@@ -35,55 +33,55 @@ class TestMoneyParseContext {
     @Test
     void test_initialState() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
-        assertNull(test.getAmount());
-        assertNull(test.getCurrency());
-        assertEquals(0, test.getIndex());
-        assertEquals(-1, test.getErrorIndex());
-        assertEquals("GBP 123", test.getText().toString());
-        assertEquals(7, test.getTextLength());
-        assertFalse(test.isError());
-        assertFalse(test.isFullyParsed());
-        assertFalse(test.isComplete());
+        assertThat(test.getAmount()).isNull();
+        assertThat(test.getCurrency()).isNull();
+        assertThat(test.getIndex()).isEqualTo(0);
+        assertThat(test.getErrorIndex()).isEqualTo(-1);
+        assertThat(test.getText().toString()).isEqualTo("GBP 123");
+        assertThat(test.getTextLength()).isEqualTo(7);
+        assertThat(test.isError()).isFalse();
+        assertThat(test.isFullyParsed()).isFalse();
+        assertThat(test.isComplete()).isFalse();
         ParsePosition pp = new ParsePosition(0);
         pp.setErrorIndex(-1);
-        assertEquals(pp, test.toParsePosition());
+        assertThat(test.toParsePosition()).isEqualTo(pp);
     }
 
     @Test
     void test_setIndex() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
-        assertEquals(0, test.getIndex());
+        assertThat(test.getIndex()).isEqualTo(0);
         test.setIndex(2);
-        assertEquals(2, test.getIndex());
+        assertThat(test.getIndex()).isEqualTo(2);
     }
 
     @Test
     void test_setErrorIndex() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
-        assertEquals(-1, test.getErrorIndex());
+        assertThat(test.getErrorIndex()).isEqualTo(-1);
         test.setErrorIndex(3);
-        assertEquals(3, test.getErrorIndex());
+        assertThat(test.getErrorIndex()).isEqualTo(3);
     }
 
     @Test
     void test_setError() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
-        assertEquals(0, test.getIndex());
-        assertEquals(-1, test.getErrorIndex());
+        assertThat(test.getIndex()).isEqualTo(0);
+        assertThat(test.getErrorIndex()).isEqualTo(-1);
         test.setError();
-        assertEquals(0, test.getIndex());
-        assertEquals(0, test.getErrorIndex());
+        assertThat(test.getIndex()).isEqualTo(0);
+        assertThat(test.getErrorIndex()).isEqualTo(0);
     }
 
     @Test
     void test_setError_withIndex() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
-        assertEquals(0, test.getIndex());
-        assertEquals(-1, test.getErrorIndex());
+        assertThat(test.getIndex()).isEqualTo(0);
+        assertThat(test.getErrorIndex()).isEqualTo(-1);
         test.setIndex(2);
         test.setError();
-        assertEquals(2, test.getIndex());
-        assertEquals(2, test.getErrorIndex());
+        assertThat(test.getIndex()).isEqualTo(2);
+        assertThat(test.getErrorIndex()).isEqualTo(2);
     }
 
     //-----------------------------------------------------------------------
@@ -91,56 +89,52 @@ class TestMoneyParseContext {
     void test_isComplete_noCurrency() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         test.setAmount(BigDecimal.TEN);
-        assertFalse(test.isComplete());
+        assertThat(test.isComplete()).isFalse();
     }
 
     @Test
     void test_isComplete_noAmount() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         test.setCurrency(CurrencyUnit.GBP);
-        assertFalse(test.isComplete());
+        assertThat(test.isComplete()).isFalse();
     }
 
     @Test
     void test_toBigMoney_noCurrency() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         test.setAmount(BigDecimal.TEN);
-        assertThrows(MoneyFormatException.class, () -> {
-            test.toBigMoney();
-        });
+        assertThatExceptionOfType(MoneyFormatException.class)
+            .isThrownBy(() -> test.toBigMoney());
     }
 
     @Test
     void test_toBigMoney_noAmount() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         test.setCurrency(CurrencyUnit.GBP);
-        assertThrows(MoneyFormatException.class, () -> {
-            test.toBigMoney();
-        });
+        assertThatExceptionOfType(MoneyFormatException.class)
+            .isThrownBy(() -> test.toBigMoney());
     }
 
     //-----------------------------------------------------------------------
     @Test
     void test_getTextSubstring_ok() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
-        assertEquals("GB", test.getTextSubstring(0, 2));
-        assertEquals("23", test.getTextSubstring(5, 7));
+        assertThat(test.getTextSubstring(0, 2)).isEqualTo("GB");
+        assertThat(test.getTextSubstring(5, 7)).isEqualTo("23");
     }
 
     @Test
     void test_getTextSubstring_beforeStart() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
-        assertThrows(IndexOutOfBoundsException.class, () -> {
-            test.getTextSubstring(-1, 2);
-        });
+        assertThatExceptionOfType(IndexOutOfBoundsException.class)
+            .isThrownBy(() -> test.getTextSubstring(-1, 2));
     }
 
     @Test
     void test_getTextSubstring_afterEnd() {
         MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
-        assertThrows(IndexOutOfBoundsException.class, () -> {
-            test.getTextSubstring(0, 8);
-        });
+        assertThatExceptionOfType(IndexOutOfBoundsException.class)
+            .isThrownBy(() -> test.getTextSubstring(0, 8));
     }
 
 }
