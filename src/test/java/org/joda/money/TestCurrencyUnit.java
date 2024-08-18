@@ -191,9 +191,9 @@ class TestCurrencyUnit {
     @Test
     void test_registeredCountries() {
         List<String> countryList = CurrencyUnit.registeredCountries();
-        assertThat(countryList.contains("GB")).isTrue();
-        assertThat(countryList.contains("EU")).isTrue();
-        assertThat(countryList.contains("US")).isTrue();
+        assertThat(countryList).contains("GB");
+        assertThat(countryList).contains("EU");
+        assertThat(countryList).contains("US");
     }
 
     @Test
@@ -513,7 +513,7 @@ class TestCurrencyUnit {
     @Test
     void test_getNumeric3Code_XFU() {
         CurrencyUnit test = CurrencyUnit.of("XFU");
-        assertThat(test.getNumeric3Code()).isEqualTo("");
+        assertThat(test.getNumeric3Code()).isEmpty();
     }
 
     //-----------------------------------------------------------------------
@@ -531,10 +531,10 @@ class TestCurrencyUnit {
     @Test
     void test_getCurrencyCodes_GBP() {
         Set<String> test = CurrencyUnit.of("GBP").getCountryCodes();
-        assertThat(test.contains("GB")).isTrue();
-        assertThat(test.contains("IM")).isTrue();
-        assertThat(test.contains("JE")).isTrue();
-        assertThat(test.contains("GG")).isTrue();
+        assertThat(test).contains("GB");
+        assertThat(test).contains("IM");
+        assertThat(test).contains("JE");
+        assertThat(test).contains("GG");
     }
 
     //-----------------------------------------------------------------------
@@ -600,7 +600,7 @@ class TestCurrencyUnit {
         try {
             Locale.setDefault(Locale.UK);
             CurrencyUnit test = CurrencyUnit.of("JPY");
-            assertThat(test.getSymbol().contains("JP")).isTrue();
+            assertThat(test.getSymbol()).contains("JP");
         } finally {
             Locale.setDefault(loc);
         }
@@ -651,7 +651,7 @@ class TestCurrencyUnit {
         try {
             Locale.setDefault(Locale.UK);
             CurrencyUnit test = CurrencyUnit.of("GBP");
-            assertThat(test.getSymbol(Locale.FRANCE).contains("GB")).isTrue();
+            assertThat(test.getSymbol(Locale.FRANCE)).contains("GB");
         } finally {
             Locale.setDefault(loc);
         }
@@ -675,7 +675,7 @@ class TestCurrencyUnit {
         try {
             Locale.setDefault(Locale.UK);
             CurrencyUnit test = CurrencyUnit.of("USD");
-            assertThat(test.getSymbol(Locale.FRANCE).contains("US")).isTrue();
+            assertThat(test.getSymbol(Locale.FRANCE)).contains("US");
         } finally {
             Locale.setDefault(loc);
         }
@@ -789,7 +789,7 @@ class TestCurrencyUnit {
     @Test
     void test_toString() {
         CurrencyUnit test = CurrencyUnit.of("GBP");
-        assertThat(test.toString()).isEqualTo("GBP");
+        assertThat(test).hasToString("GBP");
     }
 
 }

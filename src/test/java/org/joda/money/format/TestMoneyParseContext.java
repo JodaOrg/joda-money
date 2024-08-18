@@ -37,7 +37,7 @@ class TestMoneyParseContext {
         assertThat(test.getCurrency()).isNull();
         assertThat(test.getIndex()).isEqualTo(0);
         assertThat(test.getErrorIndex()).isEqualTo(-1);
-        assertThat(test.getText().toString()).isEqualTo("GBP 123");
+        assertThat(test.getText()).hasToString("GBP 123");
         assertThat(test.getTextLength()).isEqualTo(7);
         assertThat(test.isError()).isFalse();
         assertThat(test.isFullyParsed()).isFalse();

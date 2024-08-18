@@ -76,8 +76,8 @@ class TestMoneyFormatterBuilder {
     @Test
     void test_empty() {
         MoneyFormatter test = iBuilder.toFormatter();
-        assertThat(test.print(GBP_2_34)).isEqualTo("");
-        assertThat(test.toString()).isEqualTo("");
+        assertThat(test.print(GBP_2_34)).isEmpty();
+        assertThat(test).hasToString("");
     }
 
     //-----------------------------------------------------------------------
@@ -86,7 +86,7 @@ class TestMoneyFormatterBuilder {
         iBuilder.appendCurrencyCode();
         MoneyFormatter test = iBuilder.toFormatter();
         assertThat(test.print(GBP_2_34)).isEqualTo("GBP");
-        assertThat(test.toString()).isEqualTo("${code}");
+        assertThat(test).hasToString("${code}");
     }
 
     @Test
@@ -131,7 +131,7 @@ class TestMoneyFormatterBuilder {
         iBuilder.appendCurrencyNumeric3Code();
         MoneyFormatter test = iBuilder.toFormatter();
         assertThat(test.print(GBP_2_34)).isEqualTo("826");
-        assertThat(test.toString()).isEqualTo("${numeric3Code}");
+        assertThat(test).hasToString("${numeric3Code}");
     }
 
     @Test
@@ -188,7 +188,7 @@ class TestMoneyFormatterBuilder {
         iBuilder.appendCurrencyNumericCode();
         MoneyFormatter test = iBuilder.toFormatter();
         assertThat(test.print(GBP_2_34)).isEqualTo("826");
-        assertThat(test.toString()).isEqualTo("${numericCode}");
+        assertThat(test).hasToString("${numericCode}");
     }
 
     @Test
@@ -281,7 +281,7 @@ class TestMoneyFormatterBuilder {
         iBuilder.appendCurrencySymbolLocalized();
         MoneyFormatter test = iBuilder.toFormatter();
         assertThat(test.print(GBP_2_34)).isEqualTo("\u00a3");
-        assertThat(test.toString()).isEqualTo("${symbolLocalized}");
+        assertThat(test).hasToString("${symbolLocalized}");
     }
 
     @Test
@@ -297,23 +297,23 @@ class TestMoneyFormatterBuilder {
         iBuilder.appendLiteral("Hello");
         MoneyFormatter test = iBuilder.toFormatter();
         assertThat(test.print(GBP_2_34)).isEqualTo("Hello");
-        assertThat(test.toString()).isEqualTo("'Hello'");
+        assertThat(test).hasToString("'Hello'");
     }
 
     @Test
     void test_appendLiteral_print_empty() {
         iBuilder.appendLiteral("");
         MoneyFormatter test = iBuilder.toFormatter();
-        assertThat(test.print(GBP_2_34)).isEqualTo("");
-        assertThat(test.toString()).isEqualTo("");
+        assertThat(test.print(GBP_2_34)).isEmpty();
+        assertThat(test).hasToString("");
     }
 
     @Test
     void test_appendLiteral_print_null() {
         iBuilder.appendLiteral((CharSequence) null);
         MoneyFormatter test = iBuilder.toFormatter();
-        assertThat(test.print(GBP_2_34)).isEqualTo("");
-        assertThat(test.toString()).isEqualTo("");
+        assertThat(test.print(GBP_2_34)).isEmpty();
+        assertThat(test).hasToString("");
     }
 
     @Test
@@ -372,7 +372,7 @@ class TestMoneyFormatterBuilder {
         iBuilder.appendAmount();
         MoneyFormatter test = iBuilder.toFormatter();
         assertThat(test.print(money)).isEqualTo(expected);
-        assertThat(test.toString()).isEqualTo("${amount}");
+        assertThat(test).hasToString("${amount}");
     }
 
     @Test
@@ -380,7 +380,7 @@ class TestMoneyFormatterBuilder {
         iBuilder.appendAmount();
         MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
         assertThat(test.print(GBP_1234_56789)).isEqualTo("1,234.567,89");
-        assertThat(test.toString()).isEqualTo("${amount}");
+        assertThat(test).hasToString("${amount}");
     }
 
     @Test
@@ -388,7 +388,7 @@ class TestMoneyFormatterBuilder {
         iBuilder.appendAmount();
         MoneyFormatter test = iBuilder.toFormatter();
         assertThat(test.print(JPY_2345)).isEqualTo("2,345");
-        assertThat(test.toString()).isEqualTo("${amount}");
+        assertThat(test).hasToString("${amount}");
     }
 
     @Test
@@ -418,7 +418,7 @@ class TestMoneyFormatterBuilder {
         iBuilder.appendAmountLocalized();
         MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
         assertThat(test.print(money)).isEqualTo(expected);
-        assertThat(test.toString()).isEqualTo("${amount}");
+        assertThat(test).hasToString("${amount}");
     }
 
     @Test
@@ -426,7 +426,7 @@ class TestMoneyFormatterBuilder {
         iBuilder.appendAmountLocalized();
         MoneyFormatter test = iBuilder.toFormatter(Locale.US);
         assertThat(test.print(GBP_1234_56789)).isEqualTo("1,234.567,89");
-        assertThat(test.toString()).isEqualTo("${amount}");
+        assertThat(test).hasToString("${amount}");
     }
 
     @Test
@@ -434,7 +434,7 @@ class TestMoneyFormatterBuilder {
         iBuilder.appendAmountLocalized();
         MoneyFormatter test = iBuilder.toFormatter(Locale.FRANCE);
         assertThat(test.print(JPY_2345)).isEqualTo("2" + FR_GROUP + "345");
-        assertThat(test.toString()).isEqualTo("${amount}");
+        assertThat(test).hasToString("${amount}");
     }
 
     //-----------------------------------------------------------------------
@@ -699,7 +699,7 @@ class TestMoneyFormatterBuilder {
             .appendAmount(MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withExtendedGroupingSize(2))
             .toFormatter();
         assertThat(test.print(money)).isEqualTo(expected);
-        assertThat(test.toString()).isEqualTo("${amount}");
+        assertThat(test).hasToString("${amount}");
     }
 
     //-----------------------------------------------------------------------
@@ -730,7 +730,7 @@ class TestMoneyFormatterBuilder {
         assertThat(test.isPrinter()).isTrue();
         assertThat(test.isParser()).isFalse();
         assertThat(test.print(JPY_2345)).isEqualTo("HELLO");
-        assertThat(test.toString().startsWith("org.joda.money.format.TestMoneyFormatterBuilder$")).isTrue();
+        assertThat(test.toString()).startsWith("org.joda.money.format.TestMoneyFormatterBuilder$");
     }
 
     @Test
@@ -748,7 +748,7 @@ class TestMoneyFormatterBuilder {
         assertThat(test.isPrinter()).isFalse();
         assertThat(test.isParser()).isTrue();
         assertThat(test.parseMoney("")).isEqualTo(JPY_2345);
-        assertThat(test.toString().startsWith("org.joda.money.format.TestMoneyFormatterBuilder$")).isTrue();
+        assertThat(test.toString()).startsWith("org.joda.money.format.TestMoneyFormatterBuilder$");
     }
 
     @Test
@@ -757,7 +757,7 @@ class TestMoneyFormatterBuilder {
         MoneyFormatter test = iBuilder.toFormatter();
         assertThat(test.isPrinter()).isFalse();
         assertThat(test.isParser()).isFalse();
-        assertThat(test.toString()).isEqualTo("");
+        assertThat(test).hasToString("");
     }
 
     //-----------------------------------------------------------------------
@@ -784,8 +784,8 @@ class TestMoneyFormatterBuilder {
             .appendLiteral(")")
             .toFormatter();
         MoneyFormatter f = new MoneyFormatterBuilder().appendSigned(pos, neg).toFormatter();
-        assertThat(f.toString())
-            .isEqualTo("PositiveZeroNegative(${code}' '${amount},${code}' '${amount},'('${code}' '${amount}')')");
+        assertThat(f)
+            .hasToString("PositiveZeroNegative(${code}' '${amount},${code}' '${amount},'('${code}' '${amount}')')");
         assertThat(f.print(GBP_234_56)).isEqualTo("GBP 234.56");
         assertThat(f.print(Money.zero(GBP))).isEqualTo("GBP 0.00");
         assertThat(f.print(GBP_MINUS_234_56)).isEqualTo("(GBP 234.56)");

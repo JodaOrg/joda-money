@@ -89,8 +89,8 @@ class TestCurrencyUnitExtension {
     void test_CurrencyEURChanged() {
         CurrencyUnit currency = CurrencyUnit.ofCountry("HU");
         assertThat(currency).isEqualTo(CurrencyUnit.EUR);
-        assertThat(CurrencyUnit.EUR.getCountryCodes().contains("HU")).isTrue();
-        assertThat(CurrencyUnit.of("HUF").getCountryCodes().isEmpty()).isTrue();
+        assertThat(CurrencyUnit.EUR.getCountryCodes()).contains("HU");
+        assertThat(CurrencyUnit.of("HUF").getCountryCodes()).isEmpty();
     }
 
 }

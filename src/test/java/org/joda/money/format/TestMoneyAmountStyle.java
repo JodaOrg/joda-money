@@ -821,7 +821,7 @@ class TestMoneyAmountStyle {
     @Test
     void test_toString() {
         MoneyAmountStyle test = MoneyAmountStyle.LOCALIZED_GROUPING;
-        assertThat(test.toString().startsWith("MoneyAmountStyle")).isTrue();
+        assertThat(test.toString()).startsWith("MoneyAmountStyle");
     }
 
 }

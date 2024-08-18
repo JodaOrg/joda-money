@@ -150,7 +150,7 @@ class TestMoneyFormatter {
     void test_print_AppendableBigMoneyProvider() {
         StringBuilder buf = new StringBuilder();
         iPrintTest.print(buf, MONEY_GBP_12_34);
-        assertThat(buf.toString()).isEqualTo("GBP hello");
+        assertThat(buf).hasToString("GBP hello");
     }
 
     @Test
@@ -186,7 +186,7 @@ class TestMoneyFormatter {
     void test_printIO_AppendableBigMoneyProvider() throws IOException {
         StringBuilder buf = new StringBuilder();
         iPrintTest.printIO(buf, MONEY_GBP_12_34);
-        assertThat(buf.toString()).isEqualTo("GBP hello");
+        assertThat(buf).hasToString("GBP hello");
     }
 
     @Test
@@ -359,7 +359,7 @@ class TestMoneyFormatter {
         assertThat(test.getCurrency()).isEqualTo(currency);
         assertThat(test.getIndex()).isEqualTo(index);
         assertThat(test.getErrorIndex()).isEqualTo(errorIndex);
-        assertThat(test.getText().toString()).isEqualTo(str);
+        assertThat(test.getText()).hasToString(str);
         assertThat(test.getTextLength()).isEqualTo(str.length());
         assertThat(test.isError()).isEqualTo(error);
         assertThat(test.isFullyParsed()).isEqualTo(fullyParsed);
@@ -377,7 +377,7 @@ class TestMoneyFormatter {
         assertThat(test.getCurrency()).isNull();
         assertThat(test.getIndex()).isEqualTo(0);
         assertThat(test.getErrorIndex()).isEqualTo(-1);
-        assertThat(test.getText().toString()).isEqualTo("12.34 GBP");
+        assertThat(test.getText()).hasToString("12.34 GBP");
         assertThat(test.getTextLength()).isEqualTo(9);
         assertThat(test.isError()).isFalse();
         assertThat(test.isFullyParsed()).isFalse();
@@ -393,7 +393,7 @@ class TestMoneyFormatter {
         assertThat(test.getCurrency()).isEqualTo(CurrencyUnit.of("GBP"));
         assertThat(test.getIndex()).isEqualTo(7);
         assertThat(test.getErrorIndex()).isEqualTo(-1);
-        assertThat(test.getText().toString()).isEqualTo("12..GBP");
+        assertThat(test.getText()).hasToString("12..GBP");
         assertThat(test.getTextLength()).isEqualTo(7);
         assertThat(test.isError()).isFalse();
         assertThat(test.isFullyParsed()).isTrue();
@@ -409,7 +409,7 @@ class TestMoneyFormatter {
         assertThat(test.getCurrency()).isEqualTo(CurrencyUnit.of("GBP"));
         assertThat(test.getIndex()).isEqualTo(6);
         assertThat(test.getErrorIndex()).isEqualTo(-1);
-        assertThat(test.getText().toString()).isEqualTo("12,GBP");
+        assertThat(test.getText()).hasToString("12,GBP");
         assertThat(test.getTextLength()).isEqualTo(6);
         assertThat(test.isError()).isFalse();
         assertThat(test.isFullyParsed()).isTrue();
@@ -425,7 +425,7 @@ class TestMoneyFormatter {
         assertThat(test.getCurrency()).isEqualTo(CurrencyUnit.of("GBP"));
         assertThat(test.getIndex()).isEqualTo(7);
         assertThat(test.getErrorIndex()).isEqualTo(-1);
-        assertThat(test.getText().toString()).isEqualTo("12,,GBP");
+        assertThat(test.getText()).hasToString("12,,GBP");
         assertThat(test.getTextLength()).isEqualTo(7);
         assertThat(test.isError()).isFalse();
         assertThat(test.isFullyParsed()).isTrue();
@@ -527,7 +527,7 @@ class TestMoneyFormatter {
             }
         };
         MoneyFormatter f = new MoneyFormatterBuilder().append(printer, parser).toFormatter();
-        assertThat(f.toString()).isEqualTo("A:B");
+        assertThat(f).hasToString("A:B");
     }
 
     //-----------------------------------------------------------------------

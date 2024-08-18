@@ -878,7 +878,7 @@ class TestMoney {
     @Test
     void test_withCurrencyUnit_Currency() {
         Money test = GBP_2_34.withCurrencyUnit(USD);
-        assertThat(test.toString()).isEqualTo("USD 2.34");
+        assertThat(test).hasToString("USD 2.34");
     }
 
     @Test
@@ -905,13 +905,13 @@ class TestMoney {
     @Test
     void test_withCurrencyUnit_CurrencyRoundingMode_DOWN() {
         Money test = GBP_2_34.withCurrencyUnit(JPY, RoundingMode.DOWN);
-        assertThat(test.toString()).isEqualTo("JPY 2");
+        assertThat(test).hasToString("JPY 2");
     }
 
     @Test
     void test_withCurrencyUnit_CurrencyRoundingMode_UP() {
         Money test = GBP_2_34.withCurrencyUnit(JPY, RoundingMode.UP);
-        assertThat(test.toString()).isEqualTo("JPY 3");
+        assertThat(test).hasToString("JPY 3");
     }
 
     @Test
@@ -1153,7 +1153,7 @@ class TestMoney {
     @Test
     void test_withAmount_BigDecimal() {
         Money test = GBP_2_34.withAmount(BIGDEC_M5_78);
-        assertThat(test.toString()).isEqualTo("GBP -5.78");
+        assertThat(test).hasToString("GBP -5.78");
     }
 
     @Test
@@ -1180,7 +1180,7 @@ class TestMoney {
     @Test
     void test_withAmount_BigDecimalRoundingMode() {
         Money test = GBP_2_34.withAmount(BIGDEC_M5_78, RoundingMode.UNNECESSARY);
-        assertThat(test.toString()).isEqualTo("GBP -5.78");
+        assertThat(test).hasToString("GBP -5.78");
     }
 
     @Test
@@ -1219,7 +1219,7 @@ class TestMoney {
     @Test
     void test_withAmount_double() {
         Money test = GBP_2_34.withAmount(-5.78d);
-        assertThat(test.toString()).isEqualTo("GBP -5.78");
+        assertThat(test).hasToString("GBP -5.78");
     }
 
     @Test
@@ -1240,7 +1240,7 @@ class TestMoney {
     @Test
     void test_withAmount_doubleRoundingMode() {
         Money test = GBP_2_34.withAmount(-5.78d, RoundingMode.UNNECESSARY);
-        assertThat(test.toString()).isEqualTo("GBP -5.78");
+        assertThat(test).hasToString("GBP -5.78");
     }
 
     @Test
@@ -1274,7 +1274,7 @@ class TestMoney {
     void test_plus_Iterable() {
         Iterable<Money> iterable = Arrays.asList(GBP_2_33, GBP_1_23);
         Money test = GBP_2_34.plus(iterable);
-        assertThat(test.toString()).isEqualTo("GBP 5.90");
+        assertThat(test).hasToString("GBP 5.90");
     }
 
     @Test
@@ -1324,13 +1324,13 @@ class TestMoney {
     @Test
     void test_plus_Money_positive() {
         Money test = GBP_2_34.plus(GBP_1_23);
-        assertThat(test.toString()).isEqualTo("GBP 3.57");
+        assertThat(test).hasToString("GBP 3.57");
     }
 
     @Test
     void test_plus_Money_negative() {
         Money test = GBP_2_34.plus(GBP_M1_23);
-        assertThat(test.toString()).isEqualTo("GBP 1.11");
+        assertThat(test).hasToString("GBP 1.11");
     }
 
     @Test
@@ -1365,13 +1365,13 @@ class TestMoney {
     @Test
     void test_plus_BigDecimal_positive() {
         Money test = GBP_2_34.plus(new BigDecimal("1.23"));
-        assertThat(test.toString()).isEqualTo("GBP 3.57");
+        assertThat(test).hasToString("GBP 3.57");
     }
 
     @Test
     void test_plus_BigDecimal_negative() {
         Money test = GBP_2_34.plus(new BigDecimal("-1.23"));
-        assertThat(test.toString()).isEqualTo("GBP 1.11");
+        assertThat(test).hasToString("GBP 1.11");
     }
 
     @Test
@@ -1398,19 +1398,19 @@ class TestMoney {
     @Test
     void test_plus_BigDecimalRoundingMode_positive() {
         Money test = GBP_2_34.plus(new BigDecimal("1.23"), RoundingMode.UNNECESSARY);
-        assertThat(test.toString()).isEqualTo("GBP 3.57");
+        assertThat(test).hasToString("GBP 3.57");
     }
 
     @Test
     void test_plus_BigDecimalRoundingMode_negative() {
         Money test = GBP_2_34.plus(new BigDecimal("-1.23"), RoundingMode.UNNECESSARY);
-        assertThat(test.toString()).isEqualTo("GBP 1.11");
+        assertThat(test).hasToString("GBP 1.11");
     }
 
     @Test
     void test_plus_BigDecimalRoundingMode_roundDown() {
         Money test = GBP_2_34.plus(new BigDecimal("1.235"), RoundingMode.DOWN);
-        assertThat(test.toString()).isEqualTo("GBP 3.57");
+        assertThat(test).hasToString("GBP 3.57");
     }
 
     @Test
@@ -1443,13 +1443,13 @@ class TestMoney {
     @Test
     void test_plus_double_positive() {
         Money test = GBP_2_34.plus(1.23d);
-        assertThat(test.toString()).isEqualTo("GBP 3.57");
+        assertThat(test).hasToString("GBP 3.57");
     }
 
     @Test
     void test_plus_double_negative() {
         Money test = GBP_2_34.plus(-1.23d);
-        assertThat(test.toString()).isEqualTo("GBP 1.11");
+        assertThat(test).hasToString("GBP 1.11");
     }
 
     @Test
@@ -1470,19 +1470,19 @@ class TestMoney {
     @Test
     void test_plus_doubleRoundingMode_positive() {
         Money test = GBP_2_34.plus(1.23d, RoundingMode.UNNECESSARY);
-        assertThat(test.toString()).isEqualTo("GBP 3.57");
+        assertThat(test).hasToString("GBP 3.57");
     }
 
     @Test
     void test_plus_doubleRoundingMode_negative() {
         Money test = GBP_2_34.plus(-1.23d, RoundingMode.UNNECESSARY);
-        assertThat(test.toString()).isEqualTo("GBP 1.11");
+        assertThat(test).hasToString("GBP 1.11");
     }
 
     @Test
     void test_plus_doubleRoundingMode_roundDown() {
         Money test = GBP_2_34.plus(1.235d, RoundingMode.DOWN);
-        assertThat(test.toString()).isEqualTo("GBP 3.57");
+        assertThat(test).hasToString("GBP 3.57");
     }
 
     @Test
@@ -1509,13 +1509,13 @@ class TestMoney {
     @Test
     void test_plusMajor_positive() {
         Money test = GBP_2_34.plusMajor(123);
-        assertThat(test.toString()).isEqualTo("GBP 125.34");
+        assertThat(test).hasToString("GBP 125.34");
     }
 
     @Test
     void test_plusMajor_negative() {
         Money test = GBP_2_34.plusMajor(-123);
-        assertThat(test.toString()).isEqualTo("GBP -120.66");
+        assertThat(test).hasToString("GBP -120.66");
     }
 
     //-----------------------------------------------------------------------
@@ -1530,13 +1530,13 @@ class TestMoney {
     @Test
     void test_plusMinor_positive() {
         Money test = GBP_2_34.plusMinor(123);
-        assertThat(test.toString()).isEqualTo("GBP 3.57");
+        assertThat(test).hasToString("GBP 3.57");
     }
 
     @Test
     void test_plusMinor_negative() {
         Money test = GBP_2_34.plusMinor(-123);
-        assertThat(test.toString()).isEqualTo("GBP 1.11");
+        assertThat(test).hasToString("GBP 1.11");
     }
 
     //-----------------------------------------------------------------------
@@ -1546,7 +1546,7 @@ class TestMoney {
     void test_minus_Iterable() {
         Iterable<Money> iterable = Arrays.asList(GBP_2_33, GBP_1_23);
         Money test = GBP_2_34.minus(iterable);
-        assertThat(test.toString()).isEqualTo("GBP -1.22");
+        assertThat(test).hasToString("GBP -1.22");
     }
 
     @Test
@@ -1596,13 +1596,13 @@ class TestMoney {
     @Test
     void test_minus_Money_positive() {
         Money test = GBP_2_34.minus(GBP_1_23);
-        assertThat(test.toString()).isEqualTo("GBP 1.11");
+        assertThat(test).hasToString("GBP 1.11");
     }
 
     @Test
     void test_minus_Money_negative() {
         Money test = GBP_2_34.minus(GBP_M1_23);
-        assertThat(test.toString()).isEqualTo("GBP 3.57");
+        assertThat(test).hasToString("GBP 3.57");
     }
 
     @Test
@@ -1637,13 +1637,13 @@ class TestMoney {
     @Test
     void test_minus_BigDecimal_positive() {
         Money test = GBP_2_34.minus(new BigDecimal("1.23"));
-        assertThat(test.toString()).isEqualTo("GBP 1.11");
+        assertThat(test).hasToString("GBP 1.11");
     }
 
     @Test
     void test_minus_BigDecimal_negative() {
         Money test = GBP_2_34.minus(new BigDecimal("-1.23"));
-        assertThat(test.toString()).isEqualTo("GBP 3.57");
+        assertThat(test).hasToString("GBP 3.57");
     }
 
     @Test
@@ -1670,19 +1670,19 @@ class TestMoney {
     @Test
     void test_minus_BigDecimalRoundingMode_positive() {
         Money test = GBP_2_34.minus(new BigDecimal("1.23"), RoundingMode.UNNECESSARY);
-        assertThat(test.toString()).isEqualTo("GBP 1.11");
+        assertThat(test).hasToString("GBP 1.11");
     }
 
     @Test
     void test_minus_BigDecimalRoundingMode_negative() {
         Money test = GBP_2_34.minus(new BigDecimal("-1.23"), RoundingMode.UNNECESSARY);
-        assertThat(test.toString()).isEqualTo("GBP 3.57");
+        assertThat(test).hasToString("GBP 3.57");
     }
 
     @Test
     void test_minus_BigDecimalRoundingMode_roundDown() {
         Money test = GBP_2_34.minus(new BigDecimal("1.235"), RoundingMode.DOWN);
-        assertThat(test.toString()).isEqualTo("GBP 1.10");
+        assertThat(test).hasToString("GBP 1.10");
     }
 
     @Test
@@ -1715,13 +1715,13 @@ class TestMoney {
     @Test
     void test_minus_double_positive() {
         Money test = GBP_2_34.minus(1.23d);
-        assertThat(test.toString()).isEqualTo("GBP 1.11");
+        assertThat(test).hasToString("GBP 1.11");
     }
 
     @Test
     void test_minus_double_negative() {
         Money test = GBP_2_34.minus(-1.23d);
-        assertThat(test.toString()).isEqualTo("GBP 3.57");
+        assertThat(test).hasToString("GBP 3.57");
     }
 
     @Test
@@ -1742,19 +1742,19 @@ class TestMoney {
     @Test
     void test_minus_doubleRoundingMode_positive() {
         Money test = GBP_2_34.minus(1.23d, RoundingMode.UNNECESSARY);
-        assertThat(test.toString()).isEqualTo("GBP 1.11");
+        assertThat(test).hasToString("GBP 1.11");
     }
 
     @Test
     void test_minus_doubleRoundingMode_negative() {
         Money test = GBP_2_34.minus(-1.23d, RoundingMode.UNNECESSARY);
-        assertThat(test.toString()).isEqualTo("GBP 3.57");
+        assertThat(test).hasToString("GBP 3.57");
     }
 
     @Test
     void test_minus_doubleRoundingMode_roundDown() {
         Money test = GBP_2_34.minus(1.235d, RoundingMode.DOWN);
-        assertThat(test.toString()).isEqualTo("GBP 1.10");
+        assertThat(test).hasToString("GBP 1.10");
     }
 
     @Test
@@ -1781,13 +1781,13 @@ class TestMoney {
     @Test
     void test_minusMajor_positive() {
         Money test = GBP_2_34.minusMajor(123);
-        assertThat(test.toString()).isEqualTo("GBP -120.66");
+        assertThat(test).hasToString("GBP -120.66");
     }
 
     @Test
     void test_minusMajor_negative() {
         Money test = GBP_2_34.minusMajor(-123);
-        assertThat(test.toString()).isEqualTo("GBP 125.34");
+        assertThat(test).hasToString("GBP 125.34");
     }
 
     //-----------------------------------------------------------------------
@@ -1802,13 +1802,13 @@ class TestMoney {
     @Test
     void test_minusMinor_positive() {
         Money test = GBP_2_34.minusMinor(123);
-        assertThat(test.toString()).isEqualTo("GBP 1.11");
+        assertThat(test).hasToString("GBP 1.11");
     }
 
     @Test
     void test_minusMinor_negative() {
         Money test = GBP_2_34.minusMinor(-123);
-        assertThat(test.toString()).isEqualTo("GBP 3.57");
+        assertThat(test).hasToString("GBP 3.57");
     }
 
     //-----------------------------------------------------------------------
@@ -1823,19 +1823,19 @@ class TestMoney {
     @Test
     void test_multipliedBy_BigDecimalRoundingMode_positive() {
         Money test = GBP_2_33.multipliedBy(new BigDecimal("2.5"), RoundingMode.DOWN);
-        assertThat(test.toString()).isEqualTo("GBP 5.82");
+        assertThat(test).hasToString("GBP 5.82");
     }
 
     @Test
     void test_multipliedBy_BigDecimalRoundingMode_positive_halfUp() {
         Money test = GBP_2_33.multipliedBy(new BigDecimal("2.5"), RoundingMode.HALF_UP);
-        assertThat(test.toString()).isEqualTo("GBP 5.83");
+        assertThat(test).hasToString("GBP 5.83");
     }
 
     @Test
     void test_multipliedBy_BigDecimalRoundingMode_negative() {
         Money test = GBP_2_33.multipliedBy(new BigDecimal("-2.5"), RoundingMode.FLOOR);
-        assertThat(test.toString()).isEqualTo("GBP -5.83");
+        assertThat(test).hasToString("GBP -5.83");
     }
 
     @Test
@@ -1862,19 +1862,19 @@ class TestMoney {
     @Test
     void test_multipliedBy_doubleRoundingMode_positive() {
         Money test = GBP_2_33.multipliedBy(2.5d, RoundingMode.DOWN);
-        assertThat(test.toString()).isEqualTo("GBP 5.82");
+        assertThat(test).hasToString("GBP 5.82");
     }
 
     @Test
     void test_multipliedBy_doubleRoundingMode_positive_halfUp() {
         Money test = GBP_2_33.multipliedBy(2.5d, RoundingMode.HALF_UP);
-        assertThat(test.toString()).isEqualTo("GBP 5.83");
+        assertThat(test).hasToString("GBP 5.83");
     }
 
     @Test
     void test_multipliedBy_doubleRoundingMode_negative() {
         Money test = GBP_2_33.multipliedBy(-2.5d, RoundingMode.FLOOR);
-        assertThat(test.toString()).isEqualTo("GBP -5.83");
+        assertThat(test).hasToString("GBP -5.83");
     }
 
     @Test
@@ -1895,13 +1895,13 @@ class TestMoney {
     @Test
     void test_multipliedBy_long_positive() {
         Money test = GBP_2_34.multipliedBy(3);
-        assertThat(test.toString()).isEqualTo("GBP 7.02");
+        assertThat(test).hasToString("GBP 7.02");
     }
 
     @Test
     void test_multipliedBy_long_negative() {
         Money test = GBP_2_34.multipliedBy(-3);
-        assertThat(test.toString()).isEqualTo("GBP -7.02");
+        assertThat(test).hasToString("GBP -7.02");
     }
 
     //-----------------------------------------------------------------------
@@ -1916,19 +1916,19 @@ class TestMoney {
     @Test
     void test_dividedBy_BigDecimalRoundingMode_positive() {
         Money test = GBP_2_34.dividedBy(new BigDecimal("2.5"), RoundingMode.DOWN);
-        assertThat(test.toString()).isEqualTo("GBP 0.93");
+        assertThat(test).hasToString("GBP 0.93");
     }
 
     @Test
     void test_dividedBy_BigDecimalRoundingMode_positive_halfUp() {
         Money test = GBP_2_34.dividedBy(new BigDecimal("2.5"), RoundingMode.HALF_UP);
-        assertThat(test.toString()).isEqualTo("GBP 0.94");
+        assertThat(test).hasToString("GBP 0.94");
     }
 
     @Test
     void test_dividedBy_BigDecimalRoundingMode_negative() {
         Money test = GBP_2_34.dividedBy(new BigDecimal("-2.5"), RoundingMode.FLOOR);
-        assertThat(test.toString()).isEqualTo("GBP -0.94");
+        assertThat(test).hasToString("GBP -0.94");
     }
 
     @Test
@@ -1955,19 +1955,19 @@ class TestMoney {
     @Test
     void test_dividedBy_doubleRoundingMode_positive() {
         Money test = GBP_2_34.dividedBy(2.5d, RoundingMode.DOWN);
-        assertThat(test.toString()).isEqualTo("GBP 0.93");
+        assertThat(test).hasToString("GBP 0.93");
     }
 
     @Test
     void test_dividedBy_doubleRoundingMode_positive_halfUp() {
         Money test = GBP_2_34.dividedBy(2.5d, RoundingMode.HALF_UP);
-        assertThat(test.toString()).isEqualTo("GBP 0.94");
+        assertThat(test).hasToString("GBP 0.94");
     }
 
     @Test
     void test_dividedBy_doubleRoundingMode_negative() {
         Money test = GBP_2_34.dividedBy(-2.5d, RoundingMode.FLOOR);
-        assertThat(test.toString()).isEqualTo("GBP -0.94");
+        assertThat(test).hasToString("GBP -0.94");
     }
 
     @Test
@@ -1988,25 +1988,25 @@ class TestMoney {
     @Test
     void test_dividedBy_long_positive() {
         Money test = GBP_2_34.dividedBy(3, RoundingMode.DOWN);
-        assertThat(test.toString()).isEqualTo("GBP 0.78");
+        assertThat(test).hasToString("GBP 0.78");
     }
 
     @Test
     void test_dividedBy_long_positive_roundDown() {
         Money test = GBP_2_35.dividedBy(3, RoundingMode.DOWN);
-        assertThat(test.toString()).isEqualTo("GBP 0.78");
+        assertThat(test).hasToString("GBP 0.78");
     }
 
     @Test
     void test_dividedBy_long_positive_roundUp() {
         Money test = GBP_2_35.dividedBy(3, RoundingMode.UP);
-        assertThat(test.toString()).isEqualTo("GBP 0.79");
+        assertThat(test).hasToString("GBP 0.79");
     }
 
     @Test
     void test_dividedBy_long_negative() {
         Money test = GBP_2_34.dividedBy(-3, RoundingMode.DOWN);
-        assertThat(test.toString()).isEqualTo("GBP -0.78");
+        assertThat(test).hasToString("GBP -0.78");
     }
 
     //-----------------------------------------------------------------------
@@ -2015,13 +2015,13 @@ class TestMoney {
     @Test
     void test_negated_positive() {
         Money test = GBP_2_34.negated();
-        assertThat(test.toString()).isEqualTo("GBP -2.34");
+        assertThat(test).hasToString("GBP -2.34");
     }
 
     @Test
     void test_negated_negative() {
         Money test = Money.parse("GBP -2.34").negated();
-        assertThat(test.toString()).isEqualTo("GBP 2.34");
+        assertThat(test).hasToString("GBP 2.34");
     }
 
     //-----------------------------------------------------------------------
@@ -2036,7 +2036,7 @@ class TestMoney {
     @Test
     void test_abs_negative() {
         Money test = Money.parse("GBP -2.34").abs();
-        assertThat(test.toString()).isEqualTo("GBP 2.34");
+        assertThat(test).hasToString("GBP 2.34");
     }
 
     //-----------------------------------------------------------------------
@@ -2057,37 +2057,37 @@ class TestMoney {
     @Test
     void test_round_1down() {
         Money test = GBP_2_34.rounded(1, RoundingMode.DOWN);
-        assertThat(test.toString()).isEqualTo("GBP 2.30");
+        assertThat(test).hasToString("GBP 2.30");
     }
 
     @Test
     void test_round_1up() {
         Money test = GBP_2_34.rounded(1, RoundingMode.UP);
-        assertThat(test.toString()).isEqualTo("GBP 2.40");
+        assertThat(test).hasToString("GBP 2.40");
     }
 
     @Test
     void test_round_0down() {
         Money test = GBP_2_34.rounded(0, RoundingMode.DOWN);
-        assertThat(test.toString()).isEqualTo("GBP 2.00");
+        assertThat(test).hasToString("GBP 2.00");
     }
 
     @Test
     void test_round_0up() {
         Money test = GBP_2_34.rounded(0, RoundingMode.UP);
-        assertThat(test.toString()).isEqualTo("GBP 3.00");
+        assertThat(test).hasToString("GBP 3.00");
     }
 
     @Test
     void test_round_M1down() {
         Money test = Money.parse("GBP 432.34").rounded(-1, RoundingMode.DOWN);
-        assertThat(test.toString()).isEqualTo("GBP 430.00");
+        assertThat(test).hasToString("GBP 430.00");
     }
 
     @Test
     void test_round_M1up() {
         Money test = Money.parse("GBP 432.34").rounded(-1, RoundingMode.UP);
-        assertThat(test.toString()).isEqualTo("GBP 440.00");
+        assertThat(test).hasToString("GBP 440.00");
     }
 
     @Test
@@ -2102,13 +2102,13 @@ class TestMoney {
     @Test
     void test_convertedTo_BigDecimalRoundingMode_positive() {
         Money test = GBP_2_33.convertedTo(EUR, new BigDecimal("2.5"), RoundingMode.DOWN);
-        assertThat(test.toString()).isEqualTo("EUR 5.82");
+        assertThat(test).hasToString("EUR 5.82");
     }
 
     @Test
     void test_convertedTo_BigDecimalRoundingMode_positive_halfUp() {
         Money test = GBP_2_33.convertedTo(EUR, new BigDecimal("2.5"), RoundingMode.HALF_UP);
-        assertThat(test.toString()).isEqualTo("EUR 5.83");
+        assertThat(test).hasToString("EUR 5.83");
     }
 
     @Test
@@ -2413,13 +2413,13 @@ class TestMoney {
     @Test
     void test_toString_positive() {
         Money test = Money.of(GBP, BIGDEC_2_34);
-        assertThat(test.toString()).isEqualTo("GBP 2.34");
+        assertThat(test).hasToString("GBP 2.34");
     }
 
     @Test
     void test_toString_negative() {
         Money test = Money.of(EUR, BIGDEC_M5_78);
-        assertThat(test.toString()).isEqualTo("EUR -5.78");
+        assertThat(test).hasToString("EUR -5.78");
     }
 
 }
