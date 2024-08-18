@@ -15,11 +15,8 @@
  */
 package org.joda.money.format;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -101,7 +98,7 @@ class TestMoneyFormatter {
             ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
             MoneyFormatter input = (MoneyFormatter) ois.readObject();
             Money value = MONEY_GBP_12_34;
-            assertEquals(a.print(value), input.print(value));
+            assertThat(input.print(value)).isEqualTo(a.print(value));
         }
     }
 
@@ -110,21 +107,20 @@ class TestMoneyFormatter {
     //-----------------------------------------------------------------------
     @Test
     void test_getLocale() {
-        assertEquals(TEST_GB_LOCALE, iPrintTest.getLocale());
+        assertThat(iPrintTest.getLocale()).isEqualTo(TEST_GB_LOCALE);
     }
 
     @Test
     void test_withLocale() {
         MoneyFormatter test = iPrintTest.withLocale(TEST_FR_LOCALE);
-        assertEquals(TEST_GB_LOCALE, iPrintTest.getLocale());
-        assertEquals(TEST_FR_LOCALE, test.getLocale());
+        assertThat(iPrintTest.getLocale()).isEqualTo(TEST_GB_LOCALE);
+        assertThat(test.getLocale()).isEqualTo(TEST_FR_LOCALE);
     }
 
     @Test
     void test_withLocale_nullLocale() {
-        assertThrows(NullPointerException.class, () -> {
-            iPrintTest.withLocale((Locale) null);
-        });
+        assertThatExceptionOfType(NullPointerException.class)
+            .isThrownBy(() -> iPrintTest.withLocale((Locale) null));
     }
 
     //-----------------------------------------------------------------------
@@ -132,21 +128,19 @@ class TestMoneyFormatter {
     //-----------------------------------------------------------------------
     @Test
     void test_print_BigMoneyProvider() {
-        assertEquals("GBP hello", iPrintTest.print(MONEY_GBP_12_34));
+        assertThat(iPrintTest.print(MONEY_GBP_12_34)).isEqualTo("GBP hello");
     }
 
     @Test
     void test_print_BigMoneyProvider_cannotPrint() {
-        assertThrows(UnsupportedOperationException.class, () -> {
-            iCannotPrint.print(MONEY_GBP_12_34);
-        });
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+            .isThrownBy(() -> iCannotPrint.print(MONEY_GBP_12_34));
     }
 
     @Test
     void test_print_BigMoneyProvider_nullBigMoneyProvider() {
-        assertThrows(NullPointerException.class, () -> {
-            iPrintTest.print((BigMoneyProvider) null);
-        });
+        assertThatExceptionOfType(NullPointerException.class)
+            .isThrownBy(() -> iPrintTest.print((BigMoneyProvider) null));
     }
 
     //-----------------------------------------------------------------------
@@ -156,41 +150,33 @@ class TestMoneyFormatter {
     void test_print_AppendableBigMoneyProvider() {
         StringBuilder buf = new StringBuilder();
         iPrintTest.print(buf, MONEY_GBP_12_34);
-        assertEquals("GBP hello", buf.toString());
+        assertThat(buf).hasToString("GBP hello");
     }
 
     @Test
     void test_print_AppendableBigMoneyProvider_IOException() {
-        assertThrows(MoneyFormatException.class, () -> {
-            Appendable appendable = new IOAppendable();
-            try {
-                iPrintTest.print(appendable, MONEY_GBP_12_34);
-            } catch (MoneyFormatException ex) {
-                assertEquals(IOException.class, ex.getCause().getClass());
-                throw ex;
-            }
-        });
+        Appendable appendable = new IOAppendable();
+        assertThatExceptionOfType(MoneyFormatException.class)
+            .isThrownBy(() -> iPrintTest.print(appendable, MONEY_GBP_12_34))
+            .withCauseInstanceOf(IOException.class);
     }
 
     @Test
     void test_print_AppendableBigMoneyProvider_cannotPrint() {
-        assertThrows(UnsupportedOperationException.class, () -> {
-            iCannotPrint.print(new StringBuilder(), MONEY_GBP_12_34);
-        });
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+            .isThrownBy(() -> iCannotPrint.print(new StringBuilder(), MONEY_GBP_12_34));
     }
 
     @Test
     void test_print_AppendableBigMoneyProvider_nullAppendable() {
-        assertThrows(NullPointerException.class, () -> {
-            iPrintTest.print((Appendable) null, MONEY_GBP_12_34);
-        });
+        assertThatExceptionOfType(NullPointerException.class)
+            .isThrownBy(() -> iPrintTest.print((Appendable) null, MONEY_GBP_12_34));
     }
 
     @Test
     void test_print_AppendableBigMoneyProvider_nullBigMoneyProvider() {
-        assertThrows(NullPointerException.class, () -> {
-            iPrintTest.print(new StringBuilder(), (BigMoneyProvider) null);
-        });
+        assertThatExceptionOfType(NullPointerException.class)
+            .isThrownBy(() -> iPrintTest.print(new StringBuilder(), (BigMoneyProvider) null));
     }
 
     //-----------------------------------------------------------------------
@@ -200,36 +186,32 @@ class TestMoneyFormatter {
     void test_printIO_AppendableBigMoneyProvider() throws IOException {
         StringBuilder buf = new StringBuilder();
         iPrintTest.printIO(buf, MONEY_GBP_12_34);
-        assertEquals("GBP hello", buf.toString());
+        assertThat(buf).hasToString("GBP hello");
     }
 
     @Test
     void test_printIO_AppendableBigMoneyProvider_IOException() {
         Appendable appendable = new IOAppendable();
-        assertThrows(IOException.class, () -> {
-            iPrintTest.printIO(appendable, MONEY_GBP_12_34);
-        });
+        assertThatExceptionOfType(IOException.class)
+            .isThrownBy(() -> iPrintTest.printIO(appendable, MONEY_GBP_12_34));
     }
 
     @Test
     void test_printIO_AppendableBigMoneyProvider_cannotPrint() {
-        assertThrows(UnsupportedOperationException.class, () -> {
-            iCannotPrint.printIO(new StringBuilder(), MONEY_GBP_12_34);
-        });
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+            .isThrownBy(() -> iCannotPrint.printIO(new StringBuilder(), MONEY_GBP_12_34));
     }
 
     @Test
     void test_printIO_AppendableBigMoneyProvider_nullAppendable() {
-        assertThrows(NullPointerException.class, () -> {
-            iPrintTest.printIO((Appendable) null, MONEY_GBP_12_34);
-        });
+        assertThatExceptionOfType(NullPointerException.class)
+            .isThrownBy(() -> iPrintTest.printIO((Appendable) null, MONEY_GBP_12_34));
     }
 
     @Test
     void test_printIO_AppendableBigMoneyProvider_nullBigMoneyProvider() {
-        assertThrows(NullPointerException.class, () -> {
-            iPrintTest.printIO(new StringBuilder(), (BigMoneyProvider) null);
-        });
+        assertThatExceptionOfType(NullPointerException.class)
+            .isThrownBy(() -> iPrintTest.printIO(new StringBuilder(), (BigMoneyProvider) null));
     }
 
     //-----------------------------------------------------------------------
@@ -239,64 +221,58 @@ class TestMoneyFormatter {
     void test_parseBigMoney_CharSequence() {
         CharSequence input = new StringBuilder("12.34 GBP");
         BigMoney test = iParseTest.parseBigMoney(input);
-        assertEquals(MONEY_GBP_12_34.toBigMoney(), test);
+        assertThat(test).isEqualTo(MONEY_GBP_12_34.toBigMoney());
     }
 
     @Test
     void test_parseBigMoney_CharSequence_invalidCurrency() {
-        assertThrows(MoneyFormatException.class, () -> {
-            iParseTest.parseBigMoney("12.34 GBX");
-        });
+        assertThatExceptionOfType(MoneyFormatException.class)
+            .isThrownBy(() -> iParseTest.parseBigMoney("12.34 GBX"));
     }
 
     @Test
     void test_parseBigMoney_CharSequence_notFullyParsed() {
-        assertThrows(MoneyFormatException.class, () -> {
-            iParseTest.parseBigMoney("12.34 GBP X");
-        });
+        assertThatExceptionOfType(MoneyFormatException.class)
+            .isThrownBy(() -> iParseTest.parseBigMoney("12.34 GBP X"));
     }
 
     @Test
     void test_parseBigMoney_CharSequence_incomplete() {
-        assertThrows(MoneyFormatException.class, () -> {
-            iParseTest.parseBigMoney("12.34 GBP ");
-        });
+        assertThatExceptionOfType(MoneyFormatException.class)
+            .isThrownBy(() -> iParseTest.parseBigMoney("12.34 GBP "));
     }
 
     @Test
     void test_parseBigMoney_CharSequence_incompleteLongText() {
-        assertThrows(MoneyFormatException.class, () -> {
-            iParseTest.parseBigMoney("12.34 GBP ABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABAB");
-        });
+        assertThatExceptionOfType(MoneyFormatException.class)
+            .isThrownBy(
+                    () -> iParseTest
+                        .parseBigMoney("12.34 GBP ABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABAB"));
     }
 
     @Test
     void test_parseBigMoney_CharSequence_incompleteEmptyParser() {
-        assertThrows(MoneyFormatException.class, () -> {
-            iCannotPrint.parseBigMoney("12.34 GBP");
-        });
+        assertThatExceptionOfType(MoneyFormatException.class)
+            .isThrownBy(() -> iCannotPrint.parseBigMoney("12.34 GBP"));
     }
 
     @Test
     void test_parseBigMoney_CharSequence_missingCurrency() {
         MoneyFormatter f = new MoneyFormatterBuilder().appendAmount().toFormatter();
-        assertThrows(MoneyFormatException.class, () -> {
-            f.parseBigMoney("12.34");
-        });
+        assertThatExceptionOfType(MoneyFormatException.class)
+            .isThrownBy(() -> f.parseBigMoney("12.34"));
     }
 
     @Test
     void test_parseBigMoney_CharSequence_cannotParse() {
-        assertThrows(UnsupportedOperationException.class, () -> {
-            iCannotParse.parseBigMoney(new StringBuilder());
-        });
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+            .isThrownBy(() -> iCannotParse.parseBigMoney(new StringBuilder()));
     }
 
     @Test
     void test_parseBigMoney_CharSequence_nullCharSequence() {
-        assertThrows(NullPointerException.class, () -> {
-            iParseTest.parseBigMoney((CharSequence) null);
-        });
+        assertThatExceptionOfType(NullPointerException.class)
+            .isThrownBy(() -> iParseTest.parseBigMoney((CharSequence) null));
     }
 
     //-----------------------------------------------------------------------
@@ -306,42 +282,37 @@ class TestMoneyFormatter {
     void test_parseMoney_CharSequence() {
         CharSequence input = new StringBuilder("12.34 GBP");
         Money test = iParseTest.parseMoney(input);
-        assertEquals(MONEY_GBP_12_34, test);
+        assertThat(test).isEqualTo(MONEY_GBP_12_34);
     }
 
     @Test
     void test_parseMoney_CharSequence_invalidCurrency() {
-        assertThrows(MoneyFormatException.class, () -> {
-            iParseTest.parseMoney("12.34 GBX");
-        });
+        assertThatExceptionOfType(MoneyFormatException.class)
+            .isThrownBy(() -> iParseTest.parseMoney("12.34 GBX"));
     }
 
     @Test
     void test_parseMoney_CharSequence_notFullyParsed() {
-        assertThrows(MoneyFormatException.class, () -> {
-            iParseTest.parseMoney("12.34 GBP X");
-        });
+        assertThatExceptionOfType(MoneyFormatException.class)
+            .isThrownBy(() -> iParseTest.parseMoney("12.34 GBP X"));
     }
 
     @Test
     void test_parseMoney_CharSequence_incomplete() {
-        assertThrows(MoneyFormatException.class, () -> {
-            iCannotPrint.parseMoney("12.34 GBP");
-        });
+        assertThatExceptionOfType(MoneyFormatException.class)
+            .isThrownBy(() -> iCannotPrint.parseMoney("12.34 GBP"));
     }
 
     @Test
     void test_parseMoney_CharSequence_cannotParse() {
-        assertThrows(UnsupportedOperationException.class, () -> {
-            iCannotParse.parseMoney(new StringBuilder());
-        });
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+            .isThrownBy(() -> iCannotParse.parseMoney(new StringBuilder()));
     }
 
     @Test
     void test_parseMoney_CharSequence_nullCharSequence() {
-        assertThrows(NullPointerException.class, () -> {
-            iParseTest.parseMoney((CharSequence) null);
-        });
+        assertThatExceptionOfType(NullPointerException.class)
+            .isThrownBy(() -> iParseTest.parseMoney((CharSequence) null));
     }
 
     //-----------------------------------------------------------------------
@@ -384,33 +355,33 @@ class TestMoneyFormatter {
 
         CharSequence input = new StringBuilder(str);
         MoneyParseContext test = iParseTest.parse(input, 0);
-        assertEquals(amount, test.getAmount());
-        assertEquals(currency, test.getCurrency());
-        assertEquals(index, test.getIndex());
-        assertEquals(errorIndex, test.getErrorIndex());
-        assertEquals(str, test.getText().toString());
-        assertEquals(str.length(), test.getTextLength());
-        assertEquals(error, test.isError());
-        assertEquals(fullyParsed, test.isFullyParsed());
-        assertEquals(complete, test.isComplete());
+        assertThat(test.getAmount()).isEqualTo(amount);
+        assertThat(test.getCurrency()).isEqualTo(currency);
+        assertThat(test.getIndex()).isEqualTo(index);
+        assertThat(test.getErrorIndex()).isEqualTo(errorIndex);
+        assertThat(test.getText()).hasToString(str);
+        assertThat(test.getTextLength()).isEqualTo(str.length());
+        assertThat(test.isError()).isEqualTo(error);
+        assertThat(test.isFullyParsed()).isEqualTo(fullyParsed);
+        assertThat(test.isComplete()).isEqualTo(complete);
         ParsePosition pp = new ParsePosition(index);
         pp.setErrorIndex(errorIndex);
-        assertEquals(pp, test.toParsePosition());
+        assertThat(test.toParsePosition()).isEqualTo(pp);
     }
 
     @Test
     void test_parse_CharSequenceInt_incomplete() {
         // this parser does nothing
         MoneyParseContext test = iCannotPrint.parse("12.34 GBP", 0);
-        assertNull(test.getAmount());
-        assertNull(test.getCurrency());
-        assertEquals(0, test.getIndex());
-        assertEquals(-1, test.getErrorIndex());
-        assertEquals("12.34 GBP", test.getText().toString());
-        assertEquals(9, test.getTextLength());
-        assertFalse(test.isError());
-        assertFalse(test.isFullyParsed());
-        assertFalse(test.isComplete());
+        assertThat(test.getAmount()).isNull();
+        assertThat(test.getCurrency()).isNull();
+        assertThat(test.getIndex()).isEqualTo(0);
+        assertThat(test.getErrorIndex()).isEqualTo(-1);
+        assertThat(test.getText()).hasToString("12.34 GBP");
+        assertThat(test.getTextLength()).isEqualTo(9);
+        assertThat(test.isError()).isFalse();
+        assertThat(test.isFullyParsed()).isFalse();
+        assertThat(test.isComplete()).isFalse();
     }
 
     @Test
@@ -418,15 +389,15 @@ class TestMoneyFormatter {
         MoneyFormatter f = new MoneyFormatterBuilder()
             .appendAmountLocalized().appendLiteral(".").appendCurrencyCode().toFormatter();
         MoneyParseContext test = f.parse("12..GBP", 0);
-        assertEquals(BigDecimal.valueOf(12), test.getAmount());
-        assertEquals(CurrencyUnit.of("GBP"), test.getCurrency());
-        assertEquals(7, test.getIndex());
-        assertEquals(-1, test.getErrorIndex());
-        assertEquals("12..GBP", test.getText().toString());
-        assertEquals(7, test.getTextLength());
-        assertFalse(test.isError());
-        assertTrue(test.isFullyParsed());
-        assertTrue(test.isComplete());
+        assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(12));
+        assertThat(test.getCurrency()).isEqualTo(CurrencyUnit.of("GBP"));
+        assertThat(test.getIndex()).isEqualTo(7);
+        assertThat(test.getErrorIndex()).isEqualTo(-1);
+        assertThat(test.getText()).hasToString("12..GBP");
+        assertThat(test.getTextLength()).isEqualTo(7);
+        assertThat(test.isError()).isFalse();
+        assertThat(test.isFullyParsed()).isTrue();
+        assertThat(test.isComplete()).isTrue();
     }
 
     @Test
@@ -434,15 +405,15 @@ class TestMoneyFormatter {
         MoneyFormatter f = new MoneyFormatterBuilder()
             .appendAmountLocalized().appendLiteral(",").appendCurrencyCode().toFormatter();
         MoneyParseContext test = f.parse("12,GBP", 0);
-        assertEquals(BigDecimal.valueOf(12), test.getAmount());
-        assertEquals(CurrencyUnit.of("GBP"), test.getCurrency());
-        assertEquals(6, test.getIndex());
-        assertEquals(-1, test.getErrorIndex());
-        assertEquals("12,GBP", test.getText().toString());
-        assertEquals(6, test.getTextLength());
-        assertFalse(test.isError());
-        assertTrue(test.isFullyParsed());
-        assertTrue(test.isComplete());
+        assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(12));
+        assertThat(test.getCurrency()).isEqualTo(CurrencyUnit.of("GBP"));
+        assertThat(test.getIndex()).isEqualTo(6);
+        assertThat(test.getErrorIndex()).isEqualTo(-1);
+        assertThat(test.getText()).hasToString("12,GBP");
+        assertThat(test.getTextLength()).isEqualTo(6);
+        assertThat(test.isError()).isFalse();
+        assertThat(test.isFullyParsed()).isTrue();
+        assertThat(test.isComplete()).isTrue();
     }
 
     @Test
@@ -450,43 +421,39 @@ class TestMoneyFormatter {
         MoneyFormatter f = new MoneyFormatterBuilder()
             .appendAmountLocalized().appendLiteral(",,").appendCurrencyCode().toFormatter();
         MoneyParseContext test = f.parse("12,,GBP", 0);
-        assertEquals(BigDecimal.valueOf(12), test.getAmount());
-        assertEquals(CurrencyUnit.of("GBP"), test.getCurrency());
-        assertEquals(7, test.getIndex());
-        assertEquals(-1, test.getErrorIndex());
-        assertEquals("12,,GBP", test.getText().toString());
-        assertEquals(7, test.getTextLength());
-        assertFalse(test.isError());
-        assertTrue(test.isFullyParsed());
-        assertTrue(test.isComplete());
+        assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(12));
+        assertThat(test.getCurrency()).isEqualTo(CurrencyUnit.of("GBP"));
+        assertThat(test.getIndex()).isEqualTo(7);
+        assertThat(test.getErrorIndex()).isEqualTo(-1);
+        assertThat(test.getText()).hasToString("12,,GBP");
+        assertThat(test.getTextLength()).isEqualTo(7);
+        assertThat(test.isError()).isFalse();
+        assertThat(test.isFullyParsed()).isTrue();
+        assertThat(test.isComplete()).isTrue();
     }
 
     @Test
     void test_parse_CharSequenceInt_cannotParse() {
-        assertThrows(UnsupportedOperationException.class, () -> {
-            iCannotParse.parse(new StringBuilder(), 0);
-        });
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+            .isThrownBy(() -> iCannotParse.parse(new StringBuilder(), 0));
     }
 
     @Test
     void test_parse_CharSequenceInt_nullCharSequence() {
-        assertThrows(NullPointerException.class, () -> {
-            iParseTest.parse((CharSequence) null, 0);
-        });
+        assertThatExceptionOfType(NullPointerException.class)
+            .isThrownBy(() -> iParseTest.parse((CharSequence) null, 0));
     }
 
     @Test
     void test_parse_CharSequenceInt_startIndexTooSmall() {
-        assertThrows(IndexOutOfBoundsException.class, () -> {
-            iParseTest.parse("", -1);
-        });
+        assertThatExceptionOfType(IndexOutOfBoundsException.class)
+            .isThrownBy(() -> iParseTest.parse("", -1));
     }
 
     @Test
     void test_parse_CharSequenceInt_startIndexTooBig() {
-        assertThrows(IndexOutOfBoundsException.class, () -> {
-            iParseTest.parse("", 1);
-        });
+        assertThatExceptionOfType(IndexOutOfBoundsException.class)
+            .isThrownBy(() -> iParseTest.parse("", 1));
     }
 
     //-----------------------------------------------------------------------
@@ -494,44 +461,39 @@ class TestMoneyFormatter {
     void test_printParse_zeroChar() {
         MoneyAmountStyle style = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withZeroCharacter('A');
         MoneyFormatter f = new MoneyFormatterBuilder().appendCurrencyCode().appendLiteral(" ").appendAmount(style).toFormatter();
-        assertEquals("GBP BC.DE", f.print(MONEY_GBP_12_34));
-        assertEquals(MONEY_GBP_12_34, f.parseMoney("GBP BC.DE"));
+        assertThat(f.print(MONEY_GBP_12_34)).isEqualTo("GBP BC.DE");
+        assertThat(f.parseMoney("GBP BC.DE")).isEqualTo(MONEY_GBP_12_34);
     }
 
     @Test
     void test_parseMoney_notFullyParsed() {
-        assertThrows(MoneyFormatException.class, () -> {
-            iParseTest.parseMoney("GBP hello notfullyparsed");
-        });
+        assertThatExceptionOfType(MoneyFormatException.class)
+            .isThrownBy(() -> iParseTest.parseMoney("GBP hello notfullyparsed"));
     }
 
     @Test
     void test_parseMoney_noAmount() {
-        assertThrows(MoneyFormatException.class, () -> {
-            iParseTest.parseMoney("GBP hello");
-        });
+        assertThatExceptionOfType(MoneyFormatException.class)
+            .isThrownBy(() -> iParseTest.parseMoney("GBP hello"));
     }
 
     @Test
     void test_parseBigMoney_notFullyParsed() {
-        assertThrows(MoneyFormatException.class, () -> {
-            iParseTest.parseBigMoney("GBP hello notfullyparsed");
-        });
+        assertThatExceptionOfType(MoneyFormatException.class)
+            .isThrownBy(() -> iParseTest.parseBigMoney("GBP hello notfullyparsed"));
     }
 
     @Test
     void test_parseBigMoney_noAmount() {
-        assertThrows(MoneyFormatException.class, () -> {
-            iParseTest.parseBigMoney("GBP hello");
-        });
+        assertThatExceptionOfType(MoneyFormatException.class)
+            .isThrownBy(() -> iParseTest.parseBigMoney("GBP hello"));
     }
 
     @Test
     void test_parse_notFullyParsed() {
-        assertThrows(MoneyFormatException.class, () -> {
-            MoneyParseContext context = iParseTest.parse("GBP hello notfullyparsed", 1);
-            context.toBigMoney();
-        });
+        MoneyParseContext context = iParseTest.parse("GBP hello notfullyparsed", 1);
+        assertThatExceptionOfType(MoneyFormatException.class)
+            .isThrownBy(() -> context.toBigMoney());
     }
 
     //-----------------------------------------------------------------------
@@ -539,7 +501,7 @@ class TestMoneyFormatter {
     //-----------------------------------------------------------------------
     @Test
     void test_toString() {
-        assertEquals("${code}' hello'", iPrintTest.toString());
+        assertThat(iPrintTest.toString()).isEqualTo("${code}' hello'");
     }
 
     @Test
@@ -565,7 +527,7 @@ class TestMoneyFormatter {
             }
         };
         MoneyFormatter f = new MoneyFormatterBuilder().append(printer, parser).toFormatter();
-        assertEquals("A:B", f.toString());
+        assertThat(f).hasToString("A:B");
     }
 
     //-----------------------------------------------------------------------

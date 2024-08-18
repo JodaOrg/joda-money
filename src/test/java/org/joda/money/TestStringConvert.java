@@ -15,7 +15,7 @@
  */
 package org.joda.money;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 import org.joda.convert.StringConvert;
@@ -30,24 +30,24 @@ class TestStringConvert {
     void test_BigMoney() {
         BigMoney test = BigMoney.of(CurrencyUnit.CHF, 1234.5678d);
         String str = StringConvert.INSTANCE.convertToString(test);
-        assertEquals("CHF 1234.5678", str);
-        assertEquals(test, StringConvert.INSTANCE.convertFromString(BigMoney.class, str));
+        assertThat(str).isEqualTo("CHF 1234.5678");
+        assertThat(StringConvert.INSTANCE.convertFromString(BigMoney.class, str)).isEqualTo(test);
     }
 
     @Test
     void test_Money() {
         Money test = Money.of(CurrencyUnit.CHF, 1234.56d);
         String str = StringConvert.INSTANCE.convertToString(test);
-        assertEquals("CHF 1234.56", str);
-        assertEquals(test, StringConvert.INSTANCE.convertFromString(Money.class, str));
+        assertThat(str).isEqualTo("CHF 1234.56");
+        assertThat(StringConvert.INSTANCE.convertFromString(Money.class, str)).isEqualTo(test);
     }
 
     @Test
     void test_CurrencyUnit() {
         CurrencyUnit test = CurrencyUnit.CHF;
         String str = StringConvert.INSTANCE.convertToString(test);
-        assertEquals("CHF", str);
-        assertEquals(test, StringConvert.INSTANCE.convertFromString(CurrencyUnit.class, str));
+        assertThat(str).isEqualTo("CHF");
+        assertThat(StringConvert.INSTANCE.convertFromString(CurrencyUnit.class, str)).isEqualTo(test);
     }
 
 }

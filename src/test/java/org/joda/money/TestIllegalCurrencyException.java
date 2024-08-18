@@ -15,8 +15,7 @@
  */
 package org.joda.money;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
@@ -31,15 +30,15 @@ class TestIllegalCurrencyException {
     @Test
     void test_String() {
         IllegalCurrencyException test = new IllegalCurrencyException("PROBLEM");
-        assertEquals("PROBLEM", test.getMessage());
-        assertNull(test.getCause());
+        assertThat(test.getMessage()).isEqualTo("PROBLEM");
+        assertThat(test.getCause()).isNull();
     }
 
     @Test
     void test_String_nullString() {
         IllegalCurrencyException test = new IllegalCurrencyException(null);
-        assertNull(test.getMessage());
-        assertNull(test.getCause());
+        assertThat(test.getMessage()).isNull();
+        assertThat(test.getCause()).isNull();
     }
 
 }

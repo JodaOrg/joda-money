@@ -15,9 +15,8 @@
  */
 package org.joda.money;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import java.util.List;
 
@@ -38,7 +37,7 @@ class TestCurrencyUnitExtension {
                 break;
             }
         }
-        assertTrue(found);
+        assertThat(found).isTrue();
     }
 
     @Test
@@ -51,7 +50,7 @@ class TestCurrencyUnitExtension {
                 break;
             }
         }
-        assertTrue(found);
+        assertThat(found).isTrue();
     }
 
     @Test
@@ -61,11 +60,11 @@ class TestCurrencyUnitExtension {
         for (CurrencyUnit currencyUnit : curList) {
             if (currencyUnit.getCode().equals("ETH")) {
                 found = true;
-                assertEquals("ETH 1.234567890000000000000000000000", Money.of(currencyUnit, 1.23456789d).toString());
+                assertThat(Money.of(currencyUnit, 1.23456789d).toString()).isEqualTo("ETH 1.234567890000000000000000000000");
                 break;
             }
         }
-        assertTrue(found);
+        assertThat(found).isTrue();
     }
 
     @Test
@@ -89,9 +88,9 @@ class TestCurrencyUnitExtension {
     @Test
     void test_CurrencyEURChanged() {
         CurrencyUnit currency = CurrencyUnit.ofCountry("HU");
-        assertEquals(CurrencyUnit.EUR, currency);
-        assertTrue(CurrencyUnit.EUR.getCountryCodes().contains("HU"));
-        assertTrue(CurrencyUnit.of("HUF").getCountryCodes().isEmpty());
+        assertThat(currency).isEqualTo(CurrencyUnit.EUR);
+        assertThat(CurrencyUnit.EUR.getCountryCodes()).contains("HU");
+        assertThat(CurrencyUnit.of("HUF").getCountryCodes()).isEmpty();
     }
 
 }
