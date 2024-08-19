@@ -577,6 +577,10 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @return the JDK currency instance, never null
      */
     public String getSymbol() {
+        // Java 21 currency data uses a symbol, we want to retain this as XXX
+        if ("XXX".equals(code)) {
+            return code;
+        }
         try {
             return Currency.getInstance(code).getSymbol();
         } catch (IllegalArgumentException ex) {
@@ -597,6 +601,10 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      */
     public String getSymbol(Locale locale) {
         MoneyUtils.checkNotNull(locale, "Locale must not be null");
+        // Java 21 currency data uses a symbol, we want to retain this as XXX
+        if ("XXX".equals(code)) {
+            return code;
+        }
         try {
             return Currency.getInstance(code).getSymbol(locale);
         } catch (IllegalArgumentException ex) {
