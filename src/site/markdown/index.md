@@ -70,10 +70,13 @@ As a flavour of Joda-Money, here is some example code:
 
 ## <i></i> Releases
 
-[Release 1.0.5](download.html) is the current release.
-This release is considered stable and worthy of the 1.x tag.
+The 2.x branch is compatible with Java SE 21 or later.
 
-Joda-Money requires Java SE 8 or later and has [no dependencies](dependencies.html).
+The 1.x branch is compatible with Java SE 8 or later.
+
+v2.x releases are compatible with v1.x releases - except for the Java SE version and `module-info.class` file.
+
+Joda-Money has no mandatory dependencies.
 There is a *compile-time* dependency on [Joda-Convert](https://www.joda.org/joda-convert/),
 but this is not required at runtime thanks to the magic of annotations.
 

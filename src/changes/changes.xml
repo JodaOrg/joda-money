@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="2.0.0-RC1" date="SNAPSHOT" description="Version 2.0.0-RC1">
+      <action dev="jodastephen" type="add">
+        Major version based on Java SE 21.
+        Intended to be effectively compatible with v1.x.
+      </action>
+    </release>
     <release version="1.0.5" date="2024-08-25" description="v1.0.5">
       <action dev="jodastephen" type="update">
         Change currency for ZW from ZWL to ZWG. (ISO 4217 Amendment 177)
