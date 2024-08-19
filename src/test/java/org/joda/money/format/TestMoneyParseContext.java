@@ -32,7 +32,7 @@ class TestMoneyParseContext {
 
     @Test
     void test_initialState() {
-        MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
+        var test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         assertThat(test.getAmount()).isNull();
         assertThat(test.getCurrency()).isNull();
         assertThat(test.getIndex()).isEqualTo(0);
@@ -42,14 +42,14 @@ class TestMoneyParseContext {
         assertThat(test.isError()).isFalse();
         assertThat(test.isFullyParsed()).isFalse();
         assertThat(test.isComplete()).isFalse();
-        ParsePosition pp = new ParsePosition(0);
+        var pp = new ParsePosition(0);
         pp.setErrorIndex(-1);
         assertThat(test.toParsePosition()).isEqualTo(pp);
     }
 
     @Test
     void test_setIndex() {
-        MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
+        var test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         assertThat(test.getIndex()).isEqualTo(0);
         test.setIndex(2);
         assertThat(test.getIndex()).isEqualTo(2);
@@ -57,7 +57,7 @@ class TestMoneyParseContext {
 
     @Test
     void test_setErrorIndex() {
-        MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
+        var test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         assertThat(test.getErrorIndex()).isEqualTo(-1);
         test.setErrorIndex(3);
         assertThat(test.getErrorIndex()).isEqualTo(3);
@@ -65,7 +65,7 @@ class TestMoneyParseContext {
 
     @Test
     void test_setError() {
-        MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
+        var test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         assertThat(test.getIndex()).isEqualTo(0);
         assertThat(test.getErrorIndex()).isEqualTo(-1);
         test.setError();
@@ -75,7 +75,7 @@ class TestMoneyParseContext {
 
     @Test
     void test_setError_withIndex() {
-        MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
+        var test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         assertThat(test.getIndex()).isEqualTo(0);
         assertThat(test.getErrorIndex()).isEqualTo(-1);
         test.setIndex(2);
@@ -87,21 +87,21 @@ class TestMoneyParseContext {
     //-----------------------------------------------------------------------
     @Test
     void test_isComplete_noCurrency() {
-        MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
+        var test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         test.setAmount(BigDecimal.TEN);
         assertThat(test.isComplete()).isFalse();
     }
 
     @Test
     void test_isComplete_noAmount() {
-        MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
+        var test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         test.setCurrency(CurrencyUnit.GBP);
         assertThat(test.isComplete()).isFalse();
     }
 
     @Test
     void test_toBigMoney_noCurrency() {
-        MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
+        var test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         test.setAmount(BigDecimal.TEN);
         assertThatExceptionOfType(MoneyFormatException.class)
             .isThrownBy(() -> test.toBigMoney());
@@ -109,7 +109,7 @@ class TestMoneyParseContext {
 
     @Test
     void test_toBigMoney_noAmount() {
-        MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
+        var test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         test.setCurrency(CurrencyUnit.GBP);
         assertThatExceptionOfType(MoneyFormatException.class)
             .isThrownBy(() -> test.toBigMoney());
@@ -118,21 +118,21 @@ class TestMoneyParseContext {
     //-----------------------------------------------------------------------
     @Test
     void test_getTextSubstring_ok() {
-        MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
+        var test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         assertThat(test.getTextSubstring(0, 2)).isEqualTo("GB");
         assertThat(test.getTextSubstring(5, 7)).isEqualTo("23");
     }
 
     @Test
     void test_getTextSubstring_beforeStart() {
-        MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
+        var test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         assertThatExceptionOfType(IndexOutOfBoundsException.class)
             .isThrownBy(() -> test.getTextSubstring(-1, 2));
     }
 
     @Test
     void test_getTextSubstring_afterEnd() {
-        MoneyParseContext test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
+        var test = new MoneyParseContext(Locale.FRANCE, "GBP 123", 0);
         assertThatExceptionOfType(IndexOutOfBoundsException.class)
             .isThrownBy(() -> test.getTextSubstring(0, 8));
     }

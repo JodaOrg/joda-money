@@ -22,7 +22,7 @@ public abstract class CurrencyUnitDataProvider {
 
     /**
      * Registers all the currencies known by this provider.
-     * 
+     *
      * @throws Exception if an error occurs
      */
     protected abstract void registerCurrencies() throws Exception;

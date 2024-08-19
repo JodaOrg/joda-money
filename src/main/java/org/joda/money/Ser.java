@@ -52,7 +52,7 @@ final class Ser implements Externalizable {
 
     /**
      * Constructor for package.
-     * 
+     *
      * @param type  the type
      * @param object  the object
      */
@@ -73,28 +73,25 @@ final class Ser implements Externalizable {
     public void writeExternal(ObjectOutput out) throws IOException {
         out.writeByte(type);
         switch (type) {
-            case BIG_MONEY: {
-                BigMoney obj = (BigMoney) object;
+            case BIG_MONEY -> {
+                var obj = (BigMoney) object;
                 writeBigMoney(out, obj);
-                return;
             }
-            case MONEY: {
-                Money obj = (Money) object;
+            case MONEY -> {
+                var obj = (Money) object;
                 writeBigMoney(out, obj.toBigMoney());
-                return;
             }
-            case CURRENCY_UNIT: {
-                CurrencyUnit obj = (CurrencyUnit) object;
+            case CURRENCY_UNIT -> {
+                var obj = (CurrencyUnit) object;
                 writeCurrency(out, obj);
-                return;
             }
+            default -> throw new InvalidClassException("Joda-Money bug: Serialization broken");
         }
-        throw new InvalidClassException("Joda-Money bug: Serialization broken");
     }
 
     private void writeBigMoney(ObjectOutput out, BigMoney obj) throws IOException {
         writeCurrency(out, obj.getCurrencyUnit());
-        byte[] bytes = obj.getAmount().unscaledValue().toByteArray();
+        var bytes = obj.getAmount().unscaledValue().toByteArray();
         out.writeInt(bytes.length);
         out.write(bytes);
         out.writeInt(obj.getScale());
@@ -116,34 +113,31 @@ final class Ser implements Externalizable {
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         type = in.readByte();
         switch (type) {
-            case BIG_MONEY: {
+            case BIG_MONEY -> {
                 object = readBigMoney(in);
-                return;
             }
-            case MONEY: {
+            case MONEY -> {
                 object = new Money(readBigMoney(in));
-                return;
             }
-            case CURRENCY_UNIT: {
+            case CURRENCY_UNIT -> {
                 object = readCurrency(in);
-                return;
             }
+            default -> throw new StreamCorruptedException("Serialization input has invalid type");
         }
-        throw new StreamCorruptedException("Serialization input has invalid type");
     }
 
     private BigMoney readBigMoney(ObjectInput in) throws IOException {
-        CurrencyUnit currency = readCurrency(in);
-        byte[] bytes = new byte[in.readInt()];
+        var currency = readCurrency(in);
+        var bytes = new byte[in.readInt()];
         in.readFully(bytes);
-        BigDecimal bd = new BigDecimal(new BigInteger(bytes), in.readInt());
-        BigMoney bigMoney = new BigMoney(currency, bd);
+        var bd = new BigDecimal(new BigInteger(bytes), in.readInt());
+        var bigMoney = new BigMoney(currency, bd);
         return bigMoney;
     }
 
     private CurrencyUnit readCurrency(ObjectInput in) throws IOException {
-        String code = in.readUTF();
-        CurrencyUnit singletonCurrency = CurrencyUnit.of(code);
+        var code = in.readUTF();
+        var singletonCurrency = CurrencyUnit.of(code);
         if (singletonCurrency.getNumericCode() != in.readShort()) {
             throw new InvalidObjectException("Deserialization found a mismatch in the numeric code for currency " + code);
         }
@@ -155,7 +149,7 @@ final class Ser implements Externalizable {
 
     /**
      * Returns the object that will replace this one.
-     * 
+     *
      * @return the read object, should never be null
      */
     private Object readResolve() {

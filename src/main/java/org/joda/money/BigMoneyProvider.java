@@ -41,10 +41,10 @@ public interface BigMoneyProvider {
      * preference to calling this method directly. It is also recommended that the
      * converted {@code BigMoney} is cached in a local variable instead of
      * performing the conversion multiple times.
-     * 
+     *
      * @return the converted money instance, never null
      * @throws RuntimeException if conversion is not possible
      */
-    BigMoney toBigMoney();
+    public abstract BigMoney toBigMoney();
 
 }

@@ -53,19 +53,19 @@ final class SignedPrinterParser implements MoneyPrinter, MoneyParser, Serializab
     //-----------------------------------------------------------------------
     @Override
     public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
-        MoneyFormatter fmt = (money.isZero() ? whenZero : money.isPositive() ? whenPositive : whenNegative);
+        var fmt = (money.isZero() ? whenZero : money.isPositive() ? whenPositive : whenNegative);
         fmt.getPrinterParser().print(context, appendable, money);
     }
 
     @Override
     public void parse(MoneyParseContext context) {
-        MoneyParseContext positiveContext = context.createChild();
+        var positiveContext = context.createChild();
         whenPositive.getPrinterParser().parse(positiveContext);
-        MoneyParseContext zeroContext = context.createChild();
+        var zeroContext = context.createChild();
         whenZero.getPrinterParser().parse(zeroContext);
-        MoneyParseContext negativeContext = context.createChild();
+        var negativeContext = context.createChild();
         whenNegative.getPrinterParser().parse(negativeContext);
-        MoneyParseContext best = null;
+        var best = (MoneyParseContext) null;
         if (!positiveContext.isError()) {
             best = positiveContext;
         }
