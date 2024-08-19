@@ -51,15 +51,15 @@ final class MultiPrinterParser implements MoneyPrinter, MoneyParser, Serializabl
 
     //-----------------------------------------------------------------------
     boolean isPrinter() {
-        return Arrays.asList(printers).contains(null) == false;
+        return !Arrays.asList(printers).contains(null);
     }
 
     boolean isParser() {
-        return Arrays.asList(parsers).contains(null) == false;
+        return !Arrays.asList(parsers).contains(null);
     }
 
     void appendTo(MoneyFormatterBuilder builder) {
-        for (int i = 0; i < printers.length; i++) {
+        for (var i = 0; i < printers.length; i++) {
             builder.append(printers[i], parsers[i]);
         }
     }
@@ -84,23 +84,23 @@ final class MultiPrinterParser implements MoneyPrinter, MoneyParser, Serializabl
 
     @Override
     public String toString() {
-        StringBuilder buf1 = new StringBuilder();
+        var buf1 = new StringBuilder();
         if (isPrinter()) {
             for (MoneyPrinter printer : printers) {
                 buf1.append(printer.toString());
             }
         }
-        StringBuilder buf2 = new StringBuilder();
+        var buf2 = new StringBuilder();
         if (isParser()) {
             for (MoneyParser parser : parsers) {
                 buf2.append(parser.toString());
             }
         }
-        String str1 = buf1.toString();
-        String str2 = buf2.toString();
-        if (isPrinter() && isParser() == false) {
+        var str1 = buf1.toString();
+        var str2 = buf2.toString();
+        if (isPrinter() && !isParser()) {
             return str1;
-        } else if (isParser() && isPrinter() == false) {
+        } else if (isParser() && !isPrinter()) {
             return str2;
         } else if (str1.equals(str2)) {
             return str1;

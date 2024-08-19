@@ -17,13 +17,9 @@ package org.joda.money;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -48,7 +44,7 @@ class DefaultCurrencyUnitDataProvider extends CurrencyUnitDataProvider {
 
     /**
      * Registers all the currencies known by this provider.
-     * 
+     *
      * @throws Exception if an error occurs
      */
     @Override
@@ -61,11 +57,11 @@ class DefaultCurrencyUnitDataProvider extends CurrencyUnitDataProvider {
 
     // loads a file
     private List<String> loadFromFile(String fileName) throws Exception {
-        try (InputStream in = getClass().getResourceAsStream(fileName)) {
+        try (var in = getClass().getResourceAsStream(fileName)) {
             if (in == null) {
                 throw new FileNotFoundException("Data file " + fileName + " not found");
             }
-            try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"))) {
+            try (var reader = new BufferedReader(new InputStreamReader(in, "UTF-8"))) {
                 String line;
                 List<String> content = new ArrayList<>();
                 while ((line = reader.readLine()) != null) {
@@ -79,11 +75,11 @@ class DefaultCurrencyUnitDataProvider extends CurrencyUnitDataProvider {
     // loads a file
     private List<String> loadFromFiles(String fileName) throws Exception {
         List<String> content = new ArrayList<>();
-        Enumeration<URL> en = getClass().getClassLoader().getResources(fileName);
+        var en = getClass().getClassLoader().getResources(fileName);
         while (en.hasMoreElements()) {
-            URL url = (URL) en.nextElement();
-            try (InputStream in = url.openStream()) {
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, "UTF-8"))) {
+            var url = en.nextElement();
+            try (var in = url.openStream()) {
+                try (var reader = new BufferedReader(new InputStreamReader(in, "UTF-8"))) {
                     String line;
                     while ((line = reader.readLine()) != null) {
                         content.add(line);
@@ -97,11 +93,11 @@ class DefaultCurrencyUnitDataProvider extends CurrencyUnitDataProvider {
     // parse the currencies
     private void parseCurrencies(List<String> content) throws Exception {
         for (String line : content) {
-            Matcher matcher = CURRENCY_REGEX_LINE.matcher(line);
+            var matcher = CURRENCY_REGEX_LINE.matcher(line);
             if (matcher.matches()) {
-                String currencyCode = matcher.group(1);
-                int numericCode = Integer.parseInt(matcher.group(2));
-                int digits = Integer.parseInt(matcher.group(3));
+                var currencyCode = matcher.group(1);
+                var numericCode = Integer.parseInt(matcher.group(2));
+                var digits = Integer.parseInt(matcher.group(3));
                 registerCurrency(currencyCode, numericCode, digits);
             }
         }
@@ -110,10 +106,10 @@ class DefaultCurrencyUnitDataProvider extends CurrencyUnitDataProvider {
     // parse the countries
     private void parseCountries(List<String> content) throws Exception {
         for (String line : content) {
-            Matcher matcher = COUNTRY_REGEX_LINE.matcher(line);
+            var matcher = COUNTRY_REGEX_LINE.matcher(line);
             if (matcher.matches()) {
-                String countryCode = matcher.group(1);
-                String currencyCode = matcher.group(2);
+                var countryCode = matcher.group(1);
+                var currencyCode = matcher.group(2);
                 registerCountry(countryCode, currencyCode);
             }
         }

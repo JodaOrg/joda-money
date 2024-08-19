@@ -57,7 +57,7 @@ public final class MoneyParseContext {
 
     /**
      * Constructor.
-     * 
+     *
      * @param locale  the locale, not null
      * @param text  the text to parse, not null
      * @param index  the current text index
@@ -70,7 +70,7 @@ public final class MoneyParseContext {
 
     /**
      * Constructor.
-     * 
+     *
      * @param locale  the locale, not null
      * @param text  the text to parse, not null
      * @param index  the current text index
@@ -90,7 +90,7 @@ public final class MoneyParseContext {
     //-----------------------------------------------------------------------
     /**
      * Gets the locale.
-     * 
+     *
      * @return the locale, not null
      */
     public Locale getLocale() {
@@ -99,7 +99,7 @@ public final class MoneyParseContext {
 
     /**
      * Sets the locale.
-     * 
+     *
      * @param locale  the locale, not null
      */
     public void setLocale(Locale locale) {
@@ -109,7 +109,7 @@ public final class MoneyParseContext {
 
     /**
      * Gets the text being parsed.
-     * 
+     *
      * @return the text being parsed, never null
      */
     public CharSequence getText() {
@@ -118,7 +118,7 @@ public final class MoneyParseContext {
 
     /**
      * Sets the text.
-     * 
+     *
      * @param text  the text being parsed, not null
      */
     public void setText(CharSequence text) {
@@ -128,7 +128,7 @@ public final class MoneyParseContext {
 
     /**
      * Gets the length of the text being parsed.
-     * 
+     *
      * @return the length of the text being parsed
      */
     public int getTextLength() {
@@ -137,7 +137,7 @@ public final class MoneyParseContext {
 
     /**
      * Gets a substring of the text being parsed.
-     * 
+     *
      * @param start  the start index
      * @param end  the end index
      * @return the substring, not null
@@ -149,7 +149,7 @@ public final class MoneyParseContext {
     //-----------------------------------------------------------------------
     /**
      * Gets the current parse position index.
-     * 
+     *
      * @return the current parse position index
      */
     public int getIndex() {
@@ -158,7 +158,7 @@ public final class MoneyParseContext {
 
     /**
      * Sets the current parse position index.
-     * 
+     *
      * @param index  the current parse position index
      */
     public void setIndex(int index) {
@@ -168,7 +168,7 @@ public final class MoneyParseContext {
     //-----------------------------------------------------------------------
     /**
      * Gets the error index.
-     * 
+     *
      * @return the error index, negative if no error
      */
     public int getErrorIndex() {
@@ -177,7 +177,7 @@ public final class MoneyParseContext {
 
     /**
      * Sets the error index.
-     * 
+     *
      * @param index  the error index
      */
     public void setErrorIndex(int index) {
@@ -194,7 +194,7 @@ public final class MoneyParseContext {
     //-----------------------------------------------------------------------
     /**
      * Gets the parsed currency.
-     * 
+     *
      * @return the parsed currency, null if not parsed yet
      */
     public CurrencyUnit getCurrency() {
@@ -203,7 +203,7 @@ public final class MoneyParseContext {
 
     /**
      * Sets the parsed currency.
-     * 
+     *
      * @param currency  the parsed currency, may be null
      */
     public void setCurrency(CurrencyUnit currency) {
@@ -213,7 +213,7 @@ public final class MoneyParseContext {
     //-----------------------------------------------------------------------
     /**
      * Gets the parsed amount.
-     * 
+     *
      * @return the parsed amount, null if not parsed yet
      */
     public BigDecimal getAmount() {
@@ -222,7 +222,7 @@ public final class MoneyParseContext {
 
     /**
      * Sets the parsed currency.
-     * 
+     *
      * @param amount  the parsed amount, may be null
      */
     public void setAmount(BigDecimal amount) {
@@ -232,7 +232,7 @@ public final class MoneyParseContext {
     //-----------------------------------------------------------------------
     /**
      * Checks if the parse has found an error.
-     * 
+     *
      * @return whether a parse error has occurred
      */
     public boolean isError() {
@@ -241,7 +241,7 @@ public final class MoneyParseContext {
 
     /**
      * Checks if the text has been fully parsed such that there is no more text to parse.
-     * 
+     *
      * @return true if fully parsed
      */
     public boolean isFullyParsed() {
@@ -251,7 +251,7 @@ public final class MoneyParseContext {
     /**
      * Checks if the context contains a currency and amount suitable for creating
      * a monetary value.
-     * 
+     *
      * @return true if able to create a monetary value
      */
     public boolean isComplete() {
@@ -261,7 +261,7 @@ public final class MoneyParseContext {
     //-----------------------------------------------------------------------
     /**
      * Creates a child context.
-     * 
+     *
      * @return the child context, never null
      */
     MoneyParseContext createChild() {
@@ -270,7 +270,7 @@ public final class MoneyParseContext {
 
     /**
      * Merges the child context back into this instance.
-     * 
+     *
      * @param child  the child context, not null
      */
     void mergeChild(MoneyParseContext child) {
@@ -285,18 +285,18 @@ public final class MoneyParseContext {
     //-----------------------------------------------------------------------
     /**
      * Converts the indexes to a parse position.
-     * 
+     *
      * @return the parse position, never null
      */
     public ParsePosition toParsePosition() {
-        ParsePosition pp = new ParsePosition(textIndex);
+        var pp = new ParsePosition(textIndex);
         pp.setErrorIndex(textErrorIndex);
         return pp;
     }
 
     /**
      * Converts the context to a {@code BigMoney}.
-     * 
+     *
      * @return the monetary value, never null
      * @throws MoneyFormatException if either the currency or amount is missing
      */

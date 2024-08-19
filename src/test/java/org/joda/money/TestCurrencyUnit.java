@@ -28,9 +28,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Currency;
-import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
@@ -46,8 +44,8 @@ class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     @Test
     void test_registeredCurrencies() {
-        List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
-        boolean found = false;
+        var curList = CurrencyUnit.registeredCurrencies();
+        var found = false;
         for (CurrencyUnit currencyUnit : curList) {
             if (currencyUnit.getCode().equals("GBP")) {
                 found = true;
@@ -59,8 +57,8 @@ class TestCurrencyUnit {
 
     @Test
     void test_registeredCurrencies_sorted() {
-        List<CurrencyUnit> curList1 = CurrencyUnit.registeredCurrencies();
-        List<CurrencyUnit> curList2 = CurrencyUnit.registeredCurrencies();
+        var curList1 = CurrencyUnit.registeredCurrencies();
+        var curList2 = CurrencyUnit.registeredCurrencies();
         Collections.sort(curList2);
         assertThat(curList1).isEqualTo(curList2);
         Collections.shuffle(curList2);
@@ -142,9 +140,9 @@ class TestCurrencyUnit {
 
     @Test
     void test_registeredCurrency_validDP_big() {
-        CurrencyUnit.registerCurrency("XLG", -1, 30, new ArrayList<String>());
+        CurrencyUnit.registerCurrency("XLG", -1, 30, new ArrayList<>());
 
-        CurrencyUnit currency = CurrencyUnit.of("XLG");
+        var currency = CurrencyUnit.of("XLG");
         assertThat(currency.getDecimalPlaces()).isEqualTo(30);
     }
 
@@ -174,11 +172,11 @@ class TestCurrencyUnit {
 
     @Test
     void test_registeredCurrencies_crossCheck() {
-        List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
+        var curList = CurrencyUnit.registeredCurrencies();
         for (CurrencyUnit currencyUnit : curList) {
             try {
-                Currency curr = Currency.getInstance(currencyUnit.getCode());
-                int dp = curr.getDefaultFractionDigits() < 0 ? 0 : curr.getDefaultFractionDigits();
+                var curr = Currency.getInstance(currencyUnit.getCode());
+                var dp = curr.getDefaultFractionDigits() < 0 ? 0 : curr.getDefaultFractionDigits();
                 assertThat(currencyUnit.getDecimalPlaces()).as(curr.getCurrencyCode()).isEqualTo(dp);
             } catch (IllegalArgumentException ignored) {
             }
@@ -190,7 +188,7 @@ class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     @Test
     void test_registeredCountries() {
-        List<String> countryList = CurrencyUnit.registeredCountries();
+        var countryList = CurrencyUnit.registeredCountries();
         assertThat(countryList).contains("GB");
         assertThat(countryList).contains("EU");
         assertThat(countryList).contains("US");
@@ -198,8 +196,8 @@ class TestCurrencyUnit {
 
     @Test
     void test_registeredCountries_sorted() {
-        List<String> curList1 = CurrencyUnit.registeredCountries();
-        List<String> curList2 = CurrencyUnit.registeredCountries();
+        var curList1 = CurrencyUnit.registeredCountries();
+        var curList2 = CurrencyUnit.registeredCountries();
         Collections.sort(curList2);
         assertThat(curList1).isEqualTo(curList2);
         Collections.shuffle(curList2);
@@ -235,7 +233,7 @@ class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     @Test
     void test_factory_of_Currency() {
-        CurrencyUnit test = CurrencyUnit.of(JDK_GBP);
+        var test = CurrencyUnit.of(JDK_GBP);
         assertThat(test.getCode()).isEqualTo("GBP");
     }
 
@@ -250,7 +248,7 @@ class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     @Test
     void test_factory_of_String() {
-        CurrencyUnit test = CurrencyUnit.of("GBP");
+        var test = CurrencyUnit.of("GBP");
         assertThat(test.getCode()).isEqualTo("GBP");
     }
 
@@ -290,31 +288,31 @@ class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     @Test
     void test_factory_ofNumericCode_String() {
-        CurrencyUnit test = CurrencyUnit.ofNumericCode("826");
+        var test = CurrencyUnit.ofNumericCode("826");
         assertThat(test.getCode()).isEqualTo("GBP");
     }
 
     @Test
     void test_factory_ofNumericCode_String_2char() {
-        CurrencyUnit test = CurrencyUnit.ofNumericCode("051");
+        var test = CurrencyUnit.ofNumericCode("051");
         assertThat(test.getCode()).isEqualTo("AMD");
     }
 
     @Test
     void test_factory_ofNumericCode_String_2charNoPad() {
-        CurrencyUnit test = CurrencyUnit.ofNumericCode("51");
+        var test = CurrencyUnit.ofNumericCode("51");
         assertThat(test.getCode()).isEqualTo("AMD");
     }
 
     @Test
     void test_factory_ofNumericCode_String_1char() {
-        CurrencyUnit test = CurrencyUnit.ofNumericCode("008");
+        var test = CurrencyUnit.ofNumericCode("008");
         assertThat(test.getCode()).isEqualTo("ALL");
     }
 
     @Test
     void test_factory_ofNumericCode_String_1charNoPad() {
-        CurrencyUnit test = CurrencyUnit.ofNumericCode("8");
+        var test = CurrencyUnit.ofNumericCode("8");
         assertThat(test.getCode()).isEqualTo("ALL");
     }
 
@@ -356,19 +354,19 @@ class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     @Test
     void test_factory_ofNumericCode_int() {
-        CurrencyUnit test = CurrencyUnit.ofNumericCode(826);
+        var test = CurrencyUnit.ofNumericCode(826);
         assertThat(test.getCode()).isEqualTo("GBP");
     }
 
     @Test
     void test_factory_ofNumericCode_int_2char() {
-        CurrencyUnit test = CurrencyUnit.ofNumericCode(51);
+        var test = CurrencyUnit.ofNumericCode(51);
         assertThat(test.getCode()).isEqualTo("AMD");
     }
 
     @Test
     void test_factory_ofNumericCode_int_1char() {
-        CurrencyUnit test = CurrencyUnit.ofNumericCode(8);
+        var test = CurrencyUnit.ofNumericCode(8);
         assertThat(test.getCode()).isEqualTo("ALL");
     }
 
@@ -398,13 +396,13 @@ class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     @Test
     void test_factory_of_LocaleUK() {
-        CurrencyUnit test = CurrencyUnit.of(Locale.UK);
+        var test = CurrencyUnit.of(Locale.UK);
         assertThat(test.getCode()).isEqualTo("GBP");
     }
 
     @Test
     void test_factory_of_LocaleUS() {
-        CurrencyUnit test = CurrencyUnit.of(Locale.US);
+        var test = CurrencyUnit.of(Locale.US);
         assertThat(test.getCode()).isEqualTo("USD");
     }
 
@@ -426,7 +424,7 @@ class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     @Test
     void test_factory_ofCountry_String() {
-        CurrencyUnit test = CurrencyUnit.ofCountry("GB");
+        var test = CurrencyUnit.ofCountry("GB");
         assertThat(test.getCode()).isEqualTo("GBP");
     }
 
@@ -448,25 +446,25 @@ class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     @Test
     void test_serialization() throws Exception {
-        CurrencyUnit cu = CurrencyUnit.of("GBP");
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+        var cu = CurrencyUnit.of("GBP");
+        var baos = new ByteArrayOutputStream();
+        try (var oos = new ObjectOutputStream(baos)) {
             oos.writeObject(cu);
             oos.close();
-            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-            CurrencyUnit input = (CurrencyUnit) ois.readObject();
+            var ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+            var input = (CurrencyUnit) ois.readObject();
             assertThat(input).isEqualTo(cu);
         }
     }
 
     @Test
     void test_serialization_invalidNumericCode() throws IOException {
-        CurrencyUnit cu = new CurrencyUnit("GBP", (short) 234, (short) 2);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+        var cu = new CurrencyUnit("GBP", (short) 234, (short) 2);
+        var baos = new ByteArrayOutputStream();
+        try (var oos = new ObjectOutputStream(baos)) {
             oos.writeObject(cu);
             oos.close();
-            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+            var ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
             assertThatExceptionOfType(InvalidObjectException.class)
                 .isThrownBy(() -> ois.readObject())
                 .withMessageContaining("numeric code")
@@ -476,12 +474,12 @@ class TestCurrencyUnit {
 
     @Test
     void test_serialization_invalidDecimalPlaces() throws IOException {
-        CurrencyUnit cu = new CurrencyUnit("GBP", (short) 826, (short) 1);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+        var cu = new CurrencyUnit("GBP", (short) 826, (short) 1);
+        var baos = new ByteArrayOutputStream();
+        try (var oos = new ObjectOutputStream(baos)) {
             oos.writeObject(cu);
             oos.close();
-            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+            var ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
             assertThatExceptionOfType(InvalidObjectException.class)
                 .isThrownBy(() -> ois.readObject())
                 .withMessageContaining("decimal places")
@@ -494,25 +492,25 @@ class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     @Test
     void test_getNumeric3Code_GBP() {
-        CurrencyUnit test = CurrencyUnit.of("GBP");
+        var test = CurrencyUnit.of("GBP");
         assertThat(test.getNumeric3Code()).isEqualTo("826");
     }
 
     @Test
     void test_getNumeric3Code_ALL() {
-        CurrencyUnit test = CurrencyUnit.of("ALL");
+        var test = CurrencyUnit.of("ALL");
         assertThat(test.getNumeric3Code()).isEqualTo("008");
     }
 
     @Test
     void test_getNumeric3Code_AMD() {
-        CurrencyUnit test = CurrencyUnit.of("AMD");
+        var test = CurrencyUnit.of("AMD");
         assertThat(test.getNumeric3Code()).isEqualTo("051");
     }
 
     @Test
     void test_getNumeric3Code_XFU() {
-        CurrencyUnit test = CurrencyUnit.of("XFU");
+        var test = CurrencyUnit.of("XFU");
         assertThat(test.getNumeric3Code()).isEmpty();
     }
 
@@ -521,7 +519,7 @@ class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     @Test
     void test_getNumericCode_GBP() {
-        CurrencyUnit test = CurrencyUnit.of("GBP");
+        var test = CurrencyUnit.of("GBP");
         assertThat(test.getNumericCode()).isEqualTo(826);
     }
 
@@ -530,7 +528,7 @@ class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     @Test
     void test_getCurrencyCodes_GBP() {
-        Set<String> test = CurrencyUnit.of("GBP").getCountryCodes();
+        var test = CurrencyUnit.of("GBP").getCountryCodes();
         assertThat(test).contains("GB");
         assertThat(test).contains("IM");
         assertThat(test).contains("JE");
@@ -542,19 +540,19 @@ class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     @Test
     void test_getDecimalPlaces_GBP() {
-        CurrencyUnit test = CurrencyUnit.of("GBP");
+        var test = CurrencyUnit.of("GBP");
         assertThat(test.getDecimalPlaces()).isEqualTo(2);
     }
 
     @Test
     void test_getDecimalPlaces_JPY() {
-        CurrencyUnit test = CurrencyUnit.of("JPY");
+        var test = CurrencyUnit.of("JPY");
         assertThat(test.getDecimalPlaces()).isEqualTo(0);
     }
 
     @Test
     void test_getDecimalPlaces_XXX() {
-        CurrencyUnit test = CurrencyUnit.of("XXX");
+        var test = CurrencyUnit.of("XXX");
         assertThat(test.getDecimalPlaces()).isEqualTo(0);
     }
 
@@ -563,19 +561,19 @@ class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     @Test
     void test_isPseudoCurrency_GBP() {
-        CurrencyUnit test = CurrencyUnit.of("GBP");
+        var test = CurrencyUnit.of("GBP");
         assertThat(test.isPseudoCurrency()).isFalse();
     }
 
     @Test
     void test_isPseudoCurrency_JPY() {
-        CurrencyUnit test = CurrencyUnit.of("JPY");
+        var test = CurrencyUnit.of("JPY");
         assertThat(test.isPseudoCurrency()).isFalse();
     }
 
     @Test
     void test_isPseudoCurrency_XXX() {
-        CurrencyUnit test = CurrencyUnit.of("XXX");
+        var test = CurrencyUnit.of("XXX");
         assertThat(test.isPseudoCurrency()).isTrue();
     }
 
@@ -584,10 +582,10 @@ class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     @Test
     void test_getSymbol_GBP() {
-        Locale loc = Locale.getDefault();
+        var loc = Locale.getDefault();
         try {
             Locale.setDefault(Locale.UK);
-            CurrencyUnit test = CurrencyUnit.of("GBP");
+            var test = CurrencyUnit.of("GBP");
             assertThat(test.getSymbol()).isEqualTo("\u00A3");
         } finally {
             Locale.setDefault(loc);
@@ -596,10 +594,10 @@ class TestCurrencyUnit {
 
     @Test
     void test_getSymbol_JPY() {
-        Locale loc = Locale.getDefault();
+        var loc = Locale.getDefault();
         try {
             Locale.setDefault(Locale.UK);
-            CurrencyUnit test = CurrencyUnit.of("JPY");
+            var test = CurrencyUnit.of("JPY");
             assertThat(test.getSymbol()).contains("JP");
         } finally {
             Locale.setDefault(loc);
@@ -608,10 +606,10 @@ class TestCurrencyUnit {
 
     @Test
     void test_getSymbol_TMT() {
-        Locale loc = Locale.getDefault();
+        var loc = Locale.getDefault();
         try {
             Locale.setDefault(Locale.UK);
-            CurrencyUnit test = CurrencyUnit.of("TMT");
+            var test = CurrencyUnit.of("TMT");
             assertThat(test.getSymbol()).isEqualTo("TMT");
         } finally {
             Locale.setDefault(loc);
@@ -620,10 +618,10 @@ class TestCurrencyUnit {
 
     @Test
     void test_getSymbol_XXX() {
-        Locale loc = Locale.getDefault();
+        var loc = Locale.getDefault();
         try {
             Locale.setDefault(Locale.UK);
-            CurrencyUnit test = CurrencyUnit.of("XXX");
+            var test = CurrencyUnit.of("XXX");
             assertThat(test.getSymbol()).isEqualTo("XXX");
         } finally {
             Locale.setDefault(loc);
@@ -635,10 +633,10 @@ class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     @Test
     void test_getSymbol_Locale_GBP_UK() {
-        Locale loc = Locale.getDefault();
+        var loc = Locale.getDefault();
         try {
             Locale.setDefault(Locale.UK);
-            CurrencyUnit test = CurrencyUnit.of("GBP");
+            var test = CurrencyUnit.of("GBP");
             assertThat(test.getSymbol(Locale.UK)).isEqualTo("\u00A3");
         } finally {
             Locale.setDefault(loc);
@@ -647,10 +645,10 @@ class TestCurrencyUnit {
 
     @Test
     void test_getSymbol_Locale_GBP_France() {
-        Locale loc = Locale.getDefault();
+        var loc = Locale.getDefault();
         try {
             Locale.setDefault(Locale.UK);
-            CurrencyUnit test = CurrencyUnit.of("GBP");
+            var test = CurrencyUnit.of("GBP");
             assertThat(test.getSymbol(Locale.FRANCE)).contains("GB");
         } finally {
             Locale.setDefault(loc);
@@ -659,10 +657,10 @@ class TestCurrencyUnit {
 
     @Test
     void test_getSymbol_Locale_USD_UK() {
-        Locale loc = Locale.getDefault();
+        var loc = Locale.getDefault();
         try {
             Locale.setDefault(Locale.UK);
-            CurrencyUnit test = CurrencyUnit.of("USD");
+            var test = CurrencyUnit.of("USD");
             assertThat(test.getSymbol(Locale.US)).isEqualTo("$");
         } finally {
             Locale.setDefault(loc);
@@ -671,10 +669,10 @@ class TestCurrencyUnit {
 
     @Test
     void test_getSymbol_Locale_USD_France() {
-        Locale loc = Locale.getDefault();
+        var loc = Locale.getDefault();
         try {
             Locale.setDefault(Locale.UK);
-            CurrencyUnit test = CurrencyUnit.of("USD");
+            var test = CurrencyUnit.of("USD");
             assertThat(test.getSymbol(Locale.FRANCE)).contains("US");
         } finally {
             Locale.setDefault(loc);
@@ -683,10 +681,10 @@ class TestCurrencyUnit {
 
     @Test
     void test_getSymbol_Locale_JPY_Japan() {
-        Locale loc = Locale.getDefault();
+        var loc = Locale.getDefault();
         try {
             Locale.setDefault(Locale.UK);
-            CurrencyUnit test = CurrencyUnit.of("JPY");
+            var test = CurrencyUnit.of("JPY");
             assertThat(test.getSymbol(Locale.JAPAN)).isEqualTo("\uFFE5");
         } finally {
             Locale.setDefault(loc);
@@ -695,10 +693,10 @@ class TestCurrencyUnit {
 
     @Test
     void test_getSymbol_TMT_UK() {
-        Locale loc = Locale.getDefault();
+        var loc = Locale.getDefault();
         try {
             Locale.setDefault(Locale.UK);
-            CurrencyUnit test = CurrencyUnit.of("TMT");
+            var test = CurrencyUnit.of("TMT");
             assertThat(test.getSymbol(Locale.UK)).isEqualTo("TMT");
         } finally {
             Locale.setDefault(loc);
@@ -707,10 +705,10 @@ class TestCurrencyUnit {
 
     @Test
     void test_getSymbol_Locale_XXX() {
-        Locale loc = Locale.getDefault();
+        var loc = Locale.getDefault();
         try {
             Locale.setDefault(Locale.UK);
-            CurrencyUnit test = CurrencyUnit.of("XXX");
+            var test = CurrencyUnit.of("XXX");
             assertThat(test.getSymbol(Locale.FRANCE)).isEqualTo("XXX");
             test = CurrencyUnit.of("XXX");
             assertThat(test.getSymbol(Locale.US)).isEqualTo("XXX");
@@ -724,7 +722,7 @@ class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     @Test
     void test_toCurrency() {
-        CurrencyUnit test = CurrencyUnit.of("GBP");
+        var test = CurrencyUnit.of("GBP");
         assertThat(test.toCurrency()).isEqualTo(JDK_GBP);
     }
 
@@ -733,9 +731,9 @@ class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     @Test
     void test_compareTo() {
-        CurrencyUnit a = CurrencyUnit.of("EUR");
-        CurrencyUnit b = CurrencyUnit.of("GBP");
-        CurrencyUnit c = CurrencyUnit.of("JPY");
+        var a = CurrencyUnit.of("EUR");
+        var b = CurrencyUnit.of("GBP");
+        var c = CurrencyUnit.of("JPY");
         assertThat(a.compareTo(a)).isEqualTo(0);
         assertThat(b.compareTo(b)).isEqualTo(0);
         assertThat(c.compareTo(c)).isEqualTo(0);
@@ -761,9 +759,9 @@ class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     @Test
     void test_equals_hashCode() {
-        CurrencyUnit a = CurrencyUnit.of("GBP");
-        CurrencyUnit b = CurrencyUnit.of("GBP");
-        CurrencyUnit c = CurrencyUnit.of("EUR");
+        var a = CurrencyUnit.of("GBP");
+        var b = CurrencyUnit.of("GBP");
+        var c = CurrencyUnit.of("EUR");
         assertThat(a).isEqualTo(a);
         assertThat(b).isEqualTo(b);
         assertThat(c).isEqualTo(c);
@@ -778,7 +776,7 @@ class TestCurrencyUnit {
 
     @Test
     void test_equals_false() {
-        CurrencyUnit a = CurrencyUnit.of("GBP");
+        var a = CurrencyUnit.of("GBP");
         assertThat(a).isNotEqualTo(null);
         Object obj = "String";  // avoid warning in Eclipse
         assertThat(obj).isNotEqualTo(a);
@@ -790,7 +788,7 @@ class TestCurrencyUnit {
     //-----------------------------------------------------------------------
     @Test
     void test_toString() {
-        CurrencyUnit test = CurrencyUnit.of("GBP");
+        var test = CurrencyUnit.of("GBP");
         assertThat(test).hasToString("GBP");
     }
 

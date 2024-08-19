@@ -32,7 +32,7 @@ public final class MoneyPrintContext {
 
     /**
      * Constructor.
-     * 
+     *
      * @param locale  the locale, not null
      */
     MoneyPrintContext(Locale locale) {
@@ -43,7 +43,7 @@ public final class MoneyPrintContext {
     //-----------------------------------------------------------------------
     /**
      * Gets the locale.
-     * 
+     *
      * @return the locale, never null
      */
     public Locale getLocale() {
@@ -52,7 +52,7 @@ public final class MoneyPrintContext {
 
     /**
      * Sets the locale.
-     * 
+     *
      * @param locale  the locale, not null
      */
     public void setLocale(Locale locale) {

@@ -29,14 +29,14 @@ class TestMoneyFormatterException {
 
     @Test
     void test_MoneyFormatException_IOException_notRethrown() {
-        MoneyFormatException test = new MoneyFormatException("Error", new IOException("Inner"));
+        var test = new MoneyFormatException("Error", new IOException("Inner"));
         assertThatExceptionOfType(IOException.class)
             .isThrownBy(() -> test.rethrowIOException());
     }
 
     @Test
     void test_MoneyFormatException_nonIOException_notRethrown() throws IOException {
-        MoneyFormatException test = new MoneyFormatException("Error", new IllegalStateException("Inner"));
+        var test = new MoneyFormatException("Error", new IllegalStateException("Inner"));
         assertThatNoException()
             .isThrownBy(() -> test.rethrowIOException());
     }

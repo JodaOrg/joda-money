@@ -30,7 +30,7 @@ public class IllegalCurrencyException extends IllegalArgumentException {
 
     /**
      * Constructor.
-     * 
+     *
      * @param message  the message, may be null
      */
     public IllegalCurrencyException(String message) {

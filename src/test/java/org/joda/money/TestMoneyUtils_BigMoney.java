@@ -18,7 +18,6 @@ package org.joda.money;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
 import org.junit.jupiter.api.Test;
@@ -41,7 +40,7 @@ class TestMoneyUtils_BigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_constructor() throws Exception {
-        Constructor<MoneyUtils> con = MoneyUtils.class.getDeclaredConstructor();
+        var con = MoneyUtils.class.getDeclaredConstructor();
         assertThat(Modifier.isPrivate(con.getModifiers())).isTrue();
         con.setAccessible(true);
         con.newInstance();

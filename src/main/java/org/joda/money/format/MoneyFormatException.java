@@ -29,7 +29,7 @@ public class MoneyFormatException extends RuntimeException {
 
     /**
      * Constructor taking a message.
-     * 
+     *
      * @param message  the message
      */
     public MoneyFormatException(String message) {
@@ -38,7 +38,7 @@ public class MoneyFormatException extends RuntimeException {
 
     /**
      * Constructor taking a message and cause.
-     * 
+     *
      * @param message  the message
      * @param cause  the exception cause
      */

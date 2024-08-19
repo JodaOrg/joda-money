@@ -64,7 +64,7 @@ public final class MoneyFormatter implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * Constructor, creating a new formatter.
-     * 
+     *
      * @param locale  the locale to use, not null
      * @param printers  the printers, not null
      * @param parsers  the parsers, not null
@@ -82,7 +82,7 @@ public final class MoneyFormatter implements Serializable {
 
     /**
      * Constructor, creating a new formatter.
-     * 
+     *
      * @param locale  the locale to use, not null
      * @param printerParser  the printer/parser, not null
      */
@@ -96,7 +96,7 @@ public final class MoneyFormatter implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * Gets the printer/parser.
-     * 
+     *
      * @return the printer/parser, never null
      */
     MultiPrinterParser getPrinterParser() {
@@ -106,7 +106,7 @@ public final class MoneyFormatter implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * Gets the locale to use.
-     * 
+     *
      * @return the locale, never null
      */
     public Locale getLocale() {
@@ -118,7 +118,7 @@ public final class MoneyFormatter implements Serializable {
      * <p>
      * Changing the locale may change the style of output depending on how the
      * formatter has been configured.
-     * 
+     *
      * @param locale  the locale, not null
      * @return the new instance, never null
      */
@@ -133,7 +133,7 @@ public final class MoneyFormatter implements Serializable {
      * <p>
      * If the formatter cannot print, an UnsupportedOperationException will
      * be thrown from the print methods.
-     * 
+     *
      * @return true if the formatter can print
      */
     public boolean isPrinter() {
@@ -145,7 +145,7 @@ public final class MoneyFormatter implements Serializable {
      * <p>
      * If the formatter cannot parse, an UnsupportedOperationException will
      * be thrown from the parse methods.
-     * 
+     *
      * @return true if the formatter can parse
      */
     public boolean isParser() {
@@ -155,14 +155,14 @@ public final class MoneyFormatter implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * Prints a monetary value to a {@code String}.
-     * 
+     *
      * @param moneyProvider  the money to print, not null
      * @return the string printed using the settings of this formatter
      * @throws UnsupportedOperationException if the formatter is unable to print
      * @throws MoneyFormatException if there is a problem while printing
      */
     public String print(BigMoneyProvider moneyProvider) {
-        StringBuilder buf = new StringBuilder();
+        var buf = new StringBuilder();
         print(buf, moneyProvider);
         return buf.toString();
     }
@@ -174,7 +174,7 @@ public final class MoneyFormatter implements Serializable {
      * Example implementations of {@code Appendable} are {@code StringBuilder},
      * {@code StringBuffer} or {@code Writer}. Note that {@code StringBuilder}
      * and {@code StringBuffer} never throw an {@code IOException}.
-     * 
+     *
      * @param appendable  the appendable to add to, not null
      * @param moneyProvider  the money to print, not null
      * @throws UnsupportedOperationException if the formatter is unable to print
@@ -195,7 +195,7 @@ public final class MoneyFormatter implements Serializable {
      * Example implementations of {@code Appendable} are {@code StringBuilder},
      * {@code StringBuffer} or {@code Writer}. Note that {@code StringBuilder}
      * and {@code StringBuffer} never throw an {@code IOException}.
-     * 
+     *
      * @param appendable  the appendable to add to, not null
      * @param moneyProvider  the money to print, not null
      * @throws UnsupportedOperationException if the formatter is unable to print
@@ -204,12 +204,12 @@ public final class MoneyFormatter implements Serializable {
      */
     public void printIO(Appendable appendable, BigMoneyProvider moneyProvider) throws IOException {
         checkNotNull(moneyProvider, "BigMoneyProvider must not be null");
-        if (isPrinter() == false) {
+        if (!isPrinter()) {
             throw new UnsupportedOperationException("MoneyFomatter has not been configured to be able to print");
         }
 
-        BigMoney money = BigMoney.of(moneyProvider);
-        MoneyPrintContext context = new MoneyPrintContext(locale);
+        var money = BigMoney.of(moneyProvider);
+        var context = new MoneyPrintContext(locale);
         printerParser.print(context, appendable, money);
     }
 
@@ -220,7 +220,7 @@ public final class MoneyFormatter implements Serializable {
      * The parse must complete normally and parse the entire text (currency and amount).
      * If the parse completes without reading the entire length of the text, an exception is thrown.
      * If any other problem occurs during parsing, an exception is thrown.
-     * 
+     *
      * @param text  the text to parse, not null
      * @return the parsed monetary value, never null
      * @throws UnsupportedOperationException if the formatter is unable to parse
@@ -228,12 +228,12 @@ public final class MoneyFormatter implements Serializable {
      */
     public BigMoney parseBigMoney(CharSequence text) {
         checkNotNull(text, "Text must not be null");
-        MoneyParseContext result = parse(text, 0);
-        if (result.isError() || result.isFullyParsed() == false || result.isComplete() == false) {
-            String str = (text.length() > 64 ? text.subSequence(0, 64).toString() + "..." : text.toString());
+        var result = parse(text, 0);
+        if (result.isError() || !result.isFullyParsed() || !result.isComplete()) {
+            var str = (text.length() > 64 ? text.subSequence(0, 64).toString() + "..." : text.toString());
             if (result.isError()) {
                 throw new MoneyFormatException("Text could not be parsed at index " + result.getErrorIndex() + ": " + str);
-            } else if (result.isFullyParsed() == false) {
+            } else if (!result.isFullyParsed()) {
                 throw new MoneyFormatException("Unparsed text found at index " + result.getIndex() + ": " + str);
             } else {
                 throw new MoneyFormatException("Parsing did not find both currency and amount: " + str);
@@ -249,7 +249,7 @@ public final class MoneyFormatter implements Serializable {
      * The parse must complete normally and parse the entire text (currency and amount).
      * If the parse completes without reading the entire length of the text, an exception is thrown.
      * If any other problem occurs during parsing, an exception is thrown.
-     * 
+     *
      * @param text  the text to parse, not null
      * @return the parsed monetary value, never null
      * @throws UnsupportedOperationException if the formatter is unable to parse
@@ -279,10 +279,10 @@ public final class MoneyFormatter implements Serializable {
         if (startIndex < 0 || startIndex > text.length()) {
             throw new StringIndexOutOfBoundsException("Invalid start index: " + startIndex);
         }
-        if (isParser() == false) {
+        if (!isParser()) {
             throw new UnsupportedOperationException("MoneyFomatter has not been configured to be able to parse");
         }
-        MoneyParseContext context = new MoneyParseContext(locale, text, startIndex);
+        var context = new MoneyParseContext(locale, text, startIndex);
         printerParser.parse(context);
         return context;
     }
@@ -290,7 +290,7 @@ public final class MoneyFormatter implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * Gets a string summary of the formatter.
-     * 
+     *
      * @return a string summarising the formatter, never null
      */
     @Override

@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
@@ -76,12 +75,7 @@ class TestBigMoney {
     private static final BigMoney USD_1_23 = BigMoney.parse("USD 1.23");
     private static final BigMoney USD_2_34 = BigMoney.parse("USD 2.34");
     private static final BigMoney USD_2_35 = BigMoney.parse("USD 2.35");
-    private static final BigMoneyProvider BAD_PROVIDER = new BigMoneyProvider() {
-        @Override
-        public BigMoney toBigMoney() {
-            return null;  // shouldn't return null
-        }
-    };
+    private static final BigMoneyProvider BAD_PROVIDER = () -> null;
 
     private static BigDecimal bd(String str) {
         return new BigDecimal(str);
@@ -92,7 +86,7 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_factory_of_Currency_BigDecimal() {
-        BigMoney test = BigMoney.of(GBP, BIGDEC_2_345);
+        var test = BigMoney.of(GBP, BIGDEC_2_345);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(BIGDEC_2_345);
         assertThat(test.getScale()).isEqualTo(3);
@@ -161,7 +155,7 @@ class TestBigMoney {
             }
         }
         BigDecimal sub = new BadDecimal();
-        BigMoney test = BigMoney.of(GBP, sub);
+        var test = BigMoney.of(GBP, sub);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(bd("12.3"));
         assertThat(test.getScale()).isEqualTo(1);
@@ -173,7 +167,7 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_factory_of_Currency_double() {
-        BigMoney test = BigMoney.of(GBP, 2.345d);
+        var test = BigMoney.of(GBP, 2.345d);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(BIGDEC_2_345);
         assertThat(test.getScale()).isEqualTo(3);
@@ -181,7 +175,7 @@ class TestBigMoney {
 
     @Test
     void test_factory_of_Currency_double_trailingZero1() {
-        BigMoney test = BigMoney.of(GBP, 1.230d);
+        var test = BigMoney.of(GBP, 1.230d);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(123L, 2));
         assertThat(test.getScale()).isEqualTo(2);
@@ -189,7 +183,7 @@ class TestBigMoney {
 
     @Test
     void test_factory_of_Currency_double_trailingZero2() {
-        BigMoney test = BigMoney.of(GBP, 1.20d);
+        var test = BigMoney.of(GBP, 1.20d);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(12L, 1));
         assertThat(test.getScale()).isEqualTo(1);
@@ -206,7 +200,7 @@ class TestBigMoney {
 
     @Test
     void test_factory_of_Currency_double_medium() {
-        BigMoney test = BigMoney.of(GBP, 2000d);
+        var test = BigMoney.of(GBP, 2000d);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(2000L, 0));
         assertThat(test.getScale()).isEqualTo(0);
@@ -214,7 +208,7 @@ class TestBigMoney {
 
     @Test
     void test_factory_of_Currency_double_big() {
-        BigMoney test = BigMoney.of(GBP, 200000000d);
+        var test = BigMoney.of(GBP, 200000000d);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(200000000L, 0));
         assertThat(test.getScale()).isEqualTo(0);
@@ -231,14 +225,14 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_factory_ofScale_Currency_BigDecimal_int() {
-        BigMoney test = BigMoney.ofScale(GBP, BIGDEC_2_34, 4);
+        var test = BigMoney.ofScale(GBP, BIGDEC_2_34, 4);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(23400, 4));
     }
 
     @Test
     void test_factory_ofScale_Currency_BigDecimal_negativeScale() {
-        BigMoney test = BigMoney.ofScale(GBP, BigDecimal.valueOf(23400), -2);
+        var test = BigMoney.ofScale(GBP, BigDecimal.valueOf(23400), -2);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(23400L, 0));
     }
@@ -266,21 +260,21 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_factory_ofScale_Currency_BigDecimal_int_RoundingMode_DOWN() {
-        BigMoney test = BigMoney.ofScale(GBP, BIGDEC_2_34, 1, RoundingMode.DOWN);
+        var test = BigMoney.ofScale(GBP, BIGDEC_2_34, 1, RoundingMode.DOWN);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(23, 1));
     }
 
     @Test
     void test_factory_ofScale_Currency_BigDecimal_int_JPY_RoundingMode_UP() {
-        BigMoney test = BigMoney.ofScale(JPY, BIGDEC_2_34, 0, RoundingMode.UP);
+        var test = BigMoney.ofScale(JPY, BIGDEC_2_34, 0, RoundingMode.UP);
         assertThat(test.getCurrencyUnit()).isEqualTo(JPY);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(3, 0));
     }
 
     @Test
     void test_factory_ofScale_Currency_BigDecimal_int_RoundingMode_negativeScale() {
-        BigMoney test = BigMoney.ofScale(GBP, BigDecimal.valueOf(23400), -2, RoundingMode.DOWN);
+        var test = BigMoney.ofScale(GBP, BigDecimal.valueOf(23400), -2, RoundingMode.DOWN);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(23400L, 0));
     }
@@ -314,14 +308,14 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_factory_ofScale_Currency_long_int() {
-        BigMoney test = BigMoney.ofScale(GBP, 234, 4);
+        var test = BigMoney.ofScale(GBP, 234, 4);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(234, 4));
     }
 
     @Test
     void test_factory_ofScale_Currency_long_int_negativeScale() {
-        BigMoney test = BigMoney.ofScale(GBP, 234, -4);
+        var test = BigMoney.ofScale(GBP, 234, -4);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(2340000, 0));
     }
@@ -337,7 +331,7 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_factory_ofMajor_Currency_long() {
-        BigMoney test = BigMoney.ofMajor(GBP, 234);
+        var test = BigMoney.ofMajor(GBP, 234);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(bd("234"));
         assertThat(test.getScale()).isEqualTo(0);
@@ -354,7 +348,7 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_factory_ofMinor_Currency_long() {
-        BigMoney test = BigMoney.ofMinor(GBP, 234);
+        var test = BigMoney.ofMinor(GBP, 234);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(bd("2.34"));
         assertThat(test.getScale()).isEqualTo(2);
@@ -371,7 +365,7 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_factory_zero_Currency() {
-        BigMoney test = BigMoney.zero(GBP);
+        var test = BigMoney.zero(GBP);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.ZERO);
         assertThat(test.getScale()).isEqualTo(0);
@@ -388,14 +382,14 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_factory_zero_Currency_int() {
-        BigMoney test = BigMoney.zero(GBP, 3);
+        var test = BigMoney.zero(GBP, 3);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(0, 3));
     }
 
     @Test
     void test_factory_zero_Currency_int_negativeScale() {
-        BigMoney test = BigMoney.zero(GBP, -3);
+        var test = BigMoney.zero(GBP, -3);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(0, 0));
     }
@@ -411,7 +405,7 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_factory_from_BigMoneyProvider() {
-        BigMoney test = BigMoney.of(BigMoney.parse("GBP 104.23"));
+        var test = BigMoney.of(BigMoney.parse("GBP 104.23"));
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmountMinorInt()).isEqualTo(10423);
         assertThat(test.getScale()).isEqualTo(2);
@@ -434,38 +428,38 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_factory_total_varargs_1BigMoney() {
-        BigMoney test = BigMoney.total(GBP_1_23);
+        var test = BigMoney.total(GBP_1_23);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmountMinorInt()).isEqualTo(123);
     }
 
     @Test
     void test_factory_total_array_1BigMoney() {
-        BigMoneyProvider[] array = new BigMoneyProvider[] {GBP_1_23};
-        BigMoney test = BigMoney.total(array);
+        var array = new BigMoneyProvider[] {GBP_1_23};
+        var test = BigMoney.total(array);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmountMinorInt()).isEqualTo(123);
     }
 
     @Test
     void test_factory_total_varargs_3Mixed() {
-        BigMoney test = BigMoney.total(GBP_1_23, GBP_2_33.toMoney(), GBP_2_36);
+        var test = BigMoney.total(GBP_1_23, GBP_2_33.toMoney(), GBP_2_36);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmountMinorInt()).isEqualTo(592);
     }
 
     @Test
     void test_factory_total_array_3Mixed() {
-        BigMoneyProvider[] array = new BigMoneyProvider[] {GBP_1_23, GBP_2_33.toMoney(), GBP_2_36};
-        BigMoney test = BigMoney.total(array);
+        var array = new BigMoneyProvider[] {GBP_1_23, GBP_2_33.toMoney(), GBP_2_36};
+        var test = BigMoney.total(array);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmountMinorInt()).isEqualTo(592);
     }
 
     @Test
     void test_factory_total_array_3Money() {
-        Money[] array = new Money[] {GBP_1_23.toMoney(), GBP_2_33.toMoney(), GBP_2_36.toMoney()};
-        BigMoney test = BigMoney.total(array);
+        var array = new Money[] {GBP_1_23.toMoney(), GBP_2_33.toMoney(), GBP_2_36.toMoney()};
+        var test = BigMoney.total(array);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmountMinorInt()).isEqualTo(592);
     }
@@ -478,7 +472,7 @@ class TestBigMoney {
 
     @Test
     void test_factory_total_array_empty() {
-        BigMoneyProvider[] array = new BigMoneyProvider[0];
+        var array = new BigMoneyProvider[0];
         assertThatExceptionOfType(IllegalArgumentException.class)
             .isThrownBy(() -> BigMoney.total(array));
     }
@@ -491,7 +485,7 @@ class TestBigMoney {
 
     @Test
     void test_factory_total_array_currenciesDiffer() {
-        BigMoneyProvider[] array = new BigMoneyProvider[] {GBP_2_33, JPY_423};
+        var array = new BigMoneyProvider[] {GBP_2_33, JPY_423};
         assertThatExceptionOfType(CurrencyMismatchException.class)
             .isThrownBy(() -> BigMoney.total(array));
     }
@@ -504,7 +498,7 @@ class TestBigMoney {
 
     @Test
     void test_factory_total_array_nullFirst() {
-        BigMoneyProvider[] array = new BigMoneyProvider[] {null, GBP_2_33, GBP_2_36};
+        var array = new BigMoneyProvider[] {null, GBP_2_33, GBP_2_36};
         assertThatExceptionOfType(NullPointerException.class)
             .isThrownBy(() -> BigMoney.total(array));
     }
@@ -517,7 +511,7 @@ class TestBigMoney {
 
     @Test
     void test_factory_total_array_nullNotFirst() {
-        BigMoneyProvider[] array = new BigMoneyProvider[] {GBP_2_33, null, GBP_2_36};
+        var array = new BigMoneyProvider[] {GBP_2_33, null, GBP_2_36};
         assertThatExceptionOfType(NullPointerException.class)
             .isThrownBy(() -> BigMoney.total(array));
     }
@@ -530,7 +524,7 @@ class TestBigMoney {
 
     @Test
     void test_factory_total_array_badProvider() {
-        BigMoneyProvider[] array = new BigMoneyProvider[] {BAD_PROVIDER};
+        var array = new BigMoneyProvider[] {BAD_PROVIDER};
         assertThatExceptionOfType(NullPointerException.class)
             .isThrownBy(() -> BigMoney.total(array));
     }
@@ -541,7 +535,7 @@ class TestBigMoney {
     @Test
     void test_factory_total_Iterable() {
         Iterable<BigMoney> iterable = Arrays.asList(GBP_1_23, GBP_2_33, BigMoney.of(GBP, 2.361d));
-        BigMoney test = BigMoney.total(iterable);
+        var test = BigMoney.total(iterable);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(5921, 3));
     }
@@ -549,7 +543,7 @@ class TestBigMoney {
     @Test
     void test_factory_total_Iterable_Mixed() {
         Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_1_23.toMoney(), GBP_2_33);
-        BigMoney test = BigMoney.total(iterable);
+        var test = BigMoney.total(iterable);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(356, 2));
     }
@@ -594,68 +588,68 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_factory_total_CurrencyUnitVarargs_1() {
-        BigMoney test = BigMoney.total(GBP, GBP_1_23);
+        var test = BigMoney.total(GBP, GBP_1_23);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmountMinorInt()).isEqualTo(123);
     }
 
     @Test
     void test_factory_total_CurrencyUnitArray_1() {
-        BigMoney[] array = new BigMoney[] {GBP_1_23};
-        BigMoney test = BigMoney.total(GBP, array);
+        var array = new BigMoney[] {GBP_1_23};
+        var test = BigMoney.total(GBP, array);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmountMinorInt()).isEqualTo(123);
     }
 
     @Test
     void test_factory_total_CurrencyUnitVarargs_3() {
-        BigMoney test = BigMoney.total(GBP, GBP_1_23, GBP_2_33, GBP_2_36);
+        var test = BigMoney.total(GBP, GBP_1_23, GBP_2_33, GBP_2_36);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmountMinorInt()).isEqualTo(592);
     }
 
     @Test
     void test_factory_total_CurrencyUnitArray_3() {
-        BigMoney[] array = new BigMoney[] {GBP_1_23, GBP_2_33, GBP_2_36};
-        BigMoney test = BigMoney.total(GBP, array);
+        var array = new BigMoney[] {GBP_1_23, GBP_2_33, GBP_2_36};
+        var test = BigMoney.total(GBP, array);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmountMinorInt()).isEqualTo(592);
     }
 
     @Test
     void test_factory_total_CurrencyUnitVarargs_3Mixed() {
-        BigMoney test = BigMoney.total(GBP, GBP_1_23, GBP_2_33.toMoney(), GBP_2_36);
+        var test = BigMoney.total(GBP, GBP_1_23, GBP_2_33.toMoney(), GBP_2_36);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmountMinorInt()).isEqualTo(592);
     }
 
     @Test
     void test_factory_total_CurrencyUnitArray_3Mixed() {
-        BigMoneyProvider[] array = new BigMoneyProvider[] {GBP_1_23, GBP_2_33.toMoney(), GBP_2_36};
-        BigMoney test = BigMoney.total(GBP, array);
+        var array = new BigMoneyProvider[] {GBP_1_23, GBP_2_33.toMoney(), GBP_2_36};
+        var test = BigMoney.total(GBP, array);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmountMinorInt()).isEqualTo(592);
     }
 
     @Test
     void test_factory_total_CurrencyUnitArray_3Money() {
-        Money[] array = new Money[] {GBP_1_23.toMoney(), GBP_2_33.toMoney(), GBP_2_36.toMoney()};
-        BigMoney test = BigMoney.total(GBP, array);
+        var array = new Money[] {GBP_1_23.toMoney(), GBP_2_33.toMoney(), GBP_2_36.toMoney()};
+        var test = BigMoney.total(GBP, array);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmountMinorInt()).isEqualTo(592);
     }
 
     @Test
     void test_factory_total_CurrencyUnitVarargs_empty() {
-        BigMoney test = BigMoney.total(GBP);
+        var test = BigMoney.total(GBP);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmountMinorInt()).isEqualTo(0);
     }
 
     @Test
     void test_factory_total_CurrencyUnitArray_empty() {
-        BigMoney[] array = new BigMoney[0];
-        BigMoney test = BigMoney.total(GBP, array);
+        var array = new BigMoney[0];
+        var test = BigMoney.total(GBP, array);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmountMinorInt()).isEqualTo(0);
     }
@@ -668,7 +662,7 @@ class TestBigMoney {
 
     @Test
     void test_factory_total_CurrencyUnitArray_currenciesDiffer() {
-        BigMoney[] array = new BigMoney[] {JPY_423};
+        var array = new BigMoney[] {JPY_423};
         assertThatExceptionOfType(CurrencyMismatchException.class)
             .isThrownBy(() -> BigMoney.total(GBP, array));
     }
@@ -681,7 +675,7 @@ class TestBigMoney {
 
     @Test
     void test_factory_total_CurrencyUnitArray_currenciesDifferInArray() {
-        BigMoney[] array = new BigMoney[] {GBP_2_33, JPY_423};
+        var array = new BigMoney[] {GBP_2_33, JPY_423};
         assertThatExceptionOfType(CurrencyMismatchException.class)
             .isThrownBy(() -> BigMoney.total(GBP, array));
     }
@@ -694,7 +688,7 @@ class TestBigMoney {
 
     @Test
     void test_factory_total_CurrencyUnitArray_nullFirst() {
-        BigMoney[] array = new BigMoney[] {null, GBP_2_33, GBP_2_36};
+        var array = new BigMoney[] {null, GBP_2_33, GBP_2_36};
         assertThatExceptionOfType(NullPointerException.class)
             .isThrownBy(() -> BigMoney.total(GBP, array));
     }
@@ -707,7 +701,7 @@ class TestBigMoney {
 
     @Test
     void test_factory_total_CurrencyUnitArray_nullNotFirst() {
-        BigMoney[] array = new BigMoney[] {GBP_2_33, null, GBP_2_36};
+        var array = new BigMoney[] {GBP_2_33, null, GBP_2_36};
         assertThatExceptionOfType(NullPointerException.class)
             .isThrownBy(() -> BigMoney.total(GBP, array));
     }
@@ -720,7 +714,7 @@ class TestBigMoney {
 
     @Test
     void test_factory_total_CurrencyUnitArray_badProvider() {
-        BigMoneyProvider[] array = new BigMoneyProvider[] {BAD_PROVIDER};
+        var array = new BigMoneyProvider[] {BAD_PROVIDER};
         assertThatExceptionOfType(NullPointerException.class)
             .isThrownBy(() -> BigMoney.total(GBP, array));
     }
@@ -731,7 +725,7 @@ class TestBigMoney {
     @Test
     void test_factory_total_CurrencyUnitIterable() {
         Iterable<BigMoney> iterable = Arrays.asList(GBP_1_23, GBP_2_33, BigMoney.of(GBP, 2.361d));
-        BigMoney test = BigMoney.total(GBP, iterable);
+        var test = BigMoney.total(GBP, iterable);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(5921, 3));
     }
@@ -739,7 +733,7 @@ class TestBigMoney {
     @Test
     void test_factory_total_CurrencyUnitIterable_Mixed() {
         Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_1_23.toMoney(), GBP_2_33);
-        BigMoney test = BigMoney.total(GBP, iterable);
+        var test = BigMoney.total(GBP, iterable);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(356, 2));
     }
@@ -747,7 +741,7 @@ class TestBigMoney {
     @Test
     void test_factory_total_CurrencyUnitIterable_empty() {
         Iterable<BigMoney> iterable = Collections.emptyList();
-        BigMoney test = BigMoney.total(GBP, iterable);
+        var test = BigMoney.total(GBP, iterable);
         assertThat(test.getCurrencyUnit()).isEqualTo(GBP);
         assertThat(test.getAmountMinorInt()).isEqualTo(0);
     }
@@ -816,7 +810,7 @@ class TestBigMoney {
     @ParameterizedTest
     @MethodSource("data_parse")
     void test_factory_parse(String str, CurrencyUnit currency, String amountStr, int scale) {
-        BigMoney test = BigMoney.parse(str);
+        var test = BigMoney.parse(str);
         assertThat(test.getCurrencyUnit()).isEqualTo(currency);
         assertThat(test.getAmount()).isEqualTo(bd(amountStr));
         assertThat(test.getScale()).isEqualTo(scale);
@@ -851,7 +845,7 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_constructor_null1() throws Exception {
-        Constructor<BigMoney> con = BigMoney.class.getDeclaredConstructor(CurrencyUnit.class, BigDecimal.class);
+        var con = BigMoney.class.getDeclaredConstructor(CurrencyUnit.class, BigDecimal.class);
         assertThat(Modifier.isPublic(con.getModifiers())).isFalse();
         assertThat(Modifier.isProtected(con.getModifiers())).isFalse();
         try {
@@ -865,7 +859,7 @@ class TestBigMoney {
 
     @Test
     void test_constructor_null2() throws Exception {
-        Constructor<BigMoney> con = BigMoney.class.getDeclaredConstructor(CurrencyUnit.class, BigDecimal.class);
+        var con = BigMoney.class.getDeclaredConstructor(CurrencyUnit.class, BigDecimal.class);
         try {
             con.setAccessible(true);
             con.newInstance(new Object[] {GBP, null});
@@ -878,8 +872,8 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_scaleNormalization1() {
-        BigMoney a = BigMoney.ofScale(GBP, 100, 0);
-        BigMoney b = BigMoney.ofScale(GBP, 1, -2);
+        var a = BigMoney.ofScale(GBP, 100, 0);
+        var b = BigMoney.ofScale(GBP, 1, -2);
         assertThat(a.toString()).isEqualTo("GBP 100");
         assertThat(b.toString()).isEqualTo("GBP 100");
         assertThat(a).isEqualTo(a);
@@ -891,8 +885,8 @@ class TestBigMoney {
 
     @Test
     void test_scaleNormalization2() {
-        BigMoney a = BigMoney.ofScale(GBP, 1, 1);
-        BigMoney b = BigMoney.ofScale(GBP, 10, 2);
+        var a = BigMoney.ofScale(GBP, 1, 1);
+        var b = BigMoney.ofScale(GBP, 10, 2);
         assertThat(a.toString()).isEqualTo("GBP 0.1");
         assertThat(b.toString()).isEqualTo("GBP 0.10");
         assertThat(a).isEqualTo(a);
@@ -904,8 +898,8 @@ class TestBigMoney {
 
     @Test
     void test_scaleNormalization3() {
-        BigMoney a = BigMoney.of(GBP, new BigDecimal("100"));
-        BigMoney b = BigMoney.of(GBP, new BigDecimal("1E+2"));
+        var a = BigMoney.of(GBP, new BigDecimal("100"));
+        var b = BigMoney.of(GBP, new BigDecimal("1E+2"));
         assertThat(a.toString()).isEqualTo("GBP 100");
         assertThat(b.toString()).isEqualTo("GBP 100");
         assertThat(a).isEqualTo(a);
@@ -920,26 +914,26 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_serialization() throws Exception {
-        BigMoney a = BigMoney.parse("GBP 2.34");
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+        var a = BigMoney.parse("GBP 2.34");
+        var baos = new ByteArrayOutputStream();
+        try (var oos = new ObjectOutputStream(baos)) {
             oos.writeObject(a);
             oos.close();
-            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-            BigMoney input = (BigMoney) ois.readObject();
+            var ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+            var input = (BigMoney) ois.readObject();
             assertThat(input).isEqualTo(a);
         }
     }
 
     @Test
     void test_serialization_invalidNumericCode() throws IOException {
-        CurrencyUnit cu = new CurrencyUnit("GBP", (short) 234, (short) 2);
-        BigMoney m = BigMoney.of(cu, 123.43d);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+        var cu = new CurrencyUnit("GBP", (short) 234, (short) 2);
+        var m = BigMoney.of(cu, 123.43d);
+        var baos = new ByteArrayOutputStream();
+        try (var oos = new ObjectOutputStream(baos)) {
             oos.writeObject(m);
             oos.close();
-            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+            var ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
             assertThatExceptionOfType(InvalidObjectException.class)
                 .isThrownBy(() -> ois.readObject());
         }
@@ -947,13 +941,13 @@ class TestBigMoney {
 
     @Test
     void test_serialization_invalidDecimalPlaces() throws IOException {
-        CurrencyUnit cu = new CurrencyUnit("GBP", (short) 826, (short) 1);
-        BigMoney m = BigMoney.of(cu, 123.43d);
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+        var cu = new CurrencyUnit("GBP", (short) 826, (short) 1);
+        var m = BigMoney.of(cu, 123.43d);
+        var baos = new ByteArrayOutputStream();
+        try (var oos = new ObjectOutputStream(baos)) {
             oos.writeObject(m);
             oos.close();
-            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+            var ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
             assertThatExceptionOfType(InvalidObjectException.class)
                 .isThrownBy(() -> ois.readObject());
         }
@@ -977,19 +971,19 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_withCurrencyUnit_Currency() {
-        BigMoney test = GBP_2_34.withCurrencyUnit(USD);
+        var test = GBP_2_34.withCurrencyUnit(USD);
         assertThat(test).hasToString("USD 2.34");
     }
 
     @Test
     void test_withCurrencyUnit_Currency_same() {
-        BigMoney test = GBP_2_34.withCurrencyUnit(GBP);
+        var test = GBP_2_34.withCurrencyUnit(GBP);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_withCurrencyUnit_Currency_differentCurrencyScale() {
-        BigMoney test = GBP_2_34.withCurrencyUnit(JPY);
+        var test = GBP_2_34.withCurrencyUnit(JPY);
         assertThat(test).hasToString("JPY 2.34");
     }
 
@@ -1036,13 +1030,13 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_withScale_int_same() {
-        BigMoney test = GBP_2_34.withScale(2);
+        var test = GBP_2_34.withScale(2);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_withScale_int_more() {
-        BigMoney test = GBP_2_34.withScale(3);
+        var test = GBP_2_34.withScale(3);
         assertThat(test.getAmount()).isEqualTo(bd("2.340"));
         assertThat(test.getScale()).isEqualTo(3);
     }
@@ -1058,14 +1052,14 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_withScale_intRoundingMode_less() {
-        BigMoney test = GBP_2_34.withScale(1, RoundingMode.UP);
+        var test = GBP_2_34.withScale(1, RoundingMode.UP);
         assertThat(test.getAmount()).isEqualTo(bd("2.4"));
         assertThat(test.getScale()).isEqualTo(1);
     }
 
     @Test
     void test_withScale_intRoundingMode_more() {
-        BigMoney test = GBP_2_34.withScale(3, RoundingMode.UP);
+        var test = GBP_2_34.withScale(3, RoundingMode.UP);
         assertThat(test.getAmount()).isEqualTo(bd("2.340"));
         assertThat(test.getScale()).isEqualTo(3);
     }
@@ -1075,13 +1069,13 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_withCurrencyScale_int_same() {
-        BigMoney test = GBP_2_34.withCurrencyScale();
+        var test = GBP_2_34.withCurrencyScale();
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_withCurrencyScale_int_more() {
-        BigMoney test = BigMoney.parse("GBP 2.3").withCurrencyScale();
+        var test = BigMoney.parse("GBP 2.3").withCurrencyScale();
         assertThat(test.getAmount()).isEqualTo(bd("2.30"));
         assertThat(test.getScale()).isEqualTo(2);
     }
@@ -1097,21 +1091,21 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_withCurrencyScale_intRoundingMode_less() {
-        BigMoney test = BigMoney.parse("GBP 2.345").withCurrencyScale(RoundingMode.UP);
+        var test = BigMoney.parse("GBP 2.345").withCurrencyScale(RoundingMode.UP);
         assertThat(test.getAmount()).isEqualTo(bd("2.35"));
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_withCurrencyScale_intRoundingMode_more() {
-        BigMoney test = BigMoney.parse("GBP 2.3").withCurrencyScale(RoundingMode.UP);
+        var test = BigMoney.parse("GBP 2.3").withCurrencyScale(RoundingMode.UP);
         assertThat(test.getAmount()).isEqualTo(bd("2.30"));
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_withCurrencyScale_intRoundingMode_lessJPY() {
-        BigMoney test = BigMoney.parse("JPY 2.345").withCurrencyScale(RoundingMode.UP);
+        var test = BigMoney.parse("JPY 2.345").withCurrencyScale(RoundingMode.UP);
         assertThat(test.getAmount()).isEqualTo(bd("3"));
         assertThat(test.getScale()).isEqualTo(0);
     }
@@ -1323,14 +1317,14 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_withAmount_BigDecimal() {
-        BigMoney test = GBP_2_34.withAmount(BIGDEC_2_345);
+        var test = GBP_2_34.withAmount(BIGDEC_2_345);
         assertThat(test.getAmount()).isEqualTo(bd("2.345"));
         assertThat(test.getScale()).isEqualTo(3);
     }
 
     @Test
     void test_withAmount_BigDecimal_same() {
-        BigMoney test = GBP_2_34.withAmount(BIGDEC_2_34);
+        var test = GBP_2_34.withAmount(BIGDEC_2_34);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
@@ -1345,14 +1339,14 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_withAmount_double() {
-        BigMoney test = GBP_2_34.withAmount(2.345d);
+        var test = GBP_2_34.withAmount(2.345d);
         assertThat(test.getAmount()).isEqualTo(bd("2.345"));
         assertThat(test.getScale()).isEqualTo(3);
     }
 
     @Test
     void test_withAmount_double_same() {
-        BigMoney test = GBP_2_34.withAmount(2.34d);
+        var test = GBP_2_34.withAmount(2.34d);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
@@ -1362,40 +1356,35 @@ class TestBigMoney {
     @Test
     void test_plus_Iterable_BigMoneyProvider() {
         Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_2_33, GBP_1_23);
-        BigMoney test = GBP_2_34.plus(iterable);
+        var test = GBP_2_34.plus(iterable);
         assertThat(test).hasToString("GBP 5.90");
     }
 
     @Test
     void test_plus_Iterable_BigMoney() {
         Iterable<BigMoney> iterable = Arrays.<BigMoney>asList(GBP_2_33, GBP_1_23);
-        BigMoney test = GBP_2_34.plus(iterable);
+        var test = GBP_2_34.plus(iterable);
         assertThat(test).hasToString("GBP 5.90");
     }
 
     @Test
     void test_plus_Iterable_Money() {
         Iterable<Money> iterable = Arrays.<Money>asList(GBP_2_33.toMoney(), GBP_1_23.toMoney());
-        BigMoney test = GBP_2_34.plus(iterable);
+        var test = GBP_2_34.plus(iterable);
         assertThat(test).hasToString("GBP 5.90");
     }
 
     @Test
     void test_plus_Iterable_Mixed() {
-        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_2_33.toMoney(), new BigMoneyProvider() {
-            @Override
-            public BigMoney toBigMoney() {
-                return GBP_1_23;
-            }
-        });
-        BigMoney test = GBP_2_34.plus(iterable);
+        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_2_33.toMoney(), () -> GBP_1_23);
+        var test = GBP_2_34.plus(iterable);
         assertThat(test).hasToString("GBP 5.90");
     }
 
     @Test
     void test_plus_Iterable_zero() {
         Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_0_00);
-        BigMoney test = GBP_2_34.plus(iterable);
+        var test = GBP_2_34.plus(iterable);
         assertThat(test).isEqualTo(GBP_2_34);
     }
 
@@ -1421,12 +1410,7 @@ class TestBigMoney {
 
     @Test
     void test_plus_Iterable_badProvider() {
-        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(new BigMoneyProvider() {
-            @Override
-            public BigMoney toBigMoney() {
-                return null;
-            }
-        });
+        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(() -> null);
         assertThatExceptionOfType(NullPointerException.class)
             .isThrownBy(() -> GBP_M5_78.plus(iterable));
     }
@@ -1436,34 +1420,34 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_plus_BigMoneyProvider_zero() {
-        BigMoney test = GBP_2_34.plus(GBP_0_00);
+        var test = GBP_2_34.plus(GBP_0_00);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_plus_BigMoneyProvider_positive() {
-        BigMoney test = GBP_2_34.plus(GBP_1_23);
+        var test = GBP_2_34.plus(GBP_1_23);
         assertThat(test).hasToString("GBP 3.57");
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_plus_BigMoneyProvider_negative() {
-        BigMoney test = GBP_2_34.plus(GBP_M1_23);
+        var test = GBP_2_34.plus(GBP_M1_23);
         assertThat(test).hasToString("GBP 1.11");
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_plus_BigMoneyProvider_scale() {
-        BigMoney test = GBP_2_34.plus(BigMoney.parse("GBP 1.111"));
+        var test = GBP_2_34.plus(BigMoney.parse("GBP 1.111"));
         assertThat(test).hasToString("GBP 3.451");
         assertThat(test.getScale()).isEqualTo(3);
     }
 
     @Test
     void test_plus_BigMoneyProvider_Money() {
-        BigMoney test = GBP_2_34.plus(BigMoney.ofMinor(GBP, 1));
+        var test = GBP_2_34.plus(BigMoney.ofMinor(GBP, 1));
         assertThat(test).hasToString("GBP 2.35");
         assertThat(test.getScale()).isEqualTo(2);
     }
@@ -1482,12 +1466,7 @@ class TestBigMoney {
 
     @Test
     void test_plus_BigMoneyProvider_badProvider() {
-        BigMoneyProvider provider = new BigMoneyProvider() {
-            @Override
-            public BigMoney toBigMoney() {
-                return null;
-            }
-        };
+        BigMoneyProvider provider = () -> null;
         assertThatExceptionOfType(NullPointerException.class)
             .isThrownBy(() -> GBP_M5_78.plus(provider));
     }
@@ -1497,27 +1476,27 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_plus_BigDecimal_zero() {
-        BigMoney test = GBP_2_34.plus(BigDecimal.ZERO);
+        var test = GBP_2_34.plus(BigDecimal.ZERO);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_plus_BigDecimal_positive() {
-        BigMoney test = GBP_2_34.plus(bd("1.23"));
+        var test = GBP_2_34.plus(bd("1.23"));
         assertThat(test).hasToString("GBP 3.57");
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_plus_BigDecimal_negative() {
-        BigMoney test = GBP_2_34.plus(bd("-1.23"));
+        var test = GBP_2_34.plus(bd("-1.23"));
         assertThat(test).hasToString("GBP 1.11");
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_plus_BigDecimal_scale() {
-        BigMoney test = GBP_2_34.plus(bd("1.235"));
+        var test = GBP_2_34.plus(bd("1.235"));
         assertThat(test).hasToString("GBP 3.575");
         assertThat(test.getScale()).isEqualTo(3);
     }
@@ -1533,27 +1512,27 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_plus_double_zero() {
-        BigMoney test = GBP_2_34.plus(0d);
+        var test = GBP_2_34.plus(0d);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_plus_double_positive() {
-        BigMoney test = GBP_2_34.plus(1.23d);
+        var test = GBP_2_34.plus(1.23d);
         assertThat(test).hasToString("GBP 3.57");
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_plus_double_negative() {
-        BigMoney test = GBP_2_34.plus(-1.23d);
+        var test = GBP_2_34.plus(-1.23d);
         assertThat(test).hasToString("GBP 1.11");
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_plus_double_scale() {
-        BigMoney test = GBP_2_34.plus(1.234d);
+        var test = GBP_2_34.plus(1.234d);
         assertThat(test).hasToString("GBP 3.574");
         assertThat(test.getScale()).isEqualTo(3);
     }
@@ -1563,20 +1542,20 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_plusMajor_zero() {
-        BigMoney test = GBP_2_34.plusMajor(0);
+        var test = GBP_2_34.plusMajor(0);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_plusMajor_positive() {
-        BigMoney test = GBP_2_34.plusMajor(123);
+        var test = GBP_2_34.plusMajor(123);
         assertThat(test).hasToString("GBP 125.34");
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_plusMajor_negative() {
-        BigMoney test = GBP_2_34.plusMajor(-123);
+        var test = GBP_2_34.plusMajor(-123);
         assertThat(test).hasToString("GBP -120.66");
         assertThat(test.getScale()).isEqualTo(2);
     }
@@ -1586,27 +1565,27 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_plusMinor_zero() {
-        BigMoney test = GBP_2_34.plusMinor(0);
+        var test = GBP_2_34.plusMinor(0);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_plusMinor_positive() {
-        BigMoney test = GBP_2_34.plusMinor(123);
+        var test = GBP_2_34.plusMinor(123);
         assertThat(test).hasToString("GBP 3.57");
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_plusMinor_negative() {
-        BigMoney test = GBP_2_34.plusMinor(-123);
+        var test = GBP_2_34.plusMinor(-123);
         assertThat(test).hasToString("GBP 1.11");
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_plusMinor_scale() {
-        BigMoney test = BigMoney.parse("GBP 12").plusMinor(123);
+        var test = BigMoney.parse("GBP 12").plusMinor(123);
         assertThat(test).hasToString("GBP 13.23");
         assertThat(test.getScale()).isEqualTo(2);
     }
@@ -1616,25 +1595,25 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_plusRetainScale_BigMoneyProviderRoundingMode_zero() {
-        BigMoney test = GBP_2_34.plusRetainScale(BigMoney.zero(GBP), RoundingMode.UNNECESSARY);
+        var test = GBP_2_34.plusRetainScale(BigMoney.zero(GBP), RoundingMode.UNNECESSARY);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_plusRetainScale_BigMoneyProviderRoundingMode_positive() {
-        BigMoney test = GBP_2_34.plusRetainScale(BigMoney.parse("GBP 1.23"), RoundingMode.UNNECESSARY);
+        var test = GBP_2_34.plusRetainScale(BigMoney.parse("GBP 1.23"), RoundingMode.UNNECESSARY);
         assertThat(test).hasToString("GBP 3.57");
     }
 
     @Test
     void test_plusRetainScale_BigMoneyProviderRoundingMode_negative() {
-        BigMoney test = GBP_2_34.plusRetainScale(BigMoney.parse("GBP -1.23"), RoundingMode.UNNECESSARY);
+        var test = GBP_2_34.plusRetainScale(BigMoney.parse("GBP -1.23"), RoundingMode.UNNECESSARY);
         assertThat(test).hasToString("GBP 1.11");
     }
 
     @Test
     void test_plusRetainScale_BigMoneyProviderRoundingMode_roundDown() {
-        BigMoney test = GBP_2_34.plusRetainScale(BigMoney.parse("GBP 1.235"), RoundingMode.DOWN);
+        var test = GBP_2_34.plusRetainScale(BigMoney.parse("GBP 1.235"), RoundingMode.DOWN);
         assertThat(test).hasToString("GBP 3.57");
     }
 
@@ -1661,25 +1640,25 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_plusRetainScale_BigDecimalRoundingMode_zero() {
-        BigMoney test = GBP_2_34.plusRetainScale(BigDecimal.ZERO, RoundingMode.UNNECESSARY);
+        var test = GBP_2_34.plusRetainScale(BigDecimal.ZERO, RoundingMode.UNNECESSARY);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_plusRetainScale_BigDecimalRoundingMode_positive() {
-        BigMoney test = GBP_2_34.plusRetainScale(bd("1.23"), RoundingMode.UNNECESSARY);
+        var test = GBP_2_34.plusRetainScale(bd("1.23"), RoundingMode.UNNECESSARY);
         assertThat(test).hasToString("GBP 3.57");
     }
 
     @Test
     void test_plusRetainScale_BigDecimalRoundingMode_negative() {
-        BigMoney test = GBP_2_34.plusRetainScale(bd("-1.23"), RoundingMode.UNNECESSARY);
+        var test = GBP_2_34.plusRetainScale(bd("-1.23"), RoundingMode.UNNECESSARY);
         assertThat(test).hasToString("GBP 1.11");
     }
 
     @Test
     void test_plusRetainScale_BigDecimalRoundingMode_roundDown() {
-        BigMoney test = GBP_2_34.plusRetainScale(bd("1.235"), RoundingMode.DOWN);
+        var test = GBP_2_34.plusRetainScale(bd("1.235"), RoundingMode.DOWN);
         assertThat(test).hasToString("GBP 3.57");
     }
 
@@ -1706,25 +1685,25 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_plusRetainScale_doubleRoundingMode_zero() {
-        BigMoney test = GBP_2_34.plusRetainScale(0d, RoundingMode.UNNECESSARY);
+        var test = GBP_2_34.plusRetainScale(0d, RoundingMode.UNNECESSARY);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_plusRetainScale_doubleRoundingMode_positive() {
-        BigMoney test = GBP_2_34.plusRetainScale(1.23d, RoundingMode.UNNECESSARY);
+        var test = GBP_2_34.plusRetainScale(1.23d, RoundingMode.UNNECESSARY);
         assertThat(test).hasToString("GBP 3.57");
     }
 
     @Test
     void test_plusRetainScale_doubleRoundingMode_negative() {
-        BigMoney test = GBP_2_34.plusRetainScale(-1.23d, RoundingMode.UNNECESSARY);
+        var test = GBP_2_34.plusRetainScale(-1.23d, RoundingMode.UNNECESSARY);
         assertThat(test).hasToString("GBP 1.11");
     }
 
     @Test
     void test_plusRetainScale_doubleRoundingMode_roundDown() {
-        BigMoney test = GBP_2_34.plusRetainScale(1.235d, RoundingMode.DOWN);
+        var test = GBP_2_34.plusRetainScale(1.235d, RoundingMode.DOWN);
         assertThat(test).hasToString("GBP 3.57");
     }
 
@@ -1746,40 +1725,35 @@ class TestBigMoney {
     @Test
     void test_minus_Iterable_BigMoneyProvider() {
         Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_2_33, GBP_1_23);
-        BigMoney test = GBP_2_34.minus(iterable);
+        var test = GBP_2_34.minus(iterable);
         assertThat(test).hasToString("GBP -1.22");
     }
 
     @Test
     void test_minus_Iterable_BigMoney() {
         Iterable<BigMoney> iterable = Arrays.<BigMoney>asList(GBP_2_33, GBP_1_23);
-        BigMoney test = GBP_2_34.minus(iterable);
+        var test = GBP_2_34.minus(iterable);
         assertThat(test).hasToString("GBP -1.22");
     }
 
     @Test
     void test_minus_Iterable_Money() {
         Iterable<Money> iterable = Arrays.<Money>asList(GBP_2_33.toMoney(), GBP_1_23.toMoney());
-        BigMoney test = GBP_2_34.minus(iterable);
+        var test = GBP_2_34.minus(iterable);
         assertThat(test).hasToString("GBP -1.22");
     }
 
     @Test
     void test_minus_Iterable_Mixed() {
-        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_2_33.toMoney(), new BigMoneyProvider() {
-            @Override
-            public BigMoney toBigMoney() {
-                return GBP_1_23;
-            }
-        });
-        BigMoney test = GBP_2_34.minus(iterable);
+        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_2_33.toMoney(), () -> GBP_1_23);
+        var test = GBP_2_34.minus(iterable);
         assertThat(test).hasToString("GBP -1.22");
     }
 
     @Test
     void test_minus_Iterable_zero() {
         Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(GBP_0_00);
-        BigMoney test = GBP_2_34.minus(iterable);
+        var test = GBP_2_34.minus(iterable);
         assertThat(test).isEqualTo(GBP_2_34);
     }
 
@@ -1805,12 +1779,7 @@ class TestBigMoney {
 
     @Test
     void test_minus_Iterable_badProvider() {
-        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(new BigMoneyProvider() {
-            @Override
-            public BigMoney toBigMoney() {
-                return null;
-            }
-        });
+        Iterable<BigMoneyProvider> iterable = Arrays.<BigMoneyProvider>asList(() -> null);
         assertThatExceptionOfType(NullPointerException.class)
             .isThrownBy(() -> GBP_M5_78.minus(iterable));
     }
@@ -1820,34 +1789,34 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_minus_BigMoneyProvider_zero() {
-        BigMoney test = GBP_2_34.minus(GBP_0_00);
+        var test = GBP_2_34.minus(GBP_0_00);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_minus_BigMoneyProvider_positive() {
-        BigMoney test = GBP_2_34.minus(GBP_1_23);
+        var test = GBP_2_34.minus(GBP_1_23);
         assertThat(test).hasToString("GBP 1.11");
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_minus_BigMoneyProvider_negative() {
-        BigMoney test = GBP_2_34.minus(GBP_M1_23);
+        var test = GBP_2_34.minus(GBP_M1_23);
         assertThat(test).hasToString("GBP 3.57");
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_minus_BigMoneyProvider_scale() {
-        BigMoney test = GBP_2_34.minus(BigMoney.parse("GBP 1.111"));
+        var test = GBP_2_34.minus(BigMoney.parse("GBP 1.111"));
         assertThat(test).hasToString("GBP 1.229");
         assertThat(test.getScale()).isEqualTo(3);
     }
 
     @Test
     void test_minus_BigMoneyProvider_Money() {
-        BigMoney test = GBP_2_34.minus(BigMoney.ofMinor(GBP, 1));
+        var test = GBP_2_34.minus(BigMoney.ofMinor(GBP, 1));
         assertThat(test).hasToString("GBP 2.33");
         assertThat(test.getScale()).isEqualTo(2);
     }
@@ -1866,12 +1835,7 @@ class TestBigMoney {
 
     @Test
     void test_minus_BigMoneyProvider_badProvider() {
-        BigMoneyProvider provider = new BigMoneyProvider() {
-            @Override
-            public BigMoney toBigMoney() {
-                return null;
-            }
-        };
+        BigMoneyProvider provider = () -> null;
         assertThatExceptionOfType(NullPointerException.class)
             .isThrownBy(() -> GBP_M5_78.minus(provider));
     }
@@ -1881,27 +1845,27 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_minus_BigDecimal_zero() {
-        BigMoney test = GBP_2_34.minus(BigDecimal.ZERO);
+        var test = GBP_2_34.minus(BigDecimal.ZERO);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_minus_BigDecimal_positive() {
-        BigMoney test = GBP_2_34.minus(bd("1.23"));
+        var test = GBP_2_34.minus(bd("1.23"));
         assertThat(test).hasToString("GBP 1.11");
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_minus_BigDecimal_negative() {
-        BigMoney test = GBP_2_34.minus(bd("-1.23"));
+        var test = GBP_2_34.minus(bd("-1.23"));
         assertThat(test).hasToString("GBP 3.57");
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_minus_BigDecimal_scale() {
-        BigMoney test = GBP_2_34.minus(bd("1.235"));
+        var test = GBP_2_34.minus(bd("1.235"));
         assertThat(test).hasToString("GBP 1.105");
         assertThat(test.getScale()).isEqualTo(3);
     }
@@ -1917,27 +1881,27 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_minus_double_zero() {
-        BigMoney test = GBP_2_34.minus(0d);
+        var test = GBP_2_34.minus(0d);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_minus_double_positive() {
-        BigMoney test = GBP_2_34.minus(1.23d);
+        var test = GBP_2_34.minus(1.23d);
         assertThat(test).hasToString("GBP 1.11");
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_minus_double_negative() {
-        BigMoney test = GBP_2_34.minus(-1.23d);
+        var test = GBP_2_34.minus(-1.23d);
         assertThat(test).hasToString("GBP 3.57");
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_minus_double_scale() {
-        BigMoney test = GBP_2_34.minus(1.235d);
+        var test = GBP_2_34.minus(1.235d);
         assertThat(test).hasToString("GBP 1.105");
         assertThat(test.getScale()).isEqualTo(3);
     }
@@ -1947,20 +1911,20 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_minusMajor_zero() {
-        BigMoney test = GBP_2_34.minusMajor(0);
+        var test = GBP_2_34.minusMajor(0);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_minusMajor_positive() {
-        BigMoney test = GBP_2_34.minusMajor(123);
+        var test = GBP_2_34.minusMajor(123);
         assertThat(test).hasToString("GBP -120.66");
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_minusMajor_negative() {
-        BigMoney test = GBP_2_34.minusMajor(-123);
+        var test = GBP_2_34.minusMajor(-123);
         assertThat(test).hasToString("GBP 125.34");
         assertThat(test.getScale()).isEqualTo(2);
     }
@@ -1970,27 +1934,27 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_minusMinor_zero() {
-        BigMoney test = GBP_2_34.minusMinor(0);
+        var test = GBP_2_34.minusMinor(0);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_minusMinor_positive() {
-        BigMoney test = GBP_2_34.minusMinor(123);
+        var test = GBP_2_34.minusMinor(123);
         assertThat(test).hasToString("GBP 1.11");
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_minusMinor_negative() {
-        BigMoney test = GBP_2_34.minusMinor(-123);
+        var test = GBP_2_34.minusMinor(-123);
         assertThat(test).hasToString("GBP 3.57");
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_minusMinor_scale() {
-        BigMoney test = BigMoney.parse("GBP 12").minusMinor(123);
+        var test = BigMoney.parse("GBP 12").minusMinor(123);
         assertThat(test).hasToString("GBP 10.77");
         assertThat(test.getScale()).isEqualTo(2);
     }
@@ -2000,25 +1964,25 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_minusRetainScale_BigMoneyProviderRoundingMode_zero() {
-        BigMoney test = GBP_2_34.minusRetainScale(BigMoney.zero(GBP), RoundingMode.UNNECESSARY);
+        var test = GBP_2_34.minusRetainScale(BigMoney.zero(GBP), RoundingMode.UNNECESSARY);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_minusRetainScale_BigMoneyProviderRoundingMode_positive() {
-        BigMoney test = GBP_2_34.minusRetainScale(BigMoney.parse("GBP 1.23"), RoundingMode.UNNECESSARY);
+        var test = GBP_2_34.minusRetainScale(BigMoney.parse("GBP 1.23"), RoundingMode.UNNECESSARY);
         assertThat(test).hasToString("GBP 1.11");
     }
 
     @Test
     void test_minusRetainScale_BigMoneyProviderRoundingMode_negative() {
-        BigMoney test = GBP_2_34.minusRetainScale(BigMoney.parse("GBP -1.23"), RoundingMode.UNNECESSARY);
+        var test = GBP_2_34.minusRetainScale(BigMoney.parse("GBP -1.23"), RoundingMode.UNNECESSARY);
         assertThat(test).hasToString("GBP 3.57");
     }
 
     @Test
     void test_minusRetainScale_BigMoneyProviderRoundingMode_roundDown() {
-        BigMoney test = GBP_2_34.minusRetainScale(BigMoney.parse("GBP 1.235"), RoundingMode.DOWN);
+        var test = GBP_2_34.minusRetainScale(BigMoney.parse("GBP 1.235"), RoundingMode.DOWN);
         assertThat(test).hasToString("GBP 1.10");
     }
 
@@ -2045,25 +2009,25 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_minusRetainScale_BigDecimalRoundingMode_zero() {
-        BigMoney test = GBP_2_34.minusRetainScale(BigDecimal.ZERO, RoundingMode.UNNECESSARY);
+        var test = GBP_2_34.minusRetainScale(BigDecimal.ZERO, RoundingMode.UNNECESSARY);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_minusRetainScale_BigDecimalRoundingMode_positive() {
-        BigMoney test = GBP_2_34.minusRetainScale(bd("1.23"), RoundingMode.UNNECESSARY);
+        var test = GBP_2_34.minusRetainScale(bd("1.23"), RoundingMode.UNNECESSARY);
         assertThat(test).hasToString("GBP 1.11");
     }
 
     @Test
     void test_minusRetainScale_BigDecimalRoundingMode_negative() {
-        BigMoney test = GBP_2_34.minusRetainScale(bd("-1.23"), RoundingMode.UNNECESSARY);
+        var test = GBP_2_34.minusRetainScale(bd("-1.23"), RoundingMode.UNNECESSARY);
         assertThat(test).hasToString("GBP 3.57");
     }
 
     @Test
     void test_minusRetainScale_BigDecimalRoundingMode_roundDown() {
-        BigMoney test = GBP_2_34.minusRetainScale(bd("1.235"), RoundingMode.DOWN);
+        var test = GBP_2_34.minusRetainScale(bd("1.235"), RoundingMode.DOWN);
         assertThat(test).hasToString("GBP 1.10");
     }
 
@@ -2090,25 +2054,25 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_minusRetainScale_doubleRoundingMode_zero() {
-        BigMoney test = GBP_2_34.minusRetainScale(0d, RoundingMode.UNNECESSARY);
+        var test = GBP_2_34.minusRetainScale(0d, RoundingMode.UNNECESSARY);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_minusRetainScale_doubleRoundingMode_positive() {
-        BigMoney test = GBP_2_34.minusRetainScale(1.23d, RoundingMode.UNNECESSARY);
+        var test = GBP_2_34.minusRetainScale(1.23d, RoundingMode.UNNECESSARY);
         assertThat(test).hasToString("GBP 1.11");
     }
 
     @Test
     void test_minusRetainScale_doubleRoundingMode_negative() {
-        BigMoney test = GBP_2_34.minusRetainScale(-1.23d, RoundingMode.UNNECESSARY);
+        var test = GBP_2_34.minusRetainScale(-1.23d, RoundingMode.UNNECESSARY);
         assertThat(test).hasToString("GBP 3.57");
     }
 
     @Test
     void test_minusRetainScale_doubleRoundingMode_roundDown() {
-        BigMoney test = GBP_2_34.minusRetainScale(1.235d, RoundingMode.DOWN);
+        var test = GBP_2_34.minusRetainScale(1.235d, RoundingMode.DOWN);
         assertThat(test).hasToString("GBP 1.10");
     }
 
@@ -2129,20 +2093,20 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_multipliedBy_BigDecimal_one() {
-        BigMoney test = GBP_2_34.multipliedBy(BigDecimal.ONE);
+        var test = GBP_2_34.multipliedBy(BigDecimal.ONE);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_multipliedBy_BigDecimal_positive() {
-        BigMoney test = GBP_2_33.multipliedBy(bd("2.5"));
+        var test = GBP_2_33.multipliedBy(bd("2.5"));
         assertThat(test).hasToString("GBP 5.825");
         assertThat(test.getScale()).isEqualTo(3);
     }
 
     @Test
     void test_multipliedBy_BigDecimal_negative() {
-        BigMoney test = GBP_2_33.multipliedBy(bd("-2.5"));
+        var test = GBP_2_33.multipliedBy(bd("-2.5"));
         assertThat(test).hasToString("GBP -5.825");
         assertThat(test.getScale()).isEqualTo(3);
     }
@@ -2158,20 +2122,20 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_multipliedBy_doubleRoundingMode_one() {
-        BigMoney test = GBP_2_34.multipliedBy(1d);
+        var test = GBP_2_34.multipliedBy(1d);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_multipliedBy_doubleRoundingMode_positive() {
-        BigMoney test = GBP_2_33.multipliedBy(2.5d);
+        var test = GBP_2_33.multipliedBy(2.5d);
         assertThat(test).hasToString("GBP 5.825");
         assertThat(test.getScale()).isEqualTo(3);
     }
 
     @Test
     void test_multipliedBy_doubleRoundingMode_negative() {
-        BigMoney test = GBP_2_33.multipliedBy(-2.5d);
+        var test = GBP_2_33.multipliedBy(-2.5d);
         assertThat(test).hasToString("GBP -5.825");
         assertThat(test.getScale()).isEqualTo(3);
     }
@@ -2181,20 +2145,20 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_multipliedBy_long_one() {
-        BigMoney test = GBP_2_34.multipliedBy(1);
+        var test = GBP_2_34.multipliedBy(1);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_multipliedBy_long_positive() {
-        BigMoney test = GBP_2_34.multipliedBy(3);
+        var test = GBP_2_34.multipliedBy(3);
         assertThat(test).hasToString("GBP 7.02");
         assertThat(test.getScale()).isEqualTo(2);
     }
 
     @Test
     void test_multipliedBy_long_negative() {
-        BigMoney test = GBP_2_34.multipliedBy(-3);
+        var test = GBP_2_34.multipliedBy(-3);
         assertThat(test).hasToString("GBP -7.02");
         assertThat(test.getScale()).isEqualTo(2);
     }
@@ -2204,25 +2168,25 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_multiplyRetainScale_BigDecimalRoundingMode_one() {
-        BigMoney test = GBP_2_34.multiplyRetainScale(BigDecimal.ONE, RoundingMode.DOWN);
+        var test = GBP_2_34.multiplyRetainScale(BigDecimal.ONE, RoundingMode.DOWN);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_multiplyRetainScale_BigDecimalRoundingMode_positive() {
-        BigMoney test = GBP_2_33.multiplyRetainScale(bd("2.5"), RoundingMode.DOWN);
+        var test = GBP_2_33.multiplyRetainScale(bd("2.5"), RoundingMode.DOWN);
         assertThat(test).hasToString("GBP 5.82");
     }
 
     @Test
     void test_multiplyRetainScale_BigDecimalRoundingMode_positive_halfUp() {
-        BigMoney test = GBP_2_33.multiplyRetainScale(bd("2.5"), RoundingMode.HALF_UP);
+        var test = GBP_2_33.multiplyRetainScale(bd("2.5"), RoundingMode.HALF_UP);
         assertThat(test).hasToString("GBP 5.83");
     }
 
     @Test
     void test_multiplyRetainScale_BigDecimalRoundingMode_negative() {
-        BigMoney test = GBP_2_33.multiplyRetainScale(bd("-2.5"), RoundingMode.FLOOR);
+        var test = GBP_2_33.multiplyRetainScale(bd("-2.5"), RoundingMode.FLOOR);
         assertThat(test).hasToString("GBP -5.83");
     }
 
@@ -2243,25 +2207,25 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_multiplyRetainScale_doubleRoundingMode_one() {
-        BigMoney test = GBP_2_34.multiplyRetainScale(1d, RoundingMode.DOWN);
+        var test = GBP_2_34.multiplyRetainScale(1d, RoundingMode.DOWN);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_multiplyRetainScale_doubleRoundingMode_positive() {
-        BigMoney test = GBP_2_33.multiplyRetainScale(2.5d, RoundingMode.DOWN);
+        var test = GBP_2_33.multiplyRetainScale(2.5d, RoundingMode.DOWN);
         assertThat(test).hasToString("GBP 5.82");
     }
 
     @Test
     void test_multiplyRetainScale_doubleRoundingMode_positive_halfUp() {
-        BigMoney test = GBP_2_33.multiplyRetainScale(2.5d, RoundingMode.HALF_UP);
+        var test = GBP_2_33.multiplyRetainScale(2.5d, RoundingMode.HALF_UP);
         assertThat(test).hasToString("GBP 5.83");
     }
 
     @Test
     void test_multiplyRetainScale_doubleRoundingMode_negative() {
-        BigMoney test = GBP_2_33.multiplyRetainScale(-2.5d, RoundingMode.FLOOR);
+        var test = GBP_2_33.multiplyRetainScale(-2.5d, RoundingMode.FLOOR);
         assertThat(test).hasToString("GBP -5.83");
     }
 
@@ -2276,25 +2240,25 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_dividedBy_BigDecimalRoundingMode_one() {
-        BigMoney test = GBP_2_34.dividedBy(BigDecimal.ONE, RoundingMode.DOWN);
+        var test = GBP_2_34.dividedBy(BigDecimal.ONE, RoundingMode.DOWN);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_dividedBy_BigDecimalRoundingMode_positive() {
-        BigMoney test = GBP_2_34.dividedBy(bd("2.5"), RoundingMode.DOWN);
+        var test = GBP_2_34.dividedBy(bd("2.5"), RoundingMode.DOWN);
         assertThat(test).hasToString("GBP 0.93");
     }
 
     @Test
     void test_dividedBy_BigDecimalRoundingMode_positive_halfUp() {
-        BigMoney test = GBP_2_34.dividedBy(bd("2.5"), RoundingMode.HALF_UP);
+        var test = GBP_2_34.dividedBy(bd("2.5"), RoundingMode.HALF_UP);
         assertThat(test).hasToString("GBP 0.94");
     }
 
     @Test
     void test_dividedBy_BigDecimalRoundingMode_negative() {
-        BigMoney test = GBP_2_34.dividedBy(bd("-2.5"), RoundingMode.FLOOR);
+        var test = GBP_2_34.dividedBy(bd("-2.5"), RoundingMode.FLOOR);
         assertThat(test).hasToString("GBP -0.94");
     }
 
@@ -2315,25 +2279,25 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_dividedBy_doubleRoundingMode_one() {
-        BigMoney test = GBP_2_34.dividedBy(1d, RoundingMode.DOWN);
+        var test = GBP_2_34.dividedBy(1d, RoundingMode.DOWN);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_dividedBy_doubleRoundingMode_positive() {
-        BigMoney test = GBP_2_34.dividedBy(2.5d, RoundingMode.DOWN);
+        var test = GBP_2_34.dividedBy(2.5d, RoundingMode.DOWN);
         assertThat(test).hasToString("GBP 0.93");
     }
 
     @Test
     void test_dividedBy_doubleRoundingMode_positive_halfUp() {
-        BigMoney test = GBP_2_34.dividedBy(2.5d, RoundingMode.HALF_UP);
+        var test = GBP_2_34.dividedBy(2.5d, RoundingMode.HALF_UP);
         assertThat(test).hasToString("GBP 0.94");
     }
 
     @Test
     void test_dividedBy_doubleRoundingMode_negative() {
-        BigMoney test = GBP_2_34.dividedBy(-2.5d, RoundingMode.FLOOR);
+        var test = GBP_2_34.dividedBy(-2.5d, RoundingMode.FLOOR);
         assertThat(test).hasToString("GBP -0.94");
     }
 
@@ -2348,31 +2312,31 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_dividedBy_long_one() {
-        BigMoney test = GBP_2_34.dividedBy(1, RoundingMode.DOWN);
+        var test = GBP_2_34.dividedBy(1, RoundingMode.DOWN);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_dividedBy_long_positive() {
-        BigMoney test = GBP_2_34.dividedBy(3, RoundingMode.DOWN);
+        var test = GBP_2_34.dividedBy(3, RoundingMode.DOWN);
         assertThat(test).hasToString("GBP 0.78");
     }
 
     @Test
     void test_dividedBy_long_positive_roundDown() {
-        BigMoney test = GBP_2_35.dividedBy(3, RoundingMode.DOWN);
+        var test = GBP_2_35.dividedBy(3, RoundingMode.DOWN);
         assertThat(test).hasToString("GBP 0.78");
     }
 
     @Test
     void test_dividedBy_long_positive_roundUp() {
-        BigMoney test = GBP_2_35.dividedBy(3, RoundingMode.UP);
+        var test = GBP_2_35.dividedBy(3, RoundingMode.UP);
         assertThat(test).hasToString("GBP 0.79");
     }
 
     @Test
     void test_dividedBy_long_negative() {
-        BigMoney test = GBP_2_34.dividedBy(-3, RoundingMode.DOWN);
+        var test = GBP_2_34.dividedBy(-3, RoundingMode.DOWN);
         assertThat(test).hasToString("GBP -0.78");
     }
 
@@ -2381,19 +2345,19 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_negated_zero() {
-        BigMoney test = GBP_0_00.negated();
+        var test = GBP_0_00.negated();
         assertThat(test).isSameAs(GBP_0_00);
     }
 
     @Test
     void test_negated_positive() {
-        BigMoney test = GBP_2_34.negated();
+        var test = GBP_2_34.negated();
         assertThat(test).hasToString("GBP -2.34");
     }
 
     @Test
     void test_negated_negative() {
-        BigMoney test = BigMoney.parse("GBP -2.34").negated();
+        var test = BigMoney.parse("GBP -2.34").negated();
         assertThat(test).hasToString("GBP 2.34");
     }
 
@@ -2402,13 +2366,13 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_abs_positive() {
-        BigMoney test = GBP_2_34.abs();
+        var test = GBP_2_34.abs();
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_abs_negative() {
-        BigMoney test = BigMoney.parse("GBP -2.34").abs();
+        var test = BigMoney.parse("GBP -2.34").abs();
         assertThat(test).hasToString("GBP 2.34");
     }
 
@@ -2417,55 +2381,55 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_round_2down() {
-        BigMoney test = GBP_2_34.rounded(2, RoundingMode.DOWN);
+        var test = GBP_2_34.rounded(2, RoundingMode.DOWN);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_round_2up() {
-        BigMoney test = GBP_2_34.rounded(2, RoundingMode.DOWN);
+        var test = GBP_2_34.rounded(2, RoundingMode.DOWN);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
     @Test
     void test_round_1down() {
-        BigMoney test = GBP_2_34.rounded(1, RoundingMode.DOWN);
+        var test = GBP_2_34.rounded(1, RoundingMode.DOWN);
         assertThat(test).hasToString("GBP 2.30");
     }
 
     @Test
     void test_round_1up() {
-        BigMoney test = GBP_2_34.rounded(1, RoundingMode.UP);
+        var test = GBP_2_34.rounded(1, RoundingMode.UP);
         assertThat(test).hasToString("GBP 2.40");
     }
 
     @Test
     void test_round_0down() {
-        BigMoney test = GBP_2_34.rounded(0, RoundingMode.DOWN);
+        var test = GBP_2_34.rounded(0, RoundingMode.DOWN);
         assertThat(test).hasToString("GBP 2.00");
     }
 
     @Test
     void test_round_0up() {
-        BigMoney test = GBP_2_34.rounded(0, RoundingMode.UP);
+        var test = GBP_2_34.rounded(0, RoundingMode.UP);
         assertThat(test).hasToString("GBP 3.00");
     }
 
     @Test
     void test_round_M1down() {
-        BigMoney test = BigMoney.parse("GBP 432.34").rounded(-1, RoundingMode.DOWN);
+        var test = BigMoney.parse("GBP 432.34").rounded(-1, RoundingMode.DOWN);
         assertThat(test).hasToString("GBP 430.00");
     }
 
     @Test
     void test_round_M1up() {
-        BigMoney test = BigMoney.parse("GBP 432.34").rounded(-1, RoundingMode.UP);
+        var test = BigMoney.parse("GBP 432.34").rounded(-1, RoundingMode.UP);
         assertThat(test).hasToString("GBP 440.00");
     }
 
     @Test
     void test_round_3() {
-        BigMoney test = GBP_2_34.rounded(3, RoundingMode.DOWN);
+        var test = GBP_2_34.rounded(3, RoundingMode.DOWN);
         assertThat(test).isSameAs(GBP_2_34);
     }
 
@@ -2474,13 +2438,13 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_convertedTo_CurrencyUnit_BigDecimal_positive() {
-        BigMoney test = GBP_2_33.convertedTo(EUR, bd("2.5"));
+        var test = GBP_2_33.convertedTo(EUR, bd("2.5"));
         assertThat(test).hasToString("EUR 5.825");
     }
 
     @Test
     void test_convertedTo_CurrencyUnit_BigDecimal_sameCurrencyCorrectFactor() {
-        BigMoney test = GBP_2_33.convertedTo(GBP, bd("1.00000"));
+        var test = GBP_2_33.convertedTo(GBP, bd("1.00000"));
         assertThat(test).isEqualTo(GBP_2_33);
     }
 
@@ -2513,13 +2477,13 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_convertRetainScale_CurrencyUnit_BigDecimal_RoundingMode_positive() {
-        BigMoney test = BigMoney.parse("GBP 2.2").convertRetainScale(EUR, bd("2.5"), RoundingMode.DOWN);
+        var test = BigMoney.parse("GBP 2.2").convertRetainScale(EUR, bd("2.5"), RoundingMode.DOWN);
         assertThat(test).hasToString("EUR 5.5");
     }
 
     @Test
     void test_convertRetainScale_CurrencyUnit_BigDecimal_RoundingMode_roundHalfUp() {
-        BigMoney test = BigMoney.parse("GBP 2.21").convertRetainScale(EUR, bd("2.5"), RoundingMode.HALF_UP);
+        var test = BigMoney.parse("GBP 2.21").convertRetainScale(EUR, bd("2.5"), RoundingMode.HALF_UP);
         assertThat(test).hasToString("EUR 5.53");
     }
 
@@ -2579,7 +2543,7 @@ class TestBigMoney {
 
     @Test
     void test_toMoney_RoundingMode_round() {
-        BigMoney money = BigMoney.parse("GBP 2.355");
+        var money = BigMoney.parse("GBP 2.355");
         assertThat(money.toMoney(RoundingMode.HALF_EVEN)).isEqualTo(Money.parse("GBP 2.36"));
     }
 
@@ -2617,9 +2581,9 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_compareTo_BigMoney() {
-        BigMoney a = GBP_2_34;
-        BigMoney b = GBP_2_35;
-        BigMoney c = GBP_2_36;
+        var a = GBP_2_34;
+        var b = GBP_2_35;
+        var c = GBP_2_36;
         assertThat(a.compareTo(a)).isEqualTo(0);
         assertThat(b.compareTo(b)).isEqualTo(0);
         assertThat(c.compareTo(c)).isEqualTo(0);
@@ -2636,10 +2600,10 @@ class TestBigMoney {
 
     @Test
     void test_compareTo_Money() {
-        BigMoney t = GBP_2_35;
-        Money a = Money.ofMinor(GBP, 234);
-        Money b = Money.ofMinor(GBP, 235);
-        Money c = Money.ofMinor(GBP, 236);
+        var t = GBP_2_35;
+        var a = Money.ofMinor(GBP, 234);
+        var b = Money.ofMinor(GBP, 235);
+        var c = Money.ofMinor(GBP, 236);
         assertThat(t.compareTo(a)).isEqualTo(1);
         assertThat(t.compareTo(b)).isEqualTo(0);
         assertThat(t.compareTo(c)).isEqualTo(-1);
@@ -2647,8 +2611,8 @@ class TestBigMoney {
 
     @Test
     void test_compareTo_currenciesDiffer() {
-        BigMoney a = GBP_2_34;
-        BigMoney b = USD_2_35;
+        var a = GBP_2_34;
+        var b = USD_2_35;
         assertThatExceptionOfType(CurrencyMismatchException.class)
             .isThrownBy(() -> a.compareTo(b));
     }
@@ -2666,9 +2630,9 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_isEqual() {
-        BigMoney a = GBP_2_34;
-        BigMoney b = GBP_2_35;
-        BigMoney c = GBP_2_36;
+        var a = GBP_2_34;
+        var b = GBP_2_35;
+        var c = GBP_2_36;
         assertThat(a.isEqual(a)).isTrue();
         assertThat(b.isEqual(b)).isTrue();
         assertThat(c.isEqual(c)).isTrue();
@@ -2685,15 +2649,15 @@ class TestBigMoney {
 
     @Test
     void test_isEqual_Money() {
-        BigMoney a = GBP_2_34;
-        Money b = Money.ofMinor(GBP, 234);
+        var a = GBP_2_34;
+        var b = Money.ofMinor(GBP, 234);
         assertThat(a.isEqual(b)).isTrue();
     }
 
     @Test
     void test_isEqual_currenciesDiffer() {
-        BigMoney a = GBP_2_34;
-        BigMoney b = USD_2_35;
+        var a = GBP_2_34;
+        var b = USD_2_35;
         assertThatExceptionOfType(CurrencyMismatchException.class)
             .isThrownBy(() -> a.isEqual(b));
     }
@@ -2703,9 +2667,9 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_isGreaterThan() {
-        BigMoney a = GBP_2_34;
-        BigMoney b = GBP_2_35;
-        BigMoney c = GBP_2_36;
+        var a = GBP_2_34;
+        var b = GBP_2_35;
+        var c = GBP_2_36;
         assertThat(a.isGreaterThan(a)).isFalse();
         assertThat(a.isGreaterThan(b)).isFalse();
         assertThat(a.isGreaterThan(c)).isFalse();
@@ -2721,8 +2685,8 @@ class TestBigMoney {
 
     @Test
     void test_isGreaterThan_currenciesDiffer() {
-        BigMoney a = GBP_2_34;
-        BigMoney b = USD_2_35;
+        var a = GBP_2_34;
+        var b = USD_2_35;
         assertThatExceptionOfType(CurrencyMismatchException.class)
             .isThrownBy(() -> a.isGreaterThan(b));
     }
@@ -2732,9 +2696,9 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_isGreaterThanOrEqual() {
-        BigMoney a = GBP_2_34;
-        BigMoney b = GBP_2_35;
-        BigMoney c = GBP_2_36;
+        var a = GBP_2_34;
+        var b = GBP_2_35;
+        var c = GBP_2_36;
         assertThat(a.isGreaterThanOrEqual(a)).isTrue();
         assertThat(a.isGreaterThanOrEqual(b)).isFalse();
         assertThat(a.isGreaterThanOrEqual(c)).isFalse();
@@ -2750,8 +2714,8 @@ class TestBigMoney {
 
     @Test
     void test_isGreaterThanOrEqual_currenciesDiffer() {
-        BigMoney a = GBP_2_34;
-        BigMoney b = USD_2_35;
+        var a = GBP_2_34;
+        var b = USD_2_35;
         assertThatExceptionOfType(CurrencyMismatchException.class)
             .isThrownBy(() -> a.isGreaterThanOrEqual(b));
     }
@@ -2761,9 +2725,9 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_isLessThan() {
-        BigMoney a = GBP_2_34;
-        BigMoney b = GBP_2_35;
-        BigMoney c = GBP_2_36;
+        var a = GBP_2_34;
+        var b = GBP_2_35;
+        var c = GBP_2_36;
         assertThat(a.isLessThan(a)).isFalse();
         assertThat(a.isLessThan(b)).isTrue();
         assertThat(a.isLessThan(c)).isTrue();
@@ -2779,8 +2743,8 @@ class TestBigMoney {
 
     @Test
     void test_isLessThan_currenciesDiffer() {
-        BigMoney a = GBP_2_34;
-        BigMoney b = USD_2_35;
+        var a = GBP_2_34;
+        var b = USD_2_35;
         assertThatExceptionOfType(CurrencyMismatchException.class)
             .isThrownBy(() -> a.isLessThan(b));
     }
@@ -2790,9 +2754,9 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_isLessThanOrEqual() {
-        BigMoney a = GBP_2_34;
-        BigMoney b = GBP_2_35;
-        BigMoney c = GBP_2_36;
+        var a = GBP_2_34;
+        var b = GBP_2_35;
+        var c = GBP_2_36;
         assertThat(a.isLessThanOrEqual(a)).isTrue();
         assertThat(a.isLessThanOrEqual(b)).isTrue();
         assertThat(a.isLessThanOrEqual(c)).isTrue();
@@ -2808,8 +2772,8 @@ class TestBigMoney {
 
     @Test
     void test_isLessThanOrEqual_currenciesDiffer() {
-        BigMoney a = GBP_2_34;
-        BigMoney b = USD_2_35;
+        var a = GBP_2_34;
+        var b = USD_2_35;
         assertThatExceptionOfType(CurrencyMismatchException.class)
             .isThrownBy(() -> a.isLessThanOrEqual(b));
     }
@@ -2819,9 +2783,9 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_equals_hashCode_positive() {
-        BigMoney a = GBP_2_34;
-        BigMoney b = GBP_2_34;
-        BigMoney c = GBP_2_35;
+        var a = GBP_2_34;
+        var b = GBP_2_34;
+        var c = GBP_2_35;
         assertThat(a).isEqualTo(a);
         assertThat(b).isEqualTo(b);
         assertThat(c).isEqualTo(c);
@@ -2836,7 +2800,7 @@ class TestBigMoney {
 
     @Test
     void test_equals_false() {
-        BigMoney a = GBP_2_34;
+        var a = GBP_2_34;
         assertThat(a).isNotEqualTo(null);
         assertThat(new Object()).isNotEqualTo(a);
     }
@@ -2846,13 +2810,13 @@ class TestBigMoney {
     //-----------------------------------------------------------------------
     @Test
     void test_toString_positive() {
-        BigMoney test = BigMoney.of(GBP, BIGDEC_2_34);
+        var test = BigMoney.of(GBP, BIGDEC_2_34);
         assertThat(test).hasToString("GBP 2.34");
     }
 
     @Test
     void test_toString_negative() {
-        BigMoney test = BigMoney.of(EUR, BIGDEC_M5_78);
+        var test = BigMoney.of(EUR, BIGDEC_M5_78);
         assertThat(test).hasToString("EUR -5.78");
     }
 

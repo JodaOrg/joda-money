@@ -18,8 +18,6 @@ package org.joda.money;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-import java.util.List;
-
 import org.junit.jupiter.api.Test;
 
 /**
@@ -29,8 +27,8 @@ class TestCurrencyUnitExtension {
 
     @Test
     void test_CurrencyFromMoneyData() {
-        List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
-        boolean found = false;
+        var curList = CurrencyUnit.registeredCurrencies();
+        var found = false;
         for (CurrencyUnit currencyUnit : curList) {
             if (currencyUnit.getCode().equals("GBP")) {
                 found = true;
@@ -42,8 +40,8 @@ class TestCurrencyUnitExtension {
 
     @Test
     void test_CurrencyFromMoneyDataExtension() {
-        List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
-        boolean found = false;
+        var curList = CurrencyUnit.registeredCurrencies();
+        var found = false;
         for (CurrencyUnit currencyUnit : curList) {
             if (currencyUnit.getCode().equals("BTC")) {
                 found = true;
@@ -55,8 +53,8 @@ class TestCurrencyUnitExtension {
 
     @Test
     void test_LargerDecimalPrecisionCurrencyFromMoneyDataExtension() {
-        List<CurrencyUnit> curList = CurrencyUnit.registeredCurrencies();
-        boolean found = false;
+        var curList = CurrencyUnit.registeredCurrencies();
+        var found = false;
         for (CurrencyUnit currencyUnit : curList) {
             if (currencyUnit.getCode().equals("ETH")) {
                 found = true;
@@ -87,7 +85,7 @@ class TestCurrencyUnitExtension {
 
     @Test
     void test_CurrencyEURChanged() {
-        CurrencyUnit currency = CurrencyUnit.ofCountry("HU");
+        var currency = CurrencyUnit.ofCountry("HU");
         assertThat(currency).isEqualTo(CurrencyUnit.EUR);
         assertThat(CurrencyUnit.EUR.getCountryCodes()).contains("HU");
         assertThat(CurrencyUnit.of("HUF").getCountryCodes()).isEmpty();
