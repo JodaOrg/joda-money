@@ -43,8 +43,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 class TestMoneyFormatter {
 
     private static final Locale cCachedLocale = Locale.getDefault();
-    private static final Locale TEST_GB_LOCALE = new Locale("en", "GB", "TEST");
-    private static final Locale TEST_FR_LOCALE = new Locale("fr", "FR", "TEST");
+    private static final Locale TEST_GB_LOCALE = Locale.of("en", "GB", "TEST");
+    private static final Locale TEST_FR_LOCALE = Locale.of("fr", "FR", "TEST");
     private static final Money MONEY_GBP_12_34 = Money.parse("GBP 12.34");
     private MoneyFormatter iPrintTest;
     private MoneyFormatter iCannotPrint;
@@ -236,10 +236,9 @@ class TestMoneyFormatter {
 
     @Test
     void test_parseBigMoney_CharSequence_incompleteLongText() {
+        var str = "12.34 GBP ABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABAB";
         assertThatExceptionOfType(MoneyFormatException.class)
-            .isThrownBy(
-                    () -> iParseTest
-                        .parseBigMoney("12.34 GBP ABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABABAB"));
+            .isThrownBy(() -> iParseTest.parseBigMoney(str));
     }
 
     @Test

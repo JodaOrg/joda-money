@@ -415,7 +415,7 @@ class TestCurrencyUnit {
     @Test
     void test_factory_of_Locale_unknownCurrency() {
         assertThatExceptionOfType(IllegalCurrencyException.class)
-            .isThrownBy(() -> CurrencyUnit.of(new Locale("en", "XY")))
+            .isThrownBy(() -> CurrencyUnit.of(Locale.of("en", "XY")))
             .withMessage("No currency found for locale 'en_XY'");
     }
 

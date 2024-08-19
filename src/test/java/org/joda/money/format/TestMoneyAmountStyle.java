@@ -33,9 +33,9 @@ import org.junit.jupiter.api.Test;
 class TestMoneyAmountStyle {
 
     private static final Locale cCachedLocale = Locale.getDefault();
-    private static final Locale TEST_GB_LOCALE = new Locale("en", "GB", "TEST");
-    private static final Locale TEST_DE_LOCALE = new Locale("de", "DE", "TEST");
-    private static final Locale TEST_LV_LOCALE = new Locale("lv", "LV", "TEST");
+    private static final Locale TEST_GB_LOCALE = Locale.of("en", "GB", "TEST");
+    private static final Locale TEST_DE_LOCALE = Locale.of("de", "DE", "TEST");
+    private static final Locale TEST_LV_LOCALE = Locale.of("lv", "LV", "TEST");
     private static final BigMoney MONEY = BigMoney.of(CurrencyUnit.GBP, new BigDecimal("87654321.12345678"));
 
     @BeforeEach

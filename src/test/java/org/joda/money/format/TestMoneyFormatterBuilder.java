@@ -51,8 +51,8 @@ class TestMoneyFormatterBuilder {
     private static final Money JPY_2345 = Money.parse("JPY 2345");
 
     private static final Locale cCachedLocale = Locale.getDefault();
-    private static final Locale TEST_GB_LOCALE = new Locale("en", "GB", "TEST");
-    private static final Locale TEST_FR_LOCALE = new Locale("fr", "FR", "TEST");
+    private static final Locale TEST_GB_LOCALE = Locale.of("en", "GB", "TEST");
+    private static final Locale TEST_FR_LOCALE = Locale.of("fr", "FR", "TEST");
     private static final DecimalFormatSymbols FR_SYMBOLS = new DecimalFormatSymbols(Locale.FRANCE);
     private static final char FR_DECIMAL = FR_SYMBOLS.getMonetaryDecimalSeparator();
     private static final char FR_GROUP = FR_SYMBOLS.getGroupingSeparator();
