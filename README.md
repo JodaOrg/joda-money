@@ -50,12 +50,15 @@ Various documentation is available:
 
 
 ### Releases
-[Release 1.0.4](https://www.joda.org/joda-money/download.html) is the current release.
-This release is considered stable and worthy of the 1.x tag.
-It depends on Java SE 8 or later.
+The 2.x branch is compatible with Java SE 21 or later.
 
-Joda-Money does have a *compile-time* dependency on Joda-Convert, but this is not required at runtime
-thanks to the magic of annotations.
+The 1.x branch is compatible with Java SE 8 or later.
+
+v2.x releases are compatible with v1.x releases - except for the Java SE version and `module-info.class` file.
+
+Joda-Money has no mandatory dependencies.
+There is a *compile-time* dependency on [Joda-Convert](https://www.joda.org/joda-convert/),
+but this is not required at runtime thanks to the magic of annotations.
 
 Available in the [Maven Central repository](https://search.maven.org/search?q=g:org.joda%20AND%20a:joda-money&core=gav)
 
@@ -85,7 +88,7 @@ Tidelift will coordinate the fix and disclosure.
 
 ### Release process
 
-* Update version (README.md, index.md, changes.xml)
+* Update version (index.md, changes.xml)
 * Commit and push
 * In an admin window `gpg-connect-agent -v`
 * Switch to Java 11

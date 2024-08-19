@@ -9,8 +9,8 @@
   <artifactId>joda-money</artifactId>
   <packaging>jar</packaging>
   <name>Joda-Money</name>
-  <version>1.0.5-SNAPSHOT</version>
-  <description>Money representation and formatting</description>
+  <version>2.0.0-RC1-SNAPSHOT</version>
+  <description>Money representation and formatting, compatible with Java 21+</description>
   <url>https://www.joda.org/joda-money/</url>
 
   <!-- ==================================================================== -->
@@ -100,7 +100,7 @@
     </resources>
     <!-- define build -->
     <plugins>
-      <!-- Enforce Maven 3.6.0 and Java 11+ -->
+      <!-- Enforce Maven 3.8.0 and Java 21+ -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
@@ -116,42 +116,12 @@
                   <version>3.8.0</version>
                 </requireMavenVersion>
                 <requireJavaVersion>
-                  <version>[11,)</version>
+                  <version>[21,)</version>
                 </requireJavaVersion>
               </rules>
             </configuration>
           </execution>
         </executions>
-      </plugin>
-      <!-- Compile twice -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <!-- compile first with module-info for Java 9 -->
-          <execution>
-            <id>default-compile</id>
-            <configuration>
-              <release>9</release>
-            </configuration>
-          </execution>
-          <!-- then compile without module-info for Java 8 -->
-          <execution>
-            <id>base-compile</id>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-            <configuration>
-              <excludes>
-                <exclude>module-info.java</exclude>
-              </excludes>
-            </configuration>
-          </execution>
-        </executions>
-        <!-- setup defaults for compile and testCompile -->
-        <configuration>
-          <release>8</release>
-        </configuration>
       </plugin>
       <!-- Hack to extract dependencies for Surefire plugin -->
       <plugin>
@@ -229,9 +199,9 @@
             </goals>
           </execution>
         </executions>
-        <!-- Javadoc uses source 11 to pickup the module settings -->
+        <!-- Javadoc uses source 21 to pickup the module settings -->
         <configuration>
-          <source>11</source>
+          <source>21</source>
         </configuration>
       </plugin>
       <!-- Setup source jar -->
@@ -581,7 +551,7 @@
           </reportSet>
         </reportSets>
         <configuration>
-          <source>11</source>
+          <source>21</source>
         </configuration>
       </plugin>
       <!-- Setup Surefire report -->
@@ -835,9 +805,8 @@
     <spotbugs-maven-plugin.version>4.8.6.2</spotbugs-maven-plugin.version>
 
     <!-- Properties for maven-compiler-plugin -->
-    <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>
-    <maven.compiler.source>1.8</maven.compiler.source>
-    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
     <maven.compiler.fork>true</maven.compiler.fork>
 
     <!-- Properties for maven-javadoc-plugin -->
@@ -846,7 +815,7 @@
     <doclint>none</doclint>
 
     <!-- Properties for maven-checkstyle-plugin -->
-    <checkstyle.version>8.45.1</checkstyle.version>
+    <checkstyle.version>10.17.0</checkstyle.version>
     <checkstyle.config.location>src/main/checkstyle/checkstyle.xml</checkstyle.config.location>
     <linkXRef>false</linkXRef>
 
