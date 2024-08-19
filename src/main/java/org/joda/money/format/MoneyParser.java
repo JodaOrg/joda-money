@@ -42,9 +42,9 @@ public interface MoneyParser {
      * The context is not a thread-safe object and a new instance will be created
      * for each parse. The context must not be stored in an instance variable
      * or shared with any other threads.
-     * 
+     *
      * @param context  the context to use and parse into, not null
      */
-    void parse(MoneyParseContext context);
+    public abstract void parse(MoneyParseContext context);
 
 }

@@ -41,13 +41,13 @@ public interface MoneyPrinter {
      * The context is not a thread-safe object and a new instance will be created
      * for each print. The context must not be stored in an instance variable
      * or shared with any other threads.
-     * 
+     *
      * @param context  the context being used, not null
      * @param appendable  the appendable to add to, not null
      * @param money  the money to print, not null
      * @throws MoneyFormatException if there is a problem while printing
      * @throws IOException if an IO exception occurs
      */
-    void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException;
+    public abstract void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException;
 
 }

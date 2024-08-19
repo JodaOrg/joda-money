@@ -106,7 +106,7 @@ public final class MoneyAmountStyle implements Serializable {
     /**
      * Cache of localized styles.
      */
-    private static final ConcurrentMap<Locale, MoneyAmountStyle> LOCALIZED_CACHE = new ConcurrentHashMap<Locale, MoneyAmountStyle>();
+    private static final ConcurrentMap<Locale, MoneyAmountStyle> LOCALIZED_CACHE = new ConcurrentHashMap<>();
     /**
      * Serialization version.
      */
@@ -171,7 +171,7 @@ public final class MoneyAmountStyle implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * Constructor, creating a new monetary instance.
-     * 
+     *
      * @param zeroCharacter  the zero character
      * @param positiveCharacter  the positive sign
      * @param negativeCharacter  the negative sign
@@ -218,14 +218,14 @@ public final class MoneyAmountStyle implements Serializable {
      * <p>
      * The settings for the locale are pulled from {@link DecimalFormatSymbols} and
      * {@link DecimalFormat}.
-     * 
+     *
      * @param locale  the locale to use, not null
      * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle localize(Locale locale) {
         MoneyFormatter.checkNotNull(locale, "Locale must not be null");
-        MoneyAmountStyle result = this;
-        MoneyAmountStyle protoStyle = null;
+        var result = this;
+        var protoStyle = (MoneyAmountStyle) null;
         if (zeroCharacter < 0) {
             protoStyle = getLocalizedStyle(locale);
             result = result.withZeroCharacter(protoStyle.getZeroCharacter());
@@ -265,16 +265,16 @@ public final class MoneyAmountStyle implements Serializable {
      * <p>
      * The method {@code DecimalFormatSymbols.getInstance(locale)} will be used
      * in order to allow the use of locales defined as extensions.
-     * 
+     *
      * @param locale  the {@link Locale} used to get the correct {@link DecimalFormatSymbols}
      * @return the symbols, never null
      */
     private static MoneyAmountStyle getLocalizedStyle(Locale locale) {
-        MoneyAmountStyle protoStyle = LOCALIZED_CACHE.get(locale);
+        var protoStyle = LOCALIZED_CACHE.get(locale);
         if (protoStyle == null) {
-            DecimalFormatSymbols symbols = DecimalFormatSymbols.getInstance(locale);
-            NumberFormat format = NumberFormat.getCurrencyInstance(locale);
-            int size = (format instanceof DecimalFormat ? ((DecimalFormat) format).getGroupingSize() : 3);
+            var symbols = DecimalFormatSymbols.getInstance(locale);
+            var format = NumberFormat.getCurrencyInstance(locale);
+            var size = (format instanceof DecimalFormat ? ((DecimalFormat) format).getGroupingSize() : 3);
             size = size <= 0 ? 3 : size;
             protoStyle = new MoneyAmountStyle(
                     symbols.getZeroDigit(),
@@ -299,7 +299,7 @@ public final class MoneyAmountStyle implements Serializable {
      * The UTF-8 standard supports a number of different numeric scripts.
      * Each script has the characters in order from zero to nine.
      * This method returns the zero character, which therefore also defines one to nine.
-     * 
+     *
      * @return the zero character, null if to be determined by locale
      */
     public Character getZeroCharacter() {
@@ -315,12 +315,12 @@ public final class MoneyAmountStyle implements Serializable {
      * <p>
      * For English, this is a '0'. Some other scripts use different characters
      * for the numbers zero to nine.
-     * 
+     *
      * @param zeroCharacter  the zero character, null if to be determined by locale
      * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle withZeroCharacter(Character zeroCharacter) {
-        int zeroVal = (zeroCharacter == null ? -1 : zeroCharacter);
+        var zeroVal = (zeroCharacter == null ? -1 : zeroCharacter);
         if (zeroVal == this.zeroCharacter) {
             return this;
         }
@@ -336,7 +336,7 @@ public final class MoneyAmountStyle implements Serializable {
      * Gets the character used for the positive sign character.
      * <p>
      * The standard ASCII symbol is '+'.
-     * 
+     *
      * @return the format for positive amounts, null if to be determined by locale
      */
     public Character getPositiveSignCharacter() {
@@ -347,12 +347,12 @@ public final class MoneyAmountStyle implements Serializable {
      * Returns a copy of this style with the specified positive sign character.
      * <p>
      * The standard ASCII symbol is '+'.
-     * 
+     *
      * @param positiveCharacter  the positive character, null if to be determined by locale
      * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle withPositiveSignCharacter(Character positiveCharacter) {
-        int positiveVal = (positiveCharacter == null ? -1 : positiveCharacter);
+        var positiveVal = (positiveCharacter == null ? -1 : positiveCharacter);
         if (positiveVal == this.positiveCharacter) {
             return this;
         }
@@ -368,7 +368,7 @@ public final class MoneyAmountStyle implements Serializable {
      * Gets the character used for the negative sign character.
      * <p>
      * The standard ASCII symbol is '-'.
-     * 
+     *
      * @return the format for negative amounts, null if to be determined by locale
      */
     public Character getNegativeSignCharacter() {
@@ -379,12 +379,12 @@ public final class MoneyAmountStyle implements Serializable {
      * Returns a copy of this style with the specified negative sign character.
      * <p>
      * The standard ASCII symbol is '-'.
-     * 
+     *
      * @param negativeCharacter  the negative character, null if to be determined by locale
      * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle withNegativeSignCharacter(Character negativeCharacter) {
-        int negativeVal = (negativeCharacter == null ? -1 : negativeCharacter);
+        var negativeVal = (negativeCharacter == null ? -1 : negativeCharacter);
         if (negativeVal == this.negativeCharacter) {
             return this;
         }
@@ -398,7 +398,7 @@ public final class MoneyAmountStyle implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * Gets the character used for the decimal point.
-     * 
+     *
      * @return the decimal point character, null if to be determined by locale
      */
     public Character getDecimalPointCharacter() {
@@ -409,12 +409,12 @@ public final class MoneyAmountStyle implements Serializable {
      * Returns a copy of this style with the specified decimal point character.
      * <p>
      * For English, this is a dot.
-     * 
+     *
      * @param decimalPointCharacter  the decimal point character, null if to be determined by locale
      * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle withDecimalPointCharacter(Character decimalPointCharacter) {
-        int dpVal = (decimalPointCharacter == null ? -1 : decimalPointCharacter);
+        var dpVal = (decimalPointCharacter == null ? -1 : decimalPointCharacter);
         if (dpVal == this.decimalPointCharacter) {
             return this;
         }
@@ -428,7 +428,7 @@ public final class MoneyAmountStyle implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * Gets the character used to separate groups, typically thousands.
-     * 
+     *
      * @return the grouping character, null if to be determined by locale
      */
     public Character getGroupingCharacter() {
@@ -439,12 +439,12 @@ public final class MoneyAmountStyle implements Serializable {
      * Returns a copy of this style with the specified grouping character.
      * <p>
      * For English, this is a comma.
-     * 
+     *
      * @param groupingCharacter  the grouping character, null if to be determined by locale
      * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle withGroupingCharacter(Character groupingCharacter) {
-        int groupingVal = (groupingCharacter == null ? -1 : groupingCharacter);
+        var groupingVal = (groupingCharacter == null ? -1 : groupingCharacter);
         if (groupingVal == this.groupingCharacter) {
             return this;
         }
@@ -458,7 +458,7 @@ public final class MoneyAmountStyle implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * Gets the size of each group, typically 3 for thousands.
-     * 
+     *
      * @return the size of each group, null if to be determined by locale
      */
     public Integer getGroupingSize() {
@@ -467,14 +467,14 @@ public final class MoneyAmountStyle implements Serializable {
 
     /**
      * Returns a copy of this style with the specified grouping size.
-     * 
+     *
      * @param groupingSize  the size of each group, such as 3 for thousands,
      *          not zero or negative, null if to be determined by locale
      * @return the new instance for chaining, never null
      * @throws IllegalArgumentException if the grouping size is zero or less
      */
     public MoneyAmountStyle withGroupingSize(Integer groupingSize) {
-        int sizeVal = (groupingSize == null ? -1 : groupingSize);
+        var sizeVal = (groupingSize == null ? -1 : groupingSize);
         if (groupingSize != null && sizeVal <= 0) {
             throw new IllegalArgumentException("Grouping size must be greater than zero");
         }
@@ -496,7 +496,7 @@ public final class MoneyAmountStyle implements Serializable {
      * closest to the decimal point is of size 3 and other groups are of size 2.
      * The extended grouping size is used for groups that are not next to the decimal point.
      * The value zero is used to indicate that extended grouping is not needed.
-     * 
+     *
      * @return the size of each group, null if to be determined by locale
      */
     public Integer getExtendedGroupingSize() {
@@ -505,14 +505,14 @@ public final class MoneyAmountStyle implements Serializable {
 
     /**
      * Returns a copy of this style with the specified extended grouping size.
-     * 
+     *
      * @param extendedGroupingSize  the size of each group, such as 3 for thousands,
      *          not zero or negative, null if to be determined by locale
      * @return the new instance for chaining, never null
      * @throws IllegalArgumentException if the grouping size is zero or less
      */
     public MoneyAmountStyle withExtendedGroupingSize(Integer extendedGroupingSize) {
-        int sizeVal = (extendedGroupingSize == null ? -1 : extendedGroupingSize);
+        var sizeVal = (extendedGroupingSize == null ? -1 : extendedGroupingSize);
         if (extendedGroupingSize != null && sizeVal < 0) {
             throw new IllegalArgumentException("Extended grouping size must not be negative");
         }
@@ -529,7 +529,7 @@ public final class MoneyAmountStyle implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * Gets the style of grouping required.
-     * 
+     *
      * @return the grouping style, not null
      */
     public GroupingStyle getGroupingStyle() {
@@ -538,7 +538,7 @@ public final class MoneyAmountStyle implements Serializable {
 
     /**
      * Returns a copy of this style with the specified grouping setting.
-     * 
+     *
      * @param groupingStyle  the grouping style, not null
      * @return the new instance for chaining, never null
      */
@@ -557,7 +557,7 @@ public final class MoneyAmountStyle implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * Gets whether to always use the decimal point, even if there is no fraction.
-     * 
+     *
      * @return whether to force the decimal point on output
      */
     public boolean isForcedDecimalPoint() {
@@ -566,7 +566,7 @@ public final class MoneyAmountStyle implements Serializable {
 
     /**
      * Returns a copy of this style with the specified decimal point setting.
-     * 
+     *
      * @param forceDecimalPoint  true to force the use of the decimal point, false to use it if required
      * @return the new instance for chaining, never null
      */
@@ -588,7 +588,7 @@ public final class MoneyAmountStyle implements Serializable {
      * If this is set to true, the absolute (unsigned) value will be output.
      * If this is set to false, the signed value will be output.
      * Note that when parsing, signs are accepted.
-     * 
+     *
      * @return true to output the absolute value, false for the signed value
      */
     public boolean isAbsValue() {
@@ -601,7 +601,7 @@ public final class MoneyAmountStyle implements Serializable {
      * If this is set to true, the absolute (unsigned) value will be output.
      * If this is set to false, the signed value will be output.
      * Note that when parsing, signs are accepted.
-     * 
+     *
      * @param absValue  true to output the absolute value, false for the signed value
      * @return the new instance for chaining, never null
      */
@@ -619,7 +619,7 @@ public final class MoneyAmountStyle implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * Compares this style with another.
-     * 
+     *
      * @param other  the other style, null returns false
      * @return true if equal
      */
@@ -628,10 +628,10 @@ public final class MoneyAmountStyle implements Serializable {
         if (other == this) {
             return true;
         }
-        if (other instanceof MoneyAmountStyle == false) {
+        if (!(other instanceof MoneyAmountStyle)) {
             return false;
         }
-        MoneyAmountStyle otherStyle = (MoneyAmountStyle) other;
+        var otherStyle = (MoneyAmountStyle) other;
         return (zeroCharacter == otherStyle.zeroCharacter) &&
                 (positiveCharacter == otherStyle.positiveCharacter) &&
                 (negativeCharacter == otherStyle.negativeCharacter) &&
@@ -645,12 +645,12 @@ public final class MoneyAmountStyle implements Serializable {
 
     /**
      * A suitable hash code.
-     * 
+     *
      * @return a hash code
      */
     @Override
     public int hashCode() {
-        int hash = 13;
+        var hash = 13;
         hash += zeroCharacter * 17;
         hash += positiveCharacter * 17;
         hash += negativeCharacter * 17;
@@ -666,7 +666,7 @@ public final class MoneyAmountStyle implements Serializable {
     //-----------------------------------------------------------------------
     /**
      * Gets a string summary of the style.
-     * 
+     *
      * @return a string summarising the style, never null
      */
     @Override

@@ -29,14 +29,14 @@ class TestIllegalCurrencyException {
     //-----------------------------------------------------------------------
     @Test
     void test_String() {
-        IllegalCurrencyException test = new IllegalCurrencyException("PROBLEM");
+        var test = new IllegalCurrencyException("PROBLEM");
         assertThat(test.getMessage()).isEqualTo("PROBLEM");
         assertThat(test.getCause()).isNull();
     }
 
     @Test
     void test_String_nullString() {
-        IllegalCurrencyException test = new IllegalCurrencyException(null);
+        var test = new IllegalCurrencyException(null);
         assertThat(test.getMessage()).isNull();
         assertThat(test.getCause()).isNull();
     }

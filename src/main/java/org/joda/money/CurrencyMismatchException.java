@@ -35,7 +35,7 @@ public class CurrencyMismatchException extends IllegalArgumentException {
 
     /**
      * Constructor.
-     * 
+     *
      * @param firstCurrency  the first currency, may be null
      * @param secondCurrency  the second currency, not null
      */
@@ -50,7 +50,7 @@ public class CurrencyMismatchException extends IllegalArgumentException {
     //-----------------------------------------------------------------------
     /**
      * Gets the first currency at fault.
-     * 
+     *
      * @return the currency at fault, may be null
      */
     public CurrencyUnit getFirstCurrency() {
@@ -59,7 +59,7 @@ public class CurrencyMismatchException extends IllegalArgumentException {
 
     /**
      * Gets the second currency at fault.
-     * 
+     *
      * @return the currency at fault, may be null
      */
     public CurrencyUnit getSecondCurrency() {

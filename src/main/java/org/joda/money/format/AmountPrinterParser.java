@@ -45,7 +45,7 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
     //-----------------------------------------------------------------------
     @Override
     public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
-        MoneyAmountStyle activeStyle = style.localize(context.getLocale());
+        var activeStyle = style.localize(context.getLocale());
         String str;
         if (money.isNegative()) {
             if (!activeStyle.isAbsValue()) {
@@ -55,20 +55,20 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
         } else {
             str = money.getAmount().toPlainString();
         }
-        char zeroChar = activeStyle.getZeroCharacter();
+        var zeroChar = activeStyle.getZeroCharacter();
         if (zeroChar != '0') {
-            int diff = zeroChar - '0';
-            StringBuilder zeroConvert = new StringBuilder(str);
-            for (int i = 0; i < str.length(); i++) {
-                char ch = str.charAt(i);
+            var diff = zeroChar - '0';
+            var zeroConvert = new StringBuilder(str);
+            for (var i = 0; i < str.length(); i++) {
+                var ch = str.charAt(i);
                 if (ch >= '0' && ch <= '9') {
                     zeroConvert.setCharAt(i, (char) (ch + diff));
                 }
             }
             str = zeroConvert.toString();
         }
-        final int decPoint = str.indexOf('.');
-        final int afterDecPoint = decPoint + 1;
+        var decPoint = str.indexOf('.');
+        var afterDecPoint = decPoint + 1;
         if (activeStyle.getGroupingStyle() == GroupingStyle.NONE) {
             if (decPoint < 0) {
                 appendable.append(str);
@@ -80,14 +80,14 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
                     .append(activeStyle.getDecimalPointCharacter()).append(str.substring(afterDecPoint));
             }
         } else {
-            int groupingSize = activeStyle.getGroupingSize();
-            int extendedGroupingSize = activeStyle.getExtendedGroupingSize();
+            var groupingSize = activeStyle.getGroupingSize();
+            var extendedGroupingSize = activeStyle.getExtendedGroupingSize();
             extendedGroupingSize = extendedGroupingSize == 0 ? groupingSize : extendedGroupingSize;
-            char groupingChar = activeStyle.getGroupingCharacter();
-            int pre = (decPoint < 0 ? str.length() : decPoint);
-            int post = (decPoint < 0 ? 0 : str.length() - decPoint - 1);
+            var groupingChar = activeStyle.getGroupingCharacter();
+            var pre = (decPoint < 0 ? str.length() : decPoint);
+            var post = (decPoint < 0 ? 0 : str.length() - decPoint - 1);
             appendable.append(str.charAt(0));
-            for (int i = 1; i < pre; i++) {
+            for (var i = 1; i < pre; i++) {
                 if (isPreGroupingPoint(pre - i, groupingSize, extendedGroupingSize)) {
                     appendable.append(groupingChar);
                 }
@@ -101,7 +101,7 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
                     appendable.append(str.substring(afterDecPoint));
                 }
             } else {
-                for (int i = 0; i < post; i++) {
+                for (var i = 0; i < post; i++) {
                     appendable.append(str.charAt(i + afterDecPoint));
                     if (isPostGroupingPoint(i, post, groupingSize, extendedGroupingSize)) {
                         appendable.append(groupingChar);
@@ -119,7 +119,7 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
     }
 
     private boolean isPostGroupingPoint(int i, int post, int groupingSize, int extendedGroupingSize) {
-        boolean atEnd = (i + 1) >= post;
+        var atEnd = (i + 1) >= post;
         if (i > groupingSize) {
             return (i - groupingSize) % extendedGroupingSize == (extendedGroupingSize - 1) && !atEnd;
         }
@@ -128,14 +128,14 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
 
     @Override
     public void parse(MoneyParseContext context) {
-        final int len = context.getTextLength();
-        final MoneyAmountStyle activeStyle = style.localize(context.getLocale());
-        char[] buf = new char[len - context.getIndex()];
-        int bufPos = 0;
-        boolean dpSeen = false;
-        int pos = context.getIndex();
+        var len = context.getTextLength();
+        var activeStyle = style.localize(context.getLocale());
+        var buf = new char[len - context.getIndex()];
+        var bufPos = 0;
+        var dpSeen = false;
+        var pos = context.getIndex();
         if (pos < len) {
-            char ch = context.getText().charAt(pos++);
+            var ch = context.getText().charAt(pos++);
             if (ch == activeStyle.getNegativeSignCharacter()) {
                 buf[bufPos++] = '-';
             } else if (ch == activeStyle.getPositiveSignCharacter()) {
@@ -150,17 +150,17 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
                 return;
             }
         }
-        boolean lastWasGroup = false;
+        var lastWasGroup = false;
         for (; pos < len; pos++) {
-            char ch = context.getText().charAt(pos);
+            var ch = context.getText().charAt(pos);
             if (ch >= activeStyle.getZeroCharacter() && ch < activeStyle.getZeroCharacter() + 10) {
                 buf[bufPos++] = (char) ('0' + ch - activeStyle.getZeroCharacter());
                 lastWasGroup = false;
-            } else if (ch == activeStyle.getDecimalPointCharacter() && dpSeen == false) {
+            } else if (ch == activeStyle.getDecimalPointCharacter() && !dpSeen) {
                 buf[bufPos++] = '.';
                 dpSeen = true;
                 lastWasGroup = false;
-            } else if (ch == activeStyle.getGroupingCharacter() && lastWasGroup == false) {
+            } else if (ch == activeStyle.getGroupingCharacter() && !lastWasGroup) {
                 lastWasGroup = true;
             } else {
                 break;

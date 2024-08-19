@@ -59,11 +59,7 @@ class TestMoneyFormatter {
             .appendLiteral(" hello")
             .toFormatter();
         iCannotPrint = new MoneyFormatterBuilder()
-            .append(null, new MoneyParser() {
-                @Override
-                public void parse(MoneyParseContext context) {
-                }
-            })
+            .append(null, context -> {})
             .toFormatter();
         iParseTest = new MoneyFormatterBuilder()
             .appendAmountLocalized()
@@ -71,11 +67,7 @@ class TestMoneyFormatter {
             .appendCurrencyCode()
             .toFormatter();
         iCannotParse = new MoneyFormatterBuilder()
-            .append(new MoneyPrinter() {
-                @Override
-                public void print(MoneyPrintContext context, Appendable appendable, BigMoney money) throws IOException {
-                }
-            }, null)
+            .append((context, appendable, money) -> {}, null)
             .toFormatter();
     }
 
@@ -90,14 +82,14 @@ class TestMoneyFormatter {
     //-----------------------------------------------------------------------
     @Test
     void test_serialization() throws Exception {
-        MoneyFormatter a = iPrintTest;
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        try (ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+        var a = iPrintTest;
+        var baos = new ByteArrayOutputStream();
+        try (var oos = new ObjectOutputStream(baos)) {
             oos.writeObject(a);
             oos.close();
-            ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
-            MoneyFormatter input = (MoneyFormatter) ois.readObject();
-            Money value = MONEY_GBP_12_34;
+            var ois = new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray()));
+            var input = (MoneyFormatter) ois.readObject();
+            var value = MONEY_GBP_12_34;
             assertThat(input.print(value)).isEqualTo(a.print(value));
         }
     }
@@ -112,7 +104,7 @@ class TestMoneyFormatter {
 
     @Test
     void test_withLocale() {
-        MoneyFormatter test = iPrintTest.withLocale(TEST_FR_LOCALE);
+        var test = iPrintTest.withLocale(TEST_FR_LOCALE);
         assertThat(iPrintTest.getLocale()).isEqualTo(TEST_GB_LOCALE);
         assertThat(test.getLocale()).isEqualTo(TEST_FR_LOCALE);
     }
@@ -148,7 +140,7 @@ class TestMoneyFormatter {
     //-----------------------------------------------------------------------
     @Test
     void test_print_AppendableBigMoneyProvider() {
-        StringBuilder buf = new StringBuilder();
+        var buf = new StringBuilder();
         iPrintTest.print(buf, MONEY_GBP_12_34);
         assertThat(buf).hasToString("GBP hello");
     }
@@ -184,7 +176,7 @@ class TestMoneyFormatter {
     //-----------------------------------------------------------------------
     @Test
     void test_printIO_AppendableBigMoneyProvider() throws IOException {
-        StringBuilder buf = new StringBuilder();
+        var buf = new StringBuilder();
         iPrintTest.printIO(buf, MONEY_GBP_12_34);
         assertThat(buf).hasToString("GBP hello");
     }
@@ -220,7 +212,7 @@ class TestMoneyFormatter {
     @Test
     void test_parseBigMoney_CharSequence() {
         CharSequence input = new StringBuilder("12.34 GBP");
-        BigMoney test = iParseTest.parseBigMoney(input);
+        var test = iParseTest.parseBigMoney(input);
         assertThat(test).isEqualTo(MONEY_GBP_12_34.toBigMoney());
     }
 
@@ -258,7 +250,7 @@ class TestMoneyFormatter {
 
     @Test
     void test_parseBigMoney_CharSequence_missingCurrency() {
-        MoneyFormatter f = new MoneyFormatterBuilder().appendAmount().toFormatter();
+        var f = new MoneyFormatterBuilder().appendAmount().toFormatter();
         assertThatExceptionOfType(MoneyFormatException.class)
             .isThrownBy(() -> f.parseBigMoney("12.34"));
     }
@@ -281,7 +273,7 @@ class TestMoneyFormatter {
     @Test
     void test_parseMoney_CharSequence() {
         CharSequence input = new StringBuilder("12.34 GBP");
-        Money test = iParseTest.parseMoney(input);
+        var test = iParseTest.parseMoney(input);
         assertThat(test).isEqualTo(MONEY_GBP_12_34);
     }
 
@@ -354,7 +346,7 @@ class TestMoneyFormatter {
             boolean complete) {
 
         CharSequence input = new StringBuilder(str);
-        MoneyParseContext test = iParseTest.parse(input, 0);
+        var test = iParseTest.parse(input, 0);
         assertThat(test.getAmount()).isEqualTo(amount);
         assertThat(test.getCurrency()).isEqualTo(currency);
         assertThat(test.getIndex()).isEqualTo(index);
@@ -364,7 +356,7 @@ class TestMoneyFormatter {
         assertThat(test.isError()).isEqualTo(error);
         assertThat(test.isFullyParsed()).isEqualTo(fullyParsed);
         assertThat(test.isComplete()).isEqualTo(complete);
-        ParsePosition pp = new ParsePosition(index);
+        var pp = new ParsePosition(index);
         pp.setErrorIndex(errorIndex);
         assertThat(test.toParsePosition()).isEqualTo(pp);
     }
@@ -372,7 +364,7 @@ class TestMoneyFormatter {
     @Test
     void test_parse_CharSequenceInt_incomplete() {
         // this parser does nothing
-        MoneyParseContext test = iCannotPrint.parse("12.34 GBP", 0);
+        var test = iCannotPrint.parse("12.34 GBP", 0);
         assertThat(test.getAmount()).isNull();
         assertThat(test.getCurrency()).isNull();
         assertThat(test.getIndex()).isEqualTo(0);
@@ -386,9 +378,9 @@ class TestMoneyFormatter {
 
     @Test
     void test_parse_CharSequenceInt_continueAfterDoubleDecimal() {
-        MoneyFormatter f = new MoneyFormatterBuilder()
+        var f = new MoneyFormatterBuilder()
             .appendAmountLocalized().appendLiteral(".").appendCurrencyCode().toFormatter();
-        MoneyParseContext test = f.parse("12..GBP", 0);
+        var test = f.parse("12..GBP", 0);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(12));
         assertThat(test.getCurrency()).isEqualTo(CurrencyUnit.of("GBP"));
         assertThat(test.getIndex()).isEqualTo(7);
@@ -402,9 +394,9 @@ class TestMoneyFormatter {
 
     @Test
     void test_parse_CharSequenceInt_continueAfterSingleComma() {
-        MoneyFormatter f = new MoneyFormatterBuilder()
+        var f = new MoneyFormatterBuilder()
             .appendAmountLocalized().appendLiteral(",").appendCurrencyCode().toFormatter();
-        MoneyParseContext test = f.parse("12,GBP", 0);
+        var test = f.parse("12,GBP", 0);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(12));
         assertThat(test.getCurrency()).isEqualTo(CurrencyUnit.of("GBP"));
         assertThat(test.getIndex()).isEqualTo(6);
@@ -418,9 +410,9 @@ class TestMoneyFormatter {
 
     @Test
     void test_parse_CharSequenceInt_continueAfterDoubleComma() {
-        MoneyFormatter f = new MoneyFormatterBuilder()
+        var f = new MoneyFormatterBuilder()
             .appendAmountLocalized().appendLiteral(",,").appendCurrencyCode().toFormatter();
-        MoneyParseContext test = f.parse("12,,GBP", 0);
+        var test = f.parse("12,,GBP", 0);
         assertThat(test.getAmount()).isEqualTo(BigDecimal.valueOf(12));
         assertThat(test.getCurrency()).isEqualTo(CurrencyUnit.of("GBP"));
         assertThat(test.getIndex()).isEqualTo(7);
@@ -459,8 +451,8 @@ class TestMoneyFormatter {
     //-----------------------------------------------------------------------
     @Test
     void test_printParse_zeroChar() {
-        MoneyAmountStyle style = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withZeroCharacter('A');
-        MoneyFormatter f = new MoneyFormatterBuilder().appendCurrencyCode().appendLiteral(" ").appendAmount(style).toFormatter();
+        var style = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withZeroCharacter('A');
+        var f = new MoneyFormatterBuilder().appendCurrencyCode().appendLiteral(" ").appendAmount(style).toFormatter();
         assertThat(f.print(MONEY_GBP_12_34)).isEqualTo("GBP BC.DE");
         assertThat(f.parseMoney("GBP BC.DE")).isEqualTo(MONEY_GBP_12_34);
     }
@@ -491,7 +483,7 @@ class TestMoneyFormatter {
 
     @Test
     void test_parse_notFullyParsed() {
-        MoneyParseContext context = iParseTest.parse("GBP hello notfullyparsed", 1);
+        var context = iParseTest.parse("GBP hello notfullyparsed", 1);
         assertThatExceptionOfType(MoneyFormatException.class)
             .isThrownBy(() -> context.toBigMoney());
     }
@@ -526,7 +518,7 @@ class TestMoneyFormatter {
                 return "B";
             }
         };
-        MoneyFormatter f = new MoneyFormatterBuilder().append(printer, parser).toFormatter();
+        var f = new MoneyFormatterBuilder().append(printer, parser).toFormatter();
         assertThat(f).hasToString("A:B");
     }
 

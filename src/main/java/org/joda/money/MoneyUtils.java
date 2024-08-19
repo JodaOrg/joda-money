@@ -46,7 +46,7 @@ public final class MoneyUtils {
      * Checks if the monetary value is zero, treating null as zero.
      * <p>
      * This method accepts any implementation of {@code BigMoneyProvider}.
-     * 
+     *
      * @param moneyProvider  the money to check, null returns zero
      * @return true if the money is null or zero
      */
@@ -58,7 +58,7 @@ public final class MoneyUtils {
      * Checks if the monetary value is positive and non-zero, treating null as zero.
      * <p>
      * This method accepts any implementation of {@code BigMoneyProvider}.
-     * 
+     *
      * @param moneyProvider  the money to check, null returns false
      * @return true if the money is non-null and positive
      */
@@ -70,7 +70,7 @@ public final class MoneyUtils {
      * Checks if the monetary value is positive or zero, treating null as zero.
      * <p>
      * This method accepts any implementation of {@code BigMoneyProvider}.
-     * 
+     *
      * @param moneyProvider  the money to check, null returns true
      * @return true if the money is null, zero or positive
      */
@@ -82,7 +82,7 @@ public final class MoneyUtils {
      * Checks if the monetary value is negative and non-zero, treating null as zero.
      * <p>
      * This method accepts any implementation of {@code BigMoneyProvider}.
-     * 
+     *
      * @param moneyProvider  the money to check, null returns false
      * @return true if the money is non-null and negative
      */
@@ -94,7 +94,7 @@ public final class MoneyUtils {
      * Checks if the monetary value is negative or zero, treating null as zero.
      * <p>
      * This method accepts any implementation of {@code BigMoneyProvider}.
-     * 
+     *
      * @param moneyProvider  the money to check, null returns true
      * @return true if the money is null, zero or negative
      */
@@ -108,7 +108,7 @@ public final class MoneyUtils {
      * <p>
      * This returns the greater of money1 or money2 where null is ignored.
      * If both input values are null, then null is returned.
-     * 
+     *
      * @param money1  the first money instance, null returns money2
      * @param money2  the first money instance, null returns money1
      * @return the maximum value, null if both inputs are null
@@ -129,7 +129,7 @@ public final class MoneyUtils {
      * <p>
      * This returns the greater of money1 or money2 where null is ignored.
      * If both input values are null, then null is returned.
-     * 
+     *
      * @param money1  the first money instance, null returns money2
      * @param money2  the first money instance, null returns money1
      * @return the minimum value, null if both inputs are null
@@ -151,7 +151,7 @@ public final class MoneyUtils {
      * <p>
      * This returns {@code money1 + money2} where null is ignored.
      * If both input values are null, then null is returned.
-     * 
+     *
      * @param money1  the first money instance, null returns money2
      * @param money2  the first money instance, null returns money1
      * @return the total, where null is ignored, null if both inputs are null
@@ -173,7 +173,7 @@ public final class MoneyUtils {
      * <p>
      * This returns {@code money1 - money2} where null is ignored.
      * If both input values are null, then null is returned.
-     * 
+     *
      * @param money1  the first money instance, null treated as zero
      * @param money2  the first money instance, null returns money1
      * @return the total, where null is ignored, null if both inputs are null
@@ -195,7 +195,7 @@ public final class MoneyUtils {
      * <p>
      * This returns the greater of money1 or money2 where null is ignored.
      * If both input values are null, then null is returned.
-     * 
+     *
      * @param money1  the first money instance, null returns money2
      * @param money2  the first money instance, null returns money1
      * @return the maximum value, null if both inputs are null
@@ -216,7 +216,7 @@ public final class MoneyUtils {
      * <p>
      * This returns the greater of money1 or money2 where null is ignored.
      * If both input values are null, then null is returned.
-     * 
+     *
      * @param money1  the first money instance, null returns money2
      * @param money2  the first money instance, null returns money1
      * @return the minimum value, null if both inputs are null
@@ -238,7 +238,7 @@ public final class MoneyUtils {
      * <p>
      * This returns {@code money1 + money2} where null is ignored.
      * If both input values are null, then null is returned.
-     * 
+     *
      * @param money1  the first money instance, null returns money2
      * @param money2  the first money instance, null returns money1
      * @return the total, where null is ignored, null if both inputs are null
@@ -260,7 +260,7 @@ public final class MoneyUtils {
      * <p>
      * This returns {@code money1 - money2} where null is ignored.
      * If both input values are null, then null is returned.
-     * 
+     *
      * @param money1  the first money instance, null treated as zero
      * @param money2  the first money instance, null returns money1
      * @return the total, where null is ignored, null if both inputs are null

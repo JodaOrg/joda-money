@@ -32,7 +32,7 @@ class TestCurrencyMismatchException {
     //-----------------------------------------------------------------------
     @Test
     void test_new_GBPEUR() {
-        CurrencyMismatchException test = new CurrencyMismatchException(GBP, EUR);
+        var test = new CurrencyMismatchException(GBP, EUR);
         assertThat(test.getMessage()).isEqualTo("Currencies differ: GBP/EUR");
         assertThat(test.getCause()).isNull();
         assertThat(test.getFirstCurrency()).isEqualTo(GBP);
@@ -41,7 +41,7 @@ class TestCurrencyMismatchException {
 
     @Test
     void test_new_nullEUR() {
-        CurrencyMismatchException test = new CurrencyMismatchException(null, EUR);
+        var test = new CurrencyMismatchException(null, EUR);
         assertThat(test.getMessage()).isEqualTo("Currencies differ: null/EUR");
         assertThat(test.getCause()).isNull();
         assertThat(test.getFirstCurrency()).isNull();
@@ -50,7 +50,7 @@ class TestCurrencyMismatchException {
 
     @Test
     void test_new_GBPnull() {
-        CurrencyMismatchException test = new CurrencyMismatchException(GBP, null);
+        var test = new CurrencyMismatchException(GBP, null);
         assertThat(test.getMessage()).isEqualTo("Currencies differ: GBP/null");
         assertThat(test.getCause()).isNull();
         assertThat(test.getFirstCurrency()).isEqualTo(GBP);
@@ -59,7 +59,7 @@ class TestCurrencyMismatchException {
 
     @Test
     void test_new_nullnull() {
-        CurrencyMismatchException test = new CurrencyMismatchException(null, null);
+        var test = new CurrencyMismatchException(null, null);
         assertThat(test.getMessage()).isEqualTo("Currencies differ: null/null");
         assertThat(test.getCause()).isNull();
         assertThat(test.getFirstCurrency()).isNull();
