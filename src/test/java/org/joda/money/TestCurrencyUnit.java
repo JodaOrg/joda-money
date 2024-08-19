@@ -712,6 +712,8 @@ class TestCurrencyUnit {
             Locale.setDefault(Locale.UK);
             CurrencyUnit test = CurrencyUnit.of("XXX");
             assertThat(test.getSymbol(Locale.FRANCE)).isEqualTo("XXX");
+            test = CurrencyUnit.of("XXX");
+            assertThat(test.getSymbol(Locale.US)).isEqualTo("XXX");
         } finally {
             Locale.setDefault(loc);
         }
