@@ -8,6 +8,15 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="1.0.5" date="SNAPSHOT" description="v1.0.5">
+      <action dev="jodastephen" type="update">
+        Change currency for ZW from ZWL to ZWG. (ISO 4217 Amendment 177)
+      </action>
+      <action dev="jodastephen" type="update">
+        Return 'XXX' as the currency symbol for 'XXX' on Java 21.
+        The data in Java was altered to use ¤ but it is more consistent for Joda-Money to continue using 'XXX'.
+      </action>
+    </release>
     <release version="1.0.4" date="2023-10-29" description="v1.0.4">
       <action dev="jodastephen" type="add">
         Add isGreaterThanOrEqual() and isLessThanOrEqual() to money classes.
@@ -20,7 +29,7 @@
     </release>
     <release version="1.0.3" date="2022-12-06" description="v1.0.3">
       <action dev="janjaali" type="update">
-        Change currency HRK to EUR.
+        Change currency HRK to EUR. (ISO 4217 Amendment 174)
         Note that the official switch from HRK to EUR occurs on 2023-01-01.
         You may want to delay updating this dependency until then.
       </action>
@@ -33,7 +42,7 @@
     </release>
     <release version="1.0.2" date="2022-08-14" description="v1.0.2">
       <action dev="jodastephen" type="update">
-        Change currency SLL to SLE.
+        Change currency SLL to SLE. (ISO 4217 Amendment 171)
       </action>
       <action dev="jodastephen" type="add">
         Add Tidelift commercial support and security policy.
