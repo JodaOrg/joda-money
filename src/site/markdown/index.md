@@ -70,7 +70,7 @@ As a flavour of Joda-Money, here is some example code:
 
 ## <i></i> Releases
 
-[Release 1.0.4](download.html) is the current release.
+[Release 1.0.5](download.html) is the current release.
 This release is considered stable and worthy of the 1.x tag.
 
 Joda-Money requires Java SE 8 or later and has [no dependencies](dependencies.html).
@@ -83,7 +83,7 @@ Available in [Maven Central](https://search.maven.org/search?q=g:org.joda%20AND%
 <dependency>
   <groupId>org.joda</groupId>
   <artifactId>joda-money</artifactId>
-  <version>1.0.4</version>
+  <version>1.0.5</version>
 </dependency>
 ```
 
