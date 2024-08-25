@@ -9,7 +9,7 @@
   <artifactId>joda-money</artifactId>
   <packaging>jar</packaging>
   <name>Joda-Money</name>
-  <version>1.0.5-SNAPSHOT</version>
+  <version>1.0.5</version>
   <description>Money representation and formatting</description>
   <url>https://www.joda.org/joda-money/</url>
 
@@ -34,7 +34,7 @@
     <connection>scm:git:https://github.com/JodaOrg/joda-money.git</connection>
     <developerConnection>scm:git:https://github.com/JodaOrg/joda-money.git</developerConnection>
     <url>https://github.com/JodaOrg/joda-money</url>
-    <tag>HEAD</tag>
+    <tag>v1.0.5</tag>
   </scm>
 
   <!-- ==================================================================== -->
