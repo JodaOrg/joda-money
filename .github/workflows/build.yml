@@ -35,7 +35,7 @@ jobs:
     - name: Maven version
       run: |
         mkdir -p ./.mvn
-        echo '-e -B -DtrimStackTrace=false' > ./.mvn/maven.config
+        echo '-e -B -ntp -DtrimStackTrace=false' > ./.mvn/maven.config
         mvn --version
         mkdir -p target
 
