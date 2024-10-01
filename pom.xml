@@ -9,7 +9,7 @@
   <artifactId>joda-money</artifactId>
   <packaging>jar</packaging>
   <name>Joda-Money</name>
-  <version>2.0.0-RC1-SNAPSHOT</version>
+  <version>2.0.0-MAVENTEST</version>
   <description>Money representation and formatting, compatible with Java 21+</description>
   <url>https://www.joda.org/joda-money/</url>
 
@@ -815,7 +815,7 @@
   <properties>
     <!-- Dependencies -->
     <assertj.version>3.26.3</assertj.version>
-    <joda-convert.version>2.2.3</joda-convert.version>
+    <joda-convert.version>3.0.0-RC1</joda-convert.version>
     <junit.version>5.11.0</junit.version>
 
     <!-- Common control parameters -->
@@ -829,7 +829,7 @@
     <maven-changes-plugin.version>2.12.1</maven-changes-plugin.version>
     <maven-checkstyle-plugin.version>3.4.0</maven-checkstyle-plugin.version>
     <maven-clean-plugin.version>3.4.0</maven-clean-plugin.version>
-    <maven-compiler-plugin.version>3.13.0</maven-compiler-plugin.version>
+    <maven-compiler-plugin.version>4.0.0-beta-2-SNAPSHOT</maven-compiler-plugin.version>
     <maven-deploy-plugin.version>3.1.3</maven-deploy-plugin.version>
     <maven-dependency-plugin.version>3.8.0</maven-dependency-plugin.version>
     <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
@@ -859,8 +859,7 @@
     <spotbugs-maven-plugin.version>4.8.6.4</spotbugs-maven-plugin.version>
 
     <!-- Properties for maven-compiler-plugin -->
-    <maven.compiler.source>21</maven.compiler.source>
-    <maven.compiler.target>21</maven.compiler.target>
+    <maven.compiler.release>21</maven.compiler.release>
     <maven.compiler.fork>true</maven.compiler.fork>
 
     <!-- Properties for maven-javadoc-plugin -->
