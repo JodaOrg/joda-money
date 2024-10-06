@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <!-- ==================================================================== -->
-  <!-- Build requires Java SE 11 or later -->
+  <!-- Build requires Java SE 21 or later -->
   <!-- ==================================================================== -->
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.joda</groupId>
@@ -100,6 +100,38 @@
     </resources>
     <!-- define build -->
     <plugins>
+      <!-- Cleanup any mess -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>clean-mess</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>clean</goal>
+            </goals>
+            <configuration>
+            <excludeDefaultDirectories>true</excludeDefaultDirectories>
+            <filesets>
+              <fileset>
+                <directory>src/test/java</directory>
+                <includes>
+                  <include>module-info.java</include>
+                </includes>
+              </fileset>
+              <fileset>
+                <directory>target/test-classes</directory>
+                <useDefaultExcludes>false</useDefaultExcludes>
+                <includes>
+                  <include>module-info.class</include>
+                </includes>
+              </fileset>
+            </filesets>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <!-- Enforce Maven 3.8.0 and Java 21+ -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -123,103 +155,6 @@
           </execution>
         </executions>
       </plugin>
-      <!-- Aim of this config is to test the project three times. -->
-      <!-- First, with both main and test code on the classpath (test lifecycle phase). -->
-      <!-- Then, with main code on the modulepath and test code on the classpath (test lifecycle phase). -->
-      <!-- Then, with both main and test code on the modulepath (integration-test lifecycle phase). -->
-      <!-- The last of these is achieved by a Maven workaround/hack. -->
-      <!-- When maven-compiler-plugin testCompile runs with two module-info.java files with the same module name -->
-      <!-- the code in both src/test/java and src/main/java is compiled into target/test-classes. -->
-      <!-- This is a bug, but we can use it to our advantage - all we have to do is patch in src/main/resources -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <executions>
-          <!-- test with both main and test code on the classpath -->
-          <execution>
-            <id>default-test</id>
-            <goals>
-              <goal>test</goal>
-            </goals>
-            <configuration>
-              <useModulePath>false</useModulePath>
-            </configuration>
-          </execution>
-          <!-- test with main code on the modulepath and test code on the classpath -->
-          <execution>
-            <id>test-module-classpath</id>
-            <goals>
-              <goal>test</goal>
-            </goals>
-            <phase>test</phase>
-            <configuration>
-              <useModulePath>true</useModulePath>
-            </configuration>
-          </execution>
-          <!-- test with both main and test code on the modulepath (as a single patched module using src/test/java/module-info.java) -->
-          <!-- by this point, target/test-classes contains the complied form of src/test/java and src/main/java -->
-          <!-- patch-module ise used to add the missing src/main/resources without copying it -->
-          <execution>
-            <id>test-module-whitebox</id>
-            <goals>
-              <goal>test</goal>
-            </goals>
-            <phase>integration-test</phase>
-            <configuration>
-              <argLine>--patch-module org.joda.money=src/main/resources</argLine>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- Avoid issues with IntelliJ and Eclipse by adding the module-info dynamically -->
-      <!-- Tests in either IDE will operate as classpath tests -->
-      <!-- Tests in Maven will operate as whitebox tests -->
-      <!-- This approach keeps IDEs happy, wheras using build-helper-plugin does not -->
-      <plugin>
-        <groupId>com.coderplus.maven.plugins</groupId>
-        <artifactId>copy-rename-maven-plugin</artifactId>
-        <version>${copy-rename-maven-plugin.version}</version>
-        <executions>
-          <execution>
-            <id>activate-module-info</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>copy</goal>
-            </goals>
-            <configuration>
-              <sourceFile>src/test-whitebox/module-info.java</sourceFile>
-              <destinationFile>src/test/java/module-info.java</destinationFile>
-            </configuration>
-          </execution>
-          <execution>
-            <id>deactivate-module-info</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>rename</goal>
-            </goals>
-            <configuration>
-              <sourceFile>src/test/java/module-info.java</sourceFile>
-              <destinationFile>src/test-whitebox/module-info.java</destinationFile>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-      <!-- An additional testCompile step. -->
-      <!-- This recompiles the test code after src/test/java/module-info.java has been added as a test source by build-helper -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <executions>
-          <execution>
-            <id>test-module-whitebox</id>
-            <goals>
-              <goal>testCompile</goal>
-            </goals>
-            <phase>pre-integration-test</phase>
-          </execution>
-        </executions>
-      </plugin>
-
       <!-- Setup OSGi bundle data -->
       <plugin>
         <groupId>org.apache.felix</groupId>
@@ -664,6 +599,136 @@
 
   <!-- ==================================================================== -->
   <profiles>
+    <!-- Aim of this profile is to test the project three times. -->
+    <!-- First, with main code on the modulepath and test code on the classpath (test lifecycle phase). -->
+    <!-- Then, with both main and test code on the classpath (test lifecycle phase). -->
+    <!-- Then, with both main and test code on the modulepath (integration-test lifecycle phase). -->
+    <!-- The last of these is achieved by a Maven workaround/hack. -->
+    <!-- When maven-compiler-plugin testCompile runs with two module-info.java files with the same module name -->
+    <!-- the code in both src/test/java and src/main/java is compiled into target/test-classes. -->
+    <!-- This is a bug, but we can use it to our advantage - all we have to do is patch in src/main/resources -->
+    <profile>
+      <id>extended-test</id>
+      <activation>
+        <property>
+          <name>extended-test</name>
+        </property>
+      </activation>
+      <build>
+        <plugins>
+          <!--- Three runs of surefire -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <executions>
+              <!-- test with main code on the modulepath and test code on the classpath -->
+              <execution>
+                <id>default-test</id>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <configuration>
+                  <useModulePath>true</useModulePath>
+                </configuration>
+              </execution>
+              <!-- test with both main and test code on the classpath -->
+              <execution>
+                <id>test-module-classpath</id>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <phase>test</phase>
+                <configuration>
+                  <useModulePath>false</useModulePath>
+                </configuration>
+              </execution>
+              <!-- test with both main and test code on the modulepath (as a single patched module using src/test/java/module-info.java) -->
+              <!-- by this point, target/test-classes contains the complied form of src/test/java and src/main/java -->
+              <!-- patch-module ise used to add the missing src/main/resources without copying it -->
+              <execution>
+                <id>test-module-whitebox</id>
+                <goals>
+                  <goal>test</goal>
+                </goals>
+                <phase>integration-test</phase>
+                <configuration>
+                  <argLine>--patch-module org.joda.money=src/main/resources</argLine>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <!-- Avoid issues with IntelliJ and Eclipse by adding the module-info dynamically -->
+          <!-- Tests in either IDE will operate as classpath tests -->
+          <!-- Tests in Maven will operate as whitebox tests -->
+          <!-- This approach keeps IDEs happy, wheras using build-helper-plugin does not -->
+          <plugin>
+            <groupId>com.coderplus.maven.plugins</groupId>
+            <artifactId>copy-rename-maven-plugin</artifactId>
+            <version>${copy-rename-maven-plugin.version}</version>
+            <executions>
+              <execution>
+                <id>activate-module-info</id>
+                <phase>pre-integration-test</phase>
+                <goals>
+                  <goal>copy</goal>
+                </goals>
+                <configuration>
+                  <sourceFile>src/test-whitebox/module-info.java</sourceFile>
+                  <destinationFile>src/test/java/module-info.java</destinationFile>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <!-- Cleanup dynamic module-info -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-clean-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>deactivate-module-info</id>
+                <phase>post-integration-test</phase>
+                <goals>
+                  <goal>clean</goal>
+                </goals>
+                <configuration>
+                <excludeDefaultDirectories>true</excludeDefaultDirectories>
+                <filesets>
+                  <fileset>
+                    <directory>src/test/java</directory>
+                    <includes>
+                      <include>module-info.java</include>
+                    </includes>
+                  </fileset>
+                  <fileset>
+                    <directory>target/test-classes</directory>
+                    <useDefaultExcludes>false</useDefaultExcludes>
+                    <includes>
+                      <include>module-info.class</include>
+                    </includes>
+                  </fileset>
+                </filesets>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <!-- An additional testCompile step. -->
+          <!-- This recompiles the test code after src/test/java/module-info.java has been added as a test source by build-helper -->
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>test-module-whitebox</id>
+                <goals>
+                  <goal>testCompile</goal>
+                </goals>
+                <phase>pre-integration-test</phase>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
     <!-- Hack to allow IntelliJ testing to work, as it doesn't seems to handle 'requires static' properly -->
     <profile>
       <id>intellij-idea</id>
@@ -715,9 +780,9 @@
         </plugins>
       </build>
     </profile>
-    <!-- Base deployment profile, activated by -Doss.repo -->
+    <!-- Main deployment profile, activated by -Doss.repo -->
     <profile>
-      <id>release-basics</id>
+      <id>release-artifacts</id>
       <activation>
         <property>
           <name>oss.repo</name>
@@ -820,7 +885,7 @@
 
     <!-- Common control parameters -->
     <joda.osgi.packages>org.joda.money.*</joda.osgi.packages>
-    <joda.osgi.require.capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=${maven.compiler.source}))"</joda.osgi.require.capability>
+    <joda.osgi.require.capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=${maven.compiler.release}))"</joda.osgi.require.capability>
     <joda.nexus.auto.release>true</joda.nexus.auto.release>
 
     <!-- Plugin version numbers -->
@@ -833,14 +898,14 @@
     <maven-deploy-plugin.version>3.1.3</maven-deploy-plugin.version>
     <maven-dependency-plugin.version>3.8.0</maven-dependency-plugin.version>
     <maven-enforcer-plugin.version>3.5.0</maven-enforcer-plugin.version>
-    <maven-gpg-plugin.version>3.2.6</maven-gpg-plugin.version>
+    <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
     <maven-install-plugin.version>3.1.3</maven-install-plugin.version>
     <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
-    <maven-javadoc-plugin.version>3.10.0</maven-javadoc-plugin.version>
+    <maven-javadoc-plugin.version>3.10.1</maven-javadoc-plugin.version>
     <maven-jxr-plugin.version>3.5.0</maven-jxr-plugin.version>
     <maven-plugin-plugin.version>3.15.0</maven-plugin-plugin.version>
     <maven-pmd-plugin.version>3.25.0</maven-pmd-plugin.version>
-    <maven-project-info-reports-plugin.version>3.7.0</maven-project-info-reports-plugin.version>
+    <maven-project-info-reports-plugin.version>3.6.2</maven-project-info-reports-plugin.version><!-- 3.7.0 has error -->
     <maven-release-plugin.version>3.1.1</maven-release-plugin.version>
     <maven-repository-plugin.version>2.4</maven-repository-plugin.version>
     <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
@@ -859,8 +924,7 @@
     <spotbugs-maven-plugin.version>4.8.6.4</spotbugs-maven-plugin.version>
 
     <!-- Properties for maven-compiler-plugin -->
-    <maven.compiler.source>21</maven.compiler.source>
-    <maven.compiler.target>21</maven.compiler.target>
+    <maven.compiler.release>21</maven.compiler.release>
     <maven.compiler.fork>true</maven.compiler.fork>
 
     <!-- Properties for maven-javadoc-plugin -->
