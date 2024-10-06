@@ -90,8 +90,7 @@ Tidelift will coordinate the fix and disclosure.
 
 * Update version (index.md, changes.xml)
 * Commit and push
-* In an admin window `gpg-connect-agent -v`
-* Switch to Java 11
+* Switch to Java 21
 * `mvn clean release:clean release:prepare release:perform`
 * `git fetch`
 * Website will be built and released by GitHub Actions
