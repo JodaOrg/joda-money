@@ -24,8 +24,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.PERSONAL_TOKEN_GH }}
 
     - name: Set up JDK
       uses: actions/setup-java@v4
@@ -55,7 +53,12 @@ jobs:
 
     - name: Website
       if: github.event_name == 'push' && (startsWith(github.ref, 'refs/tags/website') || startsWith(github.ref, 'refs/tags/v'))
+      env:
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN_GH }}
       run: |
+        cd target
+        git clone https://${GITHUB_TOKEN}@github.com/JodaOrg/joda-money.git
+        cd joda-money
         git config --global user.name "Stephen Colebourne (CI)"
         git config --global user.email "scolebourne@joda.org"
         git fetch
