@@ -24,8 +24,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
-      with:
-        token: ${{ secrets.PERSONAL_TOKEN_GH }}
 
     - name: Set up JDK
       uses: actions/setup-java@v4
