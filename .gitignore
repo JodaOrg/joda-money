@@ -11,3 +11,4 @@
 *.iml
 /test-output/
 /src/test/java/module-info.java
+*.DS_Store
