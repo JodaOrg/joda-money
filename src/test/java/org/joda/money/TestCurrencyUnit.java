@@ -443,6 +443,12 @@ class TestCurrencyUnit {
             .withMessage("No currency found for country 'gb'");
     }
 
+    @Test
+    void test_cw_sx_xcg() {
+      assertThat(CurrencyUnit.ofCountry("CW").getCode()).isEqualTo("XCG");
+      assertThat(CurrencyUnit.ofCountry("SX").getCode()).isEqualTo("XCG");
+    }
+
     //-----------------------------------------------------------------------
     // Serialisation
     //-----------------------------------------------------------------------
