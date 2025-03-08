@@ -8,6 +8,11 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="2.0.1" date="SNAPSHOT" description="Version 2.0.1">
+      <action dev="jodastephen" type="add" issue="147">
+        Include proguard rule.
+      </action>
+    </release>
     <release version="2.0.0" date="2024-10-06" description="Version 2.0.0">
       <action dev="jodastephen" type="add">
         Major version based on Java SE 21.
