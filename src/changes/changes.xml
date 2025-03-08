@@ -9,6 +9,10 @@
 
     <!-- types are add, fix, remove, update -->
     <release version="2.0.1" date="SNAPSHOT" description="Version 2.0.1">
+      <action dev="jodastephen" type="add" issue="150">
+        Change currency for CW and SX from ANG to XCG. (ISO 4217 Amendment 176).
+        This change is effective from 31st March 2025.
+      </action>
       <action dev="jodastephen" type="add" issue="147">
         Include proguard rule.
       </action>
@@ -21,7 +25,7 @@
     </release>
     <release version="1.0.5" date="2024-08-25" description="Version 1.0.5">
       <action dev="jodastephen" type="update">
-        Change currency for ZW from ZWL to ZWG. (ISO 4217 Amendment 177)
+        Change currency for ZW from ZWL to ZWG. (ISO 4217 Amendment 177).
       </action>
       <action dev="jodastephen" type="update">
         Return 'XXX' as the currency symbol for 'XXX' on Java 21.
