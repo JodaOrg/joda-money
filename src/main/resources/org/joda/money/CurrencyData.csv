@@ -7,7 +7,7 @@ AED,784,2
 AFN,971,2
 ALL,8,2
 AMD,51,2
-ANG,532,2
+ANG,532,2 # Old, now XCG
 AOA,973,2
 ARS,32,2
 ATS,40,2 # Old, now EUR
@@ -193,6 +193,7 @@ XBB,956,-1
 XBC,957,-1
 XBD,958,-1
 XCD,951,2
+XCG,532,2
 XDR,960,-1
 XEU,954,-1 # Old, now EUR
 XFU,-1,-1 # Old, now EUR
