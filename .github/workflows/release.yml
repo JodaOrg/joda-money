@@ -1,28 +1,21 @@
-name: Build
+name: Release
 
-on: 
+on:
   push:
-    branches:
-      - '*'
     tags:
-      - 'website*'
-  pull_request:
-    branches:
-      - 'main'
-  schedule:
-    - cron: '41 19 * * 2'
+      - 'release*'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
-    permissions:
-      security-events: write  # for github/codeql-action
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+      with:
+        ref: "main"
 
     - name: Set up JDK
       uses: actions/setup-java@v4
@@ -43,26 +36,35 @@ jobs:
         mvn --version
         mkdir -p target
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: java
-
-    - name: Maven build
+    - name: Setup git
       run: |
-        mvn install -Dextended-test
+        git config --global user.name "Stephen Colebourne (CI)"
+        git config --global user.email "scolebourne@joda.org"
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-
-    - name: Maven site
+    - name: Maven install
       run: |
-        mvn clean site
+        mvn clean install
+
+    - name: Maven release
+      env:
+        OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+        OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
+        MAVEN_GPG_PASSPHRASE: ${{ secrets.RELEASES_GPG_PASSPHRASE }}
+        MAVEN_GPG_KEY: ${{ secrets.RELEASES_GPG_PRIVATE_KEY }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        mvn release:clean release:prepare release:perform
 
     - name: Update website
-      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/website')
       env:
         GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN_GH }}
       run: |
         chmod +x ./.github/website.sh
         .github/website.sh
+
+    - name: Delete release tag
+      if: "always()"
+      run: |
+        git fetch --tags
+        git tag --delete "${GITHUB_REF_NAME}" || true
+        git push --delete origin "${GITHUB_REF_NAME}" || true
