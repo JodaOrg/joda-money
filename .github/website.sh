@@ -25,7 +25,8 @@ echo "## tidy..."
 cd ..
 git clone https://${GITHUB_TOKEN}@github.com/JodaOrg/joda-money.git
 cd joda-money
-git push --delete origin website || true
-git push --delete origin website2x || true
+git fetch --tags
+git tag --delete "${GITHUB_REF_NAME}" || true
+git push --delete origin "${GITHUB_REF_NAME}" || true
 
 echo "## done"
