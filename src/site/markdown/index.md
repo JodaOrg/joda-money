@@ -72,7 +72,7 @@ As a flavour of Joda-Money, here is some example code:
 
 The 2.x branch (v2.0.0) is compatible with Java SE 21 or later.
 
-The 1.x branch (v1.0.5) is compatible with Java SE 8 or later.
+The 1.x branch (v1.0.6) is compatible with Java SE 8 or later.
 
 v2.x releases are compatible with v1.x releases - except for the Java SE version and `module-info.class` file.
 
