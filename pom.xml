@@ -889,7 +889,7 @@
     <!-- Common control parameters -->
     <joda.osgi.packages>org.joda.money.*</joda.osgi.packages>
     <joda.osgi.require.capability>osgi.ee;filter:="(&amp;(osgi.ee=JavaSE)(version=${maven.compiler.release}))"</joda.osgi.require.capability>
-    <joda.nexus.auto.release>false</joda.nexus.auto.release>
+    <joda.nexus.auto.release>true</joda.nexus.auto.release>
 
     <!-- Plugin version numbers -->
     <maven-assembly-plugin.version>3.7.1</maven-assembly-plugin.version>

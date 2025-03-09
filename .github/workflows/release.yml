@@ -58,7 +58,6 @@ jobs:
       run: |
         mvn release:clean release:prepare release:perform
 
-    #------------------------------------------------------------------------
     - name: Update website
       run: |
         git tag websiterelease

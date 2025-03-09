@@ -1,22 +1,15 @@
-name: Build
+name: Website
 
 on: 
   push:
-    branches:
-      - '*'
-  pull_request:
-    branches:
-      - 'main'
-  schedule:
-    - cron: '41 19 * * 2'
+    tags:
+      - 'website*'
 
 permissions:
   contents: write
 
 jobs:
   build:
-    permissions:
-      security-events: write  # for github/codeql-action
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -50,18 +43,33 @@ jobs:
         mkdir -p target
 
     #------------------------------------------------------------------------
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@v3
-      with:
-        languages: java
-
-    - name: Maven build
-      run: |
-        mvn install -Dextended-test
-
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@v3
-
     - name: Maven site
       run: |
-        mvn clean site
+        mvn install site
+
+    - name: Checkout website
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        repository: JodaOrg/jodaorg.github.io
+        path: target/jodaorg.github.io
+        ref: "main"
+
+    - name: Update website
+      run: |
+        cd target/jodaorg.github.io
+        git status
+  
+        rm -rf joda-money/
+        cp -R ../site joda-money/
+  
+        git add -A
+        git status
+        git commit --message "Update joda-money from CI: $GITHUB_ACTION"
+  
+        git push origin main
+
+    - name: Delete website tag
+      run: |
+        git tag --delete "${GITHUB_REF_NAME}" || true
+        git push --delete origin "${GITHUB_REF_NAME}" || true
