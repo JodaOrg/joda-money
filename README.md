@@ -90,7 +90,6 @@ Tidelift will coordinate the fix and disclosure.
 
 * Update version (index.md, changes.xml)
 * Commit and push
-* Switch to Java 21
 * `git push origin HEAD:refs/tags/release`
 * Code and Website will be built and released by GitHub Actions
 
