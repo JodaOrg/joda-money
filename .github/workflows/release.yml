@@ -1,6 +1,6 @@
 name: Release
 
-on: 
+on:
   push:
     tags:
       - 'release*'
@@ -15,7 +15,14 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
       with:
+        token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
         ref: "v1.x"
+        fetch-tags: true
+
+    - name: Setup git
+      run: |
+        git config --global user.name "Stephen Colebourne (CI)"
+        git config --global user.email "scolebourne@joda.org"
 
     - name: Set up JDK
       uses: actions/setup-java@v4
@@ -32,15 +39,11 @@ jobs:
         echo "-ntp" >> ./.mvn/maven.config
         echo "-DtrimStackTrace=false" >> ./.mvn/maven.config
         echo "--settings" >> ./.mvn/maven.config
-        echo "$( pwd )/.github/workflows/maven-settings.xml" >> ./.mvn/maven.config
+        echo "$( pwd )/.github/maven-settings.xml" >> ./.mvn/maven.config
         mvn --version
         mkdir -p target
 
-    - name: Setup git
-      run: |
-        git config --global user.name "Stephen Colebourne (CI)"
-        git config --global user.email "scolebourne@joda.org"
-
+    #------------------------------------------------------------------------
     - name: Maven install
       run: |
         mvn clean install
@@ -51,25 +54,17 @@ jobs:
         OSSRH_TOKEN: ${{ secrets.OSSRH_TOKEN }}
         MAVEN_GPG_PASSPHRASE: ${{ secrets.RELEASES_GPG_PASSPHRASE }}
         MAVEN_GPG_KEY: ${{ secrets.RELEASES_GPG_PRIVATE_KEY }}
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
       run: |
         mvn release:clean release:prepare release:perform
 
     - name: Update website
-      env:
-        GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN_GH }}
       run: |
-        cd target
-        git clone https://${GITHUB_TOKEN}@github.com/JodaOrg/joda-money.git
-        cd joda-money
-        git fetch
-        git checkout -b main origin/main || git checkout main
-        git tag website2x
-        git push origin website2x
+        git tag websiterelease
+        git push origin websiterelease
 
     - name: Delete release tag
       if: "always()"
       run: |
-        git fetch --tags
-        git tag --delete $GITHUB_REF_NAME || true
-        git push --delete origin $GITHUB_REF_NAME || true
+        git tag --delete "${GITHUB_REF_NAME}" || true
+        git push --delete origin "${GITHUB_REF_NAME}" || true

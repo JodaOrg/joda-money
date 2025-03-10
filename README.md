@@ -18,5 +18,5 @@ See the main [home page](https://www.joda.org/joda-money/) for more info, includ
 
 Release from local:
 
-* Turn off gpg "bs" signer
+* Turn off gpg "bc" signer
 * `mvn clean release:clean release:prepare release:perform`

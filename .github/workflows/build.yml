@@ -13,7 +13,7 @@ on:
     - cron: '41 19 * * 2'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -23,6 +23,14 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        fetch-tags: true
+
+    - name: Setup git
+      run: |
+        git config --global user.name "Stephen Colebourne (CI)"
+        git config --global user.email "scolebourne@joda.org"
 
     - name: Set up JDK
       uses: actions/setup-java@v4
@@ -39,10 +47,11 @@ jobs:
         echo "-ntp" >> ./.mvn/maven.config
         echo "-DtrimStackTrace=false" >> ./.mvn/maven.config
         echo "--settings" >> ./.mvn/maven.config
-        echo "$( pwd )/.github/workflows/maven-settings.xml" >> ./.mvn/maven.config
+        echo "$( pwd )/.github/maven-settings.xml" >> ./.mvn/maven.config
         mvn --version
         mkdir -p target
 
+    #------------------------------------------------------------------------
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v3
       with:
@@ -57,14 +66,7 @@ jobs:
 
     - name: Website
       if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/website')
-      env:
-        GITHUB_TOKEN: ${{ secrets.PERSONAL_TOKEN_GH }}
       run: |
-        cd target
-        git clone https://${GITHUB_TOKEN}@github.com/JodaOrg/joda-money.git
-        cd joda-money
-        git config --global user.name "Stephen Colebourne (CI)"
-        git config --global user.email "scolebourne@joda.org"
         git fetch
         git checkout -b main origin/main
         git tag website2x
