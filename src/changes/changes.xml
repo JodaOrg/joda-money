@@ -8,7 +8,7 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
-    <release version="2.0.2" date="SNAPSHOT" description="Version 2.0.2">
+    <release version="2.0.2" date="2025-03-17" description="Version 2.0.2">
       <action dev="jodastephen" type="fix" issue="156">
         Fix proguard rule.
       </action>

@@ -70,7 +70,7 @@ As a flavour of Joda-Money, here is some example code:
 
 ## <i></i> Releases
 
-The 2.x branch (v2.0.1) is compatible with Java SE 21 or later.
+The 2.x branch (v2.0.2) is compatible with Java SE 21 or later.
 
 The 1.x branch (v1.0.6) is compatible with Java SE 8 or later.
 
@@ -87,7 +87,7 @@ Available in [Maven Central](https://search.maven.org/search?q=g:org.joda%20AND%
 <dependency>
   <groupId>org.joda</groupId>
   <artifactId>joda-money</artifactId>
-  <version>2.0.1</version>
+  <version>2.0.2</version>
 </dependency>
 ```
 
