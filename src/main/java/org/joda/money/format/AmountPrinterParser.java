@@ -1,18 +1,3 @@
-/*
- *  Copyright 2009-present, Stephen Colebourne
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
 package org.joda.money.format;
 
 import java.io.IOException;
@@ -28,16 +13,13 @@ import org.joda.money.BigMoney;
  */
 final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializable {
 
-    /** Serialization version. */
     private static final long serialVersionUID = 1L;
 
-    /** The style to use. */
     private final MoneyAmountStyle style;
 
-    /**
-     * Constructor.
-     * @param style  the style, not null
-     */
+
+    private static final int MAX_DIGITS = 10;
+
     AmountPrinterParser(MoneyAmountStyle style) {
         this.style = style;
     }
@@ -60,9 +42,9 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
             var diff = zeroChar - '0';
             var zeroConvert = new StringBuilder(str);
             for (var i = 0; i < str.length(); i++) {
-                var ch = str.charAt(i);
-                if (ch >= '0' && ch <= '9') {
-                    zeroConvert.setCharAt(i, (char) (ch + diff));
+                var currentChar = str.charAt(i);
+                if (currentChar >= '0' && currentChar <= '9') {
+                    zeroConvert.setCharAt(i, (char) (currentChar + diff));
                 }
             }
             str = zeroConvert.toString();
@@ -77,7 +59,7 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
                 }
             } else {
                 appendable.append(str.subSequence(0, decPoint))
-                    .append(activeStyle.getDecimalPointCharacter()).append(str.substring(afterDecPoint));
+                        .append(activeStyle.getDecimalPointCharacter()).append(str.substring(afterDecPoint));
             }
         } else {
             var groupingSize = activeStyle.getGroupingSize();
@@ -134,15 +116,19 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
         var bufPos = 0;
         var dpSeen = false;
         var pos = context.getIndex();
+
+        var zeroChar = activeStyle.getZeroCharacter(); // Introduced variable
+        var digitRangeLimit = zeroChar + MAX_DIGITS;   // Introduce explaining variable
+
         if (pos < len) {
-            var ch = context.getText().charAt(pos++);
-            if (ch == activeStyle.getNegativeSignCharacter()) {
+            var currentChar = context.getText().charAt(pos++); // Renamed
+            if (currentChar == activeStyle.getNegativeSignCharacter()) {
                 buf[bufPos++] = '-';
-            } else if (ch == activeStyle.getPositiveSignCharacter()) {
+            } else if (currentChar == activeStyle.getPositiveSignCharacter()) {
                 buf[bufPos++] = '+';
-            } else if (ch >= activeStyle.getZeroCharacter() && ch < activeStyle.getZeroCharacter() + 10) {
-                buf[bufPos++] = (char) ('0' + ch - activeStyle.getZeroCharacter());
-            } else if (ch == activeStyle.getDecimalPointCharacter()) {
+            } else if (isDigit(currentChar, zeroChar, digitRangeLimit)) {
+                buf[bufPos++] = convertToStandardDigit(currentChar, zeroChar);
+            } else if (currentChar == activeStyle.getDecimalPointCharacter()) {
                 buf[bufPos++] = '.';
                 dpSeen = true;
             } else {
@@ -150,25 +136,28 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
                 return;
             }
         }
+
         var lastWasGroup = false;
         for (; pos < len; pos++) {
-            var ch = context.getText().charAt(pos);
-            if (ch >= activeStyle.getZeroCharacter() && ch < activeStyle.getZeroCharacter() + 10) {
-                buf[bufPos++] = (char) ('0' + ch - activeStyle.getZeroCharacter());
+            var currentChar = context.getText().charAt(pos);
+            if (isDigit(currentChar, zeroChar, digitRangeLimit)) {
+                buf[bufPos++] = convertToStandardDigit(currentChar, zeroChar);
                 lastWasGroup = false;
-            } else if (ch == activeStyle.getDecimalPointCharacter() && !dpSeen) {
+            } else if (currentChar == activeStyle.getDecimalPointCharacter() && !dpSeen) {
                 buf[bufPos++] = '.';
                 dpSeen = true;
                 lastWasGroup = false;
-            } else if (ch == activeStyle.getGroupingCharacter() && !lastWasGroup) {
+            } else if (currentChar == activeStyle.getGroupingCharacter() && !lastWasGroup) {
                 lastWasGroup = true;
             } else {
                 break;
             }
         }
+
         if (lastWasGroup) {
             pos--;
         }
+
         try {
             context.setAmount(new BigDecimal(buf, 0, bufPos));
             context.setIndex(pos);
@@ -177,9 +166,18 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
         }
     }
 
+
+    private boolean isDigit(char ch, char zeroChar, int digitRangeLimit) {
+        return ch >= zeroChar && ch < digitRangeLimit;
+    }
+
+
+    private char convertToStandardDigit(char ch, char zeroChar) {
+        return (char) ('0' + ch - zeroChar);
+    }
+
     @Override
     public String toString() {
         return "${amount}";
     }
-
 }
