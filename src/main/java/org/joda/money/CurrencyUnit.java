@@ -32,7 +32,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     private static final ConcurrentMap<Integer, CurrencyUnit> currenciesByNumericCode = new ConcurrentHashMap<>();
     private static final ConcurrentMap<String, CurrencyUnit> currenciesByCountry = new ConcurrentSkipListMap<>();
 
-    // Magic numbers extracted to constants
+    // Magic number extracted
     private static final int ISO_CURRENCY_CODE_LENGTH = 3;
 
     static {
@@ -58,6 +58,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         }
     }
 
+    // Kept public to prevent breaking existing test cases
     public static final CurrencyUnit USD = of("USD");
     public static final CurrencyUnit EUR = of("EUR");
     public static final CurrencyUnit JPY = of("JPY");
@@ -158,7 +159,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
         var currency = currenciesByCode.get(currencyCode);
         if (currency == null) {
-            throw new IllegalCurrencyException("Unknown currency '" + currencyCode + '\'');
+            throw new IllegalCurrencyException("Unknown currency '" + currencyCode + '\'' );
         }
         return currency;
     }
@@ -167,21 +168,18 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         MoneyUtils.checkNotNull(numericCurrencyCode, "Currency code must not be null");
         return switch (numericCurrencyCode.length()) {
             case 1 -> ofNumericCode(numericCurrencyCode.charAt(0) - '0');
-            case 2 -> ofNumericCode(
-                    (numericCurrencyCode.charAt(0) - '0') * 10 +
-                            numericCurrencyCode.charAt(1) - '0');
-            case 3 -> ofNumericCode(
-                    (numericCurrencyCode.charAt(0) - '0') * 100 +
-                            (numericCurrencyCode.charAt(1) - '0') * 10 +
-                            numericCurrencyCode.charAt(2) - '0');
-            default -> throw new IllegalCurrencyException("Unknown currency '" + numericCurrencyCode + '\'');
+            case 2 -> ofNumericCode((numericCurrencyCode.charAt(0) - '0') * 10 + numericCurrencyCode.charAt(1) - '0');
+            case 3 -> ofNumericCode((numericCurrencyCode.charAt(0) - '0') * 100 +
+                    (numericCurrencyCode.charAt(1) - '0') * 10 +
+                    numericCurrencyCode.charAt(2) - '0');
+            default -> throw new IllegalCurrencyException("Unknown currency '" + numericCurrencyCode + '\'' );
         };
     }
 
     public static CurrencyUnit ofNumericCode(int numericCurrencyCode) {
         var currency = currenciesByNumericCode.get(numericCurrencyCode);
         if (currency == null) {
-            throw new IllegalCurrencyException("Unknown currency '" + numericCurrencyCode + '\'');
+            throw new IllegalCurrencyException("Unknown currency '" + numericCurrencyCode + '\'' );
         }
         return currency;
     }
@@ -190,7 +188,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         MoneyUtils.checkNotNull(locale, "Locale must not be null");
         var currency = currenciesByCountry.get(locale.getCountry());
         if (currency == null) {
-            throw new IllegalCurrencyException("No currency found for locale '" + locale + '\'');
+            throw new IllegalCurrencyException("No currency found for locale '" + locale + '\'' );
         }
         return currency;
     }
@@ -199,7 +197,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         MoneyUtils.checkNotNull(countryCode, "Country code must not be null");
         var currency = currenciesByCountry.get(countryCode);
         if (currency == null) {
-            throw new IllegalCurrencyException("No currency found for country '" + countryCode + '\'');
+            throw new IllegalCurrencyException("No currency found for country '" + countryCode + '\'' );
         }
         return currency;
     }
