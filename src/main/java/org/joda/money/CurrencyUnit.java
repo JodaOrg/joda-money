@@ -3,14 +3,7 @@ package org.joda.money;
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Currency;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map.Entry;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
@@ -32,7 +25,6 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     private static final ConcurrentMap<Integer, CurrencyUnit> currenciesByNumericCode = new ConcurrentHashMap<>();
     private static final ConcurrentMap<String, CurrencyUnit> currenciesByCountry = new ConcurrentSkipListMap<>();
 
-    // Magic number extracted
     private static final int ISO_CURRENCY_CODE_LENGTH = 3;
 
     static {
@@ -58,7 +50,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         }
     }
 
-    // Kept public to prevent breaking existing test cases
+    // Immutable constants exposed publicly for backward compatibility
     public static final CurrencyUnit USD = of("USD");
     public static final CurrencyUnit EUR = of("EUR");
     public static final CurrencyUnit JPY = of("JPY");
@@ -230,18 +222,12 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
             return "";
         }
         var str = Integer.toString(numericCode);
-        if (str.length() == 1) {
-            return "00" + str;
-        }
-        if (str.length() == 2) {
-            return "0" + str;
-        }
-        return str;
+        return "000".substring(str.length()) + str;
     }
 
     public Set<String> getCountryCodes() {
         Set<String> countryCodes = new HashSet<>();
-        for (Entry<String, CurrencyUnit> entry : currenciesByCountry.entrySet()) {
+        for (Map.Entry<String, CurrencyUnit> entry : currenciesByCountry.entrySet()) {
             if (this.equals(entry.getValue())) {
                 countryCodes.add(entry.getKey());
             }
