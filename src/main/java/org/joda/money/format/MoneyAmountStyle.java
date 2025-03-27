@@ -13,6 +13,7 @@
  *  See the License for the specific language governing permissions and
  *  limitations under the License.
  */
+
 package org.joda.money.format;
 
 import java.io.Serializable;
@@ -26,8 +27,9 @@ import java.util.concurrent.ConcurrentMap;
 /**
  * Defines the style that the amount of a monetary value will be formatted with.
  * <p>
- * This class is immutable and thread-safe.
+ * This class is immutable and thread-safe.*-
  */
+
 public final class MoneyAmountStyle implements Serializable {
 
     // -----------------------------------------------------------------------
