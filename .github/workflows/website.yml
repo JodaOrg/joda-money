@@ -16,6 +16,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         token: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
+        ref: ${{ github.ref }}
         fetch-tags: true
 
     - name: Setup git
@@ -70,6 +71,7 @@ jobs:
         git push origin main
 
     - name: Delete website tag
+      if: "always()"
       run: |
         git tag --delete "${GITHUB_REF_NAME}" || true
         git push --delete origin "${GITHUB_REF_NAME}" || true
