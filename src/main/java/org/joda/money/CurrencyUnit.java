@@ -219,30 +219,67 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         MoneyUtils.checkNotNull(countryCodes, "Country codes must not be null");
 
         var currency = new CurrencyUnit(currencyCode, (short) numericCurrencyCode, (short) decimalPlaces);
+
         if (force) {
-            currenciesByCode.remove(currencyCode);
-            currenciesByNumericCode.remove(numericCurrencyCode);
-            for (String countryCode : countryCodes) {
-                currenciesByCountry.remove(countryCode);
-            }
+            removeExistingCurrencyRegistrations(currencyCode, numericCurrencyCode, countryCodes);
         } else {
-            if (currenciesByCode.containsKey(currencyCode) || currenciesByNumericCode.containsKey(numericCurrencyCode)) {
-                throw new IllegalArgumentException("Currency already registered: " + currencyCode);
-            }
-            for (String countryCode : countryCodes) {
-                if (currenciesByCountry.containsKey(countryCode)) {
-                    throw new IllegalArgumentException("Currency already registered for country: " + countryCode);
-                }
-            }
+            validateCurrencyNotAlreadyRegistered(currencyCode, numericCurrencyCode, countryCodes);
         }
+        
         currenciesByCode.putIfAbsent(currencyCode, currency);
         if (numericCurrencyCode >= 0) {
             currenciesByNumericCode.putIfAbsent(numericCurrencyCode, currency);
         }
         for (String countryCode : countryCodes) {
-            registerCountry(countryCode, currency);
+            associateCountryWithCurrency(countryCode, currency);
         }
         return currenciesByCode.get(currencyCode);
+    }
+
+    /**
+     * Removes existing currency registrations to allow replacement.
+     * 
+     * @param currencyCode  the currency code to remove
+     * @param numericCurrencyCode  the numeric code to remove
+     * @param countryCodes  the country codes to remove
+     */
+    private static void removeExistingCurrencyRegistrations(
+            String currencyCode,
+            int numericCurrencyCode,
+            List<String> countryCodes) {
+        
+        currenciesByCode.remove(currencyCode);
+        currenciesByNumericCode.remove(numericCurrencyCode);
+        for (String countryCode : countryCodes) {
+            currenciesByCountry.remove(countryCode);
+        }
+    }
+
+    /**
+     * Validates that the currency is not already registered.
+     * 
+     * @param currencyCode  the currency code to check
+     * @param numericCurrencyCode  the numeric code to check
+     * @param countryCodes  the country codes to check
+     * @throws IllegalArgumentException if the currency is already registered
+     */
+    private static void validateCurrencyNotAlreadyRegistered(
+            String currencyCode,
+            int numericCurrencyCode,
+            List<String> countryCodes) {
+        
+        boolean codeAlreadyExists = currenciesByCode.containsKey(currencyCode);
+        boolean numericCodeAlreadyExists = currenciesByNumericCode.containsKey(numericCurrencyCode);
+        
+        if (codeAlreadyExists || numericCodeAlreadyExists) {
+            throw new IllegalArgumentException("Currency already registered: " + currencyCode);
+        }
+        
+        for (String countryCode : countryCodes) {
+            if (currenciesByCountry.containsKey(countryCode)) {
+                throw new IllegalArgumentException("Currency already registered for country: " + countryCode);
+            }
+        }
     }
 
     /**
@@ -283,7 +320,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
     }
 
     /**
-     * Registers a country code, typically ISO 3166-1-alpha-2.
+     * Associates a country code with a currency, typically ISO 3166-1-alpha-2.
      * <p>
      * This registers a country code and the associated currency.
      * <p>
@@ -296,8 +333,18 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @throws IllegalArgumentException if the code is already registered and {@code force} is false;
      *  or if the specified data is invalid
      */
-    public static synchronized void registerCountry(String countryCode, CurrencyUnit currency) {
+    // Rename Method (registerCountry -> associateCountryWithCurrency)
+    public static synchronized void associateCountryWithCurrency(String countryCode, CurrencyUnit currency) {
         currenciesByCountry.put(countryCode, currency);
+    }
+
+    /**
+     * @deprecated Use {@link #associateCountryWithCurrency(String, CurrencyUnit)} instead.
+     * This method will be removed in future versions.
+     */
+    @Deprecated
+    public static synchronized void registerCountry(String countryCode, CurrencyUnit currency) {
+        associateCountryWithCurrency(countryCode, currency);
     }
 
     //-----------------------------------------------------------------------
@@ -373,15 +420,25 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      */
     public static CurrencyUnit ofNumericCode(String numericCurrencyCode) {
         MoneyUtils.checkNotNull(numericCurrencyCode, "Currency code must not be null");
+        
         return switch (numericCurrencyCode.length()) {
-            case 1 -> ofNumericCode(numericCurrencyCode.charAt(0) - '0');
-            case 2 -> ofNumericCode(
-                                    (numericCurrencyCode.charAt(0) - '0') * 10 +
-                                            numericCurrencyCode.charAt(1) - '0');
-            case 3 -> ofNumericCode(
-                                    (numericCurrencyCode.charAt(0) - '0') * 100 +
-                                            (numericCurrencyCode.charAt(1) - '0') * 10 +
-                                            numericCurrencyCode.charAt(2) - '0');
+            case 1 -> {
+                int singleDigitCode = numericCurrencyCode.charAt(0) - '0';
+                yield ofNumericCode(singleDigitCode);
+            }
+            case 2 -> {
+                int firstDigit = numericCurrencyCode.charAt(0) - '0';
+                int secondDigit = numericCurrencyCode.charAt(1) - '0';
+                int twoDigitCode = firstDigit * 10 + secondDigit;
+                yield ofNumericCode(twoDigitCode);
+            }
+            case 3 -> {
+                int firstDigit = numericCurrencyCode.charAt(0) - '0';
+                int secondDigit = numericCurrencyCode.charAt(1) - '0';
+                int thirdDigit = numericCurrencyCode.charAt(2) - '0';
+                int threeDigitCode = firstDigit * 100 + secondDigit * 10 + thirdDigit;
+                yield ofNumericCode(threeDigitCode);
+            }
             default -> throw new IllegalCurrencyException("Unknown currency '" + numericCurrencyCode + '\'');
         };
     }

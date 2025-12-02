@@ -52,7 +52,7 @@ public abstract class CurrencyUnitDataProvider {
      * @param currencyCode  the currency code, not null
      */
     protected final void registerCountry(String countryCode, String currencyCode) {
-        CurrencyUnit.registerCountry(countryCode, CurrencyUnit.of(currencyCode));
+        CurrencyUnit.associateCountryWithCurrency(countryCode, CurrencyUnit.of(currencyCode));
     }
 
 }
