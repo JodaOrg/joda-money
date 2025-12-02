@@ -26,6 +26,7 @@ public final class MoneyUtils {
      * Validates that the object specified is not null.
      *
      * @param object  the object to check, not null
+     * @param message  the error message
      * @throws NullPointerException if the input value is null
      */
     static void checkNotNull(Object object, String message) {
@@ -51,7 +52,7 @@ public final class MoneyUtils {
      * @return true if the money is null or zero
      */
     public static boolean isZero(BigMoneyProvider moneyProvider) {
-        return (moneyProvider == null || moneyProvider.toBigMoney().isZero());
+        return moneyProvider == null || moneyProvider.isZero();
     }
 
     /**
@@ -63,7 +64,7 @@ public final class MoneyUtils {
      * @return true if the money is non-null and positive
      */
     public static boolean isPositive(BigMoneyProvider moneyProvider) {
-        return (moneyProvider != null && moneyProvider.toBigMoney().isPositive());
+        return moneyProvider != null && moneyProvider.isPositive();
     }
 
     /**
@@ -75,7 +76,7 @@ public final class MoneyUtils {
      * @return true if the money is null, zero or positive
      */
     public static boolean isPositiveOrZero(BigMoneyProvider moneyProvider) {
-        return (moneyProvider == null || moneyProvider.toBigMoney().isPositiveOrZero());
+        return moneyProvider == null || moneyProvider.isPositiveOrZero();
     }
 
     /**
@@ -87,7 +88,7 @@ public final class MoneyUtils {
      * @return true if the money is non-null and negative
      */
     public static boolean isNegative(BigMoneyProvider moneyProvider) {
-        return (moneyProvider != null && moneyProvider.toBigMoney().isNegative());
+        return moneyProvider != null && moneyProvider.isNegative();
     }
 
     /**
@@ -99,7 +100,7 @@ public final class MoneyUtils {
      * @return true if the money is null, zero or negative
      */
     public static boolean isNegativeOrZero(BigMoneyProvider moneyProvider) {
-        return (moneyProvider == null || moneyProvider.toBigMoney().isNegativeOrZero());
+        return moneyProvider == null || moneyProvider.isNegativeOrZero();
     }
 
     //-----------------------------------------------------------------------

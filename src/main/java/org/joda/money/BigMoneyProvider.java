@@ -45,6 +45,66 @@ public interface BigMoneyProvider {
      * @return the converted money instance, never null
      * @throws RuntimeException if conversion is not possible
      */
-    public abstract BigMoney toBigMoney();
+    BigMoney toBigMoney();
+
+    /**
+     * Checks if the amount is zero.
+     * <p>
+     * Default implementation converts to BigMoney and checks.
+     * Implementations should override for better performance.
+     *
+     * @return true if the amount is zero
+     */
+    default boolean isZero() {
+        return toBigMoney().isZero();
+    }
+
+    /**
+     * Checks if the amount is greater than zero.
+     * <p>
+     * Default implementation converts to BigMoney and checks.
+     * Implementations should override for better performance.
+     *
+     * @return true if the amount is greater than zero
+     */
+    default boolean isPositive() {
+        return toBigMoney().isPositive();
+    }
+
+    /**
+     * Checks if the amount is zero or greater.
+     * <p>
+     * Default implementation converts to BigMoney and checks.
+     * Implementations should override for better performance.
+     *
+     * @return true if the amount is zero or greater
+     */
+    default boolean isPositiveOrZero() {
+        return toBigMoney().isPositiveOrZero();
+    }
+
+    /**
+     * Checks if the amount is less than zero.
+     * <p>
+     * Default implementation converts to BigMoney and checks.
+     * Implementations should override for better performance.
+     *
+     * @return true if the amount is less than zero
+     */
+    default boolean isNegative() {
+        return toBigMoney().isNegative();
+    }
+
+    /**
+     * Checks if the amount is zero or less.
+     * <p>
+     * Default implementation converts to BigMoney and checks.
+     * Implementations should override for better performance.
+     *
+     * @return true if the amount is zero or less
+     */
+    default boolean isNegativeOrZero() {
+        return toBigMoney().isNegativeOrZero();
+    }
 
 }
