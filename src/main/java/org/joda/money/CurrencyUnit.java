@@ -29,7 +29,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ConcurrentSkipListMap;
-import java.util.regex.Pattern;
 
 import org.joda.convert.FromString;
 import org.joda.convert.ToString;
@@ -53,10 +52,6 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * The serialisation version.
      */
     private static final long serialVersionUID = 327835287287L;
-    /**
-     * The currency code pattern.
-     */
-    private static final Pattern CODE = Pattern.compile("[A-Z][A-Z][A-Z]");
     /**
      * Map of registered currencies by text code.
      */
@@ -203,7 +198,7 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
             List<String> countryCodes,
             boolean force) {
 
-        validateCurrencyRegistrationParameters(currencyCode, numericCurrencyCode, decimalPlaces, countryCodes);
+        CurrencyValidator.validateRegistrationParameters(currencyCode, numericCurrencyCode, decimalPlaces, countryCodes);
         
         var currency = new CurrencyUnit(currencyCode, (short) numericCurrencyCode, (short) decimalPlaces);
         
@@ -216,69 +211,6 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
         registerCurrencyInMaps(currency, numericCurrencyCode, countryCodes);
         
         return currenciesByCode.get(currencyCode);
-    }
-
-    /**
-     * Validates all parameters for currency registration.
-     * 
-     * @param currencyCode  the currency code to validate
-     * @param numericCurrencyCode  the numeric code to validate
-     * @param decimalPlaces  the decimal places to validate
-     * @param countryCodes  the country codes to validate
-     * @throws IllegalArgumentException if any parameter is invalid
-     */
-    private static void validateCurrencyRegistrationParameters(
-            String currencyCode,
-            int numericCurrencyCode,
-            int decimalPlaces,
-            List<String> countryCodes) {
-        
-        validateCurrencyCode(currencyCode);
-        validateNumericCurrencyCode(numericCurrencyCode);
-        validateDecimalPlaces(decimalPlaces);
-        MoneyUtils.checkNotNull(countryCodes, "Country codes must not be null");
-    }
-
-    /**
-     * Validates the currency code format.
-     * 
-     * @param currencyCode  the currency code to validate
-     * @throws IllegalArgumentException if the currency code is invalid
-     */
-    private static void validateCurrencyCode(String currencyCode) {
-        MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        
-        if (currencyCode.length() != 3) {
-            throw new IllegalArgumentException("Invalid string code, must be length 3");
-        }
-        
-        if (!CODE.matcher(currencyCode).matches()) {
-            throw new IllegalArgumentException("Invalid string code, must be ASCII upper-case letters");
-        }
-    }
-
-    /**
-     * Validates the numeric currency code.
-     * 
-     * @param numericCurrencyCode  the numeric code to validate
-     * @throws IllegalArgumentException if the numeric code is invalid
-     */
-    private static void validateNumericCurrencyCode(int numericCurrencyCode) {
-        if (numericCurrencyCode < -1 || numericCurrencyCode > 999) {
-            throw new IllegalArgumentException("Invalid numeric code");
-        }
-    }
-
-    /**
-     * Validates the decimal places.
-     * 
-     * @param decimalPlaces  the decimal places to validate
-     * @throws IllegalArgumentException if the decimal places value is invalid
-     */
-    private static void validateDecimalPlaces(int decimalPlaces) {
-        if (decimalPlaces < -1 || decimalPlaces > 30) {
-            throw new IllegalArgumentException("Invalid number of decimal places");
-        }
     }
 
     /**
