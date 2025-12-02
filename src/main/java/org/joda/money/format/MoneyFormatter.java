@@ -22,6 +22,7 @@ import java.util.Locale;
 import org.joda.money.BigMoney;
 import org.joda.money.BigMoneyProvider;
 import org.joda.money.Money;
+import org.joda.money.MoneyUtils;
 
 /**
  * Formats instances of money to and from a String.
@@ -49,20 +50,6 @@ public final class MoneyFormatter implements Serializable {
 
     //-----------------------------------------------------------------------
     /**
-     * Validates that the object specified is not null
-     *
-     * @param object  the object to check, null throws exception
-     * @param message  the message to use in the exception, not null
-     * @throws NullPointerException if the input value is null
-     */
-    static void checkNotNull(Object object, String message) {
-        if (object == null) {
-            throw new NullPointerException(message);
-        }
-    }
-
-    //-----------------------------------------------------------------------
-    /**
      * Constructor, creating a new formatter.
      *
      * @param locale  the locale to use, not null
@@ -70,9 +57,9 @@ public final class MoneyFormatter implements Serializable {
      * @param parsers  the parsers, not null
      */
     MoneyFormatter(Locale locale, MoneyPrinter[] printers, MoneyParser[] parsers) {
-        MoneyFormatter.checkNotNull(locale, "Locale must not be null");
-        MoneyFormatter.checkNotNull(printers, "Printers must not be null");
-        MoneyFormatter.checkNotNull(parsers, "Parsers must not be null");
+        MoneyUtils.checkNotNull(locale, "Locale must not be null");
+        MoneyUtils.checkNotNull(printers, "Printers must not be null");
+        MoneyUtils.checkNotNull(parsers, "Parsers must not be null");
         if (printers.length != parsers.length) {
             throw new IllegalArgumentException("Printers and parsers must match");
         }
@@ -87,8 +74,8 @@ public final class MoneyFormatter implements Serializable {
      * @param printerParser  the printer/parser, not null
      */
     private MoneyFormatter(Locale locale, MultiPrinterParser printerParser) {
-        MoneyFormatter.checkNotNull(locale, "Locale must not be null");
-        MoneyFormatter.checkNotNull(printerParser, "PrinterParser must not be null");
+        MoneyUtils.checkNotNull(locale, "Locale must not be null");
+        MoneyUtils.checkNotNull(printerParser, "PrinterParser must not be null");
         this.locale = locale;
         this.printerParser = printerParser;
     }
@@ -123,7 +110,7 @@ public final class MoneyFormatter implements Serializable {
      * @return the new instance, never null
      */
     public MoneyFormatter withLocale(Locale locale) {
-        checkNotNull(locale, "Locale must not be null");
+        MoneyUtils.checkNotNull(locale, "Locale must not be null");
         return new MoneyFormatter(locale, printerParser);
     }
 
@@ -203,7 +190,7 @@ public final class MoneyFormatter implements Serializable {
      * @throws IOException if an IO error occurs
      */
     public void printIO(Appendable appendable, BigMoneyProvider moneyProvider) throws IOException {
-        checkNotNull(moneyProvider, "BigMoneyProvider must not be null");
+        MoneyUtils.checkNotNull(moneyProvider, "BigMoneyProvider must not be null");
         if (!isPrinter()) {
             throw new UnsupportedOperationException("MoneyFomatter has not been configured to be able to print");
         }
@@ -227,7 +214,7 @@ public final class MoneyFormatter implements Serializable {
      * @throws MoneyFormatException if there is a problem while parsing
      */
     public BigMoney parseBigMoney(CharSequence text) {
-        checkNotNull(text, "Text must not be null");
+        MoneyUtils.checkNotNull(text, "Text must not be null");
         var result = parse(text, 0);
         if (result.isError() || !result.isFullyParsed() || !result.isComplete()) {
             var str = (text.length() > 64 ? text.subSequence(0, 64).toString() + "..." : text.toString());
@@ -275,7 +262,7 @@ public final class MoneyFormatter implements Serializable {
      * @throws UnsupportedOperationException if this formatter cannot parse
      */
     public MoneyParseContext parse(CharSequence text, int startIndex) {
-        checkNotNull(text, "Text must not be null");
+        MoneyUtils.checkNotNull(text, "Text must not be null");
         if (startIndex < 0 || startIndex > text.length()) {
             throw new StringIndexOutOfBoundsException("Invalid start index: " + startIndex);
         }

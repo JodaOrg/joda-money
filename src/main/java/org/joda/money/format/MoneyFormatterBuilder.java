@@ -23,6 +23,7 @@ import java.util.Locale;
 import org.joda.money.BigMoney;
 import org.joda.money.CurrencyUnit;
 import org.joda.money.IllegalCurrencyException;
+import org.joda.money.MoneyUtils;
 
 /**
  * Provides the ability to build a formatter for monetary values.
@@ -90,7 +91,7 @@ public final class MoneyFormatterBuilder {
      * @return this, for chaining, never null
      */
     public MoneyFormatterBuilder appendAmount(MoneyAmountStyle style) {
-        MoneyFormatter.checkNotNull(style, "MoneyAmountStyle must not be null");
+        MoneyUtils.checkNotNull(style, "MoneyAmountStyle must not be null");
         var pp = new AmountPrinterParser(style);
         return appendInternal(pp, pp);
     }
@@ -173,7 +174,7 @@ public final class MoneyFormatterBuilder {
      * @return this for chaining, never null
      */
     public MoneyFormatterBuilder append(MoneyFormatter formatter) {
-        MoneyFormatter.checkNotNull(formatter, "MoneyFormatter must not be null");
+        MoneyUtils.checkNotNull(formatter, "MoneyFormatter must not be null");
         formatter.getPrinterParser().appendTo(this);
         return this;
     }
@@ -241,9 +242,9 @@ public final class MoneyFormatterBuilder {
      * @return this for chaining, never null
      */
     public MoneyFormatterBuilder appendSigned(MoneyFormatter whenPositive, MoneyFormatter whenZero, MoneyFormatter whenNegative) {
-        MoneyFormatter.checkNotNull(whenPositive, "MoneyFormatter whenPositive must not be null");
-        MoneyFormatter.checkNotNull(whenZero, "MoneyFormatter whenZero must not be null");
-        MoneyFormatter.checkNotNull(whenNegative, "MoneyFormatter whenNegative must not be null");
+        MoneyUtils.checkNotNull(whenPositive, "MoneyFormatter whenPositive must not be null");
+        MoneyUtils.checkNotNull(whenZero, "MoneyFormatter whenZero must not be null");
+        MoneyUtils.checkNotNull(whenNegative, "MoneyFormatter whenNegative must not be null");
         var pp = new SignedPrinterParser(whenPositive, whenZero, whenNegative);
         return appendInternal(pp, pp);
     }
@@ -296,7 +297,7 @@ public final class MoneyFormatterBuilder {
      */
     @SuppressWarnings("cast")
     public MoneyFormatter toFormatter(Locale locale) {
-        MoneyFormatter.checkNotNull(locale, "Locale must not be null");
+        MoneyUtils.checkNotNull(locale, "Locale must not be null");
         var printersCopy = printers.toArray(new MoneyPrinter[printers.size()]);
         var parsersCopy = parsers.toArray(new MoneyParser[parsers.size()]);
         return new MoneyFormatter(locale, printersCopy, parsersCopy);

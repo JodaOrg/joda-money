@@ -17,6 +17,8 @@ package org.joda.money.format;
 
 import java.util.Locale;
 
+import org.joda.money.MoneyUtils;
+
 /**
  * Context used when printing money.
  * <p>
@@ -36,7 +38,7 @@ public final class MoneyPrintContext {
      * @param locale  the locale, not null
      */
     MoneyPrintContext(Locale locale) {
-        MoneyFormatter.checkNotNull(locale, "Locale must not be null");
+        MoneyUtils.checkNotNull(locale, "Locale must not be null");
         this.locale = locale;
     }
 
@@ -56,7 +58,7 @@ public final class MoneyPrintContext {
      * @param locale  the locale, not null
      */
     public void setLocale(Locale locale) {
-        MoneyFormatter.checkNotNull(locale, "Locale must not be null");
+        MoneyUtils.checkNotNull(locale, "Locale must not be null");
         this.locale = locale;
     }
 

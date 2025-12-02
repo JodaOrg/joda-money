@@ -21,6 +21,7 @@ import java.util.Locale;
 
 import org.joda.money.BigMoney;
 import org.joda.money.CurrencyUnit;
+import org.joda.money.MoneyUtils;
 
 /**
  * Context used when parsing money.
@@ -103,7 +104,7 @@ public final class MoneyParseContext {
      * @param locale  the locale, not null
      */
     public void setLocale(Locale locale) {
-        MoneyFormatter.checkNotNull(locale, "Locale must not be null");
+        MoneyUtils.checkNotNull(locale, "Locale must not be null");
         this.locale = locale;
     }
 
@@ -122,7 +123,7 @@ public final class MoneyParseContext {
      * @param text  the text being parsed, not null
      */
     public void setText(CharSequence text) {
-        MoneyFormatter.checkNotNull(text, "Text must not be null");
+        MoneyUtils.checkNotNull(text, "Text must not be null");
         this.text = text;
     }
 

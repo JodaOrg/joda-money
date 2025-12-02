@@ -23,6 +23,8 @@ import java.util.Locale;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import org.joda.money.MoneyUtils;
+
 /**
  * Defines the style that the amount of a monetary value will be formatted with.
  * <p>
@@ -223,7 +225,7 @@ public final class MoneyAmountStyle implements Serializable {
      * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle localize(Locale locale) {
-        MoneyFormatter.checkNotNull(locale, "Locale must not be null");
+        MoneyUtils.checkNotNull(locale, "Locale must not be null");
         var result = this;
         var protoStyle = (MoneyAmountStyle) null;
         if (zeroCharacter < 0) {
@@ -543,7 +545,7 @@ public final class MoneyAmountStyle implements Serializable {
      * @return the new instance for chaining, never null
      */
     public MoneyAmountStyle withGroupingStyle(GroupingStyle groupingStyle) {
-        MoneyFormatter.checkNotNull(groupingStyle, "groupingStyle");
+        MoneyUtils.checkNotNull(groupingStyle, "groupingStyle");
         if (this.groupingStyle == groupingStyle) {
             return this;
         }
