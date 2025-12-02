@@ -59,37 +59,113 @@ final class SignedPrinterParser implements MoneyPrinter, MoneyParser, Serializab
 
     @Override
     public void parse(MoneyParseContext context) {
-        var positiveContext = context.createChild();
-        whenPositive.getPrinterParser().parse(positiveContext);
-        var zeroContext = context.createChild();
-        whenZero.getPrinterParser().parse(zeroContext);
-        var negativeContext = context.createChild();
-        whenNegative.getPrinterParser().parse(negativeContext);
+        var positiveContext = tryParse(context, whenPositive);
+        var zeroContext = tryParse(context, whenZero);
+        var negativeContext = tryParse(context, whenNegative);
+        
+        var best = selectBestParseResult(positiveContext, zeroContext, negativeContext);
+        
+        if (best == null) {
+            context.setError();
+        } else {
+            applyParseResult(context, best, zeroContext, negativeContext);
+        }
+    }
+
+    /**
+     * Attempts to parse using the given formatter.
+     * 
+     * @param context  the parent context
+     * @param formatter  the formatter to use for parsing
+     * @return the child context with parse results
+     */
+    private MoneyParseContext tryParse(MoneyParseContext context, MoneyFormatter formatter) {
+        var childContext = context.createChild();
+        formatter.getPrinterParser().parse(childContext);
+        return childContext;
+    }
+
+    /**
+     * Selects the best parse result from the three attempted parses.
+     * The best result is the one that parsed the most characters (highest index).
+     * 
+     * @param positiveContext  the result from positive formatter
+     * @param zeroContext  the result from zero formatter
+     * @param negativeContext  the result from negative formatter
+     * @return the best context, or null if all failed
+     */
+    private MoneyParseContext selectBestParseResult(
+            MoneyParseContext positiveContext, 
+            MoneyParseContext zeroContext, 
+            MoneyParseContext negativeContext) {
+        
         var best = (MoneyParseContext) null;
+        
         if (!positiveContext.isError()) {
             best = positiveContext;
         }
+        
         if (!zeroContext.isError()) {
             if (best == null || zeroContext.getIndex() > best.getIndex()) {
                 best = zeroContext;
             }
         }
+        
         if (!negativeContext.isError()) {
             if (best == null || negativeContext.getIndex() > best.getIndex()) {
                 best = negativeContext;
             }
         }
-        if (best == null) {
-            context.setError();
-        } else {
-            context.mergeChild(best);
-            if (best == zeroContext) {
-                if (context.getAmount() == null || context.getAmount().compareTo(BigDecimal.ZERO) != 0) {
-                    context.setAmount(BigDecimal.ZERO);
-                }
-            } else if (best == negativeContext && context.getAmount().compareTo(BigDecimal.ZERO) > 0) {
-                context.setAmount(context.getAmount().negate());
-            }
+        
+        return best;
+    }
+
+    /**
+     * Applies the best parse result to the parent context and adjusts the amount
+     * based on which formatter was used.
+     * 
+     * @param context  the parent context to update
+     * @param best  the best parse result
+     * @param zeroContext  the zero formatter result (for comparison)
+     * @param negativeContext  the negative formatter result (for comparison)
+     */
+    private void applyParseResult(
+            MoneyParseContext context, 
+            MoneyParseContext best, 
+            MoneyParseContext zeroContext, 
+            MoneyParseContext negativeContext) {
+        
+        context.mergeChild(best);
+        
+        if (best == zeroContext) {
+            ensureAmountIsZero(context);
+        } else if (best == negativeContext) {
+            ensureAmountIsNegative(context);
+        }
+    }
+
+    /**
+     * Ensures the parsed amount is set to zero.
+     * This is needed when the zero formatter is used, as the amount might be
+     * parsed as a non-zero value.
+     * 
+     * @param context  the context to update
+     */
+    private void ensureAmountIsZero(MoneyParseContext context) {
+        if (context.getAmount() == null || context.getAmount().compareTo(BigDecimal.ZERO) != 0) {
+            context.setAmount(BigDecimal.ZERO);
+        }
+    }
+
+    /**
+     * Ensures the parsed amount is negative.
+     * This negates positive amounts when the negative formatter is used.
+     * 
+     * @param context  the context to update
+     */
+    private void ensureAmountIsNegative(MoneyParseContext context) {
+        if (context.getAmount().compareTo(BigDecimal.ZERO) > 0) {
+            context.setAmount(context.getAmount().negate());
         }
     }
 
