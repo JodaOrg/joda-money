@@ -203,37 +203,82 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
             List<String> countryCodes,
             boolean force) {
 
-        MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
-        if (currencyCode.length() != 3) {
-            throw new IllegalArgumentException("Invalid string code, must be length 3");
-        }
-        if (!CODE.matcher(currencyCode).matches()) {
-            throw new IllegalArgumentException("Invalid string code, must be ASCII upper-case letters");
-        }
-        if (numericCurrencyCode < -1 || numericCurrencyCode > 999) {
-            throw new IllegalArgumentException("Invalid numeric code");
-        }
-        if (decimalPlaces < -1 || decimalPlaces > 30) {
-            throw new IllegalArgumentException("Invalid number of decimal places");
-        }
-        MoneyUtils.checkNotNull(countryCodes, "Country codes must not be null");
-
+        validateCurrencyRegistrationParameters(currencyCode, numericCurrencyCode, decimalPlaces, countryCodes);
+        
         var currency = new CurrencyUnit(currencyCode, (short) numericCurrencyCode, (short) decimalPlaces);
-
+        
         if (force) {
             removeExistingCurrencyRegistrations(currencyCode, numericCurrencyCode, countryCodes);
         } else {
             validateCurrencyNotAlreadyRegistered(currencyCode, numericCurrencyCode, countryCodes);
         }
         
-        currenciesByCode.putIfAbsent(currencyCode, currency);
-        if (numericCurrencyCode >= 0) {
-            currenciesByNumericCode.putIfAbsent(numericCurrencyCode, currency);
-        }
-        for (String countryCode : countryCodes) {
-            associateCountryWithCurrency(countryCode, currency);
-        }
+        registerCurrencyInMaps(currency, numericCurrencyCode, countryCodes);
+        
         return currenciesByCode.get(currencyCode);
+    }
+
+    /**
+     * Validates all parameters for currency registration.
+     * 
+     * @param currencyCode  the currency code to validate
+     * @param numericCurrencyCode  the numeric code to validate
+     * @param decimalPlaces  the decimal places to validate
+     * @param countryCodes  the country codes to validate
+     * @throws IllegalArgumentException if any parameter is invalid
+     */
+    private static void validateCurrencyRegistrationParameters(
+            String currencyCode,
+            int numericCurrencyCode,
+            int decimalPlaces,
+            List<String> countryCodes) {
+        
+        validateCurrencyCode(currencyCode);
+        validateNumericCurrencyCode(numericCurrencyCode);
+        validateDecimalPlaces(decimalPlaces);
+        MoneyUtils.checkNotNull(countryCodes, "Country codes must not be null");
+    }
+
+    /**
+     * Validates the currency code format.
+     * 
+     * @param currencyCode  the currency code to validate
+     * @throws IllegalArgumentException if the currency code is invalid
+     */
+    private static void validateCurrencyCode(String currencyCode) {
+        MoneyUtils.checkNotNull(currencyCode, "Currency code must not be null");
+        
+        if (currencyCode.length() != 3) {
+            throw new IllegalArgumentException("Invalid string code, must be length 3");
+        }
+        
+        if (!CODE.matcher(currencyCode).matches()) {
+            throw new IllegalArgumentException("Invalid string code, must be ASCII upper-case letters");
+        }
+    }
+
+    /**
+     * Validates the numeric currency code.
+     * 
+     * @param numericCurrencyCode  the numeric code to validate
+     * @throws IllegalArgumentException if the numeric code is invalid
+     */
+    private static void validateNumericCurrencyCode(int numericCurrencyCode) {
+        if (numericCurrencyCode < -1 || numericCurrencyCode > 999) {
+            throw new IllegalArgumentException("Invalid numeric code");
+        }
+    }
+
+    /**
+     * Validates the decimal places.
+     * 
+     * @param decimalPlaces  the decimal places to validate
+     * @throws IllegalArgumentException if the decimal places value is invalid
+     */
+    private static void validateDecimalPlaces(int decimalPlaces) {
+        if (decimalPlaces < -1 || decimalPlaces > 30) {
+            throw new IllegalArgumentException("Invalid number of decimal places");
+        }
     }
 
     /**
@@ -279,6 +324,29 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
             if (currenciesByCountry.containsKey(countryCode)) {
                 throw new IllegalArgumentException("Currency already registered for country: " + countryCode);
             }
+        }
+    }
+
+    /**
+     * Registers the currency in all internal maps.
+     * 
+     * @param currency  the currency to register
+     * @param numericCurrencyCode  the numeric code
+     * @param countryCodes  the country codes to associate
+     */
+    private static void registerCurrencyInMaps(
+            CurrencyUnit currency,
+            int numericCurrencyCode,
+            List<String> countryCodes) {
+        
+        currenciesByCode.putIfAbsent(currency.getCode(), currency);
+        
+        if (numericCurrencyCode >= 0) {
+            currenciesByNumericCode.putIfAbsent(numericCurrencyCode, currency);
+        }
+        
+        for (String countryCode : countryCodes) {
+            associateCountryWithCurrency(countryCode, currency);
         }
     }
 
@@ -333,14 +401,14 @@ public final class CurrencyUnit implements Comparable<CurrencyUnit>, Serializabl
      * @throws IllegalArgumentException if the code is already registered and {@code force} is false;
      *  or if the specified data is invalid
      */
-    // Rename Method (registerCountry -> associateCountryWithCurrency)
+    
     public static synchronized void associateCountryWithCurrency(String countryCode, CurrencyUnit currency) {
         currenciesByCountry.put(countryCode, currency);
     }
 
     /**
      * @deprecated Use {@link #associateCountryWithCurrency(String, CurrencyUnit)} instead.
-     * This method will be removed in future versions.
+     * This method will be removed in a future version.
      */
     @Deprecated
     public static synchronized void registerCountry(String countryCode, CurrencyUnit currency) {
