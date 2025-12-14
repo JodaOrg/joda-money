@@ -8,6 +8,12 @@
   <body>
 
     <!-- types are add, fix, remove, update -->
+    <release version="2.0.3" date="SNAPSHOT" description="Version 2.0.3">
+      <action dev="jodastephen" type="fix" issue="162">
+        Change currency for BG from BGN to EUR. (ISO 4217 Amendment 180).
+        This change is effective from 1st January 2026.
+      </action>
+    </release>
     <release version="2.0.2" date="2025-03-17" description="Version 2.0.2">
       <action dev="jodastephen" type="fix" issue="156">
         Fix proguard rule.
@@ -26,6 +32,12 @@
       <action dev="jodastephen" type="add">
         Major version based on Java SE 21.
         Intended to be fully compatible with v1.x.
+      </action>
+    </release>
+    <release version="1.0.7" date="SNAPSHOT" description="Version 1.0.7">
+      <action dev="jodastephen" type="fix" issue="162">
+        Change currency for BG from BGN to EUR. (ISO 4217 Amendment 180).
+        This change is effective from 1st January 2026.
       </action>
     </release>
     <release version="1.0.6" date="2025-03-09" description="Version 1.0.6">
