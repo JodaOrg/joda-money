@@ -443,8 +443,13 @@ class TestCurrencyUnit {
 
     @Test
     void test_cw_sx_xcg() {
-      assertThat(CurrencyUnit.ofCountry("CW").getCode()).isEqualTo("XCG");
-      assertThat(CurrencyUnit.ofCountry("SX").getCode()).isEqualTo("XCG");
+        assertThat(CurrencyUnit.ofCountry("CW").getCode()).isEqualTo("XCG");
+        assertThat(CurrencyUnit.ofCountry("SX").getCode()).isEqualTo("XCG");
+    }
+
+    @Test
+    void test_bg_eur() {
+        assertThat(CurrencyUnit.ofCountry("BG").getCode()).isEqualTo("EUR");
     }
 
     //-----------------------------------------------------------------------
