@@ -639,6 +639,7 @@ public final class MoneyAmountStyle implements Serializable {
                 (groupingStyle == otherStyle.groupingStyle) &&
                 (groupingCharacter == otherStyle.groupingCharacter) &&
                 (groupingSize == otherStyle.groupingSize) &&
+                (extendedGroupingSize == otherStyle.extendedGroupingSize) &&
                 (forceDecimalPoint == otherStyle.forceDecimalPoint) &&
                 (absValue == otherStyle.absValue);
     }
@@ -658,6 +659,7 @@ public final class MoneyAmountStyle implements Serializable {
         hash += groupingStyle.hashCode() * 17;
         hash += groupingCharacter * 17;
         hash += groupingSize * 17;
+        hash += extendedGroupingSize * 17;
         hash += (forceDecimalPoint ? 2 : 4);
         hash += (absValue ? 3 : 9);
         return hash;

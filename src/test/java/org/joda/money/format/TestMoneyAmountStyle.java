@@ -766,6 +766,31 @@ class TestMoneyAmountStyle {
     }
 
     @Test
+    void test_equals_equal_extendedGroupingSize() {
+        var a = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withExtendedGroupingSize(2);
+        var b = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA.withExtendedGroupingSize(2);
+        assertThat(b).isEqualTo(a);
+        assertThat(a).isEqualTo(b);
+        assertThat(a.hashCode()).isEqualTo(b.hashCode());
+    }
+
+    @Test
+    void test_equals_notEqual_extendedGroupingSize() {
+        var a = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA;
+        var b = a.withExtendedGroupingSize(2);
+        assertThat(b).isNotEqualTo(a);
+        assertThat(a).isNotEqualTo(b);
+    }
+
+    @Test
+    void test_equals_notEqual_extendedGroupingSize_localized() {
+        var a = MoneyAmountStyle.LOCALIZED_GROUPING;
+        var b = a.withExtendedGroupingSize(0);
+        assertThat(b).isNotEqualTo(a);
+        assertThat(a).isNotEqualTo(b);
+    }
+
+    @Test
     void test_equals_equal_forcedDecimalPoint_false() {
         var a = MoneyAmountStyle.LOCALIZED_GROUPING.withForcedDecimalPoint(true).withForcedDecimalPoint(false);
         var b = MoneyAmountStyle.LOCALIZED_GROUPING.withForcedDecimalPoint(true).withForcedDecimalPoint(false);
