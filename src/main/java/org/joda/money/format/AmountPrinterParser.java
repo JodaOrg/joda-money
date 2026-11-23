@@ -88,7 +88,7 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
             var post = (decPoint < 0 ? 0 : str.length() - decPoint - 1);
             appendable.append(str.charAt(0));
             for (var i = 1; i < pre; i++) {
-                if (isPreGroupingPoint(pre - i, groupingSize, extendedGroupingSize)) {
+                if (isGroupingPoint(pre - i, groupingSize, extendedGroupingSize)) {
                     appendable.append(groupingChar);
                 }
                 appendable.append(str.charAt(i));
@@ -103,7 +103,7 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
             } else {
                 for (var i = 0; i < post; i++) {
                     appendable.append(str.charAt(i + afterDecPoint));
-                    if (isPostGroupingPoint(i, post, groupingSize, extendedGroupingSize)) {
+                    if (i + 1 < post && isGroupingPoint(i + 1, groupingSize, extendedGroupingSize)) {
                         appendable.append(groupingChar);
                     }
                 }
@@ -111,19 +111,8 @@ final class AmountPrinterParser implements MoneyPrinter, MoneyParser, Serializab
         }
     }
 
-    private boolean isPreGroupingPoint(int remaining, int groupingSize, int extendedGroupingSize) {
-        if (remaining >= groupingSize + extendedGroupingSize) {
-            return (remaining - groupingSize) % extendedGroupingSize == 0;
-        }
-        return remaining % groupingSize == 0;
-    }
-
-    private boolean isPostGroupingPoint(int i, int post, int groupingSize, int extendedGroupingSize) {
-        var atEnd = (i + 1) >= post;
-        if (i > groupingSize) {
-            return (i - groupingSize) % extendedGroupingSize == (extendedGroupingSize - 1) && !atEnd;
-        }
-        return i % groupingSize == (groupingSize - 1) && !atEnd;
+    private boolean isGroupingPoint(int digitsFromDecimal, int groupingSize, int extendedGroupingSize) {
+        return digitsFromDecimal >= groupingSize && (digitsFromDecimal - groupingSize) % extendedGroupingSize == 0;
     }
 
     @Override
