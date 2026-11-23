@@ -701,6 +701,47 @@ class TestMoneyFormatterBuilder {
         assertThat(test).hasToString("${amount}");
     }
 
+    public static Object[][] data_appendAmountExtendedGroupingBoundary() {
+        return new Object[][] {
+            {1, 2, "1", "1", "1"},
+            {1, 2, "12", "1,2", "1,2"},
+            {1, 2, "123", "12,3", "12,3"},
+            {1, 2, "12345", "12,34,5", "12,34,5"},
+            {1, 2, "123456.12345", "1,23,45,6.1,23,45", "1,23,45,6.12345"},
+            {1, 2, "-123456.1234", "-1,23,45,6.1,23,4", "-1,23,45,6.1234"},
+            {2, 3, "12345.12345678", "123,45.12,345,678", "123,45.12345678"},
+            {3, 1, "2.123", "2.123", "2.123"},
+            {3, 1, "2.1234", "2.123,4", "2.1234"},
+            {3, 1, "1234567.12345", "1,2,3,4,567.123,4,5", "1,2,3,4,567.12345"},
+            {3, 1, "-2.123456", "-2.123,4,5,6", "-2.123456"},
+            {3, 2, "-100000.00", "-1,00,000.00", "-1,00,000.00"},
+            {3, 2, "12345678.1234567", "1,23,45,678.123,45,67", "1,23,45,678.1234567"},
+            {1, 0, "12.1234", "1,2.1,2,3,4", "1,2.1234"},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_appendAmountExtendedGroupingBoundary")
+    void test_appendAmount_extendedGroupingBoundary(
+            int groupingSize,
+            int extendedGroupingSize,
+            String amount,
+            String expected,
+            String expectedBeforeDecimalPoint) {
+
+        var money = BigMoney.parse("GBP " + amount);
+        var style = MoneyAmountStyle.ASCII_DECIMAL_POINT_GROUP3_COMMA
+            .withGroupingSize(groupingSize)
+            .withExtendedGroupingSize(extendedGroupingSize);
+        var formatter = new MoneyFormatterBuilder().appendAmount(style).toFormatter();
+        assertThat(formatter.print(money)).isEqualTo(expected);
+        assertThat(formatter.parse(expected, 0).getAmount()).isEqualTo(money.getAmount());
+        var beforeDecimalPoint = new MoneyFormatterBuilder()
+            .appendAmount(style.withGroupingStyle(GroupingStyle.BEFORE_DECIMAL_POINT))
+            .toFormatter();
+        assertThat(beforeDecimalPoint.print(money)).isEqualTo(expectedBeforeDecimalPoint);
+    }
+
     //-----------------------------------------------------------------------
     @Test
     void test_appendAmount_parseExcessGrouping() {
