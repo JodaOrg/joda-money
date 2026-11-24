@@ -198,6 +198,7 @@ public final class MoneyFormatterBuilder {
      * <p>
      * When printing, the amount is queried and the appropriate formatter is used.
      * <p>
+     * The resulting formatter can parse only if all the supplied formatters can parse.
      * When parsing, each formatter is tried, with the longest successful match,
      * or the first match if multiple are successful. If the negative parser is
      * matched, the amount returned will be negative no matter what amount is parsed.
@@ -223,6 +224,7 @@ public final class MoneyFormatterBuilder {
      * <p>
      * When printing, the amount is queried and the appropriate formatter is used.
      * <p>
+     * The resulting formatter can parse only if all the supplied formatters can parse.
      * When parsing, each formatter is tried, with the longest successful match,
      * or the first match if multiple are successful. If the zero parser is matched,
      * the amount returned will be zero no matter what amount is parsed. If the negative
@@ -245,7 +247,8 @@ public final class MoneyFormatterBuilder {
         MoneyFormatter.checkNotNull(whenZero, "MoneyFormatter whenZero must not be null");
         MoneyFormatter.checkNotNull(whenNegative, "MoneyFormatter whenNegative must not be null");
         var pp = new SignedPrinterParser(whenPositive, whenZero, whenNegative);
-        return appendInternal(pp, pp);
+        var parser = whenPositive.isParser() && whenZero.isParser() && whenNegative.isParser() ? pp : null;
+        return appendInternal(pp, parser);
     }
 
     //-----------------------------------------------------------------------

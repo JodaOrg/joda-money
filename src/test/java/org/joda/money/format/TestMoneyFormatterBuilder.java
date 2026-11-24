@@ -842,6 +842,76 @@ class TestMoneyFormatterBuilder {
     }
 
     //-----------------------------------------------------------------------
+    public static Object[][] data_appendSigned_missingParser() {
+        return new Object[][] {
+            {2, 0}, {2, 1}, {3, 0}, {3, 1}, {3, 2},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_appendSigned_missingParser")
+    void test_appendSigned_unparseableBranch(int branchCount, int restrictedBranch) {
+        var capable = capabilityFormatter(true, true);
+        var branches = new MoneyFormatter[] {capable, capable, capable};
+        branches[restrictedBranch] = capabilityFormatter(true, false);
+        var builder = new MoneyFormatterBuilder();
+        var test = (branchCount == 2 ? builder.appendSigned(branches[0], branches[1]) :
+                builder.appendSigned(branches[0], branches[1], branches[2])).toFormatter();
+        assertThat(test.isPrinter()).isTrue();
+        assertThat(test.isParser()).isFalse();
+        assertThat(test.print(GBP_234_56)).isEqualTo("GBP 234.56");
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+            .isThrownBy(() -> test.parse("", 0));
+    }
+
+    public static Object[][] data_appendSigned_mixedPrinting() {
+        return new Object[][] {
+            {2, 0, GBP_MINUS_234_56},
+            {2, 1, GBP_234_56},
+            {2, 1, Money.zero(GBP)},
+            {3, 0, Money.zero(GBP)},
+            {3, 0, GBP_MINUS_234_56},
+            {3, 1, GBP_234_56},
+            {3, 1, GBP_MINUS_234_56},
+            {3, 2, GBP_234_56},
+            {3, 2, Money.zero(GBP)},
+        };
+    }
+
+    @ParameterizedTest
+    @MethodSource("data_appendSigned_mixedPrinting")
+    void test_appendSigned_mixedPrinting(int branchCount, int parserOnlyBranch, Money amount) {
+        var capable = capabilityFormatter(true, true);
+        var branches = new MoneyFormatter[] {capable, capable, capable};
+        branches[parserOnlyBranch] = capabilityFormatter(false, true);
+        var builder = new MoneyFormatterBuilder();
+        var test = (branchCount == 2 ? builder.appendSigned(branches[0], branches[1]) :
+                builder.appendSigned(branches[0], branches[1], branches[2])).toFormatter();
+        assertThat(test.isPrinter()).isTrue();
+        assertThat(test.isParser()).isTrue();
+        assertThat(test.print(amount)).isEqualTo(amount.toString());
+    }
+
+    @Test
+    void test_appendSigned_localizedSymbolPrinter() {
+        var symbol = new MoneyFormatterBuilder().appendCurrencySymbolLocalized().appendAmount().toFormatter();
+        var test = new MoneyFormatterBuilder().appendSigned(symbol, symbol).toFormatter(Locale.UK);
+        assertThat(test.print(GBP_234_56)).isEqualTo("£234.56");
+        assertThat(test.isParser()).isFalse();
+        assertThatExceptionOfType(UnsupportedOperationException.class)
+            .isThrownBy(() -> test.parse("£234.56", 0));
+    }
+
+    private MoneyFormatter capabilityFormatter(boolean canPrint, boolean canParse) {
+        MoneyPrinter printer = (context, appendable, money) -> appendable.append(money.toString());
+        MoneyParser parser = context -> {
+            context.setAmount(GBP_234_56.getAmount());
+            context.setCurrency(GBP_234_56.getCurrencyUnit());
+        };
+        return new MoneyFormatterBuilder().append(canPrint ? printer : null, canParse ? parser : null).toFormatter();
+    }
+
+    //-----------------------------------------------------------------------
     @Test
     void test_toFormatter_defaultLocale() {
         var test = iBuilder.toFormatter();
